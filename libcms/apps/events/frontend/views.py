@@ -36,6 +36,7 @@ def filer_by_date(request, day='', month='', year=''):
     return render(request, 'events/frontend/list.html', {
         'events_list': events_page.object_list,
         'events_page': events_page,
+
         })
 
 def show(request, id):

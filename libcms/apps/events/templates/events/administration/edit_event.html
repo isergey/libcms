@@ -12,6 +12,7 @@
 {% block action_content %}
 
     <script type="text/javascript" src="{% url jsi18n %}"></script>
+    <script type="text/javascript" src="{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}js/jquery.init.js"></script>
     <script type="text/javascript" src="{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}js/core.js"></script>
     <script type="text/javascript" src="{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}js/calendar.js"></script>
     <script type="text/javascript" src="{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}js/admin/DateTimeShortcuts.js"></script>

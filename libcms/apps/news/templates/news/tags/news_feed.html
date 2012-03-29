@@ -1,8 +1,10 @@
 <ul>
     {% for news in news_list %}
         <li>
-            {{ news.news_content.title }}<br/>
-            {{ news.create_date }}
+            <div class="title"><a href="{% url news:frontend:show news.id %}">{{ news.news_content.title }}</a></div>
+            <div class="teaser">{{ news.news_content.teaser }}</div>
+            <div class="create_date">{{ news.create_date }}</div>
         </li>
     {% endfor %}
 </ul>
+

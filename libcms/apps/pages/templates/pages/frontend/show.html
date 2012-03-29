@@ -1,5 +1,9 @@
 {% extends 'frontend_base.html' %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">{{ content.title }}</li>
+    </ul>
     {{ content.content|safe }}
 {% endblock %}

@@ -215,6 +215,7 @@ def record_to_rustam_xml(record, syntax='1.2.840.10003.5.28', namespace=False):
                             data_subfield = ET.SubElement(data_field, 'subfield')
                             data_subfield.set('id', subfield.code)
                             data_subfield.text = subfield.data
+
     return root
 
 

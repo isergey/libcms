@@ -2,7 +2,6 @@
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
     <ul class="breadcrumb">
-
         <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
         {% if request.GET.back %}
             <li><a href="{{ request.GET.back }}">Афиша событий</a> <span class="divider">/</span></li>
@@ -10,7 +9,13 @@
             <li><a href="{% url news:frontend:index %}">Афиша событий</a> <span class="divider">/</span></li>
         {% endif %}
         <li class="active">{{ content.title }}</li>
-
     </ul>
-    {{ content.content|safe }}
+    <div class="content">
+        {{ content.content|safe }}
+    </div>
+    <hr/>
+    <div class="info">
+        <b>Место проведения</b>: {{ event.address }}<br/>
+        <b>Начало</b>: {{ event.start_date }}
+    </div>
 {% endblock %}

@@ -1,15 +1,22 @@
 {% extends 'frontend_base.html' %}
 {% load i18n %}
 {% block title %}
-    {% trans 'Registration' %}
+    Регистрация
 {% endblock %}
 {% block content %}
+    <ul class="breadcrumb">
+
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Регистрация</li>
+
+    </ul>
+    <h3 style="margin-left: 160px;">Регистрация</h3>
+    <p></p>
     <form method="POST" class="form-horizontal">{% csrf_token %}
-        <legend>{% trans 'Registration' %}</legend>
         <fieldset>
             {% include 'frontend/base_form_fields.html' %}
             <div class="form-actions">
-                <input type="submit" value="{% trans 'Registration' %}" class="btn"/>
+                <input type="submit" value="Регистрация" class="btn"/>
             </div>
         </fieldset>
     </form>

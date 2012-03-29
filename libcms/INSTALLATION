@@ -9,7 +9,10 @@ apt-get install libmemcached-dev
 
 pip install django -U
 pip install pylibmc -U
-
+sudo pip install postmarkup
+sudo pip install Pygments
+sudo pip install python-openid
+sudo pip install oauth2
 
 
 # В СУБД MySQl создать базу с именем libcms ( или другое имя указанное в local_settingth.py),

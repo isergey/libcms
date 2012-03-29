@@ -2,15 +2,18 @@
 <div class="menu">
     <span class="title">{{ menu.title }}</span>
     <ul class="items">
-        {% recursetree nodes %}
-            <li {% if path == node.item_title.url  %}class="active"{% endif %}>
-                <a href="{{ node.item_title.url }}" {% if node.open_in_new %} target="_blank" {% endif %}>{{ node.item_title.title }}</a>
-            </li>
-            {% if not node.is_leaf_node %}
-                <ul class="children">
-                    {{ children }}
-                </ul>
-            {% endif %}
-        {% endrecursetree %}
+        {% if nodes %}
+            {% recursetree nodes %}
+                <li {% if path == node.item_title.url  %}class="active"{% endif %}>
+                    <a href="{{ node.item_title.url }}" {% if node.open_in_new %} target="_blank" {% endif %}>{{ node.item_title.title }}</a>
+                </li>
+                {% if not node.is_leaf_node %}
+                    <ul class="children">
+                        {{ children }}
+                    </ul>
+                {% endif %}
+            {% endrecursetree %}
+        {% endif %}
     </ul>
 </div>
+

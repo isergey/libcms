@@ -20,9 +20,9 @@ urlpatterns = patterns(views,
 
     url(r'^article_preview/$', views.article_preview , name="article_preview"),
 
-    url(r'^(?P<slug>[_-w0-9]+)/$', views.forum_topics , name="topics"),
-    url(r'^(?P<slug>[_-w0-9]+)/(?P<id>\d+)/$', views.topic_articles , name="articles"),
-    url(r'^(?P<slug>[_-w0-9]+)/(?P<id>\d+)/replay/(?P<aid>\d+)/$', views.topic_articles , name="replay_article"),
-    url(r'^(?P<slug>[_-w0-9]+)/(?P<id>\d+)/edit/(?P<eid>\d+)/$', views.topic_articles , name="edit_article"),
+    url(r'^(?P<slug>[_\-0-9A-Za-z]+)/$', views.forum_topics , name="topics"),
+    url(r'^(?P<slug>[_\-0-9A-Za-z]+)/(?P<id>\d+)/$', views.topic_articles , name="articles"),
+    url(r'^(?P<slug>[_\-0-9A-Za-z]+)/(?P<id>\d+)/replay/(?P<aid>\d+)/$', views.topic_articles , name="replay_article"),
+    url(r'^(?P<slug>[_\-0-9A-Za-z]+)/(?P<id>\d+)/edit/(?P<eid>\d+)/$', views.topic_articles , name="edit_article"),
     #    url(r'^(?P<slug>[_-a-z0-9]+)/(?P<id>\d+)/$', views.show , name="show_topic"),
 )

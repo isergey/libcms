@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     (r'^forum/', include('forum.urls', namespace='forum')),
 
 #    (r'^ask_librarian/', include('ask_librarian.urls', namespace='ask_librarian')),
-#    (r'^ssearch/', include('ssearch.urls', namespace='ssearch')),
+    (r'^ssearch/', include('ssearch.urls', namespace='ssearch')),
 
     # Uncomment the next line to enable the admin:
     url(r'^radmin/', include(admin.site.urls)),

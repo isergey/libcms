@@ -2,6 +2,7 @@
 from django import forms
 from django.contrib.auth.models import User
 
+
 class RegistrationForm(forms.ModelForm):
     class Meta:
         model=User
@@ -28,7 +29,16 @@ class RegistrationForm(forms.Form):
         except User.DoesNotExist:
             return username
 
-        raise forms.ValidationError(_("A user with that username already exists."))
+        raise forms.ValidationError(u"Такой логин уже существует.")
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        try:
+            User.objects.get(email=email)
+        except User.DoesNotExist:
+            return email
+
+        raise forms.ValidationError(u"Такой email уже зарегистрирован.")
+
 
     def clean_password2(self):
         password = self.cleaned_data.get("password", "")

@@ -1,0 +1,142 @@
+<record syntax="1.2.840.10003.5.28">
+    <leader>
+        <length>00919</length>
+        <status>n</status>
+        <status>a</status>
+        <leader07>m</leader07>
+        <leader08></leader08>
+        <leader09>a</leader09>
+        <indicatorCount>2</indicatorCount>
+        <identifierLength>2</identifierLength>
+        <dataBaseAddress>00301</dataBaseAddress>
+        <leader17>3</leader17>
+        <leader18>i</leader18>
+        <leader19></leader19>
+        <entryMap>450</entryMap>
+    </leader>
+    <field id="001">ru\nlrt\1333061</field>
+    <field id="005">20100720100013.4</field>
+    <field id="010">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">84-376-1251-9</subfield>
+        <subfield id="b">б.ц.</subfield>
+    </field>
+    <field id="090">
+        <indicator id="1">0</indicator>
+        <indicator id="2">0</indicator>
+        <subfield id="a">И(Латин)</subfield>
+        <subfield id="c">И(Латин)+83.3(77)</subfield>
+        <subfield id="e">1539502-ио</subfield>
+        <subfield id="h">И</subfield>
+        <subfield id="x">I 33</subfield>
+    </field>
+    <field id="100">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">20 d1994 u y0rusy01020304ca</subfield>
+    </field>
+    <field id="101">
+        <indicator id="1">|</indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">rus</subfield>
+    </field>
+    <field id="102">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">RU</subfield>
+    </field>
+    <field id="105">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">a zy</subfield>
+    </field>
+    <field id="200">
+        <indicator id="1">1</indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">Huasipungo</subfield>
+        <subfield id="f">Ed.de T.Fernandez</subfield>
+    </field>
+    <field id="210">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">Madrid</subfield>
+        <subfield id="c">Ediciones Catedra</subfield>
+        <subfield id="d">1994</subfield>
+    </field>
+    <field id="215">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">255p.</subfield>
+        <subfield id="c">retr.</subfield>
+    </field>
+    <field id="225">
+        <indicator id="1">2</indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">Letras Hispanicas</subfield>
+        <subfield id="h">N 274</subfield>
+    </field>
+    <field id="300">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">на исп.яз.-Il.de cub.:Indios,de C.Egas</subfield>
+    </field>
+    <field id="320">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">Bibliogr.:p.55-57</subfield>
+    </field>
+    <field id="600">
+        <indicator id="1"></indicator>
+        <indicator id="2">0</indicator>
+        <subfield id="a">ЮЖНАЯ АМЕРИКА</subfield>
+        <subfield id="a">ЭКВАДОР</subfield>
+    </field>
+    <field id="610">
+        <indicator id="1">1</indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">ИСПАНСКАЯ ЛИТЕРАТУРА</subfield>
+    </field>
+    <field id="610">
+        <indicator id="1">1</indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">XX</subfield>
+    </field>
+    <field id="610">
+        <indicator id="1">1</indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">КРИТИКА</subfield>
+    </field>
+    <field id="686">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="2">rubbk</subfield>
+        <subfield id="a">И(Латин)+83.3(77)</subfield>
+    </field>
+    <field id="700">
+        <indicator id="1"></indicator>
+        <indicator id="2">1</indicator>
+        <subfield id="a">Icaza</subfield>
+        <subfield id="g">Jorge</subfield>
+    </field>
+    <field id="801">
+        <indicator id="1"></indicator>
+        <indicator id="2">0</indicator>
+        <subfield id="a">RU</subfield>
+    </field>
+    <field id="990">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="d">20010314</subfield>
+        <subfield id="e">1</subfield>
+        <subfield id="f">20001030</subfield>
+        <subfield id="j">1</subfield>
+        <subfield id="t">519-00</subfield>
+        <subfield id="v">1</subfield>
+    </field>
+    <field id="999">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">42017092</subfield>
+    </field>
+</record>

@@ -54,14 +54,47 @@ class Source(models.Model):
     def __unicode__(self):
         return self.title
 
+import zlib
+class ZippedTextField(models.TextField):
+    __metaclass__ = models.SubfieldBase
+
+    def db_type(self, connection):
+        if connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql_psycopg2' or connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql':
+            return 'bytea'
+        else:
+            return 'BLOB'
+
+    def to_python(self, value):
+        try:
+            value = zlib.decompress(value)
+            value = value.decode('utf-8')
+        except zlib.error:
+            pass
+        return value
+
+
+    def get_db_prep_save(self, value, connection):
+        if isinstance(value, unicode):
+            value.encode('utf-8')
+        value = zlib.compress(value)
+        if value is None:
+            return None
+        if connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql_psycopg2' or connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql':
+            return psycopg2.Binary(value)
+        else:
+            return value
+
+    def value_to_string(self, obj):
+        value = self._get_val_from_obj(obj)
+        return value
 
 class Record(models.Model):
     source = models.ForeignKey(Source, null=True, blank=True)
     gen_id = models.CharField(max_length=32, unique=True, db_index=True)
     record_id = models.CharField(max_length=32, db_index=True)
     scheme = models.CharField(max_length=16, choices=RECORD_SCHEMES, default='rusmarc', verbose_name=u"Scheme")
-    content = models.TextField(verbose_name=u'Xml content')
-    add_date = models.DateTimeField(auto_now_add=True)
+    content = ZippedTextField(verbose_name=u'Xml content')
+    add_date = models.DateTimeField(auto_now_add=True, db_index=True)
 
     def __unicode__(self):
         return self.record_id

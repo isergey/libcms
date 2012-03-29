@@ -7,7 +7,7 @@ from django.core.files.storage import default_storage
 from forms import UploadForm
 from ssearch.models import Upload, Record
 from django.shortcuts import render, redirect, HttpResponse
-from common.pymarc2 import reader, record, field, marcxml
+from pymarc2 import reader, record, field, marcxml
 from django.db import transaction
 
 
@@ -125,11 +125,59 @@ def convert(request):
 
     pass
 
-xslt_root = etree.parse('xsl/record_mars.xsl')
+xslt_root = etree.parse('libcms/xsl/record_mars.xsl')
 xslt_transformer = etree.XSLT(xslt_root)
 
+
+def xml_to_dict(doc_tree):
+    for el in doc_tree.get_root():
+        print el
+
+xml_doc = u"""\
+<record syntax="1.2.840.10003.5.28">
+<leader>
+<length>03559</length>
+<status>n</status>
+<type>a</type>
+<leader07>a</leader07>
+<leader08>2</leader08>
+<leader09>a</leader09>
+<indicatorCount>2</indicatorCount>
+<identifierLength>2</identifierLength>
+<dataBaseAddress>00253</dataBaseAddress>
+<leader17> </leader17>
+<leader18>i</leader18>
+<leader19> </leader19>
+<entryMap>450 </entryMap>
+</leader>
+<field id="001">RU\SPSTU\\analits2005\\71784</field>
+<field id="005">20091228133036.0</field>
+<field id="035"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">RU\SPSTU\\analits2005\\71783</subfield></field>
+<field id="100"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">20091202a2009    k  y0rusy01020304ca</subfield></field>
+<field id="101"><indicator id="1">0</indicator><indicator id="2"> </indicator><subfield id="a">rus</subfield></field>
+<field id="102"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">RU</subfield></field>
+<field id="200"><indicator id="1">1</indicator><indicator id="2"> </indicator><subfield id="a">Автоформализация фрагментов Java-кода для UML-моделей</subfield><subfield id="f">Д.А. Лукашев, В.П. Котляров, Ю. В. Юсупов</subfield></field>
+<field id="225"><indicator id="1">1</indicator><indicator id="2"> </indicator><subfield id="a">Конференция &quot;Технологии Microsoft в теории и практике программирования&quot;</subfield></field>
+<field id="320"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="9">572</subfield><subfield id="a">Библиогр.: с. 236</subfield></field>
+<field id="330"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">Рассмотрены проблемы формализации исходного кода Java в UML-диаграммах. Описан трансформации кодового фрагмента на языке Java в абстрагированное представление в нота­ции базовых протоколов с использованием инструмента Klocwork и системы специализиро­ванных чекеров</subfield></field>
+<field id="330"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">In the article stated the problems of Java code formalization in UML models. Described process of transformation Java code in Basic protocols using Klocwork and special checker module</subfield></field>
+<field id="461"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="1"><field id="001">RU\SPSTU\ser\\111514</field></subfield><subfield id="1"><field id="011"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">1994-2354</subfield></field></subfield><subfield id="1"><field id="101"><indicator id="1">0</indicator><indicator id="2"> </indicator><subfield id="a">rus</subfield></field></subfield><subfield id="1"><field id="102"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">RU</subfield></field></subfield><subfield id="1"><field id="200"><indicator id="1">1</indicator><indicator id="2"> </indicator><subfield id="a">Научно-технические ведомости СПбГПУ</subfield></field></subfield><subfield id="1"><field id="210"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">СПб</subfield><subfield id="c">Изд-во СПбГПУ</subfield><subfield id="d">1995-</subfield></field></subfield><subfield id="1"><field id="305"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">Выходит с 1995 г.</subfield></field></subfield><subfield id="1"><field id="311"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">Заглавие: 1995-2002 гг. - Научно-технические ведомости СПбГТУ; №4 2003-№2 2004 - Научно-технические ведомости; №3 2004-№4 2005 - Научно-технические ведомости СПбГТУ; с Т.1 №6 2006 - Научно-технические ведомости СПбГПУ. </subfield></field></subfield><subfield id="1"><field id="311"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">В надзаг.: 1995-№2 1996 - Государственный комитет РФ по высшему образованию; №3 1996-№2 1999 - Министерство общего и профессионального образования РФ; №3 1999-№2 2004 - Министерство образования РФ; №3 2004-№1 2005 - Министерство образования и науки РФ; с №2 2005 - Федеральное агентство по образованию</subfield></field></subfield><subfield id="1"><field id="311"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">Изд-во: 1995-№1 1996 - Изд.-полиграф. центр СПбГТУ; №2 1996-№1 2002 - изд-во СПбГТУ; с №2 2002 - изд-во СПбГПУ</subfield></field></subfield><subfield id="1"><field id="531"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">СПбГПУ</subfield></field></subfield><subfield id="1"><field id="675"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">62(051)</subfield><subfield id="v">3</subfield></field></subfield><subfield id="1"><field id="686"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="2">rubbk</subfield><subfield id="a">74.584(2)738.1</subfield></field></subfield><subfield id="1"><field id="710"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">Санкт-Петербургский  государственный политехнический университет</subfield><subfield id="2">spstush</subfield><subfield id="3">RU\SPSTU\sub\\106397</subfield></field></subfield></field>
+<field id="463"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="1"><field id="001">RU\SPSTU\ser\\262527</field></subfield><subfield id="1"><field id="101"><indicator id="1">0</indicator><indicator id="2"> </indicator><subfield id="a">rus</subfield></field></subfield><subfield id="1"><field id="102"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">RU</subfield></field></subfield><subfield id="1"><field id="200"><indicator id="1">1</indicator><indicator id="2"> </indicator><subfield id="a">№3(80) : Информатика. Телекоммуникации. Управление</subfield><subfield id="v">С. 232-236 : ил</subfield></field></subfield><subfield id="1"><field id="210"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="d">2009</subfield></field></subfield></field>
+<field id="610"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">формализация</subfield><subfield id="a">чекер</subfield><subfield id="a">базовый протокол</subfield></field>
+<field id="700"><indicator id="1"> </indicator><indicator id="2">1</indicator><subfield id="a">Лукашев</subfield><subfield id="b">Д.А.</subfield><subfield id="g">Дмитирий Андреевич</subfield><subfield id="2">19013582</subfield><subfield id="3">ru\spstu\\authors\\2196</subfield><subfield id="p">СПбГПУ</subfield></field>
+<field id="701"><indicator id="1"> </indicator><indicator id="2">1</indicator><subfield id="a">Котляров</subfield><subfield id="b">В.П.</subfield><subfield id="f">1944-</subfield><subfield id="g">Всеволод Павлович</subfield><subfield id="2">19013582</subfield><subfield id="3">ru\spstu\\authors\\1619</subfield><subfield id="p">СПбГПУ</subfield></field>
+<field id="701"><indicator id="1"> </indicator><indicator id="2">1</indicator><subfield id="a">Юсупов</subfield><subfield id="b">Ю.В.</subfield><subfield id="g">Юрий Вадимович</subfield><subfield id="2">19013582</subfield><subfield id="3">ru\spstu\\authors\\2584</subfield><subfield id="p">СПбГПУ</subfield></field>
+<field id="801"><indicator id="1"> </indicator><indicator id="2">2</indicator><subfield id="a">RU</subfield><subfield id="b">19013582</subfield><subfield id="c">20091228</subfield><subfield id="g">RCR</subfield></field>
+<field id="998"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">АвфрJa000000Лука</subfield></field>
+</record>
+"""
 @transaction.commit_on_success
 def indexing(request):
+    doc_tree = etree.XML(xml_doc)
+    doc_tree = xslt_transformer(doc_tree)
+    print etree.tostring(doc_tree, encoding='utf-8', pretty_print=True)
+    return HttpResponse(u'Ok')
+
     offset = 0
     package_count = 29
     recs = []
@@ -142,11 +190,10 @@ def indexing(request):
 
 
     for rec in recs:
-#        print rec.content
+    #        print rec.content
         doc = etree.XML(rec.content)
 
         result_tree = xslt_transformer(doc)
         print etree.tostring(result_tree, encoding='utf-8')
 
     return HttpResponse(unicode(len(records)))
-
