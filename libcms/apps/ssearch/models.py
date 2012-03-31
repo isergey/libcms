@@ -66,7 +66,7 @@ class ZippedTextField(models.TextField):
 
     def to_python(self, value):
         try:
-            value = zlib.decompress(value)
+            value = zlib.decompress(value,-15)
             value = value.decode('utf-8')
         except zlib.error:
             pass
@@ -90,11 +90,15 @@ class ZippedTextField(models.TextField):
 
 class Record(models.Model):
     source = models.ForeignKey(Source, null=True, blank=True)
-    gen_id = models.CharField(max_length=32, unique=True, db_index=True)
+    gen_id = models.IntegerField(db_index=True)
     record_id = models.CharField(max_length=32, db_index=True)
     scheme = models.CharField(max_length=16, choices=RECORD_SCHEMES, default='rusmarc', verbose_name=u"Scheme")
     content = ZippedTextField(verbose_name=u'Xml content')
     add_date = models.DateTimeField(auto_now_add=True, db_index=True)
-
+    update_date = models.DateTimeField(auto_now_add=True, db_index=True)
+    deleted= models.BooleanField()
+    hash = models.TextField(max_length=16)
     def __unicode__(self):
         return self.record_id
+    class Meta:
+        db_table = 'sc2'

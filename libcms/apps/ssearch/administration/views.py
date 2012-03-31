@@ -173,6 +173,13 @@ xml_doc = u"""\
 """
 @transaction.commit_on_success
 def indexing(request):
+#    import zlib
+#
+#    open('zip_string.bin','w').write(zlib.compress('абвгддддддддддд'))
+#    print zlib.decompress(open('zip_string.bin','r').read())
+#    record = Record.objects.using('records').get(id=101000)
+#    print record.content
+#    doc_tree = etree.XML(record.content)
     doc_tree = etree.XML(xml_doc)
     doc_tree = xslt_transformer(doc_tree)
     print etree.tostring(doc_tree, encoding='utf-8', pretty_print=True)
