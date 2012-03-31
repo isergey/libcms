@@ -1,4 +1,0 @@
-All strings must be XML compatible: Unicode or ASCII, no NULL bytes or control characters
-All strings must be XML compatible: Unicode or ASCII, no NULL bytes or control characters
-All strings must be XML compatible: Unicode or ASCII, no NULL bytes or control characters
-All strings must be XML compatible: Unicode or ASCII, no NULL bytes or control characters
