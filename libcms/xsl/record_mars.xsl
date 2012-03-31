@@ -1,4 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+Принцип именования полей:
+название-поля_тип, где
+    название поля - название поля, например local-number. В название не должно содержаться символ "_", так как он является
+                    разделителем.
+    тип - тип поля, тип содержимого, например local-nuber_s
+    "_" - разделитель типа и название.
+
+Типы:
+s - неделимая строка
+t - текст
+dt - дата
+
+Свойства типов:
+s - для сортировки; Сортируемое поле в документе, должно быть уникально по названию. Если встретится несколько полей, с
+    одинаковым названием, то в индекс попадет только первое.
+f - для фасетизации
+
+Свойства типов не комбинируются! Т.е. можно либо сортировать, либо фасетизировать
+
+Таким образом:
+
+ss - строка для сортировки
+ts - текст для сортировки
+dts - дата для сортировки
+
+
+
+sf - фасет строки
+tf - фасет текста
+dtf - фасет даты
+
+
+
+-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="xml"/>
 
@@ -695,33 +730,229 @@
             <xsl:value-of select="$f105_a_pos_7"/>
         </field>
     </xsl:if>
+
+    <xsl:variable name="f110_a" select="field[@id='110']/subfield[@id='a']"/>
+    <xsl:variable name="f110_a_pos_3" select="substring($f110_a, 4, 1)"/>
+    <xsl:variable name="f110_a_pos_4" select="substring($f110_a, 5, 1)"/>
+    <xsl:variable name="f110_a_pos_5" select="substring($f110_a, 6, 1)"/>
+    <xsl:variable name="f110_a_pos_6" select="substring($f110_a, 7, 1)"/>
+
+    <xsl:if test="f110_a_pos_3 and f110_a_pos_3 !=' ' and f110_a_pos_3 !='|'">
+        <field name="content-type_t">
+            <xsl:value-of select="f110_a_pos_3"/>
+        </field>
+    </xsl:if>
+    <xsl:if test="f110_a_pos_4 and f110_a_pos_4 !=' ' and f110_a_pos_4 !='|'">
+        <field name="content-type_t">
+            <xsl:value-of select="f110_a_pos_4"/>
+        </field>
+    </xsl:if>
+    <xsl:if test="f110_a_pos_5 and f110_a_pos_5 !=' ' and f110_a_pos_5 !='|'">
+        <field name="content-type_t">
+            <xsl:value-of select="f110_a_pos_5"/>
+        </field>
+    </xsl:if>
+    <xsl:if test="f110_a_pos_6 and f110_a_pos_6 !=' ' and f110_a_pos_6 !='|'">
+        <field name="content-type_t">
+            <xsl:value-of select="f110_a_pos_6"/>
+        </field>
+    </xsl:if>
+
 </xsl:template>
 
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- Сортировка -->
-
 <xsl:template name="Title-sort">
-    <xsl:for-each select="field[@id='200']/subfield[@id='a'][1]">
-        <field name="title_cs">
-            <xsl:value-of select="."/>
-        </field>
+    <xsl:for-each select="field[@id='200']">
+        <!--
+        2001#$a{. $h, $i}
+        2001#$i
+        -->
+        <xsl:if test="(subfield[@id='a'] or subfield[@id='i']) and indicator[@id='1'][1] = '1'">
+            <field name="title_ss">
+                <xsl:for-each select="subfield">
+                    <xsl:choose>
+                        <xsl:when test="@id='a'">
+                            <xsl:value-of select="."/>
+                        </xsl:when>
+                        <xsl:when test="@id='h'">
+                            <xsl:text>.</xsl:text>
+                            <xsl:value-of select="."/>
+                        </xsl:when>
+                        <xsl:when test="@id='i'">
+                            <xsl:text>,</xsl:text>
+                            <xsl:value-of select="."/>
+                        </xsl:when>
+                    </xsl:choose>
+                </xsl:for-each>
+            </field>
+        </xsl:if>
     </xsl:for-each>
+    <xsl:for-each select="field[@id='225']">
+        <!--
+        2250#$a{. $h, $i}
+        2251#$a{. $h, $i}
+        2251#$i
+        -->
+        <xsl:if test="subfield[@id='a'] and indicator[@id='1'][1] = '1' or indicator[@id='0'][1]">
+            <field name="title_ss">
+                <xsl:value-of select="subfield[@id='a']"/>
+                <xsl:for-each select="subfield[@id='h']">
+                    <xsl:text>.</xsl:text>
+                    <xsl:value-of select="."/>
+                    <xsl:if test="@id='i'">
+                        <xsl:text>,</xsl:text>
+                        <xsl:value-of select="subfield[@id='i']"/>
+                    </xsl:if>
+
+                </xsl:for-each>
+            </field>
+        </xsl:if>
+        <!--
+        2252#$i
+        -->
+        <xsl:if test="indicator[@id='1'][1] = '2'">
+            <xsl:for-each select="subfield[@id='i']">
+                <field name="title_ss">
+                    <xsl:value-of select="."/>
+                </field>
+            </xsl:for-each>
+        </xsl:if>
+    </xsl:for-each>
+
+    <xsl:choose>
+        <!--
+        Если аналитический уровень, то не индексируем 46* поля
+        -->
+        <xsl:when test="leader/leader07 ='a'">
+            <xsl:for-each
+                    select="field[(@id &gt; '399' and @id &lt; '460') or (@id &gt; '469' and @id &lt; '500')]/subfield[@id=1]">
+                <xsl:call-template name="Title"/>
+            </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:for-each select="field[@id &gt; '399' and @id &lt; '500']/subfield[@id=1]">
+                <xsl:call-template name="Title-sort"/>
+            </xsl:for-each>
+        </xsl:otherwise>
+    </xsl:choose>
 </xsl:template>
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+
 <xsl:template name="Author-sort">
-    <xsl:for-each select="field[@id='700']/subfield[@id='a'][1]">
-        <field name="author_cs">
-            <xsl:value-of select="."/>
-        </field>
+    <xsl:for-each select="field[@id &gt; '699' and @id &lt; '710']">
+        <xsl:variable name="sf_a" select="subfield[@id='a'][1]"/>
+        <xsl:choose>
+            <xsl:when test="$sf_a and indicator[@id='1']=' ' and indicator[@id='2']='1'">
+                <xsl:for-each select="subfield[@id='b'][1]">
+                    <field name="author_ss">
+                        <xsl:value-of select="$sf_a"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:if test="subfield[@id='c'][1]">
+                            <xsl:text> </xsl:text>
+                            <xsl:value-of select="subfield[@id='c'][1]"/>
+                        </xsl:if>
+                    </field>
+                </xsl:for-each>
+            </xsl:when>
+            <!--
+                70-#0$a $d ($c)
+            -->
+            <xsl:when test="$sf_a and indicator[@id='1']=' ' and indicator[@id='2']='0'">
+                <field name="author_ss">
+                    <xsl:for-each select="subfield[@id='d'][1]">
+                        <xsl:value-of select="$sf_a"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="subfield[@id='c'][1]"/>
+                    </xsl:for-each>
+                </field>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:for-each>
+
+    <xsl:for-each select="field[@id &gt; '709' and @id &lt; '720']">
+        <xsl:variable name="sf_a" select="subfield[@id='a'][1]"/>
+        <xsl:variable name="sf_c" select="subfield[@id='a'][1]"/>
+
+        <xsl:choose>
+            <!--
+                71-00$a, $g, $h ($c){. $b ($c)}
+            -->
+            <xsl:when test="$sf_a and indicator[@id='1']='0' and indicator[@id='2']='0'">
+                <field name="author_ss">
+                    <xsl:for-each select="subfield[@id='g'][1]">
+                        <xsl:value-of select="$sf_a"/>
+                        <xsl:text>,</xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:text>,</xsl:text>
+                        <xsl:value-of select="subfield[@id='h'][1]"/>
+                        <xsl:text> (</xsl:text>
+                        <xsl:value-of select="$sf_c"/>
+                        <xsl:text>)</xsl:text>
+                        <xsl:for-each select="subfield[@id='g']">
+                            <xsl:text>.</xsl:text>
+                            <xsl:value-of select="."/>
+                            <xsl:text> (</xsl:text>
+                            <xsl:value-of select="$sf_c"/>
+                            <xsl:text>)</xsl:text>
+                        </xsl:for-each>
+                    </xsl:for-each>
+                </field>
+            </xsl:when>
+            <!--
+                71-01$a ($c){. $b ($c) ($d; $f; $e)}
+                71-02$a ($c){. $b ($c) ($d; $f; $e)}
+            -->
+            <xsl:when test="$sf_a and indicator[@id='1']='0' and (indicator[@id='2']='1' or indicator[@id='2']='2')">
+                <field name="author_ss">
+                    <xsl:value-of select="$sf_a"/>
+                    <xsl:text> (</xsl:text>
+                    <xsl:value-of select="$sf_c"/>
+                    <xsl:text>)</xsl:text>
+                    <xsl:for-each select="subfield[@id='b']">
+                        <xsl:text>.</xsl:text>
+
+                        <xsl:value-of select="."/>
+                        <xsl:text> (</xsl:text>
+                        <xsl:value-of select="$sf_c"/>
+                        <xsl:text>)</xsl:text>
+
+                        <xsl:if test="subfield[@id='d']">
+                            <xsl:text> (</xsl:text>
+                            <xsl:value-of select="subfield[@id='d']"/>
+                            <xsl:if test="subfield[@id='f']">
+                                <xsl:text>;</xsl:text>
+                                <xsl:value-of select="subfield[@id='d']"/>
+                            </xsl:if>
+                            <xsl:if test="subfield[@id='e']">
+                                <xsl:text>;</xsl:text>
+                                <xsl:value-of select="subfield[@id='d']"/>
+                            </xsl:if>
+
+                            <xsl:text>)</xsl:text>
+                        </xsl:if>
+
+                    </xsl:for-each>
+
+                </field>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:for-each>
+    <xsl:for-each select="field[@id &gt; '399' and @id &lt; '500']/subfield[@id=1]">
+        <xsl:call-template name="Author-sort"/>
     </xsl:for-each>
 </xsl:template>
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Code-language-sort">
     <xsl:for-each select="field[@id='101']/subfield[@id='a'][1]">
-        <field name="code-language_cs">
+        <field name="code-language_ss">
             <xsl:value-of select="."/>
         </field>
     </xsl:for-each>
@@ -732,7 +963,7 @@
     <xsl:choose>
         <xsl:when test="field[@id='463']/subfield[@id='1']/field[@id='210']/subfield[@id='d']">
             <xsl:for-each select="field[@id='463']/subfield[@id='1']/field[@id='210']/subfield[@id='d'][1]">
-                <field name="date-of-publication_tdts">
+                <field name="date-of-publication_dts">
                     <xsl:value-of select="."/>
                 </field>
             </xsl:for-each>
@@ -740,7 +971,7 @@
         <!-- Иначе, извлекаем из основного подполя-->
         <xsl:otherwise>
             <xsl:for-each select="field[@id='210']/subfield[@id='d'][1]">
-                <field name="date-of-publication_tdts">
+                <field name="date-of-publication_dts">
                     <xsl:value-of select="."/>
                 </field>
             </xsl:for-each>
@@ -755,19 +986,119 @@
 <xsl:template name="Author-facet">
     <xsl:for-each select="field[@id &gt; '699' and @id &lt; '710']">
         <xsl:variable name="sf_a" select="subfield[@id='a'][1]"/>
-            <xsl:if test="$sf_a and indicator[@id='1']=' ' and indicator[@id='2']='1'">
-                <field name="author_s_fs">
-                    <xsl:value-of select="$sf_a"/>
-                    <xsl:for-each select="subfield[@id='b'][1]">
+        <xsl:choose>
+            <!--
+                70-#1$a, $g ($c)
+                70-#1$a, $b ($c)
+            -->
+            <xsl:when test="$sf_a and indicator[@id='1']=' ' and indicator[@id='2']='1'">
+                <!--<xsl:for-each select="subfield[@id='g'][1]">
+                    <field name="author_sf">
+                        <xsl:value-of select="$sf_a"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:if test="subfield[@id='c'][1]">
                             <xsl:text> </xsl:text>
-                            <xsl:value-of select="."/>
-                            <xsl:if test="subfield[@id='c'][1]">
-                                <xsl:text> </xsl:text>
-                                <xsl:value-of select="subfield[@id='c'][1]"/>
-                            </xsl:if>
+                            <xsl:value-of select="subfield[@id='c'][1]"/>
+                        </xsl:if>
+                    </field>
+                </xsl:for-each>-->
+                <xsl:for-each select="subfield[@id='b'][1]">
+                    <field name="author_sf">
+                        <xsl:value-of select="$sf_a"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:if test="subfield[@id='c'][1]">
+                            <xsl:text> </xsl:text>
+                            <xsl:value-of select="subfield[@id='c'][1]"/>
+                        </xsl:if>
+                    </field>
+                </xsl:for-each>
+            </xsl:when>
+            <!--
+                70-#0$a $d ($c)
+            -->
+            <xsl:when test="$sf_a and indicator[@id='1']=' ' and indicator[@id='2']='0'">
+                <field name="author_sf">
+                    <xsl:for-each select="subfield[@id='d'][1]">
+                        <xsl:value-of select="$sf_a"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="subfield[@id='c'][1]"/>
                     </xsl:for-each>
                 </field>
-            </xsl:if>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:for-each>
+
+    <xsl:for-each select="field[@id &gt; '709' and @id &lt; '720']">
+        <xsl:variable name="sf_a" select="subfield[@id='a'][1]"/>
+        <xsl:variable name="sf_c" select="subfield[@id='a'][1]"/>
+
+        <xsl:choose>
+            <!--
+                71-00$a, $g, $h ($c){. $b ($c)}
+            -->
+            <xsl:when test="$sf_a and indicator[@id='1']='0' and indicator[@id='2']='0'">
+                <field name="author_sf">
+                    <xsl:for-each select="subfield[@id='g'][1]">
+                        <xsl:value-of select="$sf_a"/>
+                        <xsl:text>,</xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:text>,</xsl:text>
+                        <xsl:value-of select="subfield[@id='h'][1]"/>
+                        <xsl:text> (</xsl:text>
+                        <xsl:value-of select="$sf_c"/>
+                        <xsl:text>)</xsl:text>
+                        <xsl:for-each select="subfield[@id='g']">
+                            <xsl:text>.</xsl:text>
+                            <xsl:value-of select="."/>
+                            <xsl:text> (</xsl:text>
+                            <xsl:value-of select="$sf_c"/>
+                            <xsl:text>)</xsl:text>
+                        </xsl:for-each>
+                    </xsl:for-each>
+                </field>
+            </xsl:when>
+            <!--
+                71-01$a ($c){. $b ($c) ($d; $f; $e)}
+                71-02$a ($c){. $b ($c) ($d; $f; $e)}
+            -->
+            <xsl:when test="$sf_a and indicator[@id='1']='0' and (indicator[@id='2']='1' or indicator[@id='2']='2')">
+                <field name="author_sf">
+                    <xsl:value-of select="$sf_a"/>
+                    <xsl:text> (</xsl:text>
+                    <xsl:value-of select="$sf_c"/>
+                    <xsl:text>)</xsl:text>
+                    <xsl:for-each select="subfield[@id='b']">
+                        <xsl:text>.</xsl:text>
+
+                        <xsl:value-of select="."/>
+                        <xsl:text> (</xsl:text>
+                        <xsl:value-of select="$sf_c"/>
+                        <xsl:text>)</xsl:text>
+
+                        <xsl:if test="subfield[@id='d']">
+                            <xsl:text> (</xsl:text>
+                            <xsl:value-of select="subfield[@id='d']"/>
+                            <xsl:if test="subfield[@id='f']">
+                                <xsl:text>;</xsl:text>
+                                <xsl:value-of select="subfield[@id='d']"/>
+                            </xsl:if>
+                            <xsl:if test="subfield[@id='e']">
+                                <xsl:text>;</xsl:text>
+                                <xsl:value-of select="subfield[@id='d']"/>
+                            </xsl:if>
+
+                            <xsl:text>)</xsl:text>
+                        </xsl:if>
+
+                    </xsl:for-each>
+
+                </field>
+            </xsl:when>
+        </xsl:choose>
     </xsl:for-each>
     <xsl:for-each select="field[@id &gt; '399' and @id &lt; '500']/subfield[@id=1]">
         <xsl:call-template name="Author-facet"/>
@@ -790,7 +1121,7 @@
     <xsl:for-each select="field[@id='600']">
         <xsl:if test="indicator[@id ='1'][1]= ' '">
             <xsl:for-each select="subfield[@id='a']">
-                <field name="subject-heading_s_fs">
+                <field name="subject-heading_sf">
                     <xsl:value-of select="."/>
                 </field>
             </xsl:for-each>
@@ -798,7 +1129,7 @@
     </xsl:for-each>
 
     <xsl:for-each select="field[@id='601']/subfield[@id='a']">
-        <field name="subject-heading_s_fs">
+        <field name="subject-heading_sf">
             <xsl:value-of select="."/>
         </field>
     </xsl:for-each>
@@ -806,7 +1137,7 @@
     <xsl:for-each select="field[@id='602' or @id='604' or @id='605' or @id='607' or @id='608']">
         <xsl:if test="indicator[@id ='1'][1] = ' ' and indicator[@id ='2'][1]= ' '">
             <xsl:for-each select="subfield[@id='a']">
-                <field name="subject-heading_s_fs">
+                <field name="subject-heading_sf">
                     <xsl:value-of select="."/>
                 </field>
             </xsl:for-each>
@@ -815,7 +1146,7 @@
     <xsl:for-each select="field[@id='606' or @id='610']">
         <xsl:if test="indicator[@id ='2'][1]= ' '">
             <xsl:for-each select="subfield[@id='a']">
-                <field name="subject-heading_s_fs">
+                <field name="subject-heading_sf">
                     <xsl:value-of select="."/>
                 </field>
             </xsl:for-each>
@@ -828,7 +1159,7 @@
     <xsl:choose>
         <xsl:when test="field[@id='463']/subfield[@id='1']/field[@id='210']/subfield[@id='d']">
             <xsl:for-each select="field[@id='463']/subfield[@id='1']/field[@id='210']/subfield[@id='d'][1]">
-                <field name="date-of-publication_tdt_fs">
+                <field name="date-of-publication_dtf">
                     <xsl:value-of select="."/>
                 </field>
             </xsl:for-each>
@@ -836,7 +1167,7 @@
         <!-- Иначе, извлекаем из основного подполя-->
         <xsl:otherwise>
             <xsl:for-each select="field[@id='210']/subfield[@id='d'][1]">
-                <field name="date-of-publication_tdt_fs">
+                <field name="date-of-publication_dtf">
                     <xsl:value-of select="."/>
                 </field>
             </xsl:for-each>

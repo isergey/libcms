@@ -169,6 +169,7 @@ xml_doc = u"""\
 <field id="701"><indicator id="1"> </indicator><indicator id="2">1</indicator><subfield id="a">Юсупов</subfield><subfield id="b">Ю.В.</subfield><subfield id="g">Юрий Вадимович</subfield><subfield id="2">19013582</subfield><subfield id="3">ru\spstu\\authors\\2584</subfield><subfield id="p">СПбГПУ</subfield></field>
 <field id="801"><indicator id="1"> </indicator><indicator id="2">2</indicator><subfield id="a">RU</subfield><subfield id="b">19013582</subfield><subfield id="c">20091228</subfield><subfield id="g">RCR</subfield></field>
 <field id="998"><indicator id="1"> </indicator><indicator id="2"> </indicator><subfield id="a">АвфрJa000000Лука</subfield></field>
+<gen_id>ewfwef</gen_id>
 </record>
 """
 @transaction.commit_on_success
@@ -177,30 +178,82 @@ def indexing(request):
 #
 #    open('zip_string.bin','w').write(zlib.compress('абвгддддддддддд'))
 #    print zlib.decompress(open('zip_string.bin','r').read())
-#    record = Record.objects.using('records').get(id=101000)
-#    print record.content
+#    record = Record.objects.using('records').get(id=40000)
 #    doc_tree = etree.XML(record.content)
-    doc_tree = etree.XML(xml_doc)
-    doc_tree = xslt_transformer(doc_tree)
-    print etree.tostring(doc_tree, encoding='utf-8', pretty_print=True)
+#    print etree.tostring(doc_tree, encoding='utf-8', pretty_print=True)
+#    doc_tree = etree.XML(xml_doc)
+#    doc_tree = xslt_transformer(doc_tree)
+#    print etree.tostring(doc_tree, encoding='utf-8', pretty_print=True)
+    from time import time as t
+    solr = sunburnt.SolrInterface('http://localhost:8983/solr')
+    s = t()
+    docs = list()
+    ss = t()
+    records =  Record.objects.using('records').all().iterator()
+#    for record in Record.objects.using('records').filter(id__gt=0, id__lt=30000).iterator():
+    for record in records:
+        doc_tree = etree.XML(record.content)
+        doc_tree = xslt_transformer(doc_tree)
+        doc = doc_tree_to_dict(doc_tree)
+        docs.append(doc)
+        if len(docs) > 200:
+            sss = t()
+            solr.add(docs)
+            print 'add ', t() - ss
+            ss = t()
+            docs = list()
+
+    if docs:
+        solr.add(docs)
+
+    solr.commit()
+    print 'time', t() - s
     return HttpResponse(u'Ok')
 
-    offset = 0
-    package_count = 29
-    recs = []
 
-    records = list(Record.objects.all()[offset:package_count])
-    while len(records):
-        recs += records
-        offset += package_count
-        records = list(Record.objects.all()[offset:offset + package_count])
+from ..common import resolve_date
+# распознование типа
+resolvers = {
+    'dt': resolve_date,
+    'dts': resolve_date,
+    'dtf': resolve_date,
+}
+# тип поля, которое может быть только одно в документе
+origin_types = ['ts', 'ss', 'dts']
 
 
-    for rec in recs:
-    #        print rec.content
-        doc = etree.XML(rec.content)
+def doc_tree_to_dict(doc_tree):
+    doc_dict = {}
+    for element in doc_tree.getroot().getchildren():
+        attrib = element.attrib['name']
+        value = element.text
 
-        result_tree = xslt_transformer(doc)
-        print etree.tostring(result_tree, encoding='utf-8')
+        #если поле пустое, пропускаем
+        if not value: continue
 
-    return HttpResponse(unicode(len(records)))
+        value_type = attrib.split('_')[-1]
+
+        if value_type in resolvers:
+            try:
+                value = resolvers[value_type](value)
+                if type(value) == tuple or type(value) == list and value:
+                    value = value[0]
+            except ValueError:
+                # если значение не соответвует объявленному типу, то пропускаем
+                continue
+
+
+        old_value = doc_dict.get(attrib, None)
+
+        # если неповторяемое поле было установленно ранее, пропускаем новое
+        if old_value and value_type in origin_types:
+            continue
+
+        if not old_value:
+            doc_dict[attrib] = value
+        elif type(old_value) != list:
+            doc_dict[attrib] = [doc_dict[attrib], value]
+        else:
+            doc_dict[attrib].append(value)
+
+    return doc_dict
