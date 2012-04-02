@@ -172,6 +172,7 @@ xml_doc = u"""\
 <gen_id>ewfwef</gen_id>
 </record>
 """
+
 @transaction.commit_on_success
 def indexing(request):
 #    import zlib

@@ -1,0 +1,83 @@
+{% extends 'frontend_base.html' %}
+{% load pagination_tag %}
+{% load hash %}
+{% load ssearch_tags %}
+{% block title %}Поиск по каталогу{% endblock %}
+{% block content %}
+    <div class="serach_form">
+        <form class="well form-search" method="GET">
+            <select name="attr" style="font-weight: bold; width: 20%;">
+                <option value="author" {% if request.GET.attr == 'author' %}selected="selected"{% endif %}>Автор:</option>
+                <option value="title" {% if request.GET.attr == 'title' %}selected="selected"{% endif %}>Заглавие:</option>
+                <option value="subject-heading" {% if request.GET.attr == 'subject-heading' %}selected="selected"{% endif %}>Тематика:</option>
+                <option value="date-of-publication" {% if request.GET.attr == 'date-of-publication' %}selected="selected"{% endif %}>Год публикации:</option>
+                <option value="isbn" {% if request.GET.attr == 'isbn' %}selected="selected"{% endif %}>ISBN:</option>
+                <option value="issn" {% if request.GET.attr == 'issn' %}selected="selected"{% endif %}>ISSN:</option>
+                <option value="anywhere" {% if request.GET.attr == 'anywhere' %}selected="selected"{% endif %}>Везде:</option>
+            </select>
+            <input type="text" class="search-query" name="q" style="width: 65%" value="{{ request.GET.q }}"/>
+            <button type="submit" class="btn btn-success" style="width: 10%">Поиск</button>
+        </form>
+    </div>
+    {% if docs %}
+        <style type="text/css">
+            .results .title{
+                /*font-weight: bold;*/
+                font-size: 18px;
+            }
+            .results ul li{
+                margin-bottom: 10px;
+            }
+        </style>
+
+        <div class="results span8">
+        <div class="row">
+            <ul style="list-style: none">
+                {% for doc in docs %}
+                <li>
+                    <div class="title">{{ doc.title.0 }}</div>
+                    <div class="author">
+                        {% for author in doc.author %}
+                            {{ author }}
+                        {% endfor %}
+                    </div>
+                    <div class="subjects">
+                        {% for subject in doc|hash:'subject-heading' %}
+                            <span class="label label-info">{{ subject }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="info">
+                        {% for lang in doc|hash:'code-language' %}
+                            {{ lang }}
+                        {% endfor %}
+                        {% for dop in doc|hash:'date-of-publication' %}
+                            {{ dop|date:"Y" }}
+                        {% endfor %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        </div>
+        <div class="span2">
+            <div class="row">
+                <ul>
+                    {% for facet in facets %}
+                        <li>{{ facet }}
+                            <ul>
+                                {% for value in facets|hash:facet %}
+                                    {% if facet == 'date-of-publication' %}
+                                        <li>{{ value.0|date_from_isostring|date:"Y" }} ({{ value.1 }})</li>
+                                    {% else %}
+                                        <li>{{ value.0 }} ({{ value.1 }})</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% admin_pagination results_page %}
+    {% endif %}
+{% endblock %}
