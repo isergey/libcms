@@ -48,4 +48,30 @@ def add_get(parser, token):
         s = pair.split('=', 1)
         values[s[0]] = parser.compile_filter(s[1])
     return AddGetParameter(values)
-  
+
+
+
+class AddGetParameterAppend(Node):
+    def __init__(self, values):
+        self.values = values
+
+    def render(self, context):
+        req = resolve_variable('request', context)
+        params = req.GET.copy()
+        for key, value in self.values.items():
+            old_value = params.getlist(key, None)
+            if not old_value:
+                params[key] = value
+            else:
+                old_value.append(value.resolve(context))
+        return '?%s' %  params.urlencode()
+
+
+@register.tag
+def add_get_append(parser, token):
+    pairs = token.split_contents()[1:]
+    values = {}
+    for pair in pairs:
+        s = pair.split('=', 1)
+        values[s[0]] = parser.compile_filter(s[1])
+    return AddGetParameterAppend(values)

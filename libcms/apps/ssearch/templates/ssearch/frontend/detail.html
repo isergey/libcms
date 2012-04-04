@@ -1,0 +1,40 @@
+{% extends 'frontend_base.html' %}
+{% load hash %}
+{% load ssearch_tags %}
+{% block title %}детальная информация{% endblock %}
+{% block content %}
+    <style type="text/css">
+        .marc_dump span.fieldlabel, span.subfieldlabel {
+            font-family: monospace;
+            color: blue;
+        }
+
+        .marc_dump span.data, span.indicator {
+            font-family: monospace;
+        }
+
+        .marc_dump span.label {
+            font-family: monospace;
+        }
+
+    </style>
+    <ul class="breadcrumb">
+
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url ssearch:frontend:index %}">Поиск</a> <span class="divider">/</span></li>
+        {% if request.GET.back %}
+            <li><a href="{{ request.GET.back }}">Результаты поиска</a> <span class="divider">/</span></li>
+        {% endif %}
+        <li class="active">Детальная информация</li>
+
+    </ul>
+    {{ marc_dump|safe }}
+    <div class="holders">
+    <h3>Держатели</h3>
+        <ul>
+            {% for holder in doc.holders %}
+            <li>{{ holder }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

@@ -90,7 +90,7 @@ class ZippedTextField(models.TextField):
 
 class Record(models.Model):
     source = models.ForeignKey(Source, null=True, blank=True)
-    gen_id = models.IntegerField(db_index=True)
+    gen_id = models.CharField(max_length=32, unique=True)
     record_id = models.CharField(max_length=32, db_index=True)
     scheme = models.CharField(max_length=16, choices=RECORD_SCHEMES, default='rusmarc', verbose_name=u"Scheme")
     content = ZippedTextField(verbose_name=u'Xml content')
