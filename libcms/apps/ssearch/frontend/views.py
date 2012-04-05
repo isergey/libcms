@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+import hashlib
 import datetime
 from lxml import etree
 import sunburnt
+from django.utils.translation import get_language
+from django.core.cache import cache
 from django.shortcuts import render, HttpResponse, get_object_or_404, Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import  QueryDict
@@ -15,8 +18,8 @@ xslt_marc_dump_transformer = etree.XSLT(xslt_marc_dump)
 
 def index(request):
     q = request.GET.get('q', None)
-
-    if not q:
+    fq = request.GET.get('fq', None)
+    if not q and not fq:
         return init_search(request)
     else:
         return search(request)
@@ -30,29 +33,48 @@ def init_search(request):
 
 
 attr_map = {
-    'author': {
-        'attr':'author_t'
+    u'author': {
+        'attr': u'author_t'
     },
-    'title': {
-        'attr':'title_t'
+    u'title': {
+        'attr': u'title_t'
     },
-    'subject-heading': {
-        'attr':'subject-heading_t'
+    u'subject-heading': {
+        'attr': u'subject-heading_t'
     },
-    'date-of-publication': {
-        'attr':'date-of-publication_dt'
+    u'date-of-publication': {
+        'attr': u'date-of-publication_dt'
     },
-    'isbn': {
-        'attr':'isbn_t'
+    u'code-language':{
+        'attr': u'code-language_t'
     },
-    'issn': {
-        'attr':'issn_t'
+    u'isbn': {
+        'attr': u'isbn_t'
     },
-    'anywhere': {
-        'attr':'anywhere_t'
+    u'issn': {
+        'attr': u'issn_t'
     },
-    'content-type': {
-        'attr':'content-type_t'
+    u'anywhere': {
+        'attr': u'anywhere_t'
+    },
+    u'content-type': {
+        'attr': u'content-type_t'
+    },
+}
+
+
+sort_attr_map = {
+    u'author': {
+        'attr': u'author_ss',
+        'order': 'asc',
+    },
+    u'title': {
+        'attr': u'title_ss',
+        'order': 'asc',
+    },
+    u'date-of-publication': {
+        'attr': u'date-of-publication_dts',
+        'order': 'desc',
     },
 }
 
@@ -96,15 +118,19 @@ resolvers = {
     'dts': resolve_date,
     'dtf': resolve_date,
     }
+
+
 # тип поля, которое может быть только одно в документе
 origin_types = ['ts', 'ss', 'dts']
+
+class WrongSearchAttribute(Exception): pass
 
 def terms_constructor(attrs, values):
     terms = []
     for i, q in enumerate(values):
         attr = attr_map.get(attrs[i], None)
         if not attr:
-            return HttpResponse(u'Wrong search attribute')
+            raise WrongSearchAttribute()
         else:
             attr = attr['attr']
 
@@ -122,25 +148,43 @@ def terms_constructor(attrs, values):
         terms.append({attr: q})
     return terms
 
+
 def search(request):
     solr = sunburnt.SolrInterface('http://127.0.0.1:8983/solr/')
 
     qs = request.GET.getlist('q', [])
     attrs = request.GET.getlist('attr', [])
+    sort = request.GET.getlist('sort', [])
+
+    sort_attrs = []
+
+
+    for sort_attr in sort:
+        sort_attr = sort_attr_map.get(sort_attr, None)
+        if not sort_attr:
+            continue
+
+        sort_attrs.append({
+            'attr':sort_attr['attr'],
+            'order':sort_attr.get('order', 'asc')
+        })
+
 
     fqs = request.GET.getlist('fq', [])
     fattrs = request.GET.getlist('fattr', [])
 
     in_founded = request.GET.get('in_founded', None)
 
+
     terms = []
-    if in_founded:
-        terms += terms_constructor(fattrs, fqs)
+    try:
+        if in_founded or sort:
+            terms += terms_constructor(fattrs, fqs)
+        terms += terms_constructor(attrs, qs)
+    except WrongSearchAttribute:
+        return HttpResponse(u'Задан непрвильный атрибут поиска')
 
-    terms += terms_constructor(attrs, qs)
 
-
-    print terms
     query = None
 
     for term in terms:
@@ -151,8 +195,24 @@ def search(request):
 
 
 
-    facets = ['author_sf', 'content-type_t','date-of-publication_dtf', 'subject-heading_sf' ]
-    paginator = Paginator(solr.query(query).facet_by(field=facets, limit=20, mincount=1), 20) # Show 25 contacts per page
+    facet_fields = ['author_sf', 'content-type_t','date-of-publication_dtf', 'subject-heading_sf', 'code-language_t' ]
+    solr_searcher = solr.query(query)
+    for sort_attr in sort_attrs:
+        if sort_attr['order'] == 'desc':
+            solr_searcher = solr_searcher.sort_by(u'-' + sort_attr['attr'])
+        else:
+            solr_searcher = solr_searcher.sort_by( sort_attr['attr'])
+
+    # ключ хеша зависит от языка
+    terms_facet_hash = hashlib.md5(unicode(terms) + u'_facets_' + get_language()).hexdigest()
+
+
+    facets = cache.get(terms_facet_hash, None)
+    if not facets:
+        solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=20, mincount=1)
+
+
+    paginator = Paginator(solr_searcher, 20) # Show 25 contacts per page
 
     page = request.GET.get('page')
     try:
@@ -164,10 +224,19 @@ def search(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         results_page = paginator.page(paginator.num_pages)
 
+#    print dir(results_page.object_list)
+    search_statisics = {
+        'num_found': results_page.object_list.result.numFound,
+        'search_time': "%.3f" % (int(results_page.object_list.QTime) / 1000.0)
+    }
 
     docs = []
 
-    facets = replace_doc_attrs(results_page.object_list.facet_counts.facet_fields)
+    if not facets:
+        facets = replace_doc_attrs(results_page.object_list.facet_counts.facet_fields)
+        cache.set(terms_facet_hash,facets)
+
+
     for row in results_page.object_list:
         docs.append(replace_doc_attrs(row))
 
@@ -178,21 +247,17 @@ def search(request):
 
     records_dict = {}
     records =  list(Record.objects.using('records').filter(gen_id__in=doc_ids))
-    from time import time as t
-    s  = t()
+
     for record in records:
         records_dict[record.gen_id] = xml_doc_to_dict(record.content)
-    print t() - s
 
     for doc in docs:
         doc['record'] = records_dict.get(doc['id'])
 
     search_breadcumbs = []
     query_dict = None
+
     for term in terms:
-
-
-
         key = term.keys()[0]
         value = term[key]
         if type(value) == datetime.datetime:
@@ -204,26 +269,24 @@ def search(request):
         else:
             query_dict.getlist('q').append(value)
             query_dict.getlist('attr').append(new_key)
-#        print 'q', query_dict.getlist('q')
-#        print 'attr', query_dict.getlist('attr')
-#        print query_dict.urlencode()
         search_breadcumbs.append({
             'attr': new_key,
             'value': value,
             'href': query_dict.urlencode()
         })
 
-    print search_breadcumbs
+
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
         'results_page': results_page,
         'facets': facets,
-        'search_breadcumbs':search_breadcumbs
+        'search_breadcumbs':search_breadcumbs,
+        'sort':sort,
+        'search_statisics':search_statisics
     })
 
 
 def detail(request, gen_id):
-    print request
     try:
         record = Record.objects.using('records').get(gen_id=gen_id)
     except Record.DoesNotExist:

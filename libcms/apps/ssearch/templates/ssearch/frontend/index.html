@@ -39,7 +39,11 @@
             <br/>
             Искать в найденном: <input type="checkbox" name="in_founded"  {% if request.GET.in_founded %}checked="checked"{% endif %}>
         </form>
+
         {% if search_breadcumbs %}
+        <div>
+            Найдено документов: {{ search_statisics.num_found }}. Время выполнения запрос: {{ search_statisics.search_time }} сек.
+        </div>
         <div><b>Поиск</b>:
             {% for search_breadcumb in search_breadcumbs %}
                 {% if not forloop.last %}
@@ -65,38 +69,87 @@
             .results ul li{
                 margin-bottom: 10px;
             }
+        .sorting {
+            margin-left: 25px;
+        }
         </style>
 
         <div class="results span8">
-        <div class="row">
-            <ul style="list-style: none">
-                {% for doc in docs %}
-                <li>
-                    <div class="title"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">
-                        {{ doc.record.title.0 }}</a></div>
-                    <div class="author">
-                        {% for author in doc.record.author %}
-                            {{ author }} {% if not forloop.last %}; {% endif %}
+            <div class="row">
+                <div class="sorting">
+                    <form action="{{ request.path }}?{{ request.GET.urlencode }}" method="GET" class="form-inline">
+                    <label>Сортировать по:</label>
+                        {% for sort_attr in sort %}
+                        <select name="sort" style="width: auto;">
+                            <option value="0">релевантности</option>
+                            <option value="author" {% if sort_attr == 'author' %}selected="selected"{% endif %}>Автору</option>
+                            <option value="title" {% if sort_attr == 'title' %}selected="selected"{% endif %}>Заглавию</option>
+                            <option value="date-of-publication" {% if sort_attr == 'date-of-publication' %}selected="selected"{% endif %}>Году публикации</option>
+                        </select>
+                        {% empty %}
+                            <select name="sort" style="width: auto;">
+                                <option value="0">релевантности</option>
+                                <option value="author">Автору</option>
+                                <option value="title">Заглавию</option>
+                                <option value="date-of-publication">Году публикации</option>
+                            </select>
                         {% endfor %}
-                    </div>
-                    <div class="subjects">
-                        {% for subject in doc.record|hash:'subject-heading' %}
-                            <span class="label label-info">{{ subject }}</span>
+                        <button class="btn btn-small">Сортировать</button>
+                        {% for search_breadcumb in search_breadcumbs %}
+
+                            {% if forloop.last %}
+                                <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">
+                                <input type="hidden" name="q" value="{{ search_breadcumb.value }}">
+                            {% else %}
+                                <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">
+                                <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
+                            {% endif %}
                         {% endfor %}
-                    </div>
-                    <div class="info">
-                        {% for lang in doc.record|hash:'code-language' %}
-                            {{ lang }}
-                        {% endfor %}
-                        {% for dop in doc.record|hash:'date-of-publication' %}
-                            {{ dop }}
-                        {% endfor %}
-                    </div>
-                </li>
+
+                    </form>
                     <hr/>
-                {% endfor %}
-            </ul>
-        </div>
+                </div>
+
+                <ul style="list-style: none">
+                    {% for doc in docs %}
+                    <li>
+                        <div class="title"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">
+                            {{ doc.record.title.0 }}</a></div>
+                        <div class="author">
+                            {% for author in doc.record.author %}
+                                {{ author }} {% if not forloop.last %}; {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="subjects">
+                            {% for subject in doc.record|hash:'subject-heading' %}
+                                <span class="label label-info">{{ subject }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="info">
+                            {% for lang in doc.record|hash:'code-language' %}
+                                {{ lang }}
+                            {% endfor %}
+                            {% for dop in doc.record|hash:'date-of-publication' %}
+                                {{ dop }}
+                            {% endfor %}
+                            {% for content_type in doc.record|hash:'content-type' %}
+                                {{ content_type }}
+                            {% endfor %}
+                            {% for publisher in doc.record|hash:'publisher' %}
+                                {{ publisher }}
+                            {% endfor %}
+                        </div>
+{#                        <div>#}
+{#                            {{ doc.title_ss }}<br/>#}
+{#                            {{ doc.author_ss }}<br/>#}
+{#                            {{ doc|hash:"date-of-publication_dts" }}#}
+{#                        </div>#}
+                    </li>
+                        <hr/>
+                    {% endfor %}
+                </ul>
+                {% admin_pagination results_page %}
+            </div>
         </div>
         <div class="span2">
             <div class="row">
@@ -114,6 +167,8 @@
                                     {% else %}
                                         <li><a href="{% add_get_append q=value.0 attr=facet %}">{{ value.0 }}</a> (<b>{{ value.1 }}</b>)</li>
                                     {% endif %}
+                                {% empty %}
+                                    <li style="color: #808080;">сведений нет</li>
                                 {% endfor %}
                             </ul>
                         </li>
@@ -121,8 +176,8 @@
                 </ul>
             </div>
         </div>
-        <div class="span10">
-                {% admin_pagination results_page %}
-        </div>
+{#        <div class="span10">#}
+{#                {% admin_pagination results_page %}#}
+{#        </div>#}
     {% endif %}
 {% endblock %}

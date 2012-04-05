@@ -18,7 +18,8 @@ facet_titles = {
     'content-type': u'Тип материала',
     'date-of-publication': u'Год публикации',
     'subject-heading': u'Тематика',
-    'anywhere': u'Везде'
+    'anywhere': u'Везде',
+    'code-language': u'Язык'
 }
 
 @register.filter
@@ -47,9 +48,68 @@ content_type_titles = {
     't': u'карикатуры или комиксы',
     'w': u'религиозные тексты',
     'z': u'другое',
-    }
+}
+
 @register.filter
 def content_type_title(code):
     return content_type_titles.get(code, code)
 
 
+#"""
+#rus
+#ger
+#tar
+#eng
+#fre
+#ara
+#spa
+#bak
+#tus
+#cze
+#jap
+#tur
+#hun
+#ita
+#pol
+#rum
+#bul
+#kaz
+#lat
+#tib
+#aze
+#fiu
+#per
+#dut
+#hin
+#kaa
+#por
+#swe
+#uzb
+#chv
+#mul
+#ukr
+#urd
+#bel
+#gre
+#scc
+#shu
+#alt
+#arm
+#grc
+#hau
+#kir
+#kom
+#mis
+#oss
+#pus
+#rud
+#rur
+#slx
+#tat
+#tsr
+#tut
+#tаr
+#yor
+#гар
+#
+#"""
