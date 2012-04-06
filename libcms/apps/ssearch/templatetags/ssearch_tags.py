@@ -13,6 +13,7 @@ def date_from_isostring(isostring):
 
 
 facet_titles = {
+    'fond': u'Коллекция',
     'title': u'Заглавие',
     'author': u'Автор',
     'content-type': u'Тип материала',

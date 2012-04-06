@@ -53,6 +53,7 @@
         <xsl:call-template name="Content-type"/>
         <xsl:call-template name="Bib-level"/>
         <xsl:call-template name="Holders"/>
+        <xsl:call-template name="Fond"/>
     </doc>
 
 </xsl:template>
@@ -85,7 +86,7 @@
         2001#$a{. $h, $i}
         2001#$i
         -->
-        <xsl:if test="(subfield[@id='a'] or subfield[@id='i']) and indicator[@id='1'][1] = '1'">
+        <xsl:if test="(subfield[@id='a'] or subfield[@id='i'])">
             <xsl:value-of select="subfield[@id='a']"/>
                 <xsl:for-each select="subfield">
                     <xsl:choose>
@@ -152,6 +153,7 @@
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Author">
     <xsl:for-each select="field[@id &gt; '699' and @id &lt; '710']">
+
         <xsl:variable name="sf_a" select="subfield[@id='a'][1]"/>
         <xsl:choose>
             <!--
@@ -465,6 +467,14 @@
             <field name="holders">
                 <xsl:value-of select="."/>
             </field>
+    </xsl:for-each>
+</xsl:template>
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<xsl:template name="Fond">
+    <xsl:for-each select="field[@id='899']/subfield[@id='b']">
+        <field name="fond">
+            <xsl:value-of select="."/>
+        </field>
     </xsl:for-each>
 </xsl:template>
 </xsl:stylesheet>

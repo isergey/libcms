@@ -1,11 +1,12 @@
 # coding: utf-8
+import re
 import datetime
 import hashlib
 import sunburnt
 from lxml import etree
 from django.core.files.storage import default_storage
 from forms import UploadForm
-from ssearch.models import Upload, Record
+from ssearch.models import Upload, Record, Ebook
 from django.shortcuts import render, redirect, HttpResponse
 from pymarc2 import reader, record, field, marcxml
 from django.db import transaction
@@ -190,12 +191,14 @@ def indexing(request):
     s = t()
     docs = list()
     ss = t()
-    records =  Record.objects.using('records').all().iterator()
+    records =  Ebook.objects.using('records').all().iterator()
+#    records =  Record.objects.using('records').all()
 #    for record in Record.objects.using('records').filter(id__gt=0, id__lt=30000).iterator():
     for record in records:
         doc_tree = etree.XML(record.content)
         doc_tree = xslt_transformer(doc_tree)
         doc = doc_tree_to_dict(doc_tree)
+        doc = add_sort_fields(doc)
         docs.append(doc)
         if len(docs) > 200:
             sss = t()
@@ -258,3 +261,20 @@ def doc_tree_to_dict(doc_tree):
             doc_dict[attrib].append(value)
 
     return doc_dict
+
+
+replace_pattern = re.compile(ur'\W', re.UNICODE)
+def add_sort_fields(doc):
+    for key in doc.keys():
+        splited_key = key.split('_')
+        if len(splited_key) > 1:
+            if (splited_key[-1] == 't' or splited_key[-1] == 's'):
+                doc[key + 's'] = re.sub(replace_pattern, u'', u''.join(doc[key]))
+            elif splited_key[-1] == 'dt':
+                if type(doc[key]) == list:
+                    doc[key + 's'] = doc[key][0]
+                else:
+                    doc[key + 's'] = doc[key]
+            else:
+                continue
+    return doc

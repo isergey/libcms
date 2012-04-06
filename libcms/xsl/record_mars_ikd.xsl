@@ -71,9 +71,9 @@ dtf - фасет даты
     <doc>
         <xsl:call-template name="document_id"/>
         <xsl:call-template name="bib1_rules"/>
-        <!--<xsl:call-template name="sorting"/>-->
-      <xsl:call-template name="facets"/>
-  </doc>
+        <xsl:call-template name="sorting"/>
+        <xsl:call-template name="facets"/>
+    </doc>
 
 </xsl:template>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -203,9 +203,6 @@ dtf - фасет даты
     <xsl:call-template name="Content-type"/>
     <!-- att 1035            Anywhere -->
     <!-- att 1036            Author-Title-Subject -->
-
-    <!-- Расширенные -->
-    <xsl:call-template name="Fond"/>
 </xsl:template>
 
 
@@ -213,9 +210,15 @@ dtf - фасет даты
     <xsl:call-template name="Author-facet"/>
     <xsl:call-template name="Subject-heading-facet"/>
     <xsl:call-template name="Date-of-publication-facet"/>
-    <xsl:call-template name="Fond-facet"/>
 </xsl:template>
 
+
+<xsl:template name="sorting">
+    <xsl:call-template name="Title-sort"/>
+    <xsl:call-template name="Author-sort"/>
+    <xsl:call-template name="Code-language-sort"/>
+    <xsl:call-template name="Date-of-publication-sort"/>
+</xsl:template>
 
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -393,61 +396,29 @@ dtf - фасет даты
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Title">
-    <field name="title_t">
-        <xsl:choose>
-            <!--
-            Если аналитический уровень, то не индексируем 46* поля
-            -->
-            <xsl:when test="leader/leader07 ='a'">
-                <xsl:for-each
-                        select="field[(@id &gt; '399' and @id &lt; '460') or (@id &gt; '469' and @id &lt; '500')]/subfield[@id=1]">
-                    <xsl:call-template name="Title"/>
-                </xsl:for-each>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:for-each select="field[@id &gt; '399' and @id &lt; '500']/subfield[@id=1]">
-                    <xsl:call-template name="Title-former"/>
-                </xsl:for-each>
-            </xsl:otherwise>
-        </xsl:choose>
-        <xsl:text> </xsl:text>
-        <xsl:call-template name="Title-former"/>
-    </field>
-</xsl:template>
-<xsl:template name="Title-former">
     <xsl:for-each select="field[@id='200']">
         <!--
         2001#$a{. $h, $i}
         2001#$i
         -->
-        <xsl:if test="(subfield[@id='a'] or subfield[@id='i'])">
-            <xsl:value-of select="subfield[@id='a']"/>
-            <xsl:for-each select="subfield">
-                <xsl:choose>
-                    <xsl:when test="@id='e'">
-                        <xsl:text>: </xsl:text>
-                        <xsl:value-of select="."/>
-                    </xsl:when>
-                    <xsl:when test="@id='h'">
-                        <xsl:text>. </xsl:text>
-                        <xsl:value-of select="."/>
-                    </xsl:when>
-                    <xsl:when test="@id='i'">
-                        <xsl:text>, </xsl:text>
-                        <xsl:value-of select="."/>
-                    </xsl:when>
-                    <xsl:when test="@id='v'">
-                        <xsl:text>. </xsl:text>
-                        <xsl:value-of select="."/>
-                        <xsl:text>. </xsl:text>
-                    </xsl:when>
-                </xsl:choose>
-            </xsl:for-each>
-            <xsl:if test="not(subfield[@id='v'])">
-                <xsl:text>. </xsl:text>
-            </xsl:if>
-
-
+        <xsl:if test="(subfield[@id='a'] or subfield[@id='i']) and indicator[@id='1'][1] = '1'">
+            <field name="title_t">
+                <xsl:for-each select="subfield">
+                    <xsl:choose>
+                        <xsl:when test="@id='a'">
+                            <xsl:value-of select="."/>
+                        </xsl:when>
+                        <xsl:when test="@id='h'">
+                            <xsl:text>.</xsl:text>
+                            <xsl:value-of select="."/>
+                        </xsl:when>
+                        <xsl:when test="@id='i'">
+                            <xsl:text>,</xsl:text>
+                            <xsl:value-of select="."/>
+                        </xsl:when>
+                    </xsl:choose>
+                </xsl:for-each>
+            </field>
         </xsl:if>
     </xsl:for-each>
     <xsl:for-each select="field[@id='225']">
@@ -457,32 +428,49 @@ dtf - фасет даты
         2251#$i
         -->
         <xsl:if test="subfield[@id='a'] and indicator[@id='1'][1] = '1' or indicator[@id='0'][1]">
-            <!--<field name="title">-->
-            <xsl:value-of select="subfield[@id='a']"/>
-            <xsl:for-each select="subfield[@id='h']">
-                <xsl:text>. </xsl:text>
-                <xsl:value-of select="."/>
-                <xsl:if test="@id='i'">
-                    <xsl:text>, </xsl:text>
-                    <xsl:value-of select="subfield[@id='i']"/>
-                </xsl:if>
+            <field name="title_t">
+                <xsl:value-of select="subfield[@id='a']"/>
+                <xsl:for-each select="subfield[@id='h']">
+                            <xsl:text>.</xsl:text>
+                            <xsl:value-of select="."/>
+                        <xsl:if test="@id='i'">
+                            <xsl:text>,</xsl:text>
+                            <xsl:value-of select="subfield[@id='i']"/>
+                        </xsl:if>
 
-            </xsl:for-each>
-            <!--</field>-->
+                </xsl:for-each>
+            </field>
         </xsl:if>
         <!--
         2252#$i
         -->
         <xsl:if test="indicator[@id='1'][1] = '2'">
-            <xsl:for-each select="subfield[@id='i']">
-                <!--<field name="title">-->
-                <xsl:value-of select="."/>
-                <xsl:text> </xsl:text>
-                <!--</field>-->
-            </xsl:for-each>
+                <xsl:for-each select="subfield[@id='i']">
+                    <field name="title_t">
+                             <xsl:value-of select="."/>
+                    </field>
+                </xsl:for-each>
         </xsl:if>
     </xsl:for-each>
+
+    <xsl:choose>
+        <!--
+        Если аналитический уровень, то не индексируем 46* поля
+        -->
+        <xsl:when test="leader/leader07 ='a'">
+            <xsl:for-each
+                    select="field[(@id &gt; '399' and @id &lt; '460') or (@id &gt; '469' and @id &lt; '500')]/subfield[@id=1]">
+                <xsl:call-template name="Title"/>
+            </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:for-each select="field[@id &gt; '399' and @id &lt; '500']/subfield[@id=1]">
+                <xsl:call-template name="Title"/>
+            </xsl:for-each>
+        </xsl:otherwise>
+    </xsl:choose>
 </xsl:template>
+
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="ISBN">
@@ -575,42 +563,28 @@ dtf - фасет даты
                 70-#1$a, $b ($c)
             -->
             <xsl:when test="$sf_a and indicator[@id='1']=' ' and indicator[@id='2']='1'">
-                <xsl:choose>
-                    <xsl:when test="subfield[@id='g'][1] and not(subfield[@id='b'][1])">
-                        <xsl:for-each select="subfield[@id='g'][1]">
-                            <field name="author_t">
-                                <xsl:value-of select="$sf_a"/>
-                                <xsl:text>, </xsl:text>
-                                <xsl:value-of select="."/>
-                                <xsl:if test="subfield[@id='c'][1]">
-                                    <xsl:text> (</xsl:text>
-                                    <xsl:value-of select="subfield[@id='c'][1]"/>
-                                    <xsl:text>) </xsl:text>
-                                </xsl:if>
-                            </field>
-                        </xsl:for-each>
-                    </xsl:when>
-                    <xsl:when test="subfield[@id='b'][1] and not(subfield[@id='g'][1])">
-                        <xsl:for-each select="subfield[@id='b'][1]">
-                            <field name="author_t">
-                                <xsl:value-of select="$sf_a"/>
-                                <xsl:text>, </xsl:text>
-                                <xsl:value-of select="."/>
-                                <xsl:if test="subfield[@id='c'][1]">
-                                    <xsl:text> (</xsl:text>
-                                    <xsl:value-of select="subfield[@id='c'][1]"/>
-                                    <xsl:text>) </xsl:text>
-                                </xsl:if>
-                            </field>
-                        </xsl:for-each>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <field name="author_t">
-                            <xsl:value-of select="$sf_a"/>
-                        </field>
-                    </xsl:otherwise>
-                </xsl:choose>
-
+                <xsl:for-each select="subfield[@id='g'][1]">
+                    <field name="author_t">
+                        <xsl:value-of select="$sf_a"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:if test="subfield[@id='c'][1]">
+                            <xsl:text> </xsl:text>
+                            <xsl:value-of select="subfield[@id='c'][1]"/>
+                        </xsl:if>
+                    </field>
+                </xsl:for-each>
+                <xsl:for-each select="subfield[@id='b'][1]">
+                    <field name="author_t">
+                        <xsl:value-of select="$sf_a"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:if test="subfield[@id='c'][1]">
+                            <xsl:text> </xsl:text>
+                            <xsl:value-of select="subfield[@id='c'][1]"/>
+                        </xsl:if>
+                    </field>
+                </xsl:for-each>
             </xsl:when>
             <!--
                 70-#0$a $d ($c)
@@ -621,11 +595,8 @@ dtf - фасет даты
                         <xsl:value-of select="$sf_a"/>
                         <xsl:text> </xsl:text>
                         <xsl:value-of select="."/>
-                        <xsl:if test="subfield[@id='c'][1]">
-                            <xsl:text> (</xsl:text>
-                            <xsl:value-of select="subfield[@id='c'][1]"/>
-                            <xsl:text>) </xsl:text>
-                        </xsl:if>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="subfield[@id='c'][1]"/>
                     </xsl:for-each>
                 </field>
             </xsl:when>
@@ -704,6 +675,7 @@ dtf - фасет даты
         <xsl:call-template name="Author"/>
     </xsl:for-each>
 </xsl:template>
+
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Publisher">
@@ -787,15 +759,227 @@ dtf - фасет даты
     </xsl:if>
 
 </xsl:template>
+
+
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<xsl:template name="Fond">
-    <xsl:for-each select="field[@id='899']/subfield[@id='b']">
-        <field name="fond_t">
+<!-- Сортировка -->
+<xsl:template name="Title-sort">
+    <xsl:for-each select="field[@id='200']">
+        <!--
+        2001#$a{. $h, $i}
+        2001#$i
+        -->
+        <xsl:if test="(subfield[@id='a'] or subfield[@id='i']) and indicator[@id='1'][1] = '1'">
+            <field name="title_ss">
+                <xsl:for-each select="subfield">
+                    <xsl:choose>
+                        <xsl:when test="@id='a'">
+                            <xsl:value-of select="."/>
+                        </xsl:when>
+                        <xsl:when test="@id='h'">
+                            <xsl:text>.</xsl:text>
+                            <xsl:value-of select="."/>
+                        </xsl:when>
+                        <xsl:when test="@id='i'">
+                            <xsl:text>,</xsl:text>
+                            <xsl:value-of select="."/>
+                        </xsl:when>
+                    </xsl:choose>
+                </xsl:for-each>
+            </field>
+        </xsl:if>
+    </xsl:for-each>
+    <xsl:for-each select="field[@id='225']">
+        <!--
+        2250#$a{. $h, $i}
+        2251#$a{. $h, $i}
+        2251#$i
+        -->
+        <xsl:if test="subfield[@id='a'] and indicator[@id='1'][1] = '1' or indicator[@id='0'][1]">
+            <field name="title_ss">
+                <xsl:value-of select="subfield[@id='a']"/>
+                <xsl:for-each select="subfield[@id='h']">
+                    <xsl:text>.</xsl:text>
+                    <xsl:value-of select="."/>
+                    <xsl:if test="@id='i'">
+                        <xsl:text>,</xsl:text>
+                        <xsl:value-of select="subfield[@id='i']"/>
+                    </xsl:if>
+
+                </xsl:for-each>
+            </field>
+        </xsl:if>
+        <!--
+        2252#$i
+        -->
+        <xsl:if test="indicator[@id='1'][1] = '2'">
+            <xsl:for-each select="subfield[@id='i']">
+                <field name="title_ss">
+                    <xsl:value-of select="."/>
+                </field>
+            </xsl:for-each>
+        </xsl:if>
+    </xsl:for-each>
+
+    <xsl:choose>
+        <!--
+        Если аналитический уровень, то не индексируем 46* поля
+        -->
+        <xsl:when test="leader/leader07 ='a'">
+            <xsl:for-each
+                    select="field[(@id &gt; '399' and @id &lt; '460') or (@id &gt; '469' and @id &lt; '500')]/subfield[@id=1]">
+                <xsl:call-template name="Title"/>
+            </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:for-each select="field[@id &gt; '399' and @id &lt; '500']/subfield[@id=1]">
+                <xsl:call-template name="Title-sort"/>
+            </xsl:for-each>
+        </xsl:otherwise>
+    </xsl:choose>
+</xsl:template>
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+
+<xsl:template name="Author-sort">
+    <xsl:for-each select="field[@id &gt; '699' and @id &lt; '710']">
+        <xsl:variable name="sf_a" select="subfield[@id='a'][1]"/>
+        <xsl:choose>
+            <xsl:when test="$sf_a and indicator[@id='1']=' ' and indicator[@id='2']='1'">
+                <xsl:for-each select="subfield[@id='b'][1]">
+                    <field name="author_ss">
+                        <xsl:value-of select="$sf_a"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:if test="subfield[@id='c'][1]">
+                            <xsl:text> </xsl:text>
+                            <xsl:value-of select="subfield[@id='c'][1]"/>
+                        </xsl:if>
+                    </field>
+                </xsl:for-each>
+            </xsl:when>
+            <!--
+                70-#0$a $d ($c)
+            -->
+            <xsl:when test="$sf_a and indicator[@id='1']=' ' and indicator[@id='2']='0'">
+                <field name="author_ss">
+                    <xsl:for-each select="subfield[@id='d'][1]">
+                        <xsl:value-of select="$sf_a"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="subfield[@id='c'][1]"/>
+                    </xsl:for-each>
+                </field>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:for-each>
+
+    <xsl:for-each select="field[@id &gt; '709' and @id &lt; '720']">
+        <xsl:variable name="sf_a" select="subfield[@id='a'][1]"/>
+        <xsl:variable name="sf_c" select="subfield[@id='a'][1]"/>
+
+        <xsl:choose>
+            <!--
+                71-00$a, $g, $h ($c){. $b ($c)}
+            -->
+            <xsl:when test="$sf_a and indicator[@id='1']='0' and indicator[@id='2']='0'">
+                <field name="author_ss">
+                    <xsl:for-each select="subfield[@id='g'][1]">
+                        <xsl:value-of select="$sf_a"/>
+                        <xsl:text>,</xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:text>,</xsl:text>
+                        <xsl:value-of select="subfield[@id='h'][1]"/>
+                        <xsl:text> (</xsl:text>
+                        <xsl:value-of select="$sf_c"/>
+                        <xsl:text>)</xsl:text>
+                        <xsl:for-each select="subfield[@id='g']">
+                            <xsl:text>.</xsl:text>
+                            <xsl:value-of select="."/>
+                            <xsl:text> (</xsl:text>
+                            <xsl:value-of select="$sf_c"/>
+                            <xsl:text>)</xsl:text>
+                        </xsl:for-each>
+                    </xsl:for-each>
+                </field>
+            </xsl:when>
+            <!--
+                71-01$a ($c){. $b ($c) ($d; $f; $e)}
+                71-02$a ($c){. $b ($c) ($d; $f; $e)}
+            -->
+            <xsl:when test="$sf_a and indicator[@id='1']='0' and (indicator[@id='2']='1' or indicator[@id='2']='2')">
+                <field name="author_ss">
+                    <xsl:value-of select="$sf_a"/>
+                    <xsl:text> (</xsl:text>
+                    <xsl:value-of select="$sf_c"/>
+                    <xsl:text>)</xsl:text>
+                    <xsl:for-each select="subfield[@id='b']">
+                        <xsl:text>.</xsl:text>
+
+                        <xsl:value-of select="."/>
+                        <xsl:text> (</xsl:text>
+                        <xsl:value-of select="$sf_c"/>
+                        <xsl:text>)</xsl:text>
+
+                        <xsl:if test="subfield[@id='d']">
+                            <xsl:text> (</xsl:text>
+                            <xsl:value-of select="subfield[@id='d']"/>
+                            <xsl:if test="subfield[@id='f']">
+                                <xsl:text>;</xsl:text>
+                                <xsl:value-of select="subfield[@id='d']"/>
+                            </xsl:if>
+                            <xsl:if test="subfield[@id='e']">
+                                <xsl:text>;</xsl:text>
+                                <xsl:value-of select="subfield[@id='d']"/>
+                            </xsl:if>
+
+                            <xsl:text>)</xsl:text>
+                        </xsl:if>
+
+                    </xsl:for-each>
+
+                </field>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:for-each>
+    <xsl:for-each select="field[@id &gt; '399' and @id &lt; '500']/subfield[@id=1]">
+        <xsl:call-template name="Author-sort"/>
+    </xsl:for-each>
+</xsl:template>
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<xsl:template name="Code-language-sort">
+    <xsl:for-each select="field[@id='101']/subfield[@id='a'][1]">
+        <field name="code-language_ss">
             <xsl:value-of select="."/>
         </field>
     </xsl:for-each>
 </xsl:template>
 
+<xsl:template name="Date-of-publication-sort">
+    <!-- Если в записе присутвует 463 поле с вложенным подполе 210_d, то дату создания забираем оттуда-->
+    <xsl:choose>
+        <xsl:when test="field[@id='463']/subfield[@id='1']/field[@id='210']/subfield[@id='d']">
+            <xsl:for-each select="field[@id='463']/subfield[@id='1']/field[@id='210']/subfield[@id='d'][1]">
+                <field name="date-of-publication_dts">
+                    <xsl:value-of select="."/>
+                </field>
+            </xsl:for-each>
+        </xsl:when>
+        <!-- Иначе, извлекаем из основного подполя-->
+        <xsl:otherwise>
+            <xsl:for-each select="field[@id='210']/subfield[@id='d'][1]">
+                <field name="date-of-publication_dts">
+                    <xsl:value-of select="."/>
+                </field>
+            </xsl:for-each>
+        </xsl:otherwise>
+    </xsl:choose>
+</xsl:template>
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 <!-- Фасеты -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -808,42 +992,28 @@ dtf - фасет даты
                 70-#1$a, $b ($c)
             -->
             <xsl:when test="$sf_a and indicator[@id='1']=' ' and indicator[@id='2']='1'">
-                <xsl:choose>
-                    <xsl:when test="subfield[@id='g'][1] and not(subfield[@id='b'][1])">
-                        <xsl:for-each select="subfield[@id='g'][1]">
-                            <field name="author_sf">
-                                <xsl:value-of select="$sf_a"/>
-                                <xsl:text>, </xsl:text>
-                                <xsl:value-of select="."/>
-                                <xsl:if test="subfield[@id='c'][1]">
-                                    <xsl:text> (</xsl:text>
-                                    <xsl:value-of select="subfield[@id='c'][1]"/>
-                                    <xsl:text>) </xsl:text>
-                                </xsl:if>
-                            </field>
-                        </xsl:for-each>
-                    </xsl:when>
-                    <xsl:when test="subfield[@id='b'][1] and not(subfield[@id='g'][1])">
-                        <xsl:for-each select="subfield[@id='b'][1]">
-                            <field name="author_sf">
-                                <xsl:value-of select="$sf_a"/>
-                                <xsl:text>, </xsl:text>
-                                <xsl:value-of select="."/>
-                                <xsl:if test="subfield[@id='c'][1]">
-                                    <xsl:text> (</xsl:text>
-                                    <xsl:value-of select="subfield[@id='c'][1]"/>
-                                    <xsl:text>) </xsl:text>
-                                </xsl:if>
-                            </field>
-                        </xsl:for-each>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <field name="author_sf">
-                            <xsl:value-of select="$sf_a"/>
-                        </field>
-                    </xsl:otherwise>
-                </xsl:choose>
-
+                <!--<xsl:for-each select="subfield[@id='g'][1]">
+                    <field name="author_sf">
+                        <xsl:value-of select="$sf_a"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:if test="subfield[@id='c'][1]">
+                            <xsl:text> </xsl:text>
+                            <xsl:value-of select="subfield[@id='c'][1]"/>
+                        </xsl:if>
+                    </field>
+                </xsl:for-each>-->
+                <xsl:for-each select="subfield[@id='b'][1]">
+                    <field name="author_sf">
+                        <xsl:value-of select="$sf_a"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:if test="subfield[@id='c'][1]">
+                            <xsl:text> </xsl:text>
+                            <xsl:value-of select="subfield[@id='c'][1]"/>
+                        </xsl:if>
+                    </field>
+                </xsl:for-each>
             </xsl:when>
             <!--
                 70-#0$a $d ($c)
@@ -854,11 +1024,8 @@ dtf - фасет даты
                         <xsl:value-of select="$sf_a"/>
                         <xsl:text> </xsl:text>
                         <xsl:value-of select="."/>
-                        <xsl:if test="subfield[@id='c'][1]">
-                            <xsl:text> (</xsl:text>
-                            <xsl:value-of select="subfield[@id='c'][1]"/>
-                            <xsl:text>) </xsl:text>
-                        </xsl:if>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="subfield[@id='c'][1]"/>
                     </xsl:for-each>
                 </field>
             </xsl:when>
@@ -1006,14 +1173,6 @@ dtf - фасет даты
             </xsl:for-each>
         </xsl:otherwise>
     </xsl:choose>
-</xsl:template>
-
-<xsl:template name="Fond-facet">
-    <xsl:for-each select="field[@id='899']/subfield[@id='b']">
-        <field name="fond_sf">
-            <xsl:value-of select="."/>
-        </field>
-    </xsl:for-each>
 </xsl:template>
 
 </xsl:stylesheet>

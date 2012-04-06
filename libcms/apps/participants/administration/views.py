@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from django.conf import settings
 from django.utils.translation import ugettext as _
+from django.db import transaction
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from guardian.decorators import permission_required_or_403
 from common.pagination import get_page
@@ -29,6 +29,7 @@ def list(request, parent=None):
 
 
 @permission_required_or_403('participants.add_library')
+@transaction.commit_on_success
 def create(request, parent=None):
     if parent:
         parent = get_object_or_404(Library, id=parent)
@@ -40,7 +41,9 @@ def create(request, parent=None):
             library = library_form.save(commit=False)
             if parent:
                 library.parent = parent
+
             library.save()
+            library.types = library_form.cleaned_data['types']
             if parent:
                 return redirect('participants:administration:list', parent=parent.id)
             else:
@@ -54,6 +57,7 @@ def create(request, parent=None):
         })
 
 @permission_required_or_403('participants.change_library')
+@transaction.commit_on_success
 def edit(request, id):
     library =  get_object_or_404(Library, id=id)
     parent = library.parent
@@ -63,7 +67,7 @@ def edit(request, id):
 
         if library_form.is_valid():
             library = library_form.save(commit=False)
-
+            library.types = library_form.cleaned_data['types']
             library.save()
             if parent:
                 return redirect('participants:administration:list', parent=parent.id)
@@ -80,6 +84,7 @@ def edit(request, id):
 
 
 @permission_required_or_403('participants.delete_library')
+@transaction.commit_on_success
 def delete(request, id):
     library = get_object_or_404(Library, id=id)
     parent = library.parent
@@ -120,6 +125,7 @@ def library_type_create(request):
 
 
 @permission_required_or_403('participants.add_library')
+@transaction.commit_on_success
 def library_type_edit(request, id):
     library_type =  get_object_or_404(LibraryType, id=id)
     if request.method == 'POST':
@@ -137,6 +143,7 @@ def library_type_edit(request, id):
 
 
 @permission_required_or_403('participants.add_library')
+@transaction.commit_on_success
 def library_type_delete(request, id):
     library_type =  get_object_or_404(LibraryType, id=id)
     library_type.delete()
@@ -171,6 +178,7 @@ def district_create(request):
 
 
 @permission_required_or_403('participants.add_library')
+@transaction.commit_on_success
 def district_edit(request, id):
     district =  get_object_or_404(District, id=id)
     if request.method == 'POST':
@@ -188,6 +196,7 @@ def district_edit(request, id):
 
 
 @permission_required_or_403('participants.add_library')
+@transaction.commit_on_success
 def district_delete(request, id):
     district =  get_object_or_404(District, id=id)
     district.delete()

@@ -49,7 +49,7 @@
     <div class="row">
         <h1>Портал</h1>
         {% if request.user.is_authenticated %}
-            Вы вошкли как: {{ request.user.username }} <a href="{% url accounts:frontend:logout %}">Выйти</a>
+            Вы вошли как: {{ request.user.username }} <a href="{% url accounts:frontend:logout %}">Выйти</a>
         {% else %}
             <a href="{% url accounts:frontend:login %}">Войти</a> <a href="#1">Зарегистрироваться</a>
         {% endif %}

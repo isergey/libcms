@@ -8,7 +8,7 @@ from django.core.cache import cache
 from django.shortcuts import render, HttpResponse, get_object_or_404, Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import  QueryDict
-from ssearch.models import Record
+from ssearch.models import Record, Ebook
 
 xslt_root = etree.parse('libcms/xsl/record_in_search.xsl')
 xslt_transformer = etree.XSLT(xslt_root)
@@ -60,16 +60,19 @@ attr_map = {
     u'content-type': {
         'attr': u'content-type_t'
     },
+    u'fond': {
+        'attr': u'fond_t'
+    },
 }
 
 
 sort_attr_map = {
     u'author': {
-        'attr': u'author_ss',
+        'attr': u'author_ts',
         'order': 'asc',
     },
     u'title': {
-        'attr': u'title_ss',
+        'attr': u'title_ts',
         'order': 'asc',
     },
     u'date-of-publication': {
@@ -150,6 +153,7 @@ def terms_constructor(attrs, values):
 
 
 def search(request):
+    search_deep_limit = 5 # ограничение вложенных поисков
     solr = sunburnt.SolrInterface('http://127.0.0.1:8983/solr/')
 
     qs = request.GET.getlist('q', [])
@@ -187,15 +191,28 @@ def search(request):
 
     query = None
 
-    for term in terms:
+    for term in terms[:search_deep_limit]:
+        # если встретилось поле с текстом, то через OR ищем аналогичное с постфиксом _ru
+        morph_query = None
+        attr = term.keys()[0]
+        if len(attr) > 2 and attr[-2:] == '_t':
+            morph_query = solr.Q(**{attr + '_ru': term.values()[0]})
+
         if not query:
-            query = solr.Q(**term)
+            if morph_query:
+                query = solr.Q(solr.Q(**term) | morph_query)
+            else:
+                query = solr.Q(**term)
         else:
-            query = query & solr.Q(**term)
+            if morph_query:
+                query = query & solr.Q(solr.Q(**term) | morph_query)
+            else:
+                query = query & solr.Q(**term)
 
 
 
-    facet_fields = ['author_sf', 'content-type_t','date-of-publication_dtf', 'subject-heading_sf', 'code-language_t' ]
+
+    facet_fields = ['author_sf', 'content-type_t','date-of-publication_dtf', 'subject-heading_sf', 'code-language_t', 'fond_sf' ]
     solr_searcher = solr.query(query)
     for sort_attr in sort_attrs:
         if sort_attr['order'] == 'desc':
@@ -246,7 +263,7 @@ def search(request):
         doc_ids.append(doc['id'])
 
     records_dict = {}
-    records =  list(Record.objects.using('records').filter(gen_id__in=doc_ids))
+    records =  list(Ebook.objects.using('records').filter(gen_id__in=doc_ids))
 
     for record in records:
         records_dict[record.gen_id] = xml_doc_to_dict(record.content)
@@ -257,7 +274,7 @@ def search(request):
     search_breadcumbs = []
     query_dict = None
 
-    for term in terms:
+    for term in terms[:search_deep_limit]:
         key = term.keys()[0]
         value = term[key]
         if type(value) == datetime.datetime:
@@ -288,7 +305,7 @@ def search(request):
 
 def detail(request, gen_id):
     try:
-        record = Record.objects.using('records').get(gen_id=gen_id)
+        record = Ebook.objects.using('records').get(gen_id=gen_id)
     except Record.DoesNotExist:
         raise Http404()
 
