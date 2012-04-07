@@ -18,6 +18,8 @@ sudo pip install oauth2
 
 # В СУБД MySQl создать базу с именем libcms ( или другое имя указанное в local_settingth.py),
 # указав ОБЯЗАТЕЛЬНО в качесиве кодировки по-умолчанию utf8-general-ci.
+mysql> CREATE DATABASE `libcms` CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 
 # В local_settingth.py указать логин и пароль к созданной базе (словарь DATABASES['default'], ключи USER и PASSWORD)
 

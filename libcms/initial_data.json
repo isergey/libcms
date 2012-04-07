@@ -3,8 +3,8 @@
         "pk":1,
         "model":"sites.site",
         "fields":{
-            "name":"localhost.ru",
-            "domain":"localhost.ru"
+            "name":"kitap.tatar.ru",
+            "domain":"kitap.tatar.ru"
         }
     }
 ]
