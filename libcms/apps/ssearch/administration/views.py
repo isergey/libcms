@@ -187,23 +187,26 @@ def indexing(request):
 #    doc_tree = xslt_transformer(doc_tree)
 #    print etree.tostring(doc_tree, encoding='utf-8', pretty_print=True)
     from time import time as t
-    solr = sunburnt.SolrInterface('http://localhost:8983/solr')
+    solr = sunburnt.SolrInterface('http://localhost:8982/solr')
     s = t()
     docs = list()
     ss = t()
-    records =  Ebook.objects.using('records').all().iterator()
+    records =  Record.objects.using('records').all().iterator()
 #    records =  Record.objects.using('records').all()
 #    for record in Record.objects.using('records').filter(id__gt=0, id__lt=30000).iterator():
+    i=0
     for record in records:
         doc_tree = etree.XML(record.content)
         doc_tree = xslt_transformer(doc_tree)
         doc = doc_tree_to_dict(doc_tree)
         doc = add_sort_fields(doc)
         docs.append(doc)
+        i+=1
         if len(docs) > 200:
             sss = t()
             solr.add(docs)
             print 'add ', t() - ss
+            print i
             ss = t()
             docs = list()
 

@@ -37,6 +37,38 @@
             {% endfor %}
         </ul>
     </div>
+    <hr/>
+    <div id="vk_like"></div>
+    <hr/>
+    <h3>Возможно Вам будет интересно почитать так же:</h3>
+    <ul style="list-style: none">
+        {% for doc in mlt_docs %}
+            <li>
+                <div class="title"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">
+                    {{ doc.record.title.0 }}</a></div>
+                <div class="author">
+                    {% for author in doc.record.author %}
+                        {{ author }} {% if not forloop.last %}; {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="info">
+                    {% for lang in doc.record|hash:'code-language' %}
+                        {{ lang }}
+                    {% endfor %}
+                    {% for dop in doc.record|hash:'date-of-publication' %}
+                        {{ dop }}
+                    {% endfor %}
+                    {% for content_type in doc.record|hash:'content-type' %}
+                        {{ content_type }}
+                    {% endfor %}
+                    {% for publisher in doc.record|hash:'publisher' %}
+                        {{ publisher }}
+                    {% endfor %}
+                </div>
+            </li>
+            <hr/>
+        {% endfor %}
+    </ul>
     <!-- Put this script tag to the <head> of your page -->
     <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?49"></script>
 
@@ -45,7 +77,7 @@
     </script>
 
     <!-- Put this div tag to the place, where the Like block will be -->
-    <div id="vk_like"></div>
+
     <script type="text/javascript">
         VK.Widgets.Like("vk_like", {type: "button"});
     </script>

@@ -26,7 +26,7 @@ class SolrConnection(object):
         self.select_url = self.url + "select/"
         self.mlt_url = self.url + "mlt/"
         self.retry_timeout = retry_timeout
-        self.max_length_get_url = max_length_get_url
+        self.max_length_get_url = max_length_get_url,
 
     def request(self, *args, **kwargs):
         try:
@@ -143,8 +143,18 @@ class SolrInterface(object):
     readable = True
     writeable = True
     remote_schema_file = "admin/file/?file=schema.xml"
-    def __init__(self, url, schemadoc=None, http_connection=None, mode='', retry_timeout=-1, max_length_get_url=MAX_LENGTH_GET_URL):
+    def __init__(
+            self,
+            url,
+            schemadoc=None,
+            http_connection=None,
+            mode='',
+            retry_timeout=-1,
+            max_length_get_url=MAX_LENGTH_GET_URL,
+            shards=list()
+    ):
         self.conn = SolrConnection(url, http_connection, retry_timeout, max_length_get_url)
+        self.shards=shards
         self.schemadoc = schemadoc
         if mode == 'r':
             self.writeable = False
@@ -206,6 +216,8 @@ class SolrInterface(object):
         self.delete(queries=self.Q(**{"*":"*"}))
 
     def search(self, **kwargs):
+        if self.shards:
+            kwargs['shards'] = ','.join(self.shards)
         if not self.readable:
             raise TypeError("This Solr instance is only for writing")
         params = params_from_dict(**kwargs)

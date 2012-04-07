@@ -1,14 +1,15 @@
 #Процесс установки для Ubuntu
 #требуется python 2.7
+apt-get install g++
+apt-get install python-dev
 apt-get install python-pip
 apt-get install mysql-server
 apt-get install python-mysqldb
-apt-get install python-lxml
-apt-get install memcached
-apt-get install libmemcached-dev
+apt-get install python-lxml memcached libmemcached-dev
 
 pip install django -U
 pip install pylibmc -U
+pip install uwsgi -U
 sudo pip install postmarkup
 sudo pip install Pygments
 sudo pip install python-openid
@@ -27,4 +28,12 @@ sudo pip install oauth2
 
 # Выполнить команду python manage.py collectstatic
 # Настроить вебсервер для доступа к дирректории static по адресу указанному в переменной STATIC_URL файла settings.py
+
+
+
+Настройка веб сервера nginx ( описание для ubuntu)
+sudo apt-get install python-software-properties
+sudo add-apt-repository ppa:nginx/stable
+sudo apt-get update
+sudo apt-get install nginx
 

@@ -25,13 +25,13 @@
                 <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
             {% endfor %}
             <select name="attr" style="font-weight: bold; width: 20%;">
+                <option value="text" {% if request.GET.attr == 'text' %}selected="selected"{% endif %}>Везде:</option>
                 <option value="author" {% if request.GET.attr == 'author' %}selected="selected"{% endif %}>Автор:</option>
                 <option value="title" {% if request.GET.attr == 'title' %}selected="selected"{% endif %}>Заглавие:</option>
                 <option value="subject-heading" {% if request.GET.attr == 'subject-heading' %}selected="selected"{% endif %}>Тематика:</option>
                 <option value="date-of-publication" {% if request.GET.attr == 'date-of-publication' %}selected="selected"{% endif %}>Год публикации:</option>
                 <option value="isbn" {% if request.GET.attr == 'isbn' %}selected="selected"{% endif %}>ISBN:</option>
                 <option value="issn" {% if request.GET.attr == 'issn' %}selected="selected"{% endif %}>ISSN:</option>
-                <option value="anywhere" {% if request.GET.attr == 'anywhere' %}selected="selected"{% endif %}>Везде:</option>
             </select>
             <input type="text" class="search-query" name="q" style="width: 64%" value="{{ request.GET.q }}"/>
             <input type="submit" class="btn btn-success" style="width: 10%" value="Поиск">

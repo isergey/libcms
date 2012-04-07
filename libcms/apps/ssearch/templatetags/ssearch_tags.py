@@ -20,7 +20,8 @@ facet_titles = {
     'date-of-publication': u'Год публикации',
     'subject-heading': u'Тематика',
     'anywhere': u'Везде',
-    'code-language': u'Язык'
+    'code-language': u'Язык',
+    'text': u'Везде',
 }
 
 @register.filter

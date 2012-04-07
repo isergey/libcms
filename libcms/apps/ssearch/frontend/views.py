@@ -16,6 +16,7 @@ xslt_transformer = etree.XSLT(xslt_root)
 xslt_marc_dump = etree.parse('libcms/xsl/marc_dump.xsl')
 xslt_marc_dump_transformer = etree.XSLT(xslt_marc_dump)
 
+
 def index(request):
     q = request.GET.get('q', None)
     fq = request.GET.get('fq', None)
@@ -54,8 +55,8 @@ attr_map = {
     u'issn': {
         'attr': u'issn_t'
     },
-    u'anywhere': {
-        'attr': u'anywhere_t'
+    u'text': {
+        'attr': u'text_t'
     },
     u'content-type': {
         'attr': u'content-type_t'
@@ -154,7 +155,7 @@ def terms_constructor(attrs, values):
 
 def search(request):
     search_deep_limit = 5 # ограничение вложенных поисков
-    solr = sunburnt.SolrInterface('http://127.0.0.1:8983/solr/')
+    solr = sunburnt.SolrInterface('http://127.0.0.1:8983/solr/', shards=['localhost:8983/solr','localhost:8982/solr'])
 
     qs = request.GET.getlist('q', [])
     attrs = request.GET.getlist('attr', [])
@@ -228,7 +229,7 @@ def search(request):
     if not facets:
         solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=20, mincount=1)
 
-
+    solr_searcher = solr_searcher.field_limit("id")
     paginator = Paginator(solr_searcher, 20) # Show 25 contacts per page
 
     page = request.GET.get('page')
@@ -264,7 +265,7 @@ def search(request):
 
     records_dict = {}
     records =  list(Ebook.objects.using('records').filter(gen_id__in=doc_ids))
-
+    records +=  list(Record.objects.using('records').filter(gen_id__in=doc_ids))
     for record in records:
         records_dict[record.gen_id] = xml_doc_to_dict(record.content)
 
@@ -304,10 +305,40 @@ def search(request):
 
 
 def detail(request, gen_id):
+    shards=['http://localhost:8983/solr','http://localhost:8982/solr']
+    mlt_docs = []
+    for shard in shards:
+        solr = sunburnt.SolrInterface(shard)
+        mlt_query = solr.query(id=gen_id).mlt(['author_t','subject-heading_t'],mindf='1', mintf='1')
+#        mlt_query = solr.query(id=gen_id).mlt(["text_t"],mindf='1', mintf='1')
+        mlt_results = mlt_query.execute().more_like_these
+        if gen_id in mlt_results:
+            for doc in  mlt_results[gen_id].docs:
+                mlt_docs.append(doc)
+
+    doc_ids = []
+    for doc in mlt_docs:
+        doc_ids.append(doc['id'])
+
+    records_dict = {}
+    records =  list(Ebook.objects.using('records').filter(gen_id__in=doc_ids))
+    records +=  list(Record.objects.using('records').filter(gen_id__in=doc_ids))
+    for record in records:
+        records_dict[record.gen_id] = xml_doc_to_dict(record.content)
+
+    for doc in mlt_docs:
+        doc['record'] = records_dict.get(doc['id'])
+
     try:
-        record = Ebook.objects.using('records').get(gen_id=gen_id)
+        record = Record.objects.using('records').get(gen_id=gen_id)
     except Record.DoesNotExist:
-        raise Http404()
+        try:
+            record = Ebook.objects.using('records').get(gen_id=gen_id)
+        except Record.DoesNotExist:
+            raise Http404()
+
+
+
 
     doc_tree = etree.XML(record.content)
     marct_tree = xslt_marc_dump_transformer(doc_tree)
@@ -322,8 +353,11 @@ def detail(request, gen_id):
 
     return render(request, 'ssearch/frontend/detail.html', {
         'marc_dump': marc_dump,
-        'doc': doc
+        'doc': doc,
+        'mlt_docs': mlt_docs,
     })
+
+
 def xml_doc_to_dict(xmlstring_doc):
     doc_tree = etree.XML(xmlstring_doc)
     doc_tree_t = xslt_transformer(doc_tree)
