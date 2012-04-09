@@ -148,6 +148,7 @@ INSTALLED_APPS = (
     'participants',
     'ask_librarian',
     'ssearch',
+    'rbooks',
     'forum',
 )
 

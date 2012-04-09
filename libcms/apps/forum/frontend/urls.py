@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 import views
 urlpatterns = patterns(views,
     url(r'^$', views.forums , name="forums"),

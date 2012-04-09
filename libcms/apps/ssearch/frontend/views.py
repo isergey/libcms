@@ -309,7 +309,7 @@ def detail(request, gen_id):
     mlt_docs = []
     for shard in shards:
         solr = sunburnt.SolrInterface(shard)
-        mlt_query = solr.query(id=gen_id).mlt(['author_t','subject-heading_t'],mindf='1', mintf='1')
+        mlt_query = solr.query(id=gen_id).mlt(['author_t','subject-heading_t','title_t'],mindf='1', mintf='1')
 #        mlt_query = solr.query(id=gen_id).mlt(["text_t"],mindf='1', mintf='1')
         mlt_results = mlt_query.execute().more_like_these
         if gen_id in mlt_results:

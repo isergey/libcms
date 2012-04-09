@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.forms.models import model_to_dict
-
+from django.shortcuts import HttpResponse
 from django.contrib.auth.models import User
 
-from apps.api.exceptions import WrongArguments, ApiException
-from apps.api.decorators import api, login_required_or_403
+from api.exceptions import WrongArguments, ApiException
+from api.decorators import api, login_required_or_403
 
-from participants.models import Library, District, UserLibrary
+from participants.models import Library, UserLibrary
 
 
 class ApiUser(object):
@@ -49,17 +49,31 @@ class ApiUser(object):
 
 class ApiLibrary(object):
     def __init__(self,
-            id=None, parent_id=None, name=None, code=None, country=None, city=None, district=None, phone=None,
-            plans=None, postal_address=None,  http_service=None, ill_service=None, edd_service=None,
-            mail=None, mail_access=None, latitude=None, longitude=None):
+            id=None,
+            parent_id=None,
+            name=None,
+            code=None,
+#            country=None,
+#            city=None,
+            district=None,
+            phone=None,
+            plans=None,
+            postal_address=None,
+            http_service=None,
+            ill_service=None,
+            edd_service=None,
+            mail=None,
+            mail_access=None,
+            latitude=None,
+            longitude=None):
 
         self.id = id
         self.parent_id = parent_id
         self.name = name
         self.code = code
 
-        self.country = country
-        self.city = city
+#        self.country = country
+#        self.city = city
         self.district = district
 
         self.phone = phone
@@ -81,8 +95,8 @@ class ApiLibrary(object):
             'parent_id': self.parent_id,
             'name': self.name,
             'code': self.code,
-            'country': self.country,
-            'city': self.city,
+#            'country': self.country,
+#            'city': self.city,
             'district': self.district,
             'phone': self.phone,
             'plans': self.plans,
@@ -118,12 +132,12 @@ class ApiLibrary(object):
         )
         if model.parent_id:
             api_library.parent_id = model.parent_id
-
-        if model.country_id:
-            api_library.country=model.country.name
-
-        if model.city_id:
-            api_library.city=model.city.name
+#
+#        if model.country_id:
+#            api_library.country=model.country.name
+#
+#        if model.city_id:
+#            api_library.city=model.city.name
 
         if model.district_id:
             api_library.district=model.district.name
@@ -131,6 +145,8 @@ class ApiLibrary(object):
 
         return api_library
 
+def index(request):
+    return HttpResponse(u'Api ok')
 
 @api
 #@login_required_or_403

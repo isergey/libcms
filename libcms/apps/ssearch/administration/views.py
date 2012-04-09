@@ -191,7 +191,7 @@ def indexing(request):
     s = t()
     docs = list()
     ss = t()
-    records =  Record.objects.using('records').all().iterator()
+    records =  Record.objects.using('records').all()[0:50000]
 #    records =  Record.objects.using('records').all()
 #    for record in Record.objects.using('records').filter(id__gt=0, id__lt=30000).iterator():
     i=0
