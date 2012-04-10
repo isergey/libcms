@@ -1,0 +1,861 @@
+<?xml version="1.0"?>
+<!--
+ * $Log: zgate_msg.xml,v $
+ * Revision 1.44  2010/12/18 16:29:58  rustam
+ * Persistent query
+ *
+ * Revision 1.43  2010/12/17 14:32:25  rustam
+ * interface redesign
+ *
+ * Revision 1.42  2010/11/03 11:01:24  rustam
+ * Implemented requester-note during item order
+ *
+ * Revision 1.41  2010/06/11 14:07:52  rustam
+ * Further tatar translation
+ *
+ * Revision 1.40  2010/05/28 09:01:29  rustam
+ * Further tatar translation
+ *
+ * Revision 1.39  2010/05/06 16:53:34  rustam
+ * Tatar translation
+ *
+ * Revision 1.38  2009/12/08 14:20:32  rustam
+ * PQS TP representation
+ *
+ * Revision 1.37  2009/07/15 10:40:24  rustam
+ * Implementing Periodic Query Schedule
+ *
+ * Revision 1.36  2009/04/14 08:18:12  rustam
+ * Improved diagnostics
+ *
+ * Revision 1.35  2006/12/12 14:11:54  rustam
+ * Improved embedded fields representation
+ *
+ * Revision 1.34  2006/10/19 12:19:40  rustam
+ * Added OKSVNK classification
+ *
+ * Revision 1.33  2006/03/17 08:14:17  rustam
+ * Implemented selection of circulation desks during preorder phase
+ *
+ * Revision 1.32  2006/03/06 13:19:57  rustam
+ * Minor changes
+ *
+ * Revision 1.31  2006/02/14 10:01:04  rustam
+ * Further improvements
+ *
+ * Revision 1.30  2005/09/07 11:57:31  rustam
+ * Minor corrections
+ *
+ * Revision 1.29  2005/02/28 10:12:57  rustam
+ * Implemented related record search
+ *
+ * Revision 1.28  2004/05/21 09:22:02  rustam
+ * Implemented linking to authority records
+ *
+ * Revision 1.27  2004/02/25 13:39:06  rustam
+ * Minor corrections
+ *
+ * Revision 1.26  2004/02/25 13:24:41  rustam
+ * Minor improvements
+ *
+ * Revision 1.25  2003/11/12 19:33:19  rustam
+ * Downloading of selected records
+ *
+ * Revision 1.24  2003/09/30 11:28:58  rustam
+ * Added some new messages
+ *
+ * Revision 1.23  2003/08/26 09:30:03  rustam
+ * Added new message
+ *
+ * Revision 1.22  2003/06/21 09:31:44  rustam
+ * Added some new messages
+ *
+ * Revision 1.21  2003/06/18 08:59:17  rustam
+ * Added new error code
+ *
+ * Revision 1.20  2003/05/27 08:37:59  rustam
+ * Implemented UTF-8 records validation
+ *
+ * Revision 1.19  2003/05/15 07:27:47  rustam
+ * Implemented profiles
+ *
+ * Revision 1.18  2003/05/06 10:47:35  rustam
+ * Added statusOrErrorReport representation
+ *
+ * Revision 1.17  2003/04/03 12:10:19  rustam
+ * Minor changes
+ *
+ * Revision 1.16  2003/04/02 13:45:22  rustam
+ * Corrected bug with error codes
+ *
+ * Revision 1.15  2003/01/31 14:12:22  rustam
+ * New pre-release
+ *
+ * Revision 1.14  2002/10/18 09:48:19  rustam
+ * Minor changes
+ *
+ * Revision 1.13  2002/08/22 15:15:37  rustam
+ * Minor changes
+ *
+ * Revision 1.12  2002/05/08 09:29:18  rustam
+ * Added some new messages
+ *
+ * Revision 1.11  2002/03/07 14:48:27  web
+ * Minor changes
+ *
+ * Revision 1.10  2002/02/27 07:33:52  web
+ * Minor changes
+ *
+ * Revision 1.9  2002/02/18 08:42:28  web
+ * Minor changes
+ *
+ * Revision 1.8  2002/02/13 12:45:12  rustam
+ * Improved MARC diagnostics
+ *
+ * Revision 1.7  2002/02/04 10:20:11  rustam
+ * Added some new messages
+ *
+ * Revision 1.6  2001/11/20 14:41:48  web
+ * Minor changes
+ *
+ * Revision 1.5  2001/10/18 09:50:06  web
+ * Minor changes
+ *
+ * Revision 1.4  2001/09/27 09:50:38  web
+ * Minor changes
+ *
+ * Revision 1.3  2001/09/27 09:23:30  web
+ * Added some new messages
+ *
+ * Revision 1.2  2001/09/19 13:57:36  web
+ * Added some new messages
+ *
+ * Revision 1.1  2001/09/03 12:15:15  web
+ * Added new XML-based record representation engine
+ *
+-->
+<messages>
+<localization language="eng">
+  <msg id="F_IBL">Invalid bibliographic level</msg>
+  <msg id="W_MRC_BAD">Incorrect record</msg>
+  <msg id="W_NOT_UTF8">Record contains non UTF-8 characters</msg>
+  <msg id="W_REC_UNKNOWN">Unsupported record format</msg>
+  <msg id="W_UNIMPL">Not yet implemented</msg>
+  <msg id="I_CONTENTS">Contents:</msg>
+  <msg id="I_UDC">UDC</msg>
+  <msg id="I_DDC">DDC</msg>
+  <msg id="I_LCC">LCC</msg>
+  <msg id="I_LBC">LBC</msg>
+  <msg id="I_GRNTI">SSHSTI</msg>
+  <msg id="I_GASNTI">SRSTI</msg>
+  <msg id="I_ESKL">ESKL</msg>
+  <msg id="I_OKSVNK">OKSVNK</msg>
+  <msg id="421">Supplement:</msg>
+  <msg id="422">Parent of supplement:</msg>
+  <msg id="423">Issued with:</msg>
+  <msg id="430">Continues:</msg>
+  <msg id="431">Continues in part:</msg>
+  <msg id="432">Supersedes:</msg>
+  <msg id="433">Supersedes in part:</msg>
+  <msg id="434">Absorbed:</msg>
+  <msg id="435">Absorbed in part:</msg>
+  <msg id="436">Formed by merger of:</msg>
+  <msg id="437">Separated from:</msg>
+  <msg id="440">Continued by:</msg>
+  <msg id="441">Continued in part by:</msg>
+  <msg id="442">Superseded by:</msg>
+  <msg id="443">Superseded in part by:</msg>
+  <msg id="444">Absorbed by:</msg>
+  <msg id="445">Absorbed in part by:</msg>
+  <msg id="446">Split into:</msg>
+  <msg id="448">Changed back to:</msg>
+  <msg id="451">Other edition in the same medium:</msg>
+  <msg id="452">Other edition in another medium:</msg>
+  <msg id="453">Translated as:</msg>
+  <msg id="454">Translation of:</msg>
+  <msg id="455">Reproduction of:</msg>
+  <msg id="456">Reproduced as:</msg>
+  <msg id="470">Item reviewed:</msg>
+  <msg id="481">Also bound in this volume:</msg>
+  <msg id="482">Bound with:</msg>
+  <msg id="488">Other related work:</msg>
+  <msg id="I_SEE">See:</msg>
+  <msg id="I_SEE_EARLIER">See earlier heading:</msg>
+  <msg id="I_SEE_LATER">See later heading:</msg>
+  <msg id="I_SEE_ASSOC"></msg>
+  <msg id="I_SEE_ACRONYM">See acronym:</msg>
+  <msg id="I_SEE_PSEUDONYM">See pseudonym:</msg>
+  <msg id="I_SEE_REAL">See real name:</msg>
+  <msg id="I_SEE_BROADER">See broader concept:</msg>
+  <msg id="I_SEE_NARROWER">See narrower concept:</msg>
+  <msg id="I_SEE_SYN">See descriptor:</msg>
+  <msg id="I_SEE_ALSO">See also:</msg>
+  <msg id="I_SEE_ALSO_EARLIER">See also earlier heading:</msg>
+  <msg id="I_SEE_ALSO_LATER">See also later heading:</msg>
+  <msg id="I_SEE_ALSO_ASSOC">See also related:</msg>
+  <msg id="I_SEE_ALSO_ACRONYM">See also acronym:</msg>
+  <msg id="I_SEE_ALSO_PSEUDONYM">See also pseudonym:</msg>
+  <msg id="I_SEE_ALSO_REAL">See also real name:</msg>
+  <msg id="I_SEE_ALSO_BROADER">See also broader concept:</msg>
+  <msg id="I_SEE_ALSO_NARROWER">See also narrower concept:</msg>
+  <msg id="I_SEE_ALSO_SYN"></msg>
+  <msg id="LBL_KB">KB</msg>
+  <msg id="LBL_RECORDS">Record(s)</msg>
+  <msg id="LBL_MSG">Message</msg>
+  <msg id="LBL_LCN">Local control number</msg>
+  <msg id="LBL_DATE_LAST_MOD">Date of last mod.</msg>
+  <msg id="LBL_TITLE">Title</msg>
+  <msg id="LBL_AUTHOR">Author</msg>
+  <msg id="LBL_CREATOR">Creator</msg>
+  <msg id="LBL_PLACE_PUB">Publication place</msg>
+  <msg id="LBL_DATE_PUB">Publication date</msg>
+  <msg id="LBL_NAME">Name</msg>
+  <msg id="LBL_DATE_TIME">Date/time</msg>
+  <msg id="LBL_DESCRIPTION">Description</msg>
+  <msg id="LBL_DOCUMENT_CONTENT">Document content</msg>
+  <msg id="LBL_SUBJECT">Subject</msg>
+  <msg id="LBL_CITY">City</msg>
+  <msg id="LBL_IDENTIFIER">Identifier</msg>
+  <msg id="LBL_RIGHTS">Rights</msg>
+  <msg id="LBL_PUBLISHER">Publisher</msg>
+  <msg id="LBL_SOURCE">Source</msg>
+  <msg id="LBL_SOURCES">Sources:</msg>
+  <msg id="LBL_COVERAGE">Coverage</msg>
+  <msg id="LBL_USE">Use instead</msg>
+  <msg id="LBL_UF">Use for</msg>
+  <msg id="LBL_BT">Broader</msg>
+  <msg id="LBL_NT">Narrower</msg>
+  <msg id="LBL_RT">Association</msg>
+  <msg id="LBL_LE">Lingustic equivalent</msg>
+  <msg id="LBL_UST">Uncontrolled subject terms</msg>
+  <msg id="LBL_LANG">Language</msg>
+  <msg id="LBL_AVAILABILITY">Availability</msg>
+  <msg id="LBL_AVAIL_LINKAGE">Available linkage</msg>
+  <msg id="LBL_DISTRIBUTOR">Distributor</msg>
+  <msg id="LBL_LINKAGE">Linkage</msg>
+  <msg id="LBL_HOLDINGS">Location and availability</msg>
+  <msg id="LBL_LOCAL_LOC">Local location</msg>
+  <msg id="LBL_ITEMS_AVAIL">Available items</msg>
+  <msg id="LBL_ITEMS_TOTAL">Total items</msg>
+  <msg id="LBL_CALL_NUM">Call number(s)</msg>
+  <msg id="LBL_SH_DATA">Shelving data</msg>
+  <msg id="LBL_AVAIL_NOW">Available now:</msg>
+  <msg id="LBL_AVAIL_DATE">Availability date:</msg>
+  <msg id="LBL_AVAIL_THRU">Available thru:</msg>
+  <msg id="LBL_RESTR">Restrictions:</msg>
+  <msg id="LBL_ITEM_ID">Item ID:</msg>
+  <msg id="LBL_RENEWABLE">Renewable:</msg>
+  <msg id="LBL_ON_HOLD">On hold:</msg>
+  <msg id="LBL_TEMP_LOC">Temporary location:</msg>
+  <msg id="LBL_USERID">User ID:</msg>
+  <msg id="LBL_DESCR">Description:</msg>
+  <msg id="LBL_ORDER_NUM">Order number:</msg>
+  <msg id="LBL_ORDER_DAT">Date of order:</msg>
+  <msg id="LBL_ORDER_ST">Status:</msg>
+  <msg id="LBL_ORDER_SE">Details:</msg>
+  <msg id="LBL_ORDER_ITM">Item requested:</msg>
+  <msg id="LBL_ORDER_DIAG">Diagnostics:</msg>
+  <msg id="LBL_IO_VOL">Volume / Issue </msg>
+  <msg id="LBL_IO_PAG">Pagination </msg>
+  <msg id="LBL_IO_IS">You would like to </msg>
+  <msg id="LBL_IO_AT"> located at one of the listed places: </msg>
+  <msg id="LBL_IO_HOLD">If the document currently unavailable then </msg>
+  <msg id="LBL_IO_MEDIUM">Desired medium for your copy </msg>
+  <msg id="LBL_IO_MT">Medium type: </msg>
+  <msg id="LBL_IO_REQ_NOTE">Note </msg>
+  <msg id="LBL_CIRC_DESK">circulation desk </msg>
+  <msg id="LBL_DC_TITLE">Title</msg>
+  <msg id="LBL_DC_CREATOR">Creator</msg>
+  <msg id="LBL_DC_SUBJECT">Subject</msg>
+  <msg id="LBL_DC_DESCRIPTION">Description</msg>
+  <msg id="LBL_DC_PUBLISHER">Publisher</msg>
+  <msg id="LBL_DC_CONTRIBUTOR">Contributor</msg>
+  <msg id="LBL_DC_DATE">Date</msg>
+  <msg id="LBL_DC_TYPE">Type</msg>
+  <msg id="LBL_DC_FORMAT">Format</msg>
+  <msg id="LBL_DC_IDENTIFIER">Identifier</msg>
+  <msg id="LBL_DC_SOURCE">Source</msg>
+  <msg id="LBL_DC_LANGUAGE">Language</msg>
+  <msg id="LBL_DC_RELATION">Relation</msg>
+  <msg id="LBL_DC_COVERAGE">Coverage</msg>
+  <msg id="LBL_DC_RIGHTS">Rights</msg>
+  <msg id="LBL_DCTERMS_ABSTRACT">Abstract</msg>
+  <msg id="LBL_DCTERMS_MODIFIED">Modified</msg>
+  <msg id="LBL_DCTERMS_MEDIATOR">Mediator</msg>
+  <msg id="LBL_DCTERMS_EXTENT">Extent</msg>
+  <msg id="LBL_DCTERMS_AP">Accrual periodicity</msg>
+  <msg id="LBL_DCTERMS_HASPART">Part</msg>
+  <msg id="LBL_HOLDER">Holder</msg>
+  <msg id="LBL_MEMBER">Participant</msg>
+  <msg id="LBL_DB">Database:</msg>
+  <msg id="LBL_QUERY">Query:</msg>
+  <msg id="LBL_PERIOD">Execute query:</msg>
+  <msg id="LBL_DEST">Destination:</msg>
+  <msg id="I_SINE_LOCO">S.l.</msg>
+  <msg id="I_SINE_NOMINE">S.n.</msg>
+  <msg id="I_SINE_ANNO">S.a.</msg>
+  <msg id="I_ET_AL"> et al.</msg>
+  <msg id="I_YES">Yes</msg>
+  <msg id="I_NO">No</msg>
+  <msg id="I_FORM">Search form</msg>
+  <msg id="I_FORM_PS">Save results</msg>
+  <msg id="I_FORM_PQ">Save query</msg>
+  <msg id="I_FORM_PQS">Schedule query</msg>
+  <msg id="I_FORM_CONTINUE">Continue</msg>
+  <msg id="I_FORM_PREORDER">Order</msg>
+  <msg id="I_FORM_INQUIRE">Inquire</msg>
+  <msg id="I_FORM_PREPQS">Save</msg>
+  <msg id="W_NO_REC">No records</msg>
+  <msg id="F_OP_SEARCH">Search failed</msg>
+  <msg id="F_OP_SEARCHS">Full search failed</msg>
+  <msg id="F_OP_PRESENT">Failed to present record(s)</msg>
+  <msg id="F_OP_DEDUP">Duplicate detection failed</msg>
+  <msg id="F_OP_SORT">Sort failed</msg>
+  <msg id="F_OP_SCAN">Failed to browse search index</msg>
+  <msg id="F_OP_ORDER">Failed to order</msg>
+  <msg id="F_OP_DELETE">Failed to delete</msg>
+  <msg id="F_OP_UNSUPP">unsupported operation</msg>
+  <msg id="I_OP_SEARCH">Query results</msg>
+  <msg id="I_OP_SEARCHS">Partial query results</msg>
+  <msg id="I_OP_SCAN">Browse results</msg>
+  <msg id="I_OP_SCAN_1">Not all of the expected entries can be returned because the operation was terminated by access-control</msg>
+  <msg id="I_OP_SCAN_2">Not all of the expected entries will fit in the response message</msg>
+  <msg id="I_OP_SCAN_3">Not all of the expected entries can be returned because the operation was terminated by resource-control, at origin request</msg>
+  <msg id="I_OP_SCAN_4">Not all of the expected entries can be returned because the operation was terminated by resource-control, by target</msg>
+  <msg id="I_OP_PREORDER">Order</msg>
+  <msg id="I_OP_ORDER">Order</msg>
+  <msg id="I_OP_DELETE">Record was successfully deleted</msg>
+  <msg id="I_OP_PREPQS">Periodic Query Schedule</msg>
+  <msg id="I_NOT_FOUND">No records matched your query</msg>
+  <msg id="I_OP_FOUND1">Records </msg>
+  <msg id="I_OP_FOUND2"> through </msg>
+  <msg id="I_OP_FOUND3"> of </msg>
+  <msg id="I_REC_FULL">More on this record</msg>
+  <msg id="I_REC_NOR">Show record</msg>
+  <msg id="I_REC_TAG">Tagged display</msg>
+  <msg id="I_REC_AA">About author</msg>
+  <msg id="I_REC_NV">Volumes / Issues</msg>
+  <msg id="I_REC_ART">Articles</msg>
+  <msg id="I_REC_DOWNLOAD">Download record</msg>
+  <msg id="I_REC_DOWNLOAD_ALL">Download all</msg>
+  <msg id="I_REC_DOWNLOAD_SEL">Download selected</msg>
+  <msg id="I_REC_SHOW_DIAG">Show diagnostics</msg>
+  <msg id="I_REC_PREORDER">Order</msg>
+  <msg id="I_REC_DELETE">Delete</msg>
+  <msg id="I_REC_INVOKE">Invoke</msg>
+  <msg id="I_MSG_ENTRIES">Entries</msg>
+  <msg id="I_ACTIVE_FLAG">Activation required</msg>
+  <msg id="RMRC001">Real length of record is not equal to declared in leader one</msg>
+  <msg id="RMRC002">At least one of the directory entries points out of record</msg>
+  <msg id="RMRC003">Length of record is not great than length of leader</msg>
+  <msg id="RMRC004">Incorrect length of fixed-length field</msg>
+  <estp id="0">Active</estp>
+  <estp id="1">Complete</estp>
+  <estp id="2">Complete</estp>
+  <estp id="3">Aborted</estp>
+  <illst id="1">Loan document</illst>
+  <illst id="2">Order a copy of the document</illst>
+  <illst id="3">Inquire document locations</illst>
+  <illst id="4">Inquire estimated cost of suplying the document</illst>
+  <ills id="1">Get the document on loan</ills>
+  <ills id="2">Get a copy of the document</ills>
+  <ills id="3">Obtain document locations</ills>
+  <ills id="4">Get the estimated cost of supplying the document</ills>
+  <hold id="1">Place my request on hold</hold>
+  <hold id="2">Don't place my request on hold</hold>
+  <hold id="3">Treat my request according to holder policy</hold>
+  <medium id="1">Printed</medium>
+  <medium id="2">Photocopy</medium>
+  <medium id="3">Microform</medium>
+  <medium id="4">Film or video-recording</medium>
+  <medium id="5">Audio-recording</medium>
+  <medium id="6">Machine-readable</medium>
+  <mchar id="4340">3.5&quot; diskette</mchar>
+  <mchar id="6110">CD-ROM</mchar>
+  <mchar id="9999">Electronic delivery</mchar>
+  <period id="DAILY">Daily</period>
+  <period id="WEEKLY">Weekly</period>
+  <period id="MONTHLY">Monthly</period>
+</localization>
+<localization language="rus">
+  <msg id="F_IBL">Неверный библиографический уровень</msg>
+  <msg id="W_MRC_BAD">Некорректная запись</msg>
+  <msg id="W_NOT_UTF8">Запись содержит недопустимые символы и не может быть отображена</msg>
+  <msg id="W_REC_UNKNOWN">Неподдерживаемый формат записи</msg>
+  <msg id="W_UNIMPL">Еще не реализовано</msg>
+  <msg id="I_CONTENTS">Содерж.:</msg>
+  <msg id="I_UDC">УДК</msg>
+  <msg id="I_DDC">ДКД</msg>
+  <msg id="I_LCC">КБК</msg>
+  <msg id="I_LBC">ББК</msg>
+  <msg id="I_GRNTI">ГРНТИ</msg>
+  <msg id="I_GASNTI">ГАСНТИ</msg>
+  <msg id="I_ESKL">ЕСКЛ</msg>
+  <msg id="I_OKSVNK">ОКСВНК</msg>
+  <msg id="421">Приложение:</msg>
+  <msg id="422">Прилагается к:</msg>
+  <msg id="423">В одной обложке с:</msg>
+  <msg id="430">Продолженное:</msg>
+  <msg id="431">Продолженное частично:</msg>
+  <msg id="432">Замененное:</msg>
+  <msg id="433">Замененное частично:</msg>
+  <msg id="434">Поглощенное:</msg>
+  <msg id="435">Поглощенное частично:</msg>
+  <msg id="436">Образовано в результате объединения:</msg>
+  <msg id="437">Отделено от:</msg>
+  <msg id="440">Продолжается под:</msg>
+  <msg id="441">Продолжается частично под:</msg>
+  <msg id="442">Заменено на:</msg>
+  <msg id="443">Заменено частично на:</msg>
+  <msg id="444">Поглотившее:</msg>
+  <msg id="445">Поглотившее частично:</msg>
+  <msg id="446">Разделилось на:</msg>
+  <msg id="448">Возобновилось под прежним заглавием:</msg>
+  <msg id="451">Др. издание:</msg>
+  <msg id="452">Издание на др. носителе:</msg>
+  <msg id="453">Перевод:</msg>
+  <msg id="454">Оригинал перевода:</msg>
+  <msg id="455">Оригинал копии:</msg>
+  <msg id="456">Перепечатано в:</msg>
+  <msg id="470">Рецензия на:</msg>
+  <msg id="481">Также в этом переплете:</msg>
+  <msg id="482">Приплетено к:</msg>
+  <msg id="488">Др. взаимосвязанные работы:</msg>
+  <msg id="I_SEE">См.:</msg>
+  <msg id="I_SEE_EARLIER">См. предыдущий заголовок:</msg>
+  <msg id="I_SEE_LATER">См. последующий заголовок:</msg>
+  <msg id="I_SEE_ASSOC"></msg>
+  <msg id="I_SEE_ACRONYM">См. сокращенную форму:</msg>
+  <msg id="I_SEE_PSEUDONYM">См. псевдоним:</msg>
+  <msg id="I_SEE_REAL">См. подлинное имя:</msg>
+  <msg id="I_SEE_BROADER">См. более широкое понятие:</msg>
+  <msg id="I_SEE_NARROWER">См. более узкое понятие:</msg>
+  <msg id="I_SEE_SYN">См. дескриптор:</msg>
+  <msg id="I_SEE_ALSO">См. также:</msg>
+  <msg id="I_SEE_ALSO_EARLIER">См. также предыдущий заголовок:</msg>
+  <msg id="I_SEE_ALSO_LATER">См. также последующий заголовок:</msg>
+  <msg id="I_SEE_ALSO_ASSOC">См. также ассоциативное понятие:</msg>
+  <msg id="I_SEE_ALSO_ACRONYM">См. также сокращенную форму:</msg>
+  <msg id="I_SEE_ALSO_PSEUDONYM">См. также псевдоним:</msg>
+  <msg id="I_SEE_ALSO_REAL">См. также подлинное имя:</msg>
+  <msg id="I_SEE_ALSO_BROADER">См. также более широкое понятие:</msg>
+  <msg id="I_SEE_ALSO_NARROWER">См. также более узкое понятие:</msg>
+  <msg id="I_SEE_ALSO_SYN"></msg>
+  <msg id="LBL_KB">КБ</msg>
+  <msg id="LBL_RECORDS">Записей</msg>
+  <msg id="LBL_MSG">Сообщение</msg>
+  <msg id="LBL_LCN">Контр. номер</msg>
+  <msg id="LBL_DATE_LAST_MOD">Дата последнего изм.</msg>
+  <msg id="LBL_TITLE">Заглавие</msg>
+  <msg id="LBL_AUTHOR">Автор</msg>
+  <msg id="LBL_CREATOR">Создатель</msg>
+  <msg id="LBL_PLACE_PUB">Место публикации</msg>
+  <msg id="LBL_DATE_PUB">Дата публикации</msg>
+  <msg id="LBL_NAME">Название/имя</msg>
+  <msg id="LBL_DATE_TIME">Дата/время</msg>
+  <msg id="LBL_DESCRIPTION">Описание</msg>
+  <msg id="LBL_DOCUMENT_CONTENT">Содержимое документа</msg>
+  <msg id="LBL_SUBJECT">Тематика</msg>
+  <msg id="LBL_CITY">Город</msg>
+  <msg id="LBL_IDENTIFIER">Идентификатор</msg>
+  <msg id="LBL_RIGHTS">Права</msg>
+  <msg id="LBL_PUBLISHER">Издательство</msg>
+  <msg id="LBL_SOURCE">Источник</msg>
+  <msg id="LBL_SOURCES">Источники:</msg>
+  <msg id="LBL_COVERAGE">Охват</msg>
+  <msg id="LBL_UF">Синоним</msg>
+  <msg id="LBL_USE">См.</msg>
+  <msg id="LBL_BT">Выше</msg>
+  <msg id="LBL_NT">Ниже</msg>
+  <msg id="LBL_RT">Ассоциация</msg>
+  <msg id="LBL_LE">Лингв. эквивалент</msg>
+  <msg id="LBL_UST">Ключевые слова</msg>
+  <msg id="LBL_LANG">Язык</msg>
+  <msg id="LBL_AVAILABILITY">Доступность</msg>
+  <msg id="LBL_AVAIL_LINKAGE">Доступная ссылка</msg>
+  <msg id="LBL_DISTRIBUTOR">Распространитель</msg>
+  <msg id="LBL_LINKAGE">Ссылка</msg>
+  <msg id="LBL_HOLDINGS">Местонахождение и доступность</msg>
+  <msg id="LBL_LOCAL_LOC">Отдел (коллекция)</msg>
+  <msg id="LBL_ITEMS_AVAIL">Свободных экз.</msg>
+  <msg id="LBL_ITEMS_TOTAL">Всего экз.</msg>
+  <msg id="LBL_CALL_NUM">Шифр(ы) хранения</msg>
+  <msg id="LBL_SH_DATA">Полочный индекс</msg>
+  <msg id="LBL_AVAIL_NOW">В наличии:</msg>
+  <msg id="LBL_AVAIL_DATE">В наличии с:</msg>
+  <msg id="LBL_AVAIL_THRU">В наличии по:</msg>
+  <msg id="LBL_RESTR">Ограничения:</msg>
+  <msg id="LBL_ITEM_ID">Идентификатор:</msg>
+  <msg id="LBL_RENEWABLE">Продлеваемо:</msg>
+  <msg id="LBL_ON_HOLD">Очередь:</msg>
+  <msg id="LBL_TEMP_LOC">Вр. местонахождение:</msg>
+  <msg id="LBL_USERID">Пользователь:</msg>
+  <msg id="LBL_DESCR">Описание:</msg>
+  <msg id="LBL_ORDER_NUM">Номер заказа:</msg>
+  <msg id="LBL_ORDER_DAT">Дата заказа:</msg>
+  <msg id="LBL_ORDER_ST">Статус:</msg>
+  <msg id="LBL_ORDER_SE">Подробности:</msg>
+  <msg id="LBL_ORDER_ITM">Документ:</msg>
+  <msg id="LBL_ORDER_DIAG">Диагностическое сообщение:</msg>
+  <msg id="LBL_IO_VOL">Том / выпуск / номер </msg>
+  <msg id="LBL_IO_PAG">Страницы </msg>
+  <msg id="LBL_IO_IS">Вы желаете получить </msg>
+  <msg id="LBL_IO_AT">, который находится в одном из указанных мест: </msg>
+  <msg id="LBL_IO_HOLD">Если документ в настоящее время недоступен, то </msg>
+  <msg id="LBL_IO_MEDIUM">Форма копии </msg>
+  <msg id="LBL_IO_MT">Форма копии: </msg>
+  <msg id="LBL_IO_REQ_NOTE">Примечание </msg>
+  <msg id="LBL_CIRC_DESK">место выдачи </msg>
+  <msg id="LBL_DC_TITLE">Название</msg>
+  <msg id="LBL_DC_CREATOR">Создатель</msg>
+  <msg id="LBL_DC_SUBJECT">Предмет</msg>
+  <msg id="LBL_DC_DESCRIPTION">Описание</msg>
+  <msg id="LBL_DC_PUBLISHER">Издатель</msg>
+  <msg id="LBL_DC_CONTRIBUTOR">Соисполнитель</msg>
+  <msg id="LBL_DC_DATE">Дата</msg>
+  <msg id="LBL_DC_TYPE">Тип</msg>
+  <msg id="LBL_DC_FORMAT">Формат</msg>
+  <msg id="LBL_DC_IDENTIFIER">Идентификатор</msg>
+  <msg id="LBL_DC_SOURCE">Источник</msg>
+  <msg id="LBL_DC_LANGUAGE">Язык</msg>
+  <msg id="LBL_DC_RELATION">Отношение</msg>
+  <msg id="LBL_DC_COVERAGE">Охват</msg>
+  <msg id="LBL_DC_RIGHTS">Права</msg>
+  <msg id="LBL_DCTERMS_ABSTRACT">Реферат</msg>
+  <msg id="LBL_DCTERMS_MODIFIED">Изменен</msg>
+  <msg id="LBL_DCTERMS_MEDIATOR">Посредник</msg>
+  <msg id="LBL_DCTERMS_EXTENT">Объём</msg>
+  <msg id="LBL_DCTERMS_AP">Период обновления</msg>
+  <msg id="LBL_DCTERMS_HASPART">Часть</msg>
+  <msg id="LBL_HOLDER">Держатель</msg>
+  <msg id="LBL_MEMBER">Участник</msg>
+  <msg id="LBL_DB">База данных:</msg>
+  <msg id="LBL_QUERY">Запрос:</msg>
+  <msg id="LBL_PERIOD">Выполнять:</msg>
+  <msg id="LBL_DEST">Адрес доставки:</msg>
+  <msg id="I_SINE_LOCO">Б.м.</msg>
+  <msg id="I_SINE_NOMINE">Б.и.</msg>
+  <msg id="I_SINE_ANNO">Б.г.</msg>
+  <msg id="I_ET_AL"> и др.</msg>
+  <msg id="I_YES">Да</msg>
+  <msg id="I_NO">Нет</msg>
+  <msg id="I_FORM">Форма запроса</msg>
+  <msg id="I_FORM_PS">Сохранить результат</msg>
+  <msg id="I_FORM_PQ">Сохранить запрос</msg>
+  <msg id="I_FORM_PQS">Расписание запросов</msg>
+  <msg id="I_FORM_CONTINUE">Продолжить</msg>
+  <msg id="I_FORM_PREORDER">Заказать</msg>
+  <msg id="I_FORM_INQUIRE">Послать запрос</msg>
+  <msg id="I_FORM_PREPQS">Сохранить</msg>
+  <msg id="W_NO_REC">Нет записей</msg>
+  <msg id="F_OP_SEARCH">Поиск не удался</msg>
+  <msg id="F_OP_SEARCHS">Полный поиск не удался</msg>
+  <msg id="F_OP_PRESENT">Невозможно показать записи</msg>
+  <msg id="F_OP_DEDUP">Устранение дублетности не удалось</msg>
+  <msg id="F_OP_SORT">Сортировка не удалась</msg>
+  <msg id="F_OP_SCAN">Просмотр не удался</msg>
+  <msg id="F_OP_ORDER">Заказ не удался</msg>
+  <msg id="F_OP_DELETE">Удаление не удалось</msg>
+  <msg id="F_OP_UNSUPP">Неподдерживаемая операция</msg>
+  <msg id="I_OP_SEARCH">Результаты поиска</msg>
+  <msg id="I_OP_SEARCHS">Неполные результаты поиска</msg>
+  <msg id="I_OP_SCAN">Результаты просмотра</msg>
+  <msg id="I_OP_SCAN_1">Не все из ожидаемых записей получены по причине отказа в доступе</msg>
+  <msg id="I_OP_SCAN_2">Не все из ожидаемых записей поместились в ответное сообщение</msg>
+  <msg id="I_OP_SCAN_3">Не все из ожидаемых записей получены, т.к. операция была прервана по просьбе клиента</msg>
+  <msg id="I_OP_SCAN_4">Не все из ожидаемых записей получены, т.к. операция была прервана сервером по причине нехватки ресурсов</msg>
+  <msg id="I_OP_PREORDER">Заказ</msg>
+  <msg id="I_OP_ORDER">Заказ</msg>
+  <msg id="I_OP_DELETE">Запись успешно удалена</msg>
+  <msg id="I_OP_PREPQS">Расписание выполнения запроса</msg>
+  <msg id="I_NOT_FOUND">Ничего не найдено</msg>
+  <msg id="I_OP_FOUND1">Записи с </msg>
+  <msg id="I_OP_FOUND2"> по </msg>
+  <msg id="I_OP_FOUND3"> из </msg>
+  <msg id="I_REC_FULL">Детальная информация</msg>
+  <msg id="I_REC_NOR">Показать запись</msg>
+  <msg id="I_REC_TAG">Показать метки полей</msg>
+  <msg id="I_REC_AA">Об авторе</msg>
+  <msg id="I_REC_NV">Тома / Номера / Выпуски</msg>
+  <msg id="I_REC_ART">Статьи / Доклады</msg>
+  <msg id="I_REC_DOWNLOAD">Выгрузить запись</msg>
+  <msg id="I_REC_DOWNLOAD_ALL">Выгрузить все</msg>
+  <msg id="I_REC_DOWNLOAD_SEL">Выгрузить отмеченные</msg>
+  <msg id="I_REC_SHOW_DIAG">Диагностика</msg>
+  <msg id="I_REC_PREORDER">Заказать</msg>
+  <msg id="I_REC_DELETE">Удалить</msg>
+  <msg id="I_REC_INVOKE">Выполнить</msg>
+  <msg id="I_MSG_ENTRIES">Количество записей</msg>
+  <msg id="I_ACTIVE_FLAG">Требуется активация</msg>
+  <msg id="RMRC001">длина записи не соответствует значению, указанному в маркере</msg>
+  <msg id="RMRC002">по меньшей мере одна из статей справочника указывает на данные за пределами записи</msg>
+  <msg id="RMRC003">длина записи не больше длины маркера</msg>
+  <msg id="RMRC004">неверная длина поля фиксированной длины</msg>
+  <estp id="0">Еще не выполнен</estp>
+  <estp id="1">Выполнен</estp>
+  <estp id="2">Документ выдан</estp>
+  <estp id="3">Отказ</estp>
+  <illst id="1">Заказ документа</illst>
+  <illst id="2">Заказ копии документа</illst>
+  <illst id="3">Справка о местонахождении документа</illst>
+  <illst id="4">Справка о стоимости доставки документа</illst>
+  <ills id="1">Документ во временное пользование</ills>
+  <ills id="2">Копию документа</ills>
+  <ills id="3">Справку о местонахождении документа</ills>
+  <ills id="4">Справку о стоимости доставки документа</ills>
+  <hold id="1">Поставить запрос в очередь</hold>
+  <hold id="2">Не ставить запрос в очередь</hold>
+  <hold id="3">Поступить в соответствии с правилами библиотеки</hold>
+  <medium id="1">Печатное издание</medium>
+  <medium id="2">Фотокопия</medium>
+  <medium id="3">Микроноситель</medium>
+  <medium id="4">Кинофильм или видеозапись</medium>
+  <medium id="5">Аудиозапись</medium>
+  <medium id="6">Машиночитаемая</medium>
+  <mchar id="4340">3.5&quot; дискета</mchar>
+  <mchar id="6110">CD-ROM</mchar>
+  <mchar id="9999">Электронная доставка</mchar>
+  <period id="DAILY">Ежедневно</period>
+  <period id="WEEKLY">Еженедельно</period>
+  <period id="MONTHLY">Ежемесячно</period>
+</localization>
+<localization language="tat">
+  <msg id="F_IBL">Библиографик дәрәҗә дөрес түгел</msg>
+  <msg id="W_MRC_BAD">Ялгыш язма</msg>
+  <msg id="W_NOT_UTF8">Язма эчендә ярамаган символлар бар, күрсәтеп булмый</msg>
+  <msg id="W_REC_UNKNOWN">Тотрыксыз язу форматы</msg>
+  <msg id="W_UNIMPL">Әлегә гамәлгә кермәгән</msg>
+  <msg id="I_CONTENTS">Эчтәлек:</msg>
+  <msg id="I_UDC">УДК</msg>
+  <msg id="I_DDC">ДКД</msg>
+  <msg id="I_LCC">КБК</msg>
+  <msg id="I_LBC">ББК</msg>
+  <msg id="I_GRNTI">ГРНТИ</msg>
+  <msg id="I_GASNTI">ГАСНТИ</msg>
+  <msg id="I_ESKL">ЕСКЛ</msg>
+  <msg id="I_OKSVNK">ОКСВНК</msg>
+  <msg id="421">Кушымта:</msg>
+  <msg id="422">Кушыла:</msg>
+  <msg id="423">Бер тышлыкта:</msg>
+  <msg id="430">Дәвам ителгән:</msg>
+  <msg id="431">Өлешчә дәвам ителгән:</msg>
+  <msg id="432">Алыштырылган:</msg>
+  <msg id="433">Өлешчә алыштырылган:</msg>
+  <msg id="434">Йотылган:</msg>
+  <msg id="435">Өлешчә йотылган:</msg>
+  <msg id="436">Кушылу нәтиҗәсендә ясалган:</msg>
+  <msg id="437">Аерылган:</msg>
+  <msg id="440">Дәвам итә:</msg>
+  <msg id="441">Өлешчә дәвам итә:</msg>
+  <msg id="442">Алыштырылган:</msg>
+  <msg id="443">Өлешчә алыштырылган:</msg>
+  <msg id="444">Йоткан:</msg>
+  <msg id="445">Өлешчә йоткан:</msg>
+  <msg id="446">Бүленде:</msg>
+  <msg id="448">Элекке исеме белән яңартылды:</msg>
+  <msg id="451">Башка басма:</msg>
+  <msg id="452">Башка йөртүчедәге басма:</msg>
+  <msg id="453">Тәрҗемә:</msg>
+  <msg id="454">Тәрҗемәнең төп нөсхәсе:</msg>
+  <msg id="455">Күчермәнең төп нөхсәсе:</msg>
+  <msg id="456">Кабат бастырылган:</msg>
+  <msg id="470">Бәяләмә:</msg>
+  <msg id="481">Шулай ук бу төпләүдә:</msg>
+  <msg id="482">Төпләнгән:</msg>
+  <msg id="488">Башка үзара бәйләнешле эшләр:</msg>
+  <msg id="I_SEE">Кара:</msg>
+  <msg id="I_SEE_EARLIER">Алдагы исемне кара:</msg>
+  <msg id="I_SEE_LATER">Артыннан килгән исемне кара:</msg>
+  <msg id="I_SEE_ASSOC">Ассоциатив төшенчәне кара:</msg>
+  <msg id="I_SEE_ACRONYM">Кыскартылган формасын кара:</msg>
+  <msg id="I_SEE_PSEUDONYM">Псевдонимын кара:</msg>
+  <msg id="I_SEE_REAL">Чын исемен кара:</msg>
+  <msg id="I_SEE_BROADER">Киңрәк төшенчәне кара:</msg>
+  <msg id="I_SEE_NARROWER">Таррак төшенчәне кара:</msg>
+  <msg id="I_SEE_SYN">Дескрипторны кара:</msg>
+  <msg id="I_SEE_ALSO">Шулай ук кара:</msg>
+  <msg id="I_SEE_ALSO_EARLIER">Шулай ук алдагы исемне кара:</msg>
+  <msg id="I_SEE_ALSO_LATER">Шулай ук киләсе исемне кара:</msg>
+  <msg id="I_SEE_ALSO_ASSOC">Шулай ук ассоциатив төшенчәне кара:</msg>
+  <msg id="I_SEE_ALSO_ACRONYM">Шулай ук кыскартылган форманы кара:</msg>
+  <msg id="I_SEE_ALSO_PSEUDONYM">Шулай ук псевдонимны кара:</msg>
+  <msg id="I_SEE_ALSO_REAL">Шулай ук чын исемен кара:</msg>
+  <msg id="I_SEE_ALSO_BROADER">Шулай ук киңрәк төшенчәне кара:</msg>
+  <msg id="I_SEE_ALSO_NARROWER">Шулай ук таррак төшенчәне кара:</msg>
+  <msg id="I_SEE_ALSO_SYN"></msg>
+  <msg id="LBL_KB">КБ</msg>
+  <msg id="LBL_RECORDS">Язмалар</msg>
+  <msg id="LBL_MSG">Хәбәр</msg>
+  <msg id="LBL_LCN">Контроль номер</msg>
+  <msg id="LBL_DATE_LAST_MOD">Соңгы үзгәртү датасы</msg>
+  <msg id="LBL_TITLE">Исем</msg>
+  <msg id="LBL_AUTHOR">Автор</msg>
+  <msg id="LBL_CREATOR">Оештыручы</msg>
+  <msg id="LBL_PLACE_PUB">Язманың басылу урыны</msg>
+  <msg id="LBL_DATE_PUB">Язманың басылу вакыты</msg>
+  <msg id="LBL_NAME">Исем</msg>
+  <msg id="LBL_DATE_TIME">Дата,вакыт</msg>
+  <msg id="LBL_DESCRIPTION">Тасвирлама</msg>
+  <msg id="LBL_DOCUMENT_CONTENT">Документның эчтәлеге</msg>
+  <msg id="LBL_SUBJECT">Тематика</msg>
+  <msg id="LBL_CITY">Шәһәр</msg>
+  <msg id="LBL_IDENTIFIER">Идентификатор</msg>
+  <msg id="LBL_RIGHTS">Хокуклар</msg>
+  <msg id="LBL_PUBLISHER">Нәшрият</msg>
+  <msg id="LBL_SOURCE">Чыганак</msg>
+  <msg id="LBL_SOURCES">Чыганаклар:</msg>
+  <msg id="LBL_COVERAGE">Колач</msg>
+  <msg id="LBL_UF">Синоним</msg>
+  <msg id="LBL_USE">Кара</msg>
+  <msg id="LBL_BT">Биегрәк</msg>
+  <msg id="LBL_NT">Түбәнрәк</msg>
+  <msg id="LBL_RT">Ассоциация</msg>
+  <msg id="LBL_LE">Лингвистик эквивалент</msg>
+  <msg id="LBL_UST">Аныклагычлар</msg>
+  <msg id="LBL_LANG">Тел</msg>
+  <msg id="LBL_AVAILABILITY">Керергә мөмкин булу</msg>
+  <msg id="LBL_AVAIL_LINKAGE">Керергә мөмкинлек бирүче сылтама</msg>
+  <msg id="LBL_DISTRIBUTOR">Таратучы</msg>
+  <msg id="LBL_LINKAGE">Сылтама</msg>
+  <msg id="LBL_HOLDINGS">Урыны һәм керү мөмкинлеге булу</msg>
+  <msg id="LBL_LOCAL_LOC">Бүлек (коллекция)</msg>
+  <msg id="LBL_ITEMS_AVAIL">Ирекле данә</msg>
+  <msg id="LBL_ITEMS_TOTAL">Барлык данә</msg>
+  <msg id="LBL_CALL_NUM">Саклау шифры</msg>
+  <msg id="LBL_SH_DATA">Киштә индексы</msg>
+  <msg id="LBL_AVAIL_NOW">Бар булу:</msg>
+  <msg id="LBL_AVAIL_DATE">Бар:</msg>
+  <msg id="LBL_AVAIL_THRU">Булачак:</msg>
+  <msg id="LBL_RESTR">Чикләүләр:</msg>
+  <msg id="LBL_ITEM_ID">Идентификатор:</msg>
+  <msg id="LBL_RENEWABLE">Озайтулы:</msg>
+  <msg id="LBL_ON_HOLD">Чират:</msg>
+  <msg id="LBL_TEMP_LOC">Вакытлыча урнашкан урыны:</msg>
+  <msg id="LBL_USERID">Кулланучы:</msg>
+  <msg id="LBL_DESCR">Тасвирлама:</msg>
+  <msg id="LBL_ORDER_NUM">Заказ номеры:</msg>
+  <msg id="LBL_ORDER_DAT">Заказ датасы:</msg>
+  <msg id="LBL_ORDER_ST">Статус:</msg>
+  <msg id="LBL_ORDER_SE">Тулылык:</msg>
+  <msg id="LBL_ORDER_ITM">Документ:</msg>
+  <msg id="LBL_ORDER_DIAG">Диагностик хәбәр:</msg>
+  <msg id="LBL_IO_VOL">Том/Чыгарылыш/Номер </msg>
+  <msg id="LBL_IO_PAG">Битләр </msg>
+  <msg id="LBL_IO_IS">Сез алырга телисез </msg>
+  <msg id="LBL_IO_AT">Күрсәтелгән урыннарның берсендә урнашкан: </msg>
+  <msg id="LBL_IO_HOLD">Хәзерге вакытта документны карарга мөмкинлек булмаса, </msg>
+  <msg id="LBL_IO_MEDIUM">Күчермә формасы </msg>
+  <msg id="LBL_IO_MT">Күчермә формасы: </msg>
+  <msg id="LBL_IO_REQ_NOTE">Примечание </msg>
+  <msg id="LBL_CIRC_DESK">Бирү урыны </msg>
+  <msg id="LBL_DC_TITLE">Исем</msg>
+  <msg id="LBL_DC_CREATOR">Барлыкка китерүче</msg>
+  <msg id="LBL_DC_SUBJECT">Предмет</msg>
+  <msg id="LBL_DC_DESCRIPTION">Тасвирлама</msg>
+  <msg id="LBL_DC_PUBLISHER">Нәшер итүче</msg>
+  <msg id="LBL_DC_CONTRIBUTOR">Бергә башкаручы</msg>
+  <msg id="LBL_DC_DATE">Дата</msg>
+  <msg id="LBL_DC_TYPE">Төр</msg>
+  <msg id="LBL_DC_FORMAT">Формат</msg>
+  <msg id="LBL_DC_IDENTIFIER">Идентификатор</msg>
+  <msg id="LBL_DC_SOURCE">Чыганак</msg>
+  <msg id="LBL_DC_LANGUAGE">Тел</msg>
+  <msg id="LBL_DC_RELATION">Мөнәсәбәт</msg>
+  <msg id="LBL_DC_COVERAGE">Биләү</msg>
+  <msg id="LBL_DC_RIGHTS">Хокуклар</msg>
+  <msg id="LBL_DCTERMS_ABSTRACT">Реферат</msg>
+  <msg id="LBL_DCTERMS_MODIFIED">Үзгәртелгән</msg>
+  <msg id="LBL_DCTERMS_MEDIATOR">Арадашчы</msg>
+  <msg id="LBL_DCTERMS_EXTENT">Күләм</msg>
+  <msg id="LBL_DCTERMS_AP">Яңарту чоры</msg>
+  <msg id="LBL_DCTERMS_HASPART">Өлеш</msg>
+  <msg id="LBL_HOLDER">Иясе</msg>
+  <msg id="LBL_MEMBER">Катнашучы</msg>
+  <msg id="LBL_DB">Мәгълүмат базасы:</msg>
+  <msg id="LBL_QUERY">Сорау:</msg>
+  <msg id="LBL_PERIOD">Башкарырга:</msg>
+  <msg id="LBL_DEST">Тапшыру адресы:</msg>
+  <msg id="I_SINE_LOCO">У.ю.</msg>
+  <msg id="I_SINE_NOMINE">Н.ю.</msg>
+  <msg id="I_SINE_ANNO">Е.к.</msg>
+  <msg id="I_ET_AL"> Һ.б.</msg>
+  <msg id="I_YES">Әйе</msg>
+  <msg id="I_NO">Юк</msg>
+  <msg id="I_FORM">Сорау формасы</msg>
+  <msg id="I_FORM_CONTINUE">Дәвам итәргә</msg>
+  <msg id="I_FORM_PREORDER">Заказ бирергә</msg>
+  <msg id="I_FORM_INQUIRE">Сорау җибәрергә</msg>
+  <msg id="I_FORM_PREPQS">Сакларга</msg>
+  <msg id="W_NO_REC">Язмалар юк</msg>
+  <msg id="F_OP_SEARCH">Эзләү булып чыкмады</msg>
+  <msg id="F_OP_SEARCHS">Тулы эзләү булып чыкмады</msg>
+  <msg id="F_OP_PRESENT">Язмаларны күрсәтү мөмкин түгел</msg>
+  <msg id="F_OP_DEDUP">Дублетны бетереп булмады</msg>
+  <msg id="F_OP_SORT">Сортлап булмады</msg>
+  <msg id="F_OP_SCAN">Карау булмады</msg>
+  <msg id="F_OP_ORDER">Заказны эшләп булмады</msg>
+  <msg id="F_OP_DELETE">Алып ташлап булмады</msg>
+  <msg id="F_OP_UNSUPP">Тотрыксыз операция</msg>
+  <msg id="I_OP_SEARCH">Эзләү нәтиҗәләре </msg>
+  <msg id="I_OP_SEARCHS">Эзләү нәтиҗәләре тулы түгел</msg>
+  <msg id="I_OP_SCAN">Карау нәтиҗәләре</msg>
+  <msg id="I_OP_SCAN_1">Керергә мөмкин булмау сәбәпле, көтелгән язмаларның, барысы да алынмады</msg>
+  <msg id="I_OP_SCAN_2">Көтелгән язмаларның барысы да җавапка сыймады</msg>
+  <msg id="I_OP_SCAN_3">Көтелгән язмаларның барысы да алынмады, клиентның соравы буенча операция өзелде</msg>
+  <msg id="I_OP_SCAN_4">Көтелгән язмаларның барысы да алынмады, ресурслар җитмәү сәбәпле операция сервер тарафыннан өзелде</msg>
+  <msg id="I_OP_PREORDER">Алдан биреп куелган заказ</msg>
+  <msg id="I_OP_ORDER">Заказ</msg>
+  <msg id="I_OP_DELETE">Язма уңышлы юк ителде</msg>
+  <msg id="I_OP_PREPQS">Сорауның үтәлү расписаниесе</msg>
+  <msg id="I_NOT_FOUND">Бернәрсә дә табылмады</msg>
+  <msg id="I_OP_FOUND1"> язмадан </msg>
+  <msg id="I_OP_FOUND2"> дән </msg>
+  <msg id="I_OP_FOUND3"> кадәр</msg>
+  <msg id="I_REC_FULL">Җентекле мәгълүмат</msg>
+  <msg id="I_REC_NOR">Язманы күрсәтергә</msg>
+  <msg id="I_REC_TAG">Кырның билгеләрен күрсәтергә</msg>
+  <msg id="I_REC_AA">Автор турында</msg>
+  <msg id="I_REC_NV">Томнар / Номерлар / Чыгарылышлар</msg>
+  <msg id="I_REC_ART">Мәкаләләр / Докладлар</msg>
+  <msg id="I_REC_DOWNLOAD">Язманы чыгарырга</msg>
+  <msg id="I_REC_DOWNLOAD_ALL">Бөтенесен чыгарырга</msg>
+  <msg id="I_REC_DOWNLOAD_SEL">Билгеләнгәннәрне чыгарырга</msg>
+  <msg id="I_REC_SHOW_DIAG">Диагностикалау</msg>
+  <msg id="I_REC_PREORDER">Заказ бирергә</msg>
+  <msg id="I_REC_DELETE">Удалить</msg>
+  <msg id="I_REC_INVOKE">Выполнить</msg>
+  <msg id="I_MSG_ENTRIES">Язмалар саны</msg>
+  <msg id="I_ACTIVE_FLAG">Активлаштыру таләп ителә</msg>
+  <msg id="RMRC001">Язманың озынлыгы билгедә күрсәтелгән мәгънәгә туры килми</msg>
+  <msg id="RMRC002">Белешмәлекнең кимендә бер мәкаләсе язмадан читтә урнашкан мәгълүматларга күрсәтә</msg>
+  <msg id="RMRC003">Язманың озынлыгы билгенең озынлыгыннан артык түгел</msg>
+  <msg id="RMRC004">Беркетелгән озынлыктагы кырның ялгыш озынлыгы</msg>
+  <estp id="0">Әлегә үтәлмәде</estp>
+  <estp id="1">Үтәлгән</estp>
+  <estp id="2">Документ бирелгән</estp>
+  <estp id="3">Кире кагу</estp>
+  <illst id="1">Документка заказ</illst>
+  <illst id="2">Документның күчермәсенә заказ</illst>
+  <illst id="3">Документның урыны турында белешмә</illst>
+  <illst id="4">Документны тапшыру бәясе турында белешмә</illst>
+  <ills id="1">Вакытлыча кулланудагы документ</ills>
+  <ills id="2">Документның күчермәсе</ills>
+  <ills id="3">Документның урыны турындагы белешмәне</ills>
+  <ills id="4">Документны  тапшыру бәясе турындагы белешмәне</ills>
+  <hold id="1">Сорауны чиратка куярга</hold>
+  <hold id="2">Сорауны чиратка куймаска</hold>
+  <hold id="3">Китапханә кагыйдәләренә яраклаштырып эшләү</hold>
+  <medium id="1">Матбугат басмасы</medium>
+  <medium id="2">Фотокүчермә</medium>
+  <medium id="3">Микрочыганак</medium>
+  <medium id="4">Кинофильм яки видеоязма</medium>
+  <medium id="5">Аудиоязма</medium>
+  <medium id="6">Машина укырдай</medium>
+  <mchar id="4340">3.5&quot; дискета</mchar>
+  <mchar id="6110">CD-ROM</mchar>
+  <mchar id="9999">Электрон юл белән тапшыру</mchar>
+  <period id="DAILY">Көн саен</period>
+  <period id="WEEKLY">Атна саен</period>
+  <period id="MONTHLY">Ай саен</period>
+</localization>
+</messages>

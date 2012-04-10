@@ -16,6 +16,8 @@ xslt_transformer = etree.XSLT(xslt_root)
 xslt_marc_dump = etree.parse('libcms/xsl/marc_dump.xsl')
 xslt_marc_dump_transformer = etree.XSLT(xslt_marc_dump)
 
+xslt_bib_draw = etree.parse('libcms/xsl/full_document.xsl')
+xslt_bib_draw_transformer = etree.XSLT(xslt_bib_draw)
 
 def index(request):
     q = request.GET.get('q', None)
@@ -341,7 +343,8 @@ def detail(request, gen_id):
 
 
     doc_tree = etree.XML(record.content)
-    marct_tree = xslt_marc_dump_transformer(doc_tree)
+    marct_tree = xslt_bib_draw_transformer(doc_tree)
+#    marct_tree = xslt_marc_dump_transformer(doc_tree)
     marc_dump =  etree.tostring(marct_tree, encoding='utf-8')
     doc_tree_t = xslt_transformer(doc_tree)
     doc = doc_tree_to_dict(doc_tree_t)

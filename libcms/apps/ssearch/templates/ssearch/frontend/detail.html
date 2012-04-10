@@ -29,18 +29,19 @@
 
     </ul>
     {{ marc_dump|safe }}
-    <div class="holders">
-    <h3>Держатели</h3>
+    <div class="holders" style="clear: both;">
+        <hr/>
+    <h3>Держатели:</h3>
         <ul>
             {% for holder in doc.holders %}
             <li>{{ holder }}</li>
             {% endfor %}
         </ul>
     </div>
+{#    <hr/>#}
+{#    <div id="vk_like"></div>#}
     <hr/>
-    <div id="vk_like"></div>
-    <hr/>
-    <h3>Возможно Вам будет интересно почитать так же:</h3>
+    <h3>Возможно, Вам будет интересно почитать так же:</h3>
     <ul style="list-style: none">
         {% for doc in mlt_docs %}
             <li>

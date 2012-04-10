@@ -3,12 +3,12 @@
 apt-get install g++
 apt-get install python-dev
 apt-get install python-pip
-apt-get install mysql-server
-apt-get install python-mysqldb
+apt-get install mysql-server libmysqlclient-dev
 apt-get install python-lxml memcached libmemcached-dev
 
 pip install django -U
 pip install pylibmc -U
+pip install MySQL-python -U
 pip install uwsgi -U
 sudo pip install postmarkup
 sudo pip install Pygments

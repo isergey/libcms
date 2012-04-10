@@ -26,15 +26,16 @@ def index(request):
 def show(request):
     book = request.GET.get('book')
     cur_language = translation.get_language()
-    print cur_language
-#    page = get_object_or_404(Page, slug=slug)
-#    try:
-#        content = Content.objects.get(page=page, lang=cur_language[:2])
-#    except Content.DoesNotExist:
-#        content = None
+    locale_titles = {
+        'ru': 'ru_RU',
+        'en': 'en_US',
+        'tt': 'tt_RU'
+    }
 
+    locale_chain = locale_titles.get(cur_language, 'en_US')
     return render(request, 'rbooks/frontend/show.html', {
         'file_name': book,
+        'locale_chain': locale_chain
     })
 @never_cache
 def book(request):

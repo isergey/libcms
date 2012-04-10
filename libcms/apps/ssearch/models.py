@@ -1,4 +1,5 @@
 import datetime
+import zlib
 from django.db import models
 
 
@@ -54,7 +55,7 @@ class Source(models.Model):
     def __unicode__(self):
         return self.title
 
-import zlib
+
 class ZippedTextField(models.TextField):
     __metaclass__ = models.SubfieldBase
 
@@ -88,6 +89,14 @@ class ZippedTextField(models.TextField):
         value = self._get_val_from_obj(obj)
         return value
 
+
+class IndexStatus(models.Model):
+    catalog = models.CharField(max_length=32, unique=True)
+    last_index_date = models.DateTimeField()
+    indexed = models.IntegerField(default=0)
+
+
+
 class Record(models.Model):
     source = models.ForeignKey(Source, null=True, blank=True)
     gen_id = models.CharField(max_length=32, unique=True)
@@ -102,6 +111,7 @@ class Record(models.Model):
         return self.record_id
     class Meta:
         db_table = 'sc2'
+
 
 class Ebook(models.Model):
     source = models.ForeignKey(Source, null=True, blank=True)
