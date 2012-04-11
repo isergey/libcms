@@ -869,7 +869,7 @@ dtf - фасет даты
 
     <xsl:for-each select="field[@id &gt; '709' and @id &lt; '720']">
         <xsl:variable name="sf_a" select="subfield[@id='a'][1]"/>
-        <xsl:variable name="sf_c" select="subfield[@id='a'][1]"/>
+        <xsl:variable name="sf_c" select="subfield[@id='c'][1]"/>
 
         <xsl:choose>
             <!--
@@ -883,15 +883,19 @@ dtf - фасет даты
                         <xsl:value-of select="."/>
                         <xsl:text>,</xsl:text>
                         <xsl:value-of select="subfield[@id='h'][1]"/>
-                        <xsl:text> (</xsl:text>
-                        <xsl:value-of select="$sf_c"/>
-                        <xsl:text>)</xsl:text>
-                        <xsl:for-each select="subfield[@id='g']">
-                            <xsl:text>.</xsl:text>
-                            <xsl:value-of select="."/>
+                        <xsl:if test="$sf_c">
                             <xsl:text> (</xsl:text>
                             <xsl:value-of select="$sf_c"/>
                             <xsl:text>)</xsl:text>
+                        </xsl:if>
+                        <xsl:for-each select="subfield[@id='g']">
+                            <xsl:text>.</xsl:text>
+                            <xsl:value-of select="."/>
+                            <xsl:if test="$sf_c">
+                                <xsl:text> (</xsl:text>
+                                <xsl:value-of select="$sf_c"/>
+                                <xsl:text>)</xsl:text>
+                            </xsl:if>
                         </xsl:for-each>
                     </xsl:for-each>
                 </field>
@@ -903,16 +907,20 @@ dtf - фасет даты
             <xsl:when test="$sf_a and indicator[@id='1']='0' and (indicator[@id='2']='1' or indicator[@id='2']='2')">
                 <field name="author_sf">
                     <xsl:value-of select="$sf_a"/>
-                    <xsl:text> (</xsl:text>
-                    <xsl:value-of select="$sf_c"/>
-                    <xsl:text>)</xsl:text>
+                    <xsl:if test="$sf_c">
+                        <xsl:text> (</xsl:text>
+                        <xsl:value-of select="$sf_c"/>
+                        <xsl:text>)</xsl:text>
+                    </xsl:if>
                     <xsl:for-each select="subfield[@id='b']">
                         <xsl:text>.</xsl:text>
 
                         <xsl:value-of select="."/>
-                        <xsl:text> (</xsl:text>
-                        <xsl:value-of select="$sf_c"/>
-                        <xsl:text>)</xsl:text>
+                        <xsl:if test="$sf_c">
+                            <xsl:text> (</xsl:text>
+                            <xsl:value-of select="$sf_c"/>
+                            <xsl:text>)</xsl:text>
+                        </xsl:if>
 
                         <xsl:if test="subfield[@id='d']">
                             <xsl:text> (</xsl:text>
@@ -923,7 +931,7 @@ dtf - фасет даты
                             </xsl:if>
                             <xsl:if test="subfield[@id='e']">
                                 <xsl:text>;</xsl:text>
-                                <xsl:value-of select="subfield[@id='d']"/>
+                                <xsl:value-of select="subfield[@id='e']"/>
                             </xsl:if>
 
                             <xsl:text>)</xsl:text>

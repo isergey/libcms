@@ -376,12 +376,13 @@ def doc_tree_to_dict(doc_tree):
         value = element.text
         #если поле пустое, пропускаем
         if not value: continue
-        value = beautify(value)
+#        value = beautify(value)
         values = doc_dict.get(attrib, None)
         if not values:
             doc_dict[attrib] = [value]
         else:
             values.append(value)
+    print doc_dict
     return doc_dict
 
 def beautify(value):

@@ -158,16 +158,26 @@ def _indexing(slug):
 
     if db_conf['ENGINE'] != 'django.db.backends.mysql':
         raise Exception(u' Support only Mysql Database where contains records.')
-
-    conn = MySQLdb.connect(
-        host=db_conf['HOST'],
-        user=db_conf['USER'],
-        passwd=db_conf['PASSWORD'],
-        db=db_conf['NAME'],
-        port=int(db_conf['PORT']
-        ),
-        cursorclass =MySQLdb.cursors.SSDictCursor
-    )
+    try:
+        conn = MySQLdb.connect(
+            host=db_conf['HOST'],
+            user=db_conf['USER'],
+            passwd=db_conf['PASSWORD'],
+            db=db_conf['NAME'],
+            port=int(db_conf['PORT']
+            ),
+            cursorclass =MySQLdb.cursors.SSDictCursor
+        )
+    except OperationalError as e:
+        conn = MySQLdb.connect(
+            unix_socket=db_conf['HOST'],
+            user=db_conf['USER'],
+            passwd=db_conf['PASSWORD'],
+            db=db_conf['NAME'],
+            port=int(db_conf['PORT']
+            ),
+            cursorclass =MySQLdb.cursors.SSDictCursor
+        )
 
 
     try:
