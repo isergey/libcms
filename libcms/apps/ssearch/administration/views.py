@@ -138,15 +138,21 @@ def xml_to_dict(doc_tree):
         print el
 
 def indexing(request):
+    reset = request.GET.get('reset', u'0')
+    if reset == u'1':
+        reset = True
+    else:
+        reset = False
+
     for slug in settings.SOLR['catalogs'].keys():
         print slug
-        _indexing(slug)
+        _indexing(slug, reset)
         print slug
 
     return HttpResponse('Ok')
 
 @transaction.commit_on_success
-def _indexing(slug):
+def _indexing(slug, reset=False):
     try:
         solr_address = settings.SOLR['host']
         db_conf =  settings.DATABASES.get(settings.SOLR['catalogs'][slug]['database'], None)
@@ -185,8 +191,10 @@ def _indexing(slug):
     except IndexStatus.DoesNotExist:
         index_status = None
 
-    if not index_status:
+    if not index_status and not reset:
         index_status = IndexStatus(catalog=slug)
+        select_query = "SELECT * FROM %s where deleted = 0" % (settings.SOLR['catalogs'][slug]['table'],)
+    elif reset:
         select_query = "SELECT * FROM %s where deleted = 0" % (settings.SOLR['catalogs'][slug]['table'],)
     else:
         select_query = "SELECT * FROM %s where (update_date > '%s' or  update_date = '%s') and deleted = 0" % \
@@ -218,8 +226,8 @@ def _indexing(slug):
         doc['system-catalog_s'] = slug
         docs.append(doc)
         i+=1
-        print i
         if len(docs) > 200:
+            print i
             solr.add(docs)
             docs = list()
 

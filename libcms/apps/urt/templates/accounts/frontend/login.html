@@ -1,0 +1,69 @@
+{% extends 'frontend_base.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans 'Login' %}
+{% endblock %}
+{% block content %}
+    {{ request.user.username }}
+    <form method="POST" class="form-horizontal">{% csrf_token %}
+        <fieldset>
+            {% include 'frontend/base_form_fields.html' %}
+            <div class="form-actions">
+                <input type="submit" value="Войти" class="btn"/>
+            </div>
+        </fieldset>
+    </form>
+    <hr/>
+    <h3>Login using:</h3>
+    <div>
+            <a rel="nofollow" href="{% url socialauth_begin 'vkontakte-oauth2' %}" title="Вконтакте"><img src="/static/images/icons/48x48/vkontakte-oauth2.png" alt="Вконтакте"></a>
+            <a rel="nofollow" href="{% url socialauth_begin 'facebook' %}" title="Facebook"><img src="/static/images/icons/48x48/facebook.png" alt="Facebook"></a>
+            <a rel="nofollow" href="{% url socialauth_begin 'mailru-oauth2' %}" title="Mail.ru"><img src="/static/images/icons/48x48/mailru-oauth2.png" alt="Mail.ru"></a>
+            <a rel="nofollow" href="{% url socialauth_begin 'yandex-oauth2' %}" title="Yandex"><img src="/static/images/icons/48x48/yandex-oauth2.png" alt="Yandex"></a>
+            <a rel="nofollow" href="{% url socialauth_begin 'google-oauth2' %}" title="Google"><img src="/static/images/icons/48x48/google-oauth2.png" alt="Google"></a>
+            <a rel="nofollow" href="{% url socialauth_begin 'twitter' %}" title="Twitter"><img src="/static/images/icons/48x48/twitter.png" alt="Twitter"></a>
+
+{#            {% for name in social_auth.backends.oauth2 %}#}
+{#                <a rel="nofollow" href="{% url socialauth_begin name %}"  title="{{ name|title }}"><img src="{{ STATIC_URL }}images/icons/48x48/{{ name }}.png" alt="{{  name|title }}" /></a>#}
+{#            {% endfor %}#}
+{#        {% for name in social_auth.backends.oauth %}#}
+{#            <a rel="nofollow" href="{% url socialauth_begin name %}" title="{{ name|title }}"><img src="{{ STATIC_URL }}images/icons/48x48/{{ name }}.png" alt="{{  name|title }}" /></a>#}
+{#        {% endfor %}#}
+    </div>
+    <hr/>
+    <div>
+        <h3>Login using OpenId from:</h3>
+        <ul>
+            {% for name in social_auth.backends.openid %}
+                <li>
+                    {% if name != "livejournal" and name != "openid" %}
+                        <a rel="nofollow" href="{% url socialauth_begin name %}">{{ name|title }}</a>
+                    {% else %}
+                        {% if name == "livejournal" %}
+                            <form action="{% url socialauth_begin "livejournal" %}" method="post">{% csrf_token %}
+                                <div>
+                                    <label for="openid_lj_user">LiveJournal user:</label>
+                                    <input id="openid_lj_user" type="text" value="" name="openid_lj_user" />
+                                    <input type="submit" value="Login"/>
+                                </div>
+                            </form>
+                        {% else %}
+                            {% if name == "openid" %}
+                                <form action="{% url socialauth_begin "openid" %}" method="post">{% csrf_token %}
+                                    <div>
+                                        <label for="openid_identifier">Other provider</label>
+                                        <input id="openid_identifier" type="text" value="" name="openid_identifier" />
+                                        <input type="submit" value="Login" />
+                                    </div>
+                                    <p class="helptext">Like your personal <a href="https://www.myopenid.com/" title="My OpenId">myopenid</a></p>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+{% endblock %}

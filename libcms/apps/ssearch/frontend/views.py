@@ -382,7 +382,6 @@ def doc_tree_to_dict(doc_tree):
             doc_dict[attrib] = [value]
         else:
             values.append(value)
-    print doc_dict
     return doc_dict
 
 def beautify(value):

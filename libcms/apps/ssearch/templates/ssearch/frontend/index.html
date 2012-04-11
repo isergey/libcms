@@ -125,7 +125,7 @@
                             {{ doc.record.title.0 }}</a></div>
                         <div class="author">
                             {% for author in doc.record.author %}
-                                {{ author }} {% if not forloop.last %}; {% endif %}
+                                {{ author }}{% if not forloop.last %}; {% endif %}
                             {% endfor %}
                         </div>
                         <div class="subjects">
