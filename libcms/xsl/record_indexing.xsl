@@ -644,15 +644,15 @@ dtf - фасет даты
                 <field name="author_t">
                     <xsl:for-each select="subfield[@id='g'][1]">
                         <xsl:value-of select="$sf_a"/>
-                        <xsl:text>,</xsl:text>
+                        <xsl:text>, </xsl:text>
                         <xsl:value-of select="."/>
-                        <xsl:text>,</xsl:text>
+                        <xsl:text>, </xsl:text>
                         <xsl:value-of select="subfield[@id='h'][1]"/>
                         <xsl:text> (</xsl:text>
                         <xsl:value-of select="$sf_c"/>
                         <xsl:text>)</xsl:text>
                         <xsl:for-each select="subfield[@id='g']">
-                            <xsl:text>.</xsl:text>
+                            <xsl:text>. </xsl:text>
                             <xsl:value-of select="."/>
                             <xsl:text> (</xsl:text>
                             <xsl:value-of select="$sf_c"/>
@@ -672,7 +672,7 @@ dtf - фасет даты
                     <xsl:value-of select="$sf_c"/>
                     <xsl:text>)</xsl:text>
                     <xsl:for-each select="subfield[@id='b']">
-                        <xsl:text>.</xsl:text>
+                        <xsl:text>. </xsl:text>
 
                         <xsl:value-of select="."/>
                         <xsl:text> (</xsl:text>
@@ -683,11 +683,11 @@ dtf - фасет даты
                             <xsl:text> (</xsl:text>
                             <xsl:value-of select="subfield[@id='d']"/>
                             <xsl:if test="subfield[@id='f']">
-                                <xsl:text>;</xsl:text>
+                                <xsl:text>; </xsl:text>
                                 <xsl:value-of select="subfield[@id='d']"/>
                             </xsl:if>
                             <xsl:if test="subfield[@id='e']">
-                                <xsl:text>;</xsl:text>
+                                <xsl:text>; </xsl:text>
                                 <xsl:value-of select="subfield[@id='d']"/>
                             </xsl:if>
 
@@ -879,9 +879,9 @@ dtf - фасет даты
                 <field name="author_sf">
                     <xsl:for-each select="subfield[@id='g'][1]">
                         <xsl:value-of select="$sf_a"/>
-                        <xsl:text>,</xsl:text>
+                        <xsl:text>, </xsl:text>
                         <xsl:value-of select="."/>
-                        <xsl:text>,</xsl:text>
+                        <xsl:text>, </xsl:text>
                         <xsl:value-of select="subfield[@id='h'][1]"/>
                         <xsl:if test="$sf_c">
                             <xsl:text> (</xsl:text>
@@ -889,7 +889,7 @@ dtf - фасет даты
                             <xsl:text>)</xsl:text>
                         </xsl:if>
                         <xsl:for-each select="subfield[@id='g']">
-                            <xsl:text>.</xsl:text>
+                            <xsl:text>. </xsl:text>
                             <xsl:value-of select="."/>
                             <xsl:if test="$sf_c">
                                 <xsl:text> (</xsl:text>
@@ -913,7 +913,7 @@ dtf - фасет даты
                         <xsl:text>)</xsl:text>
                     </xsl:if>
                     <xsl:for-each select="subfield[@id='b']">
-                        <xsl:text>.</xsl:text>
+                        <xsl:text>. </xsl:text>
 
                         <xsl:value-of select="."/>
                         <xsl:if test="$sf_c">
@@ -926,11 +926,11 @@ dtf - фасет даты
                             <xsl:text> (</xsl:text>
                             <xsl:value-of select="subfield[@id='d']"/>
                             <xsl:if test="subfield[@id='f']">
-                                <xsl:text>;</xsl:text>
+                                <xsl:text>; </xsl:text>
                                 <xsl:value-of select="subfield[@id='d']"/>
                             </xsl:if>
                             <xsl:if test="subfield[@id='e']">
-                                <xsl:text>;</xsl:text>
+                                <xsl:text>; </xsl:text>
                                 <xsl:value-of select="subfield[@id='e']"/>
                             </xsl:if>
 
