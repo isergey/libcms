@@ -168,7 +168,7 @@ def _indexing(slug):
             ),
             cursorclass =MySQLdb.cursors.SSDictCursor
         )
-    except OperationalError as e:
+    except MySQLdb.OperationalError as e:
         conn = MySQLdb.connect(
             unix_socket=db_conf['HOST'],
             user=db_conf['USER'],
