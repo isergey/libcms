@@ -471,10 +471,12 @@
 </xsl:template>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Fond">
-    <xsl:for-each select="field[@id='899']/subfield[@id='b']">
-        <field name="fond">
-            <xsl:value-of select="."/>
-        </field>
+    <xsl:for-each select="field[@id='313']/subfield[@id='a']">
+        <xsl:if test="starts-with(., 'Коллекция: ')">
+            <field name="fond">
+                <xsl:value-of select="substring(.,12)"/>
+            </field>
+        </xsl:if>
     </xsl:for-each>
 </xsl:template>
 </xsl:stylesheet>

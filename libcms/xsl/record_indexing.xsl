@@ -789,10 +789,12 @@ dtf - фасет даты
 </xsl:template>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Fond">
-    <xsl:for-each select="field[@id='899']/subfield[@id='b']">
-        <field name="fond_t">
-            <xsl:value-of select="."/>
-        </field>
+    <xsl:for-each select="field[@id='313']/subfield[@id='a']">
+        <xsl:if test="starts-with(., 'Коллекция: ')">
+            <field name="fond_t">
+                <xsl:value-of select="substring(.,12)"/>
+            </field>
+        </xsl:if>
     </xsl:for-each>
 </xsl:template>
 
@@ -1009,10 +1011,12 @@ dtf - фасет даты
 </xsl:template>
 
 <xsl:template name="Fond-facet">
-    <xsl:for-each select="field[@id='899']/subfield[@id='b']">
-        <field name="fond_sf">
-            <xsl:value-of select="."/>
-        </field>
+    <xsl:for-each select="field[@id='313']/subfield[@id='a']">
+        <xsl:if test="starts-with(., 'Коллекция: ')">
+            <field name="fond_sf">
+                <xsl:value-of select="substring(.,12)"/>
+            </field>
+        </xsl:if>
     </xsl:for-each>
 </xsl:template>
 

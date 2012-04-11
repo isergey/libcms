@@ -182,17 +182,16 @@ LOCALE_INDEPENDENT_PATHS = (
 
 SOLR = {
     'catalogs':{
-        'union':{
-            'host': 'http://localhost:8982/solr',
+        'sc2':{
             'database': 'records', # из настрек DATABASES
             'table': 'sc2'
         },
         'ebooks':{
-            'host': 'http://localhost:8983/solr',
             'database': 'records',
             'table': 'ebooks'
         }
-    }
+    },
+    'host': 'http://localhost:8982/solr',
 }
 
 TWITTER_CONSUMER_KEY              = '110125937-qqZsC46x3xqKQCrUu3aafxkg3mGzIOUQh3L7hL6c'

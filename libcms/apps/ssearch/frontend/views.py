@@ -3,6 +3,7 @@ import hashlib
 import datetime
 from lxml import etree
 import sunburnt
+from django.conf import settings
 from django.utils.translation import get_language
 from django.core.cache import cache
 from django.shortcuts import render, HttpResponse, get_object_or_404, Http404
@@ -157,7 +158,7 @@ def terms_constructor(attrs, values):
 
 def search(request):
     search_deep_limit = 5 # ограничение вложенных поисков
-    solr = sunburnt.SolrInterface('http://127.0.0.1:8983/solr/', shards=['localhost:8983/solr','localhost:8982/solr'])
+    solr = sunburnt.SolrInterface(settings.SOLR['host'])
 
     qs = request.GET.getlist('q', [])
     attrs = request.GET.getlist('attr', [])
@@ -307,29 +308,29 @@ def search(request):
 
 
 def detail(request, gen_id):
-    shards=['http://localhost:8983/solr','http://localhost:8982/solr']
-    mlt_docs = []
-    for shard in shards:
-        solr = sunburnt.SolrInterface(shard)
-        mlt_query = solr.query(id=gen_id).mlt(['author_t','subject-heading_t','title_t'],mindf='1', mintf='1')
-#        mlt_query = solr.query(id=gen_id).mlt(["text_t"],mindf='1', mintf='1')
-        mlt_results = mlt_query.execute().more_like_these
-        if gen_id in mlt_results:
-            for doc in  mlt_results[gen_id].docs:
-                mlt_docs.append(doc)
-
-    doc_ids = []
-    for doc in mlt_docs:
-        doc_ids.append(doc['id'])
-
-    records_dict = {}
-    records =  list(Ebook.objects.using('records').filter(gen_id__in=doc_ids))
-    records +=  list(Record.objects.using('records').filter(gen_id__in=doc_ids))
-    for record in records:
-        records_dict[record.gen_id] = xml_doc_to_dict(record.content)
-
-    for doc in mlt_docs:
-        doc['record'] = records_dict.get(doc['id'])
+#    shards=['http://localhost:8983/solr','http://localhost:8982/solr']
+#    mlt_docs = []
+#    for shard in shards:
+#        solr = sunburnt.SolrInterface(shard)
+#        mlt_query = solr.query(id=gen_id).mlt(['author_t','subject-heading_t','title_t'],mindf='1', mintf='1')
+##        mlt_query = solr.query(id=gen_id).mlt(["text_t"],mindf='1', mintf='1')
+#        mlt_results = mlt_query.execute().more_like_these
+#        if gen_id in mlt_results:
+#            for doc in  mlt_results[gen_id].docs:
+#                mlt_docs.append(doc)
+#
+#    doc_ids = []
+#    for doc in mlt_docs:
+#        doc_ids.append(doc['id'])
+#
+#    records_dict = {}
+#    records =  list(Ebook.objects.using('records').filter(gen_id__in=doc_ids))
+#    records +=  list(Record.objects.using('records').filter(gen_id__in=doc_ids))
+#    for record in records:
+#        records_dict[record.gen_id] = xml_doc_to_dict(record.content)
+#
+#    for doc in mlt_docs:
+#        doc['record'] = records_dict.get(doc['id'])
 
     try:
         record = Record.objects.using('records').get(gen_id=gen_id)
@@ -343,21 +344,23 @@ def detail(request, gen_id):
 
 
     doc_tree = etree.XML(record.content)
-    marct_tree = xslt_bib_draw_transformer(doc_tree)
-#    marct_tree = xslt_marc_dump_transformer(doc_tree)
+
+    bib_tree = xslt_bib_draw_transformer(doc_tree)
+    marct_tree = xslt_marc_dump_transformer(doc_tree)
+    bib_dump =  etree.tostring(bib_tree, encoding='utf-8')
     marc_dump =  etree.tostring(marct_tree, encoding='utf-8')
     doc_tree_t = xslt_transformer(doc_tree)
     doc = doc_tree_to_dict(doc_tree_t)
-
     holders = doc.get('holders', list())
     if holders:
         # оставляем уникальных держателей
         doc['holders'] = list(set(holders))
 
     return render(request, 'ssearch/frontend/detail.html', {
+        'doc_dump': bib_dump.replace('<b/>',''),
         'marc_dump': marc_dump,
         'doc': doc,
-        'mlt_docs': mlt_docs,
+#        'mlt_docs': mlt_docs,
     })
 
 

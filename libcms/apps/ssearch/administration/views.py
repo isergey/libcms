@@ -129,7 +129,7 @@ def convert(request):
 
     pass
 
-xslt_root = etree.parse('libcms/xsl/record_mars.xsl')
+xslt_root = etree.parse('libcms/xsl/record_indexing.xsl')
 xslt_transformer = etree.XSLT(xslt_root)
 
 
@@ -137,12 +137,18 @@ def xml_to_dict(doc_tree):
     for el in doc_tree.get_root():
         print el
 
+def indexing(request):
+    for slug in settings.SOLR['catalogs'].keys():
+        print slug
+        _indexing(slug)
+        print slug
 
+    return HttpResponse('Ok')
 
 @transaction.commit_on_success
-def indexing(request, slug):
+def _indexing(slug):
     try:
-        solr_address = settings.SOLR['catalogs'][slug]['host']
+        solr_address = settings.SOLR['host']
         db_conf =  settings.DATABASES.get(settings.SOLR['catalogs'][slug]['database'], None)
     except KeyError:
         raise Http404(u'Catalog not founded')
@@ -171,9 +177,9 @@ def indexing(request, slug):
 
     if not index_status:
         index_status = IndexStatus(catalog=slug)
-        select_query = "select * from %s where deleted = 0" % (settings.SOLR['catalogs'][slug]['table'],)
+        select_query = "SELECT * FROM %s where deleted = 0" % (settings.SOLR['catalogs'][slug]['table'],)
     else:
-        select_query = "select * from %s where (update_date > '%s' or  update_date = '%s') and deleted = 0" % \
+        select_query = "SELECT * FROM %s where (update_date > '%s' or  update_date = '%s') and deleted = 0" % \
                        (
                            settings.SOLR['catalogs'][slug]['table'],
                            str(index_status.last_index_date),
@@ -192,15 +198,17 @@ def indexing(request, slug):
 
     i=0
     while res:
-        content = None
         content = zlib.decompress(res[0]['content'],-15).decode('utf-8')
-
         doc_tree = etree.XML(content)
         doc_tree = xslt_transformer(doc_tree)
         doc = doc_tree_to_dict(doc_tree)
         doc = add_sort_fields(doc)
+        doc['system-add-date_dt'] = res[0]['add_date']
+        doc['system-update-date_dt'] = res[0]['update_date']
+        doc['system-catalog_s'] = slug
         docs.append(doc)
         i+=1
+        print i
         if len(docs) > 200:
             solr.add(docs)
             docs = list()
@@ -213,7 +221,7 @@ def indexing(request, slug):
     solr.commit()
     index_status.indexed = i
     index_status.save()
-    return HttpResponse(u'Ok')
+    return True
 
 
 from ..common import resolve_date

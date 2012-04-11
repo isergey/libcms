@@ -66,12 +66,18 @@
             .results .title{
                 font-size: 16px;
             }
-            .results ul li{
-                margin-bottom: 10px;
+            .results ul.list{
+                list-style: none;
             }
         .sorting {
             margin-left: 25px;
         }
+        .info ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
         </style>
 
         <div class="results span8">
@@ -110,7 +116,7 @@
                     <hr/>
                 </div>
 
-                <ul style="list-style: none">
+                <ul class="list">
                     {% for doc in docs %}
                     <li>
                         <div class="title"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">
@@ -126,24 +132,53 @@
                             {% endfor %}
                         </div>
                         <div class="info">
-                            {% for lang in doc.record|hash:'code-language' %}
-                                {{ lang }}
-                            {% endfor %}
-                            {% for dop in doc.record|hash:'date-of-publication' %}
-                                {{ dop }}
-                            {% endfor %}
-                            {% for content_type in doc.record|hash:'content-type' %}
-                                {{ content_type }}
-                            {% endfor %}
-                            {% for publisher in doc.record|hash:'publisher' %}
-                                {{ publisher }}
-                            {% endfor %}
+                            <ul>
+                            {% if doc.record|hash:'code-language' %}
+                                <li><b>Язык</b>:
+                                {% for lang in doc.record|hash:'code-language' %}
+                                    {% if not forloop.last %}
+                                        {{ lang|language_title }},
+                                    {% else %}
+                                        {{ lang|language_title }}
+                                    {% endif %}
+                                {% endfor %}
+                                </li>
+                            {% endif %}
+                            {% if doc.record|hash:'date-of-publication' %}
+                                <li><b>Дата публикации</b>:
+                                {% for dop in doc.record|hash:'date-of-publication' %}
+                                    {% if not forloop.last %}
+                                        {{ dop }},
+                                    {% else %}
+                                        {{ dop }}
+                                    {% endif %}
+                                {% endfor %}
+                                </li>
+                            {% endif %}
+                            {% if doc.record|hash:'content-type' %}
+                                <li><b>Тип содержания</b>:
+                                {% for content_type in doc.record|hash:'content-type' %}
+                                    {% if not forloop.last %}
+                                        {{ content_type|content_type_title }},
+                                    {% else %}
+                                        {{ content_type|content_type_title }}
+                                    {% endif %}
+                                {% endfor %}
+                                </li>
+                            {% endif %}
+                            {% if doc.record|hash:'publisher' %}
+                                <li><b>Издатель</b>:
+                                {% for publisher in doc.record|hash:'publisher' %}
+                                    {% if not forloop.last %}
+                                        {{ publisher }},
+                                    {% else %}
+                                        {{ publisher }}
+                                    {% endif %}
+                                {% endfor %}
+                                </li>
+                            {% endif %}
+                            </ul>
                         </div>
-{#                        <div>#}
-{#                            {{ doc.title_ss }}<br/>#}
-{#                            {{ doc.author_ss }}<br/>#}
-{#                            {{ doc|hash:"date-of-publication_dts" }}#}
-{#                        </div>#}
                     </li>
                         <hr/>
                     {% endfor %}
@@ -164,6 +199,8 @@
                                         <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>
                                     {% elif facet == 'subject-heading' %}
                                         <li><a href="{% add_get_append q=value.0 attr=facet %}">{{ value.0|lower|capfirst }}</a> (<b>{{ value.1 }}</b>)</li>
+                                    {% elif facet == 'code-language' %}
+                                        <li><a href="{% add_get_append q=value.0 attr='code-language' %}">{{ value.0|language_title }}</a> (<b>{{ value.1 }}</b>)</li>
                                     {% else %}
                                         <li><a href="{% add_get_append q=value.0 attr=facet %}">{{ value.0 }}</a> (<b>{{ value.1 }}</b>)</li>
                                     {% endif %}

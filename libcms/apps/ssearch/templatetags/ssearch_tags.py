@@ -16,7 +16,7 @@ facet_titles = {
     'fond': u'Коллекция',
     'title': u'Заглавие',
     'author': u'Автор',
-    'content-type': u'Тип материала',
+    'content-type': u'Тип содержания',
     'date-of-publication': u'Год публикации',
     'subject-heading': u'Тематика',
     'anywhere': u'Везде',
@@ -55,63 +55,81 @@ content_type_titles = {
 @register.filter
 def content_type_title(code):
     return content_type_titles.get(code, code)
-
-
-#"""
-#rus
-#ger
-#tar
-#eng
-#fre
-#ara
-#spa
-#bak
-#tus
-#cze
-#jap
-#tur
-#hun
-#ita
-#pol
-#rum
-#bul
-#kaz
-#lat
-#tib
-#aze
-#fiu
-#per
-#dut
-#hin
-#kaa
-#por
-#swe
-#uzb
-#chv
-#mul
-#ukr
-#urd
-#bel
-#gre
-#scc
-#shu
-#alt
-#arm
-#grc
-#hau
-#kir
-#kom
-#mis
-#oss
-#pus
-#rud
-#rur
-#slx
-#tat
-#tsr
-#tut
-#tаr
-#yor
-#гар
 #
-#"""
+
+language_titles = {
+    'rus':u"Русский",
+    'eng':u"Английский",
+    'tat':u"Татарский",
+    'tar':u"Татарский",
+    'aze':u"Азербайджанский",
+    'amh':u"Амхарский",
+    'ara':u"Арабский",
+    'afr':u"Африкаанс",
+    'baq':u"Баскский",
+    'bak':u"Башкирский",
+    'bel':u"Белорусский",
+    'bal':u"Белуджский",
+    'bul':u"Болгарский",
+    'bua':u"Бурятский",
+    'hun':u"Венгерский",
+    'vie':u"Вьетнамский",
+    'dut':u"Голландский",
+    'gre':u"Греческий",
+    'geo':u"Грузинский",
+    'dan':u"Датский",
+    'dra':u"Дравидийские",
+    'grc':u"Древнегреческий",
+    'egy':u"Египетский",
+    'heb':u"Иврит",
+    'ind':u"Индонезийский",
+    'ira':u"Иранские",
+    'ice':u"Исландский",
+    'spa':u"Испанский",
+    'ita':u"Итальянский",
+    'kaz':u"Казахский",
+    'cat':u"Каталанский",
+    'kir':u"Киргизский",
+    'chi':u"Китайский",
+    'kor':u"Корейский",
+    'cpe':u"Креольские",
+    'cam':u"Кхмерский",
+    'khm':u"Кхмерский",
+    'lav':u"Латышский",
+    'lit':u"Литовский",
+    'mac':u"Македонский",
+    'chm':u"Марийский",
+    'mon':u"Монгольский",
+    'ger':u"Немецкий",
+    'nor':u"Норвежский",
+    'pol':u"Польский",
+    'por':u"Португальский",
+    'rum':u"Румынский",
+    'sla':u"Славянский",
+    'slo':u"Словацкий",
+    'tib':u"Тибетский",
+    'tur':u"Турецкий",
+    'tus':u'Tускарора',
+    'uzb':u"Узбекский",
+    'ukr':u"Украинский",
+    'fin':u"Финский",
+    'fiu':u"Финно-угорские",
+    'fre':u"Французский",
+    'hin':u"Хинди",
+    'che':u"Чеченский",
+    'cze':u"Чешский",
+    'chv':u"Чувашский",
+    'swe':u"Шведский",
+    'est':u"Эстонский",
+    'epo':u"Эсперанто",
+    'esp':u"Эсперанто",
+    'eth':u"Эфиопский",
+    'gez':u"Эфиопский",
+    'jpn':u"Японский",
+    'jap':u"Японский",
+
+}
+
+@register.filter
+def language_title(code):
+    return language_titles.get(code, code)
