@@ -1,0 +1,69 @@
+{% extends 'frontend_base.html' %}
+{% block title %}Установка связи{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url profile:frontend:index %}">Профиль</a> <span class="divider">/</span></li>
+        <li><a href="{% url urt:frontend:index %}">Прикрепление к библиотеке</a> <span class="divider">/</span></li>
+        <li class="active">Установка связи</li>
+    </ul>
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+        <legend>Установка связи</legend>
+        <fieldset>
+            <div class="control-group ">
+                <label class="control-label" for="cbs_select">Укажите ЦБС к которой принадлежит библиотека</label>
+                <div class="controls">
+                    <select name="territory" id="cbs_select">
+                        <option disabled="" selected="">Выберите ЦБС</option>
+                        {% for cbs in cbses %}
+                            <option value="{{ cbs.id }}">{{ cbs.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            <br/>
+                <div class="controls">
+                    <select name="territory" id="lib_select">
+                        <option disabled="" selected="">Выберите библиотеку</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group ">
+
+            </div>
+
+
+            {% include 'administration/base_form_fields.html' %}
+            {#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Связать</button>
+            </div>
+        </fieldset>
+    </form>
+    <script type="text/javascript">
+        $("#cbs_select").change(function () {
+            alert($(this).val());
+            $.ajax({
+                url:'{% url participants:frontend:branches %}',
+                type:'POST',
+                dataType:"json",
+                async:true,
+                data:{id:$(this).val()},
+                success:function (orgs) {
+                    var html =
+                    $('#lib_select').html(
+                    '<option disabled="" selected="">Выберите библиотеку1</option>'
+                    );
+//                    libs = [];
+//                    for (index in orgs) {
+//                        libs.push(orgs[index]);
+//                    }
+//                    $("#order_step_2").css('display', 'block');
+//                    $("#lib_list").html($.tmpl("libsTemplate", libs));
+//                    var libList = $("#lib_list").html();
+//                    $("#lib_list").html("<option disabled selected>Выберите библиотеку</option>" + libList);
+//                    $.fancybox.center();
+                }
+            });
+        });
+    </script>
+{% endblock %}

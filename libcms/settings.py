@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     # cms apps
     'core',
     'accounts',
+    'profile',
     'social_auth',
     'filebrowser',
     'menu',
@@ -150,6 +151,7 @@ INSTALLED_APPS = (
     'ssearch',
     'rbooks',
     'forum',
+    'urt',
 )
 
 

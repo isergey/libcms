@@ -1,11 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<a href="{% url accounts:frontend:index %}">frontend</a>
-<a href="{{ STATIC_URL }}accounts/administration/file.txt">frontend</a>
-</body>
-</html>
+{% extends 'frontend_base.html' %}
+{% block title %}Прикрепление к библиотеке{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url profile:frontend:index %}">Профиль</a> <span class="divider">/</span></li>
+        <li class="active">Прикрепление к библиотеке</li>
+    </ul>
+    <h3>Установлена связь со следующими библиотеками:</h3>
+{% endblock %}

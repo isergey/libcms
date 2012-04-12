@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 urlpatterns = patterns('',
-#    (r'^', include('accounts.frontend.urls', namespace='frontend')),
-    (r'^admin/', include('urt.administration.urls', namespace='administration')),
+    (r'^', include('urt.frontend.urls', namespace='frontend')),
+#    (r'^admin/', include('urt.administration.urls', namespace='administration')),
 )
 

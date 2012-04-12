@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import simplejson
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse, Http404
 from django.utils import translation
 from django.utils.translation import get_language
 from common.pagination import get_page
@@ -8,6 +8,7 @@ from participants.models import Library, District
 
 def make_library_dict(library):
     return {
+        'id': library.id,
         'code': library.code,
         'name': library.name,
         'postal_address': getattr(library, 'postal_address', u"не указан"),
@@ -26,7 +27,12 @@ def index(request):
     })
 
 
-def branches(request, id):
+def branches(request, id=None):
+    if not id:
+        id = request.POST.get('id', None)
+    if not id:
+        return HttpResponse(u'Wrong arguments', status='405')
+
     library = get_object_or_404(Library, id=id)
     libraries = Library.objects.filter(parent=library).order_by('weight')
 
@@ -35,6 +41,9 @@ def branches(request, id):
         js_orgs.append(make_library_dict(org))
 
     js_orgs = simplejson.dumps(js_orgs, encoding='utf-8', ensure_ascii=False)
+
+    if request.is_ajax():
+        return HttpResponse(js_orgs)
 
     return render(request, 'participants/frontend/branch_list.html',{
         'library': library,
