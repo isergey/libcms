@@ -1,0 +1,66 @@
+{% extends "frontend_base.html" %}
+{% block title %}
+    Мои запросы
+{% endblock %}
+{% block content %}
+    <div class="text">
+        <h3 class="">Мои запросы</h3>
+        <div class="news">
+            {% for saved_request in saved_requests_list.object_list %}
+                <div class="item">
+                    <div class="title">
+                        {{ saved_request.human_query }}
+                    </div>
+                    <div class="teaser">
+                        Каталог: {{ saved_request.zcatalog.title }}
+                    </div>
+                    <div class="detail">
+                        Дата: {{ saved_request.add_date|date:"d M Y H:i" }}
+                    </div>
+                    <div class="detail">
+                        <a href="{% url zgate_make_saved_request saved_request.id %}">
+                            <img src="/media/images/icons/gear_16.png" alt="выполнить запрос"/> выполнить запрос
+                        </a>
+                    </div>
+                    <div class="detail">
+                        <a href="{% url zgate_delete_saved_request saved_request.id %}">
+                            <img src="/media/images/icons/delete_16.png" alt="удалить запрос"/> удалить запрос
+                        </a>
+                    </div>
+                    {% if not forloop.last %}
+                        <hr/>{% endif %}
+                </div>
+            {% empty %}
+                Сохраненных запросов нет.
+            {% endfor %}
+        </div>
+        {% if saved_requests_list.paginator.num_pages > 1 %}
+            <hr class="space"/>
+            <hr/>
+            <div class="block">
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if saved_requests_list.has_previous %}
+                            <a class="page" href="?page={{ saved_requests_list.previous_page_number }}">Предыдущая</a>
+                        {% endif %}
+                        {% for page in saved_requests_list.paginator.page_range %}
+                            {% if page %}
+                                {% ifequal page saved_requests_list.number %}
+                                    <span class="current page">{{ page }}</span>
+                                {% else %}
+                                    <a href="?page={{ page }}" class="page">{{ page }}</a>
+                                {% endifequal %}
+                            {% else %}
+                                ...
+                            {% endif %}
+                        {% endfor %}
+                        {% if saved_requests_list.has_next %}
+                            <a class="page" href="?page={{ saved_requests_list.next_page_number }}">Следующая
+                                страница</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

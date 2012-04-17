@@ -17,7 +17,7 @@
                         <a class="delete btn btn-small btn-danger" href="{% url forum:frontend:forum_delete forum.id %}" title="{% trans 'Delete forum' %}"><i class="icon-trash icon-white"></i></a>
                     {% endif %}
                 </span>
-                <p class="help-block">{{ forum.description }}</p>
+                <p class="help-block">{{ forum.description }} </p>
             </div>
         {% endfor %}
         {% if perms.forum.add_forum %}

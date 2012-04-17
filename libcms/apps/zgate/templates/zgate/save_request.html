@@ -1,0 +1,31 @@
+{% extends "frontend_base.html" %}
+{% block title %}
+    Сохранение запроса
+{% endblock %}
+{% block content %}
+    <div class="text">
+        <h3 class=""><a href="#results" onclick="history.go(-1); return false;">Результаты поиска</a> → запрос сохранен</h3>
+        <div class="news">
+                <div class="item">
+                    <div class="title">
+                        {{ saved_request.human_query }}
+                    </div>
+                    <div class="teaser">
+                        Каталог: {{ saved_request.zcatalog.title }}
+                    </div>
+                    <div class="detail">
+                        Дата: {{ saved_request.add_date|date:"d M Y H:i" }}
+                    </div>
+                    <div class="detail">
+                        <a href="#results" onclick="history.go(-1); return false;"> вернуться к результатам поиска
+                        </a>
+                    </div>
+                    <div class="detail">
+                        <a href="{% url zgate_delete_saved_request saved_request.id %}">
+                            <img src="/media/images/icons/delete_16.png" alt="удалить запрос"/> удалить запрос
+                        </a>
+                    </div>
+                </div>
+        </div>
+    </div>
+{% endblock %}

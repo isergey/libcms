@@ -21,7 +21,14 @@ urlpatterns = patterns('',
 #    (r'^ask_librarian/', include('ask_librarian.urls', namespace='ask_librarian')),
     (r'^ssearch/', include('ssearch.urls', namespace='ssearch')),
     (r'^rbooks/', include('rbooks.urls', namespace='rbooks')),
+    (r'^orders/', include('orders.urls', namespace='orders')),
     (r'^urt/', include('urt.urls', namespace='urt')),
+    (r'^mydocs/', include('mydocs.urls', namespace='mydocs')),
+    (r'^zgate/', include('zgate.urls')),
+
+
+
+#    (r'^mydocs/', include('mydocs.urls',)),
     # Uncomment the next line to enable the admin:
     url(r'^radmin/', include(admin.site.urls)),
     url(r'^jsi18n/$', site.i18n_javascript, name='jsi18n'),

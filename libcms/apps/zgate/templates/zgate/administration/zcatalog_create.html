@@ -1,0 +1,155 @@
+{% extends "zgate/administration/zcatalogs.html" %}
+{% block module_action %}создание каталога для Арм Читателя{% endblock %}
+{% block module_page %}
+<div class="column span-19 prepend-1 last">
+    <form id="dummy" action="" method="post">
+        <fieldset>
+        <fieldset>
+            <div class="last">
+                <label for="{{ form.title.auto_id }}">{{ form.title.label }}</label><br>
+                {{ form.title }}
+                {% if form.title.errors %}
+                <div class="error">
+                    {{ form.title.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <hr class="space"/>
+            <div class="last">
+                <label for="{{ form.description.auto_id }}">{{ form.description.label }}</label><br>
+                 {{ form.description }}
+                {% if form.description.errors %}
+                <div class="error">
+                    {{ form.description.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <hr class="space"/>
+            <div class="last">
+                <label for="{{ form.help.auto_id }}">{{ form.help.label }}</label><br>
+                 {{ form.help }}<br>
+                {% if form.help.errors %}
+                <div class="error">
+                    {{ form.help.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <hr class="space"/>
+            <div class="last">
+                <label for="{{ form.default_lang.auto_id }}">{{ form.default_lang.label }}</label><br>
+                 {{ form.default_lang }}
+                {% if form.default_lang.errors %}
+                <div class="error">
+                    {{ form.default_lang.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <hr class="space"/>
+            <div class="last">
+                <label for="{{ form.url.auto_id }}">{{ form.url.label }}</label><br>
+                 {{ form.url }}
+                {% if form.url.errors %}
+                <div class="error">
+                    {{ form.url.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <hr class="space"/>
+            <div class="last">
+                <label for="{{ form.xml.auto_id }}">{{ form.xml.label }}</label><br>
+                 {{ form.xml }}
+                {% if form.xml.errors %}
+                <div class="error">
+                    {{ form.xml.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <hr class="space"/>
+            <div class="last">
+                <label for="{{ form.xsl.auto_id }}">{{ form.xsl.label }}</label><br>
+                 {{ form.xsl }}
+                {% if form.xsl.errors %}
+                <div class="error">
+                    {{ form.xsl.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <hr class="space"/>
+            <div class="last">
+                 {{ form.can_search }} <label for="{{ form.can_search.auto_id }}">{{ form.can_search.label }}</label>
+                {% if form.can_search.errors %}
+                <div class="error">
+                    {{ form.can_search.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+
+                 {{ form.can_user_auth }} <label for="{{ form.can_user_auth.auto_id }}">{{ form.can_user_auth.label }}</label>
+                {% if form.can_user_auth.errors %}
+                <div class="error">
+                    {{ form.can_user_auth.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+
+                 {{ form.can_order_auth_only }} <label for="{{ form.can_order_auth_only.auto_id }}">{{ form.can_order_auth_only.label }}</label>
+                {% if form.can_order_auth_only.errors %}
+                <div class="error">
+                    {{ form.can_order_auth_only.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <hr class="space"/>
+            <fieldset>
+                <div class="last">
+
+                     {{ form.can_order_copy }} <label for="{{ form.can_order_copy.auto_id }}">{{ form.can_order_copy.label }}</label>
+                    {% if form.can_order_copy.errors %}
+                    <div class="error">
+                        {{ form.can_order_copy.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="last">
+
+                     {{ form.can_order_document }} <label for="{{ form.can_order_document.auto_id }}">{{ form.can_order_document.label }}</label>
+                    {% if form.can_order_document.errors %}
+                    <div class="error">
+                        {{ form.can_order_document.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="last">
+
+                     {{ form.can_reserve }} <label for="{{ form.can_reserve.auto_id }}">{{ form.can_reserve.label }}</label>
+                    {% if form.can_reserve.errors %}
+                    <div class="error">
+                        {{ form.can_reserve.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="last">
+                <label for="{{ form.view_catalog_groups.auto_id }}">{{ form.view_catalog_groups.label }}</label>
+                {{ form.view_catalog_groups }}
+                {% if form.view_catalog_groups.errors %}
+                <div class="error">
+                    {{ form.view_catalog_groups.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <button type="submit" class="button positive" title="Создать каталог">
+                    <img src="/media/images/icons/tick_16.png" alt=""/> Создать
+                </button>
+                <a class="button negative" title="Отменить создание каталога" href="{% url administration_zgate_index %}">
+                    <img src="/media/images/icons/stop_16.png" alt=""/>Отменить
+                </a>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<hr class="space"/>
+{% endblock %}

@@ -1,0 +1,344 @@
+{% extends "frontend_base.html" %}
+{% load order_tags %}
+{% load hash %}
+{% block content %}
+    <script type="text/javascript">
+        function checkRecords() {
+        }
+    </script>
+    <style type="text/css">
+        ul.owners, ul.order_buttons {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul.owners li, ul.order_buttons li {
+            margin: 0 0 5px 0;
+        }
+
+        #order p {
+            margin: 0;
+        }
+    </style>
+    <h3>{{ catalog_title }}</h3>
+
+    <div class="zresults">
+        {{ search_results|safe }}
+    </div>
+    <div>
+        {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}
+    </div>
+    {% if save_document %}
+        <a href="#save_document_dialog" id="save_document_button" class="save_document_dialog blue awesome">Сохранить в
+            документах</a>
+    {% endif %}
+
+    <div class="owners text">
+        {% if owners %}
+            {% load order_tags %}
+            {% if catalog.can_reserve %}
+                <p style="padding-top:20px"><strong>Документ есть в следующих библиотеках:</strong><p>
+                <ul class="owners">
+                    {% for owner in owners %}
+                        <li><a class="reserve_document blue awesome" id="{{ owner.code }}"
+                               href="#reserve">Забронировать</a> {{ owner.name }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if catalog.can_order_copy or catalog.can_order_document %}
+                <p style="padding-top:5px"><strong>Вы можете:</strong><p>
+                <ul class="order_buttons">
+                    {% if catalog.can_order_copy %}
+                        <li><a href="#order" id="order_copy" class="order_copy blue awesome">Заказать копию
+                            документа</a>
+                        </li>
+                    {% endif %}
+                    {% if catalog.can_order_document %}
+                        <li><a href="#order" id="order_document" class="order_document blue awesome">Заказать документ во
+                        временное пользование</a>
+                    {% endif %}
+                    <li>
+                </ul>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div style="display:none;">
+        <div id="save_document_dialog" style="width: 530px;">
+            <b><p>Сохранение документа:</p></b>
+
+            <div id="saving_document_record" style="margin:5px 0 10px 0; border: 1px solid #C1C3C4;">
+            </div>
+            <p style="margin:10px 0 0 0">Заметки<br/>
+                <textarea id="saving_document_comments"
+                          style="width:97%;height:50px;border: 1px solid #C1C3C4;"></textarea>
+            </p>
+            <a style="margin:0 0 5px 0;" href="#reserve" id='do_save_document_button'
+               class="save_document_button blue awesome">Сохранить</a></p>
+        </div>
+    </div>
+
+    <div style="display:none;">
+        <div id="reserve" style="width: 530px;">
+            <b><p>Бронирование документа:</p></b>
+
+            <div id="reserve_record" style="margin:5px 0 10px 0; border: 1px solid #C1C3C4;">
+            </div>
+            <div>
+                <p><b>Информация о библиотеке:</b></p>
+
+                <div id="reserve_org_info"></div>
+            </div>
+            <p style="margin:10px 0 0 0">Комментарии к заказу<br/>
+                <textarea id="reserve_comments" style="width:430px;height:50px;border: 1px solid #C1C3C4;"></textarea>
+            </p>
+            <a style="margin:0 0 5px 0;" href="#reserve" id='do_reserve_button' class="order_button blue awesome">Забронировать</a></p>
+
+        </div>
+    </div>
+
+
+
+    <div style="display:none;">
+        <div id="order" style="width: 530px;">
+            <b><p id="order_type"></p></b>
+
+            <div id="order_record" style="margin:5px 0 10px 0; border: 1px solid #C1C3C4;">
+            </div>
+            <p><b>Выберите район, в котором хотите получить заказ </b>&#8628;</p>
+            <select style="min-width:200px;" name="territory" id="district_select">
+                <option disabled="" selected="">Выберите район</option>
+                <option value="1">Адмиралтейский</option>
+                <option value="2">Василеостровский</option>
+                <option value="3">Выборгский</option>
+                <option value="4">Калининский</option>
+                <option value="5">Кировский</option>
+                <option value="6">Колпинский</option>
+                <option value="7">Красногвардейский</option>
+                <option value="8">Красносельский</option>
+                <option value="9">Кронштадтский</option>
+                <option value="10">Курортный</option>
+                <option value="11">Московский</option>
+                <option value="12">Невский</option>
+                <option value="13">Петроградский</option>
+                <option value="14">Петродворцовый</option>
+                <option value="15">Приморский</option>
+                <option value="16">Пушкинский</option>
+                <option value="17">Фрунзенский</option>
+                <option value="18">Центральный</option>
+            </select>
+
+            <div id="order_step_2" style="display:none">
+                <p id="select_lib_p" style="margin:10px 0 5px 0;"><b>Выберите библиотеку, в которой хотите получить
+                    заказ</b> &#8628;</p>
+                <select id="lib_list" name="libs" style="min-width:200px;"></select>
+            </div>
+            <div id="order_step_3" style="display:none;margin:10px 0 0 0;">
+                <div id="copy_part" style="display:none;"><p>Страницы для копирования<br/>
+                    <textarea id="copy_info" style="width:430px;height:30px;border: 1px solid #C1C3C4;"></textarea></p>
+                </div>
+                <p>Комментарии к заказу<br/>
+                    <textarea id="order_comments" style="width:430px;height:50px;border: 1px solid #C1C3C4;"></textarea>
+                </p>
+                <a style="margin:0 0 5px 0;" href="#order" id='do_order_button' class="order_button1 blue awesome">Заказать</a></p>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="/media/js/zgate.js"></script>
+
+    <script type="text/javascript">
+        function alertError(error) {
+            alert(error.error);
+        }
+        var order = {
+            'type':null,
+            'record_id':'{{ record_id }}',
+            'zsession':'{{ zsession }}',
+            'zoffset':'{{ zoffset }}',
+            'comments':null,
+            'copy_info':null,
+            'catalog_id':'{{ catalog.latin_title }}',
+            'org_id':null
+        }
+        var orderType = null;
+
+        var libs = [
+            /*{'code':'1', 'title':'bib1'},
+             {'code':'2', 'title':'bib2'},
+             {'code':'3', 'title':'bib3'}*/
+        ];
+        var markup = "<option value='${code}'>${title}</option>";
+        $.template("libsTemplate", markup);
+        $("a.order_copy").fancybox({'hideOnOverlayClick':false, 'speedIn':0, centerOnScroll:true});
+        $("a.order_document").fancybox({'hideOnOverlayClick':false, 'speedIn':0, centerOnScroll:true});
+
+        $("a.reserve_document").fancybox({'hideOnOverlayClick':false, 'speedIn':0, centerOnScroll:true});
+        $("a.save_document_dialog").fancybox({'hideOnOverlayClick':false, 'speedIn':0, centerOnScroll:true});
+        $("#district_select").change(function () {
+            $.ajax({
+                url:'/orders/orgbydistrict/',
+                type:'POST',
+                dataType:"json",
+                async:false,
+                data:{district:$("#district_select").val()},
+                success:function (orgs) {
+                    libs = [];
+                    for (index in orgs) {
+                        libs.push(orgs[index]);
+                    }
+                    $("#order_step_2").css('display', 'block');
+                    $("#lib_list").html($.tmpl("libsTemplate", libs));
+                    var libList = $("#lib_list").html();
+                    $("#lib_list").html("<option disabled selected>Выберите библиотеку</option>" + libList);
+                    $.fancybox.center();
+                }
+            });
+
+        });
+        $("#lib_list").change(function () {
+            if (orderType == 'copy') {
+                $("#copy_part").css('display', 'block');
+            }
+            $("#order_step_3").css('display', 'block');
+            $.fancybox.center();
+        });
+
+        $('.reserve_document').click(function () {
+            var org_info_markup = "${title}<br/>Адрес: ${postal_address}<br/>Телефон: ${phone}<br/> e-mail: ${email}";
+            $.template("orgInfoTemplate", org_info_markup);
+
+            orderTypeLabel = "Бронирование документа.";
+            orderType = 'reserve';
+            var org_id = $(this).attr('id');
+            order.org_id = org_id
+            $('#reserve_record').text($('.record').text());
+            $.ajax({
+                url:'/orders/orgbycode/',
+                type:'POST',
+                dataType:"json",
+                async:false,
+                data:{'code':org_id},
+                success:function (response) {
+                    if (response.status == 'error') {
+                        alertError(response);
+                        $.fancybox.close();
+                    }
+                    if (response.status == 'ok') {
+                        $('#reserve_org_info').html($.tmpl("orgInfoTemplate", response.org_info));
+                        $.fancybox.center();
+                    }
+                }
+            });
+            //$('#reserve_org_info').text($(this).attr('id'));
+        });
+
+        $('#order_copy').click(function () {
+            orderTypeLabel = "Вы заказываете копию документа.";
+            orderType = 'copy';
+            $('#order_comments').val('');
+            $('#copy_info').val('');
+            $("#order_step_2").css('display', 'none');
+            $("#copy_part").css('display', 'block');
+            $('#order_type').text(orderTypeLabel);
+            $('#order_record').text($('.record').text());
+        });
+        $('#order_document').click(function () {
+            orderTypeLabel = "Вы заказываете документ во временное пользование.";
+            orderType = 'document';
+            $('#order_comments').val('');
+            $('#copy_info').val('');
+            $("#order_step_2").css('display', 'none');
+            $('#order_type').text(orderTypeLabel);
+            $('#order_record').text($('.record').text());
+            $("#copy_part").css('display', 'none');
+        });
+        $('#save_document_button').click(function () {
+            orderType = 'save_document';
+            $('#saving_document_record').text($('.record').text());
+        });
+        $('#do_reserve_button').click(function () {
+            order.type = orderType;
+            order.comments = $('#reserve_comments').val();
+            order.copy_info = 0;
+
+            //alert(order.type + ' ' + order.record_id + ' ' + order.zsession + ' '+order.comments + ' '+order.copy_info + ' '+order.catalog_id + ' ');
+            $.ajax({
+                url:'/orders/makeorder/',
+                type:'POST',
+                dataType:"json",
+                async:false,
+                data:order,
+                success:function (response) {
+                    if (response.status == 'error') {
+                        alertError(response);
+                        $.fancybox.close();
+                    }
+                    if (response.status == 'ok') {
+
+                        alert('Ваш заказ отправлен. \n За ходом выполнения следите в личном кабинете.');
+                        $.fancybox.close();
+                    }
+
+                }
+
+            });
+        });
+
+        $('#do_order_button').click(function () {
+            order.type = orderType;
+            order.comments = $('#order_comments').val();
+            order.copy_info = $('#copy_info').val();
+            order.org_id = $('#lib_list').val();
+
+            //alert(order.type + ' ' + order.record_id + ' ' + order.zsession + ' '+order.comments + ' '+order.copy_info + ' '+order.catalog_id + ' ');
+            $.ajax({
+                url:'/orders/makeorder/',
+                type:'POST',
+                dataType:"json",
+                async:false,
+                data:order,
+                success:function (response) {
+                    if (response.status == 'error') {
+                        alertError(response);
+                        $.fancybox.close();
+                    }
+                    if (response.status == 'ok') {
+
+                        alert('Ваш заказ отправлен. \n За ходом выполнения следите в личном кабинете.');
+                        $.fancybox.close();
+                    }
+                }
+            });
+        });
+        $('#do_save_document_button').click(function () {
+            order.type = orderType;
+            order.comments = $('#saving_document_comments').val();
+
+            //alert(order.type + ' ' + order.record_id + ' ' + order.zsession + ' '+order.comments + ' '+order.copy_info + ' '+order.catalog_id + ' ');
+            $.ajax({
+                url:'{% url zgate_save_document %}',
+                type:'POST',
+                dataType:"json",
+                async:false,
+                data:order,
+                success:function (response) {
+                    if (response.status == 'error') {
+                        alertError(response);
+                        $.fancybox.close();
+                    }
+                    if (response.status == 'ok') {
+                        $.fancybox.close();
+                        alert('Документ сохранен');
+                        $.fancybox.close();
+                    }
+
+                }
+            });
+        });
+    </script>
+
+{% endblock %}
+

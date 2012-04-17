@@ -9,7 +9,7 @@ from django.core.cache import cache
 from django.shortcuts import render, HttpResponse, get_object_or_404, Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import  QueryDict
-from ssearch.models import Record, Ebook
+from ..models import Record, Ebook
 
 xslt_root = etree.parse('libcms/xsl/record_in_search.xsl')
 xslt_transformer = etree.XSLT(xslt_root)
@@ -360,7 +360,7 @@ def detail(request, gen_id):
         'doc_dump': bib_dump.replace('<b/>',''),
         'marc_dump': marc_dump,
         'doc': doc,
-#        'mlt_docs': mlt_docs,
+        'gen_id': gen_id,
     })
 
 

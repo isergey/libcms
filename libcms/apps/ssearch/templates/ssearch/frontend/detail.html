@@ -1,6 +1,8 @@
 {% extends 'frontend_base.html' %}
 {% load hash %}
 {% load ssearch_tags %}
+{% load order_tags %}
+{% load mydocs_tags %}
 {% block title %}детальная информация{% endblock %}
 {% block content %}
     <style type="text/css">
@@ -47,13 +49,13 @@
         </div>
         <div class="holders" style="clear: both;">
             <hr/>
-        <h3>Держатели:</h3>
-            <ul>
-                {% for holder in doc.holders %}
-                <li>{{ holder }}</li>
-                {% endfor %}
-            </ul>
+            <h3>Держатели:</h3>
+            {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}
         </div>
+        <h3>Сохранить документ</h3>
+        {% drow_save_doc request.user gen_id %}
+
+
     </div>
 {#    <hr/>#}
 {#    <div id="vk_like"></div>#}
@@ -88,15 +90,15 @@
 {#        {% endfor %}#}
 {#    </ul>#}
     <!-- Put this script tag to the <head> of your page -->
-    <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?49"></script>
-
-    <script type="text/javascript">
-        VK.init({apiId: 2797756, onlyWidgets: true});
-    </script>
-
-    <!-- Put this div tag to the place, where the Like block will be -->
-
-    <script type="text/javascript">
-        VK.Widgets.Like("vk_like", {type: "button"});
-    </script>
+{#    <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?49"></script>#}
+{##}
+{#    <script type="text/javascript">#}
+{#        VK.init({apiId: 2797756, onlyWidgets: true});#}
+{#    </script>#}
+{##}
+{#    <!-- Put this div tag to the place, where the Like block will be -->#}
+{##}
+{#    <script type="text/javascript">#}
+{#        VK.Widgets.Like("vk_like", {type: "button"});#}
+{#    </script>#}
 {% endblock %}

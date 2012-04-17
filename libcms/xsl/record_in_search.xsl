@@ -44,6 +44,7 @@
 <!-- match on marcxml record -->
 <xsl:template match="record">
     <doc>
+        <xsl:call-template name="Local-number"/>
         <xsl:call-template name="Title"/>
         <xsl:call-template name="Author"/>
         <xsl:call-template name="Subject-heading"/>
@@ -58,6 +59,15 @@
     </doc>
 
 </xsl:template>
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<xsl:template name="Local-number">
+    <xsl:for-each select="field[@id='001']">
+        <field name="local-number">
+            <xsl:value-of select="."/>
+        </field>
+    </xsl:for-each>
+</xsl:template>
+
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Title">
     <field name="title">

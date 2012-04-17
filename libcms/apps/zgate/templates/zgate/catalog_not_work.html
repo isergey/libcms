@@ -1,0 +1,42 @@
+{% extends "frontend_base.html" %}
+{% block content %}
+    <h3>{{ catalog_title }}</h3>
+    <div class="zgate text">
+        {{ message }}
+    </div>
+{% endblock %}
+
+<?xml version="1.0" encoding="UTF-8"?>
+<record syntax="1.2.840.10003.5.109.10">
+    <eSTaskPackage>
+        <packageType>2</packageType>
+        <packageName>129285606419181</packageName>
+        <userId>burchik</userId>
+        <retentionTime>315360000</retentionTime>
+        <permissions>
+            <permission>
+                <userId>burchik</userId>
+                <allowableFunctions>
+                    <modifyContents/>
+                    <modifyPermissions/>
+                    <present/>
+                </allowableFunctions>
+            </permission>
+        </permissions>
+        <targetReference>201012201741043</targetReference>
+        <creationDateTime>20101220174104</creationDateTime>
+        <taskStatus>0</taskStatus>
+        <taskSpecificParameters>
+            <taskPackage>
+                <originPart>
+                    <databaseNames>
+                        <database>z39.50s://ruslan.ru/books,z39.50s://tricon.vvsu.ru/vsues</database>
+                    </databaseNames>
+                </originPart>
+                <targetPart>
+                    <query>m[1,1021]</query>
+                </targetPart>
+            </taskPackage>
+        </taskSpecificParameters>
+    </eSTaskPackage>
+</record>

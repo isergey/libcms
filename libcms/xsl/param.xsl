@@ -161,7 +161,7 @@
 <xsl:param name="max.records" select="10"/>
 <xsl:param name="step.size" select="0"/>
 <xsl:param name="record.syntax" select="'!'"/>
-<xsl:param name="ht" select="true()"/>
+<xsl:param name="ht" select="false()"/>
 <xsl:param name="abstract" select="true()"/>
 <xsl:param name="subject" select="false()"/>
 <xsl:param name="class" select="true()"/>
@@ -176,7 +176,7 @@
 <xsl:param name="follow.attrs" select="'[1,12]'"/>
 <xsl:param name="personal.author.attrs" select="'[1,1004,4,101]'"/>
 <xsl:param name="corporate.author.attrs" select="'[1,1005,4,101]'"/>
-<xsl:param name="link.to.related" select="true()"/>
+<xsl:param name="link.to.related" select="false()"/>
 <xsl:param name="link.attrs" select="'[1,1049]'"/>
 <xsl:param name="resource.reports" select="false()"/>
 <xsl:param name="report" select="'report.html'"/>

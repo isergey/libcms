@@ -1,0 +1,38 @@
+{% extends "frontend_base.html" %}
+{% block content %}
+<style>
+.zgate input{
+            border-radius: 2px;
+            border: 1px solid #dfdfdf;
+            background: #fff;
+            padding:5px;
+            color: #333333;
+}
+.zgate select {
+            padding: 4px;
+            border-radius: 0px;
+            border: 1px solid #dfdfdf;
+            background: #f4f4f5;
+            color: #333333;
+}
+.zgate tbody tr:nth-child(even) td ,.zgate tbody tr.even td {
+    background: #fff;
+}
+
+
+.buttons input[type=submit] {
+    background: #f4f4f5;
+    cursor: pointer;
+}
+</style>
+<h3>{{ catalog_title }}</h3>
+<div class="zgate text">
+<div>
+    {{ catalog.description|safe }}
+
+</div>
+<div><a href="{% url zgate_help  catalog.id %}">Справка по работе с каталогом</a></div>
+{{ search_form|safe}}
+</div>
+<script type="text/javascript" src="/media/js/zgate.js"></script>
+{% endblock %}

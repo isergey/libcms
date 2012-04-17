@@ -255,10 +255,10 @@ RUSMARC
             <xsl:otherwise>
               <xsl:choose>
                 <xsl:when test="$hide.record.warnings">
-                  <a class="warn" title="{$msg/messages/localization[@language=$lang]/msg[@id='F_IBL']}: '{$bl}'"><xsl:text>*</xsl:text></a>
+                  <a class="warn" title="{$msg/messages/localization[@language=$lang]/msg[@id='F_IBL']}: '{$bl}'"><xsl:text>*</xsl:text> </a>
                 </xsl:when>
                 <xsl:otherwise>
-                  <span class="warn"><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='F_IBL']"/><xsl:text>: '</xsl:text><xsl:value-of select="$bl"/><xsl:text>'</xsl:text></span>
+                  <span class="warn"><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='F_IBL']"/><xsl:text>: '</xsl:text><xsl:value-of select="$bl"/><xsl:text>'</xsl:text> </span>
                 </xsl:otherwise>
               </xsl:choose>
               <br/>
@@ -274,7 +274,7 @@ RUSMARC
         </xsl:if>
 	<xsl:if test="$record.source or $holdings">
 		<table width="100%">
-		<tr></tr><tr>
+		<tr> </tr><tr>
 		<td align="left" valign="top" class="recsrc">
 		  <xsl:if test="$record.source">
 		    <xsl:call-template name="int"/>
@@ -397,7 +397,7 @@ RUSMARC
   <xsl:call-template name="notes"/>
 
   <xsl:if test="$fmt != 'B' and field[@id='464']">
-    <p><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='I_CONTENTS']"/></p>
+    <p><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='I_CONTENTS']"/> </p>
     <xsl:for-each select="field[@id='464']">
       <xsl:choose>
         <xsl:when test="subfield[@id='1']/field[@id='001'] and $ht">
@@ -446,10 +446,10 @@ RUSMARC
         <xsl:choose>
           <xsl:when test="$follow.header and not($enclosed_link) and not(//record[@syntax='1.2.840.10003.5.106']) and //database != $circ.db">
             <xsl:if test="string-length($h1) &gt; 0">
-              <a href="{$cgi.script.URL}?ACTION=follow&amp;SESSION_ID={$session.id}&amp;TERM={$h1}{$personal.author.attrs}&amp;LANG={$lang}"><xsl:value-of select="$h1"/></a>
+              <a href="{$cgi.script.URL}?ACTION=follow&amp;SESSION_ID={$session.id}&amp;TERM={$h1}{$personal.author.attrs}&amp;LANG={$lang}"><xsl:value-of select="$h1"/> </a>
             </xsl:if>
             <xsl:if test="string-length($h2) &gt; 0">
-              <a href="{$cgi.script.URL}?ACTION=follow&amp;SESSION_ID={$session.id}&amp;TERM={$h2}{$corporate.author.attrs}&amp;LANG={$lang}"><xsl:value-of select="$h2"/></a>
+              <a href="{$cgi.script.URL}?ACTION=follow&amp;SESSION_ID={$session.id}&amp;TERM={$h2}{$corporate.author.attrs}&amp;LANG={$lang}"><xsl:value-of select="$h2"/> </a>
             </xsl:if>
           </xsl:when>
           <xsl:otherwise>
@@ -534,9 +534,9 @@ RUSMARC
           </xsl:call-template>
         </xsl:otherwise>
       </xsl:choose>
-      </td></tr>
+      </td> </tr>
     </xsl:for-each>
-    </table></p>
+    </table> </p>
   </xsl:if>
 </xsl:template>
 
@@ -850,7 +850,7 @@ RUSMARC
 </xsl:template>
 
 <xsl:template name="collection">
-  <span class="warn"><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='W_UNIMPL']"/></span>
+  <span class="warn"><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='W_UNIMPL']"/> </span>
 </xsl:template>
 
 <xsl:template name="subjects">
@@ -1112,7 +1112,7 @@ RUSMARC
         <xsl:text> (</xsl:text>
         <xsl:for-each select="subfield[@id='1']/field[starts-with(@id,'70')]/subfield[@id='c' or @id='f']">
           <xsl:value-of select="."/>
-          <xsl:if test="position() != last()"><xsl:text> ; </xsl:text></xsl:if>
+          <xsl:if test="position() != last()"><xsl:text> ; </xsl:text> </xsl:if>
         </xsl:for-each>
         <xsl:text>)</xsl:text>
       </xsl:if>
@@ -1701,10 +1701,10 @@ RUSMARC
         <xsl:value-of select="$dlm"/>
         <xsl:choose>
           <xsl:when test="subfield[@id='z']">
-            <a href="{subfield[@id='u']}"><xsl:value-of select="subfield[@id='z']"/></a>
+            <a href="{subfield[@id='u']}"><xsl:value-of select="subfield[@id='z']"/> </a>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text>&lt;URL:</xsl:text><a href="{subfield[@id='u']}"><xsl:value-of select="subfield[@id='u']"/></a><xsl:text>&gt;</xsl:text>
+            <xsl:text>&lt;URL:</xsl:text><a href="{subfield[@id='u']}"><xsl:value-of select="subfield[@id='u']"/> </a><xsl:text>&gt;</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
@@ -1795,7 +1795,7 @@ RUSMARC
     <xsl:text> (</xsl:text>
     <xsl:for-each select="subfield[@id='c' or @id='f']">
       <xsl:value-of select="."/>
-      <xsl:if test="position() != last()"><xsl:text> ; </xsl:text></xsl:if>
+      <xsl:if test="position() != last()"><xsl:text> ; </xsl:text> </xsl:if>
     </xsl:for-each>
     <xsl:text>) </xsl:text>
   </xsl:if>

@@ -1,0 +1,12 @@
+<ul>
+    {% for owner in owners %}
+        <li><b>{{ owner.owner.name }}</b>
+        {% if owner.has_catalog %}<a href="{% url orders:frontend:zorder owner.owner.id %}?id={{ record_id|urlencode }}">заказать</a>{% else %}(заказ невозможен: отсутвует информация о сервере заказа){% endif %}</li>
+    {% endfor %}
+    {% if empty_codes %}
+        {% for empty_code in empty_codes %}
+            <li>{{ empty_code }}</li>
+        {% endfor %}
+    {% endif %}
+
+</ul>

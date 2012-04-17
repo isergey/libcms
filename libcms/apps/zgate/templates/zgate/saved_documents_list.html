@@ -1,0 +1,67 @@
+{% extends "frontend_base.html" %}
+{% block title %}
+    Мои документы
+{% endblock %}
+{% block content %}
+    <style type="text/css">
+    .documnet .content {
+        border: #f5f4f4 solid 1px;
+        background: #fff;
+        box-shadow: 1px 1px 5px #ccc;
+    }
+    .documnet .info {
+
+        background: #fff;
+
+    }
+    </style>
+    <div class="text">
+        <h3 class="">Мои документы</h3>
+        {% if saved_documents %}
+            {% if format == 'full' %}
+                <a href="?format=short" class="blue awesome">Показать краткие записи</a>
+            {% else %}
+                <a href="?format=full" class="blue awesome">Показать полные записи</a>
+            {% endif %}
+            <hr/>
+            <form  method="POST" action="{% url zgate_load_saved_documents %}">
+                <div class="news">
+                    {% for saved_document in saved_documents %}
+                        <div class="documnet">
+                            <div class="content">
+                                <input type="checkbox" name="download" value="{{ saved_document.id }}">
+                                {% if format == 'full' %}
+                                    {{ saved_document.full_document|safe }}
+                                {% else %}
+                                    {{ saved_document.short_document|safe }}
+                                {% endif %}
+                            </div>
+                            <div class="comments">
+                                {{ saved_document.comments}}
+                            </div>
+                            <hr class="space"/>
+                            <div class="title">
+                                Найден в: {{ saved_document.zcatalog.title }}
+                            </div>
+
+                            <div class="detail">
+                                <a href="{% url zgate_delete_saved_document saved_document.id %}">
+                                    <img src="/media/images/icons/delete_16.png" alt="удалить документ"/> Удалить документ
+                                </a>
+                            </div>
+
+                            {% if not forloop.last %}
+                                <hr/>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        Сохраненных документов нет.
+                    {% endfor %}
+                </div>
+            <INPUT TYPE=SUBMIT VALUE="Выгрузить в текстовой файл "/>
+            </form>
+        {% else %}
+            Сохраненных документов нет.
+        {% endif %}
+    </div>
+{% endblock %}

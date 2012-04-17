@@ -1,0 +1,68 @@
+{% extends "zgate/administration/zcatalogs.html" %}
+{% block module_action %}список каталогов{% endblock %}
+{% block module_page %}
+    <div class="module_actions column prepend-1 last">
+        <a href="{% url administration_zgate_create %}" class="button positive"><img src="/media/images/icons/plus_16.png"/>создать каталог</a>
+        <a  title="Статистика"  class="button" href="{% url administration_zgate_statistics %}" >
+            статистика
+        </a>
+    </div>
+    <hr/>
+    <div class="table_container column span-19 prepend-1 last">
+        <div class="table_title last">
+            Список каталогов
+        </div>
+        <table>
+            <tr>
+                <th>#</th>
+                <th class="span-9">Название</th>
+                <th>Действия</th>
+            </tr>
+            {% for zcatalog in zcatalogs_list.object_list %}
+            <tr>
+                <td>{{ zcatalog.id }}</td>
+                <td>{{ zcatalog.title }}</td>
+                <td>
+                    <a  title="Перейти к каталогу"  class="button" href="{% url zgate_index zcatalog.id %}" target="_blank">
+                        <img src="/media/images/icons/search_16.png" alt=""/>
+                    </a>
+                    <a title="Редактировать каталог" class="button" href="{% url administration_zgate_edit zcatalog.id %}">
+                        <img src="/media/images/icons/pencil_16.png" alt=""/>
+                    </a>
+                    <a class="button negative delete" title="Удалить каталог" href="{% url administration_zgate_delete  zcatalog.id%}">
+                        <img src="/media/images/icons/delete_16.png" alt=""/>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% if zcatalogs_list.paginator.num_pages > 1 %}
+    <div class="span-19 prepend-1 last">
+        <div class="block">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if zcatalogs_list.has_previous %}
+                        <a class="page" href="?page={{ zcatalogs_list.previous_page_number }}">сюда</a>
+                    {% endif %}
+                    {% for page in zcatalogs_list.paginator.page_range %}
+                        {% if page %}
+                            {% ifequal page zcatalogs_list.number %}
+                                <span class="current page">{{ page }}</span>
+                            {% else %}
+                                <a href="?page={{ page }}" class="page">{{ page }}</a>
+                            {% endifequal %}
+                        {% else %}
+                            ...
+                        {% endif %}
+                    {% endfor %}
+                    {% if zcatalogs_list.has_next %}
+                        <a class="page" href="?page={{ zcatalogs_list.next_page_number }}">туда</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <hr class="space"/>
+{% endblock %}

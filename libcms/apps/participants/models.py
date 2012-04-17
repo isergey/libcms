@@ -62,7 +62,7 @@ class Library(MPTTModel):
 #    country = models.ForeignKey(Country, verbose_name=u'Страна', db_index=True, blank=True, null=True)
 #    city = models.ForeignKey(City, verbose_name=u'Город', db_index=True, blank=True, null=True)
     district = models.ForeignKey(District, verbose_name=u'Район', db_index=True, blank=True, null=True)
-    letter = models.CharField(verbose_name=u"Первая буква алфавита", help_text=u'Укажите первую букву, которой будет соответвовать фильтрация по алфавиту', max_length=1)
+#    letter = models.CharField(verbose_name=u"Первая буква алфавита", help_text=u'Укажите первую букву, которой будет соответвовать фильтрация по алфавиту', max_length=1)
 
     profile = models.TextField(verbose_name=u'Профиль', max_length=10000, blank=True)
     phone = models.CharField(max_length=64, verbose_name=u'Телефон', blank=True)
@@ -71,6 +71,7 @@ class Library(MPTTModel):
 
 
     http_service = models.URLField(max_length=255, verify_exists=False, verbose_name=u'Адрес сайта', blank=True)
+    z_service = models.CharField(max_length=255, verbose_name=u'Адрес Z сервера', blank=True, help_text=u'Укажите адрес Z сревера в формате host:port (например localhost:210)')
     ill_service = models.EmailField(max_length=255, verbose_name=u'Адрес ILL сервиса', blank=True)
     edd_service = models.EmailField(max_length=255, verbose_name=u'Адрес ЭДД сервиса', blank=True)
     mail = models.EmailField(max_length=255, verbose_name=u'Адрес электронной почты', blank=True, null=True)
@@ -83,7 +84,7 @@ class Library(MPTTModel):
 
     def __unicode__(self):
         if self.is_root_node():
-            return self.name + u' (ЦБС)'
+            return self.name
         return self.name
 
 #    def clean(self):
