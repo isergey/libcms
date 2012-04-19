@@ -5,4 +5,7 @@ import views
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^detail/(?P<gen_id>[A-Za-z]+)/$', views.detail, name='detail'),
+    url(r'^requests/$', views.saved_search_requests, name='saved_search_requests'),
+    url(r'^requests/save/$', views.save_search_request, name='save_search_request'),
+    url(r'^requests/delete/(?P<id>\d+)/$', views.delete_search_request, name='delete_search_request'),
 )

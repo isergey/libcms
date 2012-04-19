@@ -19,6 +19,11 @@ from order_manager.manager import OrderManager
 from forms import DeliveryOrderForm, CopyOrderForm
 from ssearch.models import  Record, Ebook
 
+def set_cookies_to_response(cookies, response, domain=None):
+    for key in cookies:
+        response.set_cookie(key, cookies[key], domain=domain)
+    return response
+
 class MBAOrderException(Exception):
     pass
 
@@ -100,14 +105,15 @@ def zorder(request, library_id):
     del(form_params['scan']) # удаляем, иначе происходит сканирование :-)
     form_params['use_1']='12:1.2.840.10003.3.1'
     form_params['term_1']= record_id
-    result = zworker.request(zcatalog.url, data=form_params, cookies=cookies)
+    (result, cookies) = zworker.request(zcatalog.url, data=form_params, cookies=cookies)
 
     # анализируем полученный html на содержание текса с идентификатором записи - значит нашли
-    if  result[0].decode('utf-8').find(u'id="%s' % (record_id,)) >= 0:
+    if  result.decode('utf-8').find(u'id="%s' % (record_id,)) >= 0:
     #        link = reverse('zgate_index', args=(catalog.id,)) + '?zstate=preorder+%s+1+default+1+1.2.840.10003.5.28+rus' % session_id
         link = zcatalog.url + '?preorder+%s+1+default+1+1.2.840.10003.5.28+rus' % session_id
-        return redirect(link)
-
+        resp =  redirect(link)
+        set_cookies_to_response(cookies, resp, domain='cgi.kitap.tatar.ru')
+        return resp
     return HttpResponse(u'Zgate order')
 
 

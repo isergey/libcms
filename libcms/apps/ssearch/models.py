@@ -1,7 +1,7 @@
 import datetime
 import zlib
 from django.db import models
-
+from django.contrib.auth.models import User
 
 RECORD_SCHEMES = (
     ('rusmarc', u"Rusmarc"),
@@ -127,3 +127,11 @@ class Ebook(models.Model):
         return self.record_id
     class Meta:
         db_table = 'ebooks'
+
+
+
+
+class SavedRequest(models.Model):
+    user = models.ForeignKey(User, related_name='saved_request_user')
+    search_request = models.CharField(max_length=1024)
+    add_time = models.DateTimeField(auto_now_add=True)

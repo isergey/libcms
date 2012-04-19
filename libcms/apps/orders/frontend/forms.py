@@ -4,7 +4,7 @@ from participants.models import Library
 
 class OrderForm(forms.Form):
     gen_id = forms.CharField(max_length=32, widget=forms.HiddenInput)
-    manager_id = forms.IntegerField(label=u'Укажите библиотеку в которой хотите получить заказ', widget=forms.Select)
+    manager_id = forms.IntegerField(label=u'Укажите библиотеку в которой хотите получить заказ', widget=forms.Select(attrs={'class':'hiden'}))
     comments = forms.CharField(max_length=1024, required=False, label=u'Коментарии к заказу', widget=forms.Textarea)
 
     def clean_manager_id(self):

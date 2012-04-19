@@ -1,7 +1,8 @@
 {% extends 'frontend_base.html' %}
+{% load order_tags %}
 {% block title %}Мои заказы{% endblock %}
 {% block content %}
-    {% load order_tags %}
+
     <style type="text/css">
         .user_orders p {
             margin: 0 0 5px 0;
@@ -24,62 +25,73 @@
             padding-left: 20px;
         }
     </style>
-
-    {#{% for org_id, orders in orders_by_org.items %}#}
-    <h3>Мои заказы</h3>
-    <ul>
-        {% for order in orders %}
-            <li>
-                <div class="org_order" style="background:#f8f9fa">
-                    <p><b>Номер заказа: {{ order.order_id }} </b> Тип заказа: <b>{{ order.type_title }}</b></p>
-
-                    <p><b>Статус заказа:</b> {{ order.status }}</p>
-                    {% if  order.org_info.type == None %}
-                        <p><b>Получатель заказа: </b> {{ order.org_info.name }} (информация не найдена)</p>
-                    {% endif %}
-                    {% if  order.org_info.type == 'library_system' %}
-                        <p><b>Получатель заказа: </b> <a href="{% url participants_detail order.org_info.code %}"  target="_blank">{{ order.org_info.name }}</a></p>
-                    {% endif %}
-                    {% if  order.org_info.type == 'library' %}
-    {#                    <p><b>Получатель заказа: </b> <a href="{% url participants_detail order.org_info.code %}"  target="_blank">{{ order.org_info.name }}</a></p>#}
-                    {% endif %}
-                    <p>{{ order.record|safe }}</p>
-                    {% if order.user_comments %}
-                        <p><b>Комментарии</b>: {{ order.user_comments }}</p>
-                    {% endif %}
-                    {% if order.copy_info %}
-                        <p>Инф. копирования: {{ order.copy_info }}</p>
-                    {% endif %}
-                    <p>Движение заказа:</p>
-                    <div class="apdus">
-                        <ul style="padding: 0 0 0 0px;margin:0;">
-                            {% for apdu in order.apdus %}
-                                <li>
-                                    <div class="apdu">
-                                        {{ apdu.datetime }} {{ apdu.type_title }} {{ apdu.reason_will_supply_title }} {{ apdu.unfilled_results_title }}
-                                        <br/>{{ apdu.responder_note }}
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                {% if order.can_delete %}
-                    <a  href="{% url orders_delete order.order_id %}">
-                        <img src="/media/images/icons/delete_16.png" alt="удалить заказ"/>
-                        Удалить заказ
-                    </a>
-                {% endif %}
-
-                {% if not forloop.last %}<hr/>{% endif %}
-            </li>
-        {% empty %}
-
-            <p>заказов нет</p>
-        {% endfor %}
-
-        {#{% endfor %}#}
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Мои заказы</li>
     </ul>
+    <div class="span10">
+        <ul class="nav nav-tabs">
+            <li><a href="{% url orders:frontend:index %}">Бронирование</a></li>
+            <li class="active"><a href="#1" >Заказы доставки</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="orders">
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    {% for order in orders %}
+                        <li>
+                            <div class="org_order" style="background:#f8f9fa">
+                                <p><b>Номер заказа: {{ order.order_id }} </b> Тип заказа: <b>{{ order.type_title }}</b></p>
+
+                                <p><b>Статус заказа:</b> {{ order.status }}</p>
+                                {% if  order.org_info.type == None %}
+                                    <p><b>Получатель заказа: </b> {{ order.org_info.name }} (информация не найдена)</p>
+                                {% endif %}
+                                {% if  order.org_info.type == 'library_system' %}
+                                    <p><b>Получатель заказа: </b> <a href="{% url participants_detail order.org_info.code %}"  target="_blank">{{ order.org_info.name }}</a></p>
+                                {% endif %}
+                                {% if  order.org_info.type == 'library' %}
+                                    {#                    <p><b>Получатель заказа: </b> <a href="{% url participants_detail order.org_info.code %}"  target="_blank">{{ order.org_info.name }}</a></p>#}
+                                {% endif %}
+                                <p>{{ order.record|safe }}</p>
+                                {% if order.user_comments %}
+                                    <p><b>Комментарии</b>: {{ order.user_comments }}</p>
+                                {% endif %}
+                                {% if order.copy_info %}
+                                    <p>Инф. копирования: {{ order.copy_info }}</p>
+                                {% endif %}
+                                <p>Движение заказа:</p>
+                                <div class="apdus">
+                                    <ul style="padding: 0 0 0 0px;margin:0;">
+                                        {% for apdu in order.apdus %}
+                                            <li>
+                                                <div class="apdu">
+                                                    {{ apdu.datetime }} {{ apdu.type_title }} {{ apdu.reason_will_supply_title }} {{ apdu.unfilled_results_title }}
+                                                    <br/>{{ apdu.responder_note }}
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            {% if order.can_delete %}
+                                <a  href="{% url orders_delete order.order_id %}">
+                                    <img src="/media/images/icons/delete_16.png" alt="удалить заказ"/>
+                                    Удалить заказ
+                                </a>
+                            {% endif %}
+
+                            {% if not forloop.last %}<hr/>{% endif %}
+                        </li>
+                    {% empty %}
+
+                        <p>заказов нет</p>
+                    {% endfor %}
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
 
 
 

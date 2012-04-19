@@ -3,13 +3,15 @@ import hashlib
 import datetime
 from lxml import etree
 import sunburnt
+import simplejson
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.utils.translation import get_language
 from django.core.cache import cache
 from django.shortcuts import render, HttpResponse, get_object_or_404, Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import  QueryDict
-from ..models import Record, Ebook
+from ..models import Record, Ebook, SavedRequest
 
 from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
 ## на эти трансформаторы ссылаются из других модулей
@@ -292,20 +294,21 @@ def search(request):
         else:
             query_dict.getlist('q').append(value)
             query_dict.getlist('attr').append(new_key)
+
         search_breadcumbs.append({
             'attr': new_key,
             'value': value,
             'href': query_dict.urlencode()
         })
-
-
+    json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
         'results_page': results_page,
         'facets': facets,
         'search_breadcumbs':search_breadcumbs,
         'sort':sort,
-        'search_statisics':search_statisics
+        'search_statisics':search_statisics,
+        'search_request': json_search_breadcumbs
     })
 
 
@@ -364,6 +367,44 @@ def detail(request, gen_id):
         'doc': doc,
         'gen_id': gen_id,
     })
+
+@login_required
+def saved_search_requests(request):
+    saved_requests = SavedRequest.objects.filter(user=request.user)
+    srequests = []
+    for saved_request in saved_requests:
+        try:
+            srequests.append({
+                'saved_request':saved_request,
+                'breads':simplejson.loads(saved_request.search_request),
+            })
+        except simplejson.JSONDecodeError:
+            srequests.append({
+                'saved_request':saved_request,
+                'breads': None
+                })
+
+    return render(request, 'ssearch/frontend/saved_request.html', {
+        'srequests': srequests,
+    })
+
+
+@login_required
+def save_search_request(request):
+    search_request =  request.GET.get('srequest', None)
+    if SavedRequest.objects.filter(user=request.user).count() > 500:
+        return HttpResponse(u'{"status": "error", "error": "Вы достигли максимально разрешенного количества запросов"}')
+
+    SavedRequest(user=request.user, search_request=search_request).save()
+    return HttpResponse(u'{"status": "ok"}')
+
+@login_required
+def delete_search_request(request, id):
+    sr = get_object_or_404(SavedRequest, user=request.user, id=id)
+    sr.delete()
+    return HttpResponse(u'{"status": "ok"}')
+
+
 
 
 def xml_doc_to_dict(xmlstring_doc):

@@ -5,15 +5,44 @@
         <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
         <li class="active">Мои документы</li>
     </ul>
+    <style type="text/css">
+    .alert{
+        margin: 5px 0;
+        clear: both;
+    }
+    </style>
     <div class="span10">
         <ul style="margin: 0; padding: 0; list-style: none">
             {% for record in records %}
                 <li id="{{ record.saved_doc.gen_id }}">
                     {{ record.bib.0|safe }}
-                    <a href="{% url mydocs:frontend:delete record.saved_doc.id %}">удалить</a>
+                    <div class="alert alert-info">
+                        {{ record.saved_doc.comments }}
+                    </div>
+                    <a href="{% url mydocs:frontend:delete record.saved_doc.id %}" class="delete">удалить</a>
                     {% if not forloop.last %}<hr/>{% endif %}
                 </li>
             {% endfor %}
         </ul>
     </div>
+    <script type="text/javascript">
+        $('.delete').click(function(){
+            var button = $(this);
+            $.ajax({
+                url:$(this).attr('href'),
+                type:'GET',
+                dataType:"json",
+                async:true,
+                success:function (response) {
+                    if (response['status'] == 'ok'){
+                        button.parent().hide();
+                    }
+                    else{
+                        alert('При удалении возникла ошибка');
+                    }
+                }
+            });
+            return false;
+        });
+    </script>
 {% endblock %}

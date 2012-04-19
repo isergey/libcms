@@ -78,6 +78,9 @@ def save(request):
 
     return HttpResponse(u'{"status":"ok"}')
 
+@login_required
 def delete(request, id):
-    get_object_or_404(SavedDocument, id=id).delete()
+    get_object_or_404(SavedDocument, id=id, user = request.user).delete()
+    if request.is_ajax():
+        return HttpResponse(u'{"status":"ok"}')
     return redirect('mydocs:frontend:index')

@@ -4,14 +4,13 @@
     <ul class="breadcrumb">
         <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
         <li><a href="{% url orders:frontend:index %}">Мои заказы</a> <span class="divider">/</span></li>
-        <li class="active">Заказы: {{ library.name }}</li>
+        <li class="active">Бронирование: {{ library.name }}</li>
     </ul>
     <div class="span10">
         <h3>Заказы: {{ library.name }}</h3>
         <ul class="nav nav-tabs">
             <li class="active"><a href="#orders" data-toggle="tab">Заказы</a></li>
             <li><a href="#books" data-toggle="tab">Выданные книги</a></li>
-            <li><a href="#reserve" data-toggle="tab">Бронирование</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="orders">

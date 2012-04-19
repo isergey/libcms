@@ -43,6 +43,7 @@
         {% if search_breadcumbs %}
         <div>
             Найдено документов: {{ search_statisics.num_found }}. Время выполнения запрос: {{ search_statisics.search_time }} сек.
+
         </div>
         <div><b>Поиск</b>:
             {% for search_breadcumb in search_breadcumbs %}
@@ -59,7 +60,11 @@
                     {% endif %}
                 {% endif %}
             {% endfor %}
-        <hr/>
+            {% if request.user.is_authenticated %}
+            <br/><a href="{% url ssearch:frontend:save_search_request %}?srequest={{ search_request|urlencode }}" class="btn btn-info" id="save_request_button">Сохранить запрос</a>
+            {% endif %}
+            <hr/>
+
         </div>
         {% endif %}
     </div>
@@ -215,8 +220,28 @@
                 </ul>
             </div>
         </div>
-{#        <div class="span10">#}
-{#                {% admin_pagination results_page %}#}
-{#        </div>#}
+    <script type="text/javascript">
+        $('#save_request_button').click(function(){
+            $.ajax({
+                url:$(this).attr('href'),
+                type:'GET',
+                dataType:"json",
+                async:true,
+                success:function (response) {
+                    if (response['status'] == 'ok'){
+                        var button = $('#save_request_button');
+                        button.html('Сохранен');
+                        button.addClass('disabled');
+                        button.attr('href', '#1');
+
+                    }
+                    else{
+                        alert('При сохранении возникла ошибка');
+                    }
+                }
+            });
+            return false;
+        });
+    </script>
     {% endif %}
 {% endblock %}

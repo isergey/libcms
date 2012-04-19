@@ -45,7 +45,9 @@
         width: 100%;
     }
 </style>
+<div style="position: absolute; right: 50px">{% include 'cabinet.html' %}</div>
 <div class="container">
+
     <div class="row">
         <h1>Портал</h1>
         {% if request.user.is_authenticated %}

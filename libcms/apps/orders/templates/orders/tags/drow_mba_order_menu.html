@@ -108,12 +108,16 @@
             data:{id:cbs_id},
             success:function (orgs) {
                 $('#'+result_select_id).html(tmpl("lib_list_tmpl", {'orgs':orgs}));
+                $('#'+result_select_id).parent().parent().show();
             }
         });
     }
 </script>
 
 <script type="text/javascript">
+
+    $('#id_copy-manager_id').parent().parent().hide();
+    $('#id_delivery-manager_id').parent().parent().hide();
 
     $('#copy_doc_button').click(function(){
         load_cbs_list('copy_cbs_select');
@@ -128,6 +132,8 @@
     $("#delivery_cbs_select").change(function () {
         load_lib_list('id_delivery-manager_id', $(this).val());
     });
+
+
 </script>
 
 <script type="text/html" id="cbs_list_tmpl">

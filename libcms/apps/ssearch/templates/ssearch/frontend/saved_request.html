@@ -1,0 +1,61 @@
+{% extends 'frontend_base.html' %}
+{% load hash %}
+{% load ssearch_tags %}
+{% load order_tags %}
+{% load mydocs_tags %}
+{% block title %}детальная информация{% endblock %}
+{% block content %}
+    <div class="span10">
+        <ul class="breadcrumb">
+
+            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li class="active">Сохраненные поисковые запросы</li>
+
+        </ul>
+        <ul style="list-style: none">
+        {% for srequest in srequests %}
+            <li>
+                <a href="{% url ssearch:frontend:index %}?{{ srequest.breads|last|hash:"href" }}">{% for search_breadcumb in srequest.breads %}
+                    {% if not forloop.last %}
+                        <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</span> →
+                    {% else %}
+                        {#                <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>#}
+                        {% if search_breadcumb.attr == 'content-type' %}
+                            <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|content_type_title }}</span>
+                        {% elif search_breadcumb.attr == 'code-language' %}
+                            <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|language_title }}</span>
+                        {% else %}
+                            <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</span>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                </a>
+            <br/>
+            <a class="delete" href="{% url ssearch:frontend:delete_search_request srequest.saved_request.id %}">Удалить</a> <span style="float: right;">{{ srequest.saved_request.add_time }}</span>
+            {% if not forloop.last %}<hr/>{% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <script type="text/javascript">
+        $('.delete').click(function(){
+            var button = $(this);
+            $.ajax({
+                url:$(this).attr('href'),
+                type:'GET',
+                dataType:"json",
+                async:true,
+                success:function (response) {
+                    if (response['status'] == 'ok'){
+                        button.parent().hide();
+                    }
+                    else{
+                        alert('При удалении возникла ошибка');
+                    }
+                }
+            });
+            return false;
+        });
+    </script>
+
+{% endblock %}

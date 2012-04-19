@@ -1,0 +1,15 @@
+<ul class="nav nav-pills">
+    <li class="dropdown" id="menu1">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#menu1">
+            Личный кабинет
+            <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a href="{% url orders:frontend:index %}">Мои заказы</a></li>
+            <li><a href="{% url ssearch:frontend:saved_search_requests %}">Мои запросы</a></li>
+            <li><a href="{% url mydocs:frontend:index %}">Мои документы</a></li>
+              <li class="divider"></li>
+            <li><a href="{% url urt:frontend:index %}">Библиотеки</a></li>
+        </ul>
+    </li>
+</ul>
