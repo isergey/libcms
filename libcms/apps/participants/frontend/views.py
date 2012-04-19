@@ -28,12 +28,11 @@ def index(request):
 
 
 def branches(request, id=None):
-    if not id:
-        id = request.POST.get('id', None)
-    if not id:
-        return HttpResponse(u'Wrong arguments', status='405')
 
-    library = get_object_or_404(Library, id=id)
+    id = request.POST.get('id', None)
+    library=None
+    if id:
+        library = get_object_or_404(Library, id=int(id))
     libraries = Library.objects.filter(parent=library).order_by('weight')
 
     js_orgs = []

@@ -1,17 +1,41 @@
 # -*- coding: utf-8 -*-
+from lxml import etree
 import simplejson
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, HttpResponse, Http404, redirect
+from django.shortcuts import render, HttpResponse, Http404, redirect, get_object_or_404
 from ssearch.models import  Record, Ebook
 from ..models import SavedDocument
 from forms import SavedDocumentForm
+from common.xslt_transformers import xslt_bib_draw_transformer
 
 @login_required
 def index(request):
+    saved_docs = SavedDocument.objects.filter(user=request.user)
+    gen_ids = {}
+    for saved_doc in saved_docs:
+        gen_ids[saved_doc.gen_id] = {'saved_doc':saved_doc}
+
+
+    for record in Record.objects.using('records').filter(gen_id__in=gen_ids.keys()):
+        doc_tree = etree.XML(record.content)
+        doc_tree = xslt_bib_draw_transformer(doc_tree)
+        gen_ids[record.gen_id]['record']=record
+        gen_ids[record.gen_id]['bib']=etree.tostring(doc_tree).replace(u'<b/>', u' '),
+
+
+    for record in Ebook.objects.using('records').filter(gen_id__in=gen_ids):
+        doc_tree = etree.XML(record.content)
+        doc_tree = xslt_bib_draw_transformer(doc_tree)
+        gen_ids[record.gen_id]['record']=record
+        gen_ids[record.gen_id]['bib']=etree.tostring(doc_tree).replace(u'<b/>', u' '),
+
     records = []
-#    records =  list(Ebook.objects.using('records').filter(gen_id__in=doc_ids))
-#    records +=  list(Record.objects.using('records').filter(gen_id__in=doc_ids))
-    return HttpResponse(u'Ok')
+    for saved_doc in saved_docs:
+        records.append(gen_ids[saved_doc.gen_id])
+
+    return render(request, 'mydocs/frontend/index.html', {
+        'records': records
+    })
 
 
 
@@ -31,7 +55,7 @@ def save(request):
                 pass
             if not doc:
                 try:
-                    doc = Ebook.objects.using('records').get(record_id=form.cleaned_data['gen_id'])
+                    doc = Ebook.objects.using('records').get(gen_id=form.cleaned_data['gen_id'])
                 except Ebook.DoesNotExist:
                     raise Http404(u'Record not founded')
 
@@ -53,3 +77,7 @@ def save(request):
         form = SavedDocumentForm()
 
     return HttpResponse(u'{"status":"ok"}')
+
+def delete(request, id):
+    get_object_or_404(SavedDocument, id=id).delete()
+    return redirect('mydocs:frontend:index')

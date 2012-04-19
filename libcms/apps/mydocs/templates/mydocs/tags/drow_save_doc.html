@@ -1,6 +1,6 @@
 <div>
     {% if already_saved %}
-        <a class="btn disabled btn-success" data-toggle="modal" href="#1">Сохранен в документах</a>
+        <a class="btn btn-success" href="{% url mydocs:frontend:index %}#{{ gen_id }}">Сохранен в документах</a>
 
     {% else %}
         <style>
@@ -11,7 +11,7 @@
 
         <div class="modal hide" id="save_doc_modal">
 
-            <form action="{% url mydocs:frontend:save %}" method="POST" id="save_doc_form">
+            <form action="{% url mydocs:frontend:save %}" method="POST" id="save_doc_form" style="margin: 0">
                 <div class="modal-header">
                     <a class="close" data-dismiss="modal">×</a>
 
@@ -28,7 +28,11 @@
                 </div>
             </form>
         </div>
-        <a class="btn " data-toggle="modal" href="#save_doc_modal" id="save_doc_button">Сохранить документ</a>
+        {% if user.id %}
+            <a class="btn " data-toggle="modal" href="#save_doc_modal" id="save_doc_button" >Сохранить документ</a>
+        {% else %}
+            <a class="btn disabled" href="#1" id="save_doc_button" onclick="alert('Необходимо войти на портал')" >Сохранить документ</a>
+        {% endif %}
         <script type="text/javascript">
             $('#save_doc_form').submit(function () {
                 $.ajax({
@@ -40,9 +44,7 @@
                     statusCode: {
                         401: function() {
                             alert("Вы должны войти на портал.");
-                        }
-                    },
-                    statusCode: {
+                        },
                         500: function() {
                             alert("На сервере возникла ошибка. Администраторы оповещены.");
                         }

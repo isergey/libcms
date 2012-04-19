@@ -11,14 +11,16 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import  QueryDict
 from ..models import Record, Ebook
 
-xslt_root = etree.parse('libcms/xsl/record_in_search.xsl')
-xslt_transformer = etree.XSLT(xslt_root)
-
-xslt_marc_dump = etree.parse('libcms/xsl/marc_dump.xsl')
-xslt_marc_dump_transformer = etree.XSLT(xslt_marc_dump)
-
-xslt_bib_draw = etree.parse('libcms/xsl/full_document.xsl')
-xslt_bib_draw_transformer = etree.XSLT(xslt_bib_draw)
+from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
+## на эти трансформаторы ссылаются из других модулей
+#xslt_root = etree.parse('libcms/xsl/record_in_search.xsl')
+#xslt_transformer = etree.XSLT(xslt_root)
+#
+#xslt_marc_dump = etree.parse('libcms/xsl/marc_dump.xsl')
+#xslt_marc_dump_transformer = etree.XSLT(xslt_marc_dump)
+#
+#xslt_bib_draw = etree.parse('libcms/xsl/full_document.xsl')
+#xslt_bib_draw_transformer = etree.XSLT(xslt_bib_draw)
 
 def index(request):
     q = request.GET.get('q', None)

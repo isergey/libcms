@@ -2,8 +2,8 @@
 import subprocess
 
 
-from libs.ill import ILLRequest, ILLAPDU, ILLTransaction, ILLTransactions
-import xml.etree.cElementTree as ET
+from ill import ILLRequest, ILLAPDU, ILLTransaction, ILLTransactions
+from lxml import etree as ET
 
 import urllib
 class OrderManagerException(Exception): pass
@@ -83,13 +83,11 @@ class OrderManager(object):
         ill_request.responder_id['pois']['is'] = reciver_id # id первичного получателя
         ill_request.third_party_info_type['tpit']['stl']['stlt']['si'] = manager_id # id конечного получателя
         ill_service_type = '1'
-        if order_type == 'document':
+        if order_type == 'delivery':
             ill_service_type = '1'
         elif order_type == 'copy':
             ill_service_type = '2'
-        elif order_type == 'reserve':
-            ill_service_type = '5'
-        
+
         if order_type != 'copy':
             copy_comments = ''
             
@@ -108,6 +106,7 @@ class OrderManager(object):
         transaction = ILLTransaction()
         transaction.add_illapdu(apdu)
         container_name = self.db_catalog + '/' + str(reciver_id) + ".user"
+
         user_container_name = self.db_catalog + '/' + sender_id + ".orders"
 
         self.insert_record(container_name, transaction.to_xml())
@@ -121,7 +120,7 @@ class OrderManager(object):
         query_string = "/*"
         query_params = {}
 
-        container_name = '%s.orders' % user_id.encode('utf-8')
+        container_name = '%s.orders' % unicode(user_id).encode('utf-8')
         results = self.get_results(container_name, query_string)
 
         transactions = [ ILLTransaction().from_xml(result) for result in results ]

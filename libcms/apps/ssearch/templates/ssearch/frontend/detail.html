@@ -52,10 +52,14 @@
             <h3>Держатели:</h3>
             {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}
         </div>
+        <hr/>
         <h3>Сохранить документ</h3>
         {% drow_save_doc request.user gen_id %}
-
-
+        <hr/>
+        {% if doc.holders %}
+            <h3>Заказать доставку</h3>
+            {% drow_mba_order_menu request.user gen_id %}
+        {% endif %}
     </div>
 {#    <hr/>#}
 {#    <div id="vk_like"></div>#}

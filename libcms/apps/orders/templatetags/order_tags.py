@@ -5,7 +5,7 @@ register = template.Library()
 from participants.models import Library
 from zgate.models import ZCatalog
 from django.core.cache import cache
-
+from ..frontend.forms import DeliveryOrderForm, CopyOrderForm
 @register.simple_tag
 def org_by_id(org_id):
     hash_id = hashlib.md5(org_id.encode('utf-8')).hexdigest()
@@ -79,4 +79,24 @@ def drow_el_order_menu(owners_codes, record_id):
         'owners': owners,
         'record_id': record_id,
         'empty_codes': empty_codes,
+    }
+
+
+@register.inclusion_tag('orders/tags/drow_mba_order_menu.html')
+def drow_mba_order_menu(user, gen_id):
+    """
+    Тег отрисовки меню для заказа в мба
+    """
+    delivery_form = DeliveryOrderForm(prefix='delivery', initial={
+        'gen_id':gen_id
+    })
+    copy_form = CopyOrderForm(prefix='copy', initial={
+        'gen_id':gen_id
+    })
+
+    return {
+        'gen_id': gen_id,
+        'user': user,
+        'delivery_form': delivery_form,
+        'copy_form': copy_form,
     }

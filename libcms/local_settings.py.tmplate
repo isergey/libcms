@@ -89,7 +89,7 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = PROJECT_PATH + '../var/media/'
+MEDIA_ROOT = PROJECT_PATH + '../var/media_data/'
 
 
 # Absolute path to the directory static files should be collected to.
@@ -193,6 +193,16 @@ SOLR = {
     },
     'host': 'http://localhost:8982/solr',
 }
+
+ORDERS = {
+    'db_catalog':  PROJECT_PATH + '../var/orders_data/',
+    'rdx_path':  PROJECT_PATH + '../rdx',
+}
+
+#RUSLAN_ORDER_URLS = {
+#    'orders': 'http://cgi.kitap.tatar.ru/cgi-bin/zurles?z39.50r://%s:%s@%s/ir-extend-1?%s',
+#    'books': 'http://cgi.kitap.tatar.ru/cgi-bin/zurlcirc?z39.50r://%s:%s@%s/ir-extend-1?%s'
+#}
 
 TWITTER_CONSUMER_KEY              = '110125937-qqZsC46x3xqKQCrUu3aafxkg3mGzIOUQh3L7hL6c'
 TWITTER_CONSUMER_SECRET           = 'f75YumDXmrliaYgaUoxUKopIgkqAX1wnLq4xkNYrpw'

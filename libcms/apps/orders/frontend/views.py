@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import simplejson
 from lxml import etree
 import urllib2
 from django.conf import settings
@@ -10,10 +11,16 @@ from zgate.models import ZCatalog
 from zgate import zworker
 
 from urt.models import LibReader
+from ..models import UserOrderTimes
+
 from participants.models import Library
 from common import ThreadWorker
+from order_manager.manager import OrderManager
+from forms import DeliveryOrderForm, CopyOrderForm
+from ssearch.models import  Record, Ebook
 
-
+class MBAOrderException(Exception):
+    pass
 
 
 xslt_bib_draw = etree.parse('libcms/xsl/full_document.xsl')
@@ -110,7 +117,7 @@ def _get_content(url):
     # необходимо чтобы функция имела таймаут
     uh = urllib2.urlopen(url, timeout=10)
     result = uh.read()
-#    print result
+    #    print result
     return result
 
 
@@ -201,3 +208,337 @@ def _get_books(xml):
             book['description'] = u''
         books.append(book)
     return books
+
+
+
+
+
+
+order_statuses_titles = {
+    'new': u'принят на обработку',
+    'recall': u'отказ',
+    'conditional': u'в обработке',
+    'shipped': u'доставлен',
+    'pending': u'в ожидании', #Доставлен
+    'notsupplied': u'выполнение невозможно',
+    }
+
+apdy_type_titles = {
+    'ILLRequest': u'Заказ',
+    'ILLAnswer': u'Ответ',
+    'Shipped': u'Доставлен',
+    'Recall': u'Задолженность',
+    }
+
+apdu_reason_will_supply = {
+    '1': u'Заказ будет выполнен позднее',
+    '2': u'Необходимо повторить запрос позднее',
+    '3': u'Отказ',
+    '4': u'Получена информация о местонахождении документа',
+    '5': u'Заказ будет выполнен позднее',
+    '6': u'Запрос поставлен в очередь',
+    '7': u'Получена информация о стоимости выполнения заказа',
+    }
+apdu_unfilled_results = {
+    '1': u'Документ выдан',
+    '2': u'Документ в обработке',
+    '3': u'Документ утерян и/или списан',
+    '4': u'Документ не выдается',
+    '5': u'Документа нет в фонде',
+    '6': u'Документ заказан, но еще не получен ',
+    '7': u'Том / выпуск еще не приобретен',
+    '8': u'Документ в переплете',
+    '9': u'Отсутствуют необходимые части / страницы документа',
+    '10': u'Нет на месте',
+    '11': u'Документ временно не выдается',
+    '12': u'Документ в плохом состоянии',
+    '13': u'Недостаточно средств для выполнения заказа',
+    #'14':u'',
+    #'15':u'Документ в плохом состоянии',
+}
+
+#Вид и статусы заказов, в зависимоти от которых можно удалять заказ
+can_delete_statuses = {
+    '1': ['shipped', 'received', 'notsupplied', 'checkedin'], #document
+    '2': ['shipped', 'received', 'notsupplied', 'checkedin'], #copy
+    '5': ['shipped', 'notsupplied', 'checkedin'] #reserve
+}
+
+def check_for_can_delete(transaction):
+    """
+    return True or False
+    """
+    for apdu in transaction.illapdus:
+        if isinstance(apdu.delivery_status, ILLRequest):
+            if apdu.delivery_status.ill_service_type in can_delete_statuses and\
+               transaction.status in can_delete_statuses[apdu.delivery_status.ill_service_type]:
+                return True
+    return False
+
+import time
+from order_manager.ill import ILLRequest
+from ..templatetags.order_tags import org_by_id
+@login_required
+def mba_orders(request):
+    user_id = request.user.id
+    def format_time(datestr='', timestr=''):
+        if datestr:
+            datestr = time.strptime(datestr, "%Y%m%d")
+            datestr = time.strftime("%d.%m.%Y", datestr)
+        if timestr:
+            timestr = time.strptime(timestr, "%H%M%S")
+            timestr = time.strftime("%H:%M:%S", timestr)
+        return datestr + ' ' + timestr
+
+    order_manager = OrderManager(settings.ORDERS['db_catalog'], settings.ORDERS['rdx_path'])
+    transactions = order_manager.get_orders(user_id)
+    orgs = {}
+    #for org_id in transactions_by_org:
+    orders = []
+    for transaction in transactions:
+        #print ET.tostring(transaction.illapdus[0].delivery_status.supplemental_item_description, encoding="UTF-8")
+        try:
+            doc = etree.XML(etree.tostring(transaction.illapdus[0].delivery_status.supplemental_item_description,
+                encoding="UTF-8"))
+            result_tree = xslt_bib_draw_transformer(doc)
+            res = str(result_tree)
+        except Exception, e:
+            raise e
+        res = res.replace('– –', '—')
+        res = res.replace('\n', '</br>')
+        order = {}
+
+        if transaction.status in order_statuses_titles:
+            order['status'] = order_statuses_titles[transaction.status]
+        else:
+            order['status'] = transaction.status
+        order['type'] = ''
+        order['copy_info'] = ''
+        order['apdus'] = []
+
+        for apdu in transaction.illapdus:
+            apdu_map = {}
+
+            apdu_map['type'] = apdu.delivery_status.type
+            if apdu.delivery_status.type in apdy_type_titles:
+                apdu_map['type_title'] = apdy_type_titles[apdu.delivery_status.type]
+            else:
+                apdu_map['type_title'] = apdu.delivery_status.type
+
+            apdu_map['datetime'] = format_time(apdu.delivery_status.service_date_time['dtots']['date'],
+                apdu.delivery_status.service_date_time['dtots']['time'])
+
+            if isinstance(apdu.delivery_status, ILLRequest):
+                order['order_id'] = apdu.delivery_status.transaction_id['tq']
+                order['org_info'] = org_by_id(apdu.delivery_status.responder_id['pois']['is'])
+                if apdu.delivery_status.third_party_info_type['tpit']['stl']['stlt']['si']:
+                    order['org_info'] = org_by_id(
+                        apdu.delivery_status.third_party_info_type['tpit']['stl']['stlt']['si'])
+                apdu_map['requester_note'] = apdu.delivery_status.requester_note
+                order['record'] = res
+                order['user_comments'] = apdu.delivery_status.requester_note
+                apdu_map['record'] = res
+                if apdu.delivery_status.ill_service_type == '1':
+                    apdu_map['service_type'] = u'доставка'
+                    order['type'] = 'doc'
+
+                elif apdu.delivery_status.ill_service_type == '2':
+                    apdu_map['service_type'] = u'копия'
+                    order['type'] = 'copy'
+                    order['copy_info'] = apdu.delivery_status.item_id['pagination']
+
+
+                order['type_title'] = apdu_map['service_type']
+                order['can_delete'] = check_for_can_delete(transaction)
+
+            else:
+                #print apdu.delivery_status.type
+                apdu_map['responder_note'] = apdu.delivery_status.responder_note
+                if apdu.delivery_status.type == 'ILLAnswer':
+                    apdu_map['reason_will_supply'] = apdu.delivery_status.results_explanation['wsr']['rws']
+                    apdu_map['reason_will_supply_title'] = ''
+                    if apdu_map['reason_will_supply'] in apdu_reason_will_supply:
+                        apdu_map['reason_will_supply_title'] = apdu_reason_will_supply[apdu_map['reason_will_supply']]
+
+                    apdu_map['unfilled_results'] = apdu.delivery_status.results_explanation['ur']['ru']
+                    apdu_map['unfilled_results_title'] = ''
+                    if apdu_map['unfilled_results'] in apdu_unfilled_results:
+                        apdu_map['unfilled_results_title'] = apdu_unfilled_results[apdu_map['unfilled_results']]
+
+
+
+            #apdu_map['record'] = res
+            order['apdus'].append(apdu_map)
+
+        orders.append(order)
+        #if org_id in settings.LIBS:
+    #    orgs[org_id] = settings.LIBS[org_id]
+    #else:
+    #    orgs[org_id] = org_id
+    #orders_by_org[org_id] = orders
+
+
+
+    return render(request, 'orders/frontend/mba_orders_list.html',{
+        'orders': orders,
+        'orgs': orgs
+    })
+
+
+
+
+def mba_order_copy(request):
+    if not request.user.is_authenticated():
+        return HttpResponse(u'Вы должны быть войти на портал', status=401)
+
+    if request.method == "POST":
+        form = CopyOrderForm(request.POST, prefix='copy')
+        if form.is_valid():
+            try:
+                _make_mba_order(
+                    gen_id=form.cleaned_data['gen_id'],
+                    user_id=request.user.id,
+                    order_type='copy',
+                    order_manager_id=form.cleaned_data['manager_id'],
+                    copy_info=form.cleaned_data['copy_info'],
+                    comments=form.cleaned_data['comments'],
+                )
+            except MBAOrderException as e:
+                return HttpResponse(u'{"status":"error", "error":"%s"}' % e.message)
+
+            return HttpResponse(u'{"status":"ok"}')
+        else:
+            response = {
+                'status': 'error',
+                'errors': form.errors
+            }
+            return HttpResponse(simplejson.dumps(response, ensure_ascii=False))
+    else:
+        return HttpResponse(u'{"status":"error", "error":"Only POST requests"}')
+
+
+
+
+def mba_order_delivery(request):
+    if not request.user.is_authenticated():
+        return HttpResponse(u'Вы должны быть войти на портал', status=401)
+
+    if request.method == "POST":
+        form = DeliveryOrderForm(request.POST, prefix='delivery')
+        if form.is_valid():
+            try:
+                _make_mba_order(
+                    gen_id=form.cleaned_data['gen_id'],
+                    user_id=request.user.id,
+                    order_type='delivery',
+                    order_manager_id=form.cleaned_data['manager_id'],
+                    comments=form.cleaned_data['comments'],
+                )
+            except MBAOrderException as e:
+                return HttpResponse(u'{"status":"error", "error":"%s"}' % e.message)
+            return HttpResponse(u'{"status":"ok"}')
+        else:
+            response = {
+                'status': 'error',
+                'errors': form.errors
+            }
+            return HttpResponse(simplejson.dumps(response, ensure_ascii=False))
+    else:
+        return HttpResponse(u'{"status":"error", "error":"Only POST requests"}')
+
+
+
+
+def _check_order_times(user, order_manager_id, order_type):
+
+    order_time = datetime.datetime.now()
+
+    order_copy_limit = 10
+    order_document_limit = 10
+
+    user_order_times = UserOrderTimes.objects.filter(
+        user=user,
+        order_manager_id=order_manager_id,
+        order_type=order_type,
+        order_time__year=order_time.year,
+        order_time__month=order_time.month,
+        order_time__day=order_time.day
+    ).count()
+
+    if order_type == 'delivery':
+        if user_order_times >= order_document_limit:
+            return False
+    elif order_type == 'copy':
+        if user_order_times >= order_copy_limit:
+            return False
+    else:
+        raise ValueError(u'Wrong order type' + str(order_type))
+
+    return True
+
+def _save_order_time(user):
+    user_order_times = UserOrderTimes(user=user, order_type=order_type, order_manager_id=order_manager_id)
+    user_order_times.save()
+
+
+
+def _make_mba_order(gen_id, user_id, order_type, order_manager_id, copy_info=u'', comments=u''):
+    print 'eded', order_manager_id
+    user_id = str(user_id)
+    order_types = ('delivery', 'copy')
+    if order_type not in order_types:
+        raise ValueError(u'Wrong order type ' + str(order_type))
+
+    doc = None
+    try:
+        doc = Record.objects.using('records').get(gen_id=gen_id)
+    except Record.DoesNotExist:
+        pass
+    if not doc:
+        try:
+            doc = Ebook.objects.using('records').get(gen_id=gen_id)
+        except Ebook.DoesNotExist:
+            raise MBAOrderException(u'Record not founded')
+
+
+    order_manager = OrderManager(settings.ORDERS['db_catalog'], settings.ORDERS['rdx_path'])
+
+    library = None
+    try:
+        library = Library.objects.get(id=order_manager_id)
+    except Library.DoesNotExist:
+        raise MBAOrderException(u'Library not founded')
+
+
+    def get_first_recivier_code(library):
+        ancestors = library.get_ancestors()
+        for ancestor in ancestors:
+            if ancestor.ill_service and ancestor.ill_service.strip():
+                return ancestor.code
+        return None
+
+    # если у библиотеки указан ill адрес доставки, то пересылаем заказ ей
+    if library.ill_service and library.ill_service.strip():
+        manager_id = ''
+        reciver_id = library.code
+
+    # иначе ищем родителя, у которого есть адрес доставки
+    else:
+        manager_id = library.code
+        reciver_id = get_first_recivier_code(library)
+
+        if not reciver_id:
+            raise MBAOrderException(u'Library cant manage orders')
+
+    sender_id = user_id
+    copy_info = copy_info
+
+    order_manager.order_document(
+        order_type=order_type,
+        sender_id=sender_id,
+        reciver_id=reciver_id,
+        manager_id=manager_id,
+        xml_record=doc.content,
+        comments=comments,
+        copy_info=copy_info
+    )

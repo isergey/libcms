@@ -3,6 +3,7 @@
 apt-get install g++
 apt-get install python-dev
 apt-get install python-pip
+apt-get install libboost-python1.42.0
 apt-get install mysql-server libmysqlclient-dev
 apt-get install python-lxml memcached libmemcached-dev
 
@@ -14,7 +15,8 @@ sudo pip install postmarkup
 sudo pip install Pygments
 sudo pip install python-openid
 sudo pip install oauth2
-
+sudo pip install pymorphy
+sudo pip install python-cdb
 
 # В СУБД MySQl создать базу с именем libcms ( или другое имя указанное в local_settingth.py),
 # указав ОБЯЗАТЕЛЬНО в качесиве кодировки по-умолчанию utf8-general-ci.
