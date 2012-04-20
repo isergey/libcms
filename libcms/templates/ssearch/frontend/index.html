@@ -1,0 +1,247 @@
+{% extends 'frontend_base.html' %}
+{% load add_get_tag %}
+{% load pagination_tag %}
+{% load hash %}
+{% load ssearch_tags %}
+
+{% block title %}Поиск по каталогу{% endblock %}
+{% block content %}
+    <div class="serach_form span10">
+        <ul class="breadcrumb">
+
+            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+
+            {% if request.GET.q %}
+                <li><a href="{% url ssearch:frontend:index %}">Поиск</a> <span class="divider">/</span></li>
+                <li class="active">Результаты поиска</li>
+            {% else %}
+                <li class="active">Поиск</li>
+            {% endif %}
+
+        </ul>
+        <form class="well form-search" method="GET">
+            {% for search_breadcumb in search_breadcumbs %}
+                <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">
+                <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
+            {% endfor %}
+            <select name="attr" style="font-weight: bold; width: 20%;">
+                <option value="text" {% if request.GET.attr == 'text' %}selected="selected"{% endif %}>Везде:</option>
+                <option value="author" {% if request.GET.attr == 'author' %}selected="selected"{% endif %}>Автор:</option>
+                <option value="title" {% if request.GET.attr == 'title' %}selected="selected"{% endif %}>Заглавие:</option>
+                <option value="subject-heading" {% if request.GET.attr == 'subject-heading' %}selected="selected"{% endif %}>Тематика:</option>
+                <option value="date-of-publication" {% if request.GET.attr == 'date-of-publication' %}selected="selected"{% endif %}>Год публикации:</option>
+                <option value="isbn" {% if request.GET.attr == 'isbn' %}selected="selected"{% endif %}>ISBN:</option>
+                <option value="issn" {% if request.GET.attr == 'issn' %}selected="selected"{% endif %}>ISSN:</option>
+            </select>
+            <input type="text" class="search-query" name="q" style="width: 64%" value="{{ request.GET.q }}"/>
+            <input type="submit" class="btn btn-success" style="width: 10%" value="Поиск">
+
+            <br/>
+            Искать в найденном: <input type="checkbox" name="in_founded"  {% if request.GET.in_founded %}checked="checked"{% endif %}>
+        </form>
+
+        {% if search_breadcumbs %}
+        <div>
+            Найдено документов: {{ search_statisics.num_found }}. Время выполнения запрос: {{ search_statisics.search_time }} сек.
+
+        </div>
+        <div><b>Поиск</b>:
+            {% for search_breadcumb in search_breadcumbs %}
+                {% if not forloop.last %}
+                    <span><a href="?{{ search_breadcumb.href }}">{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</a></span> →
+                {% else %}
+{#                <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>#}
+                    {% if search_breadcumb.attr == 'content-type' %}
+                        <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|content_type_title }}</span>
+                    {% elif search_breadcumb.attr == 'code-language' %}
+                            <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|language_title }}</span>
+                    {% else %}
+                        <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</span>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            {% if request.user.is_authenticated %}
+            <br/><a href="{% url ssearch:frontend:save_search_request %}?srequest={{ search_request|urlencode }}" class="btn btn-info" id="save_request_button">Сохранить запрос</a>
+            {% endif %}
+            <hr/>
+
+        </div>
+        {% endif %}
+    </div>
+    {% if docs %}
+        <style type="text/css">
+            .results .title{
+                font-size: 16px;
+            }
+            .results ul.list{
+                list-style: none;
+            }
+        .sorting {
+            margin-left: 25px;
+        }
+        .info ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        </style>
+
+        <div class="results span8">
+            <div class="row">
+                <div class="sorting">
+                    <form action="{{ request.path }}?{{ request.GET.urlencode }}" method="GET" class="form-inline">
+                    <label>Сортировать по:</label>
+                        {% for sort_attr in sort %}
+                        <select name="sort" style="width: auto;">
+                            <option value="0">релевантности</option>
+                            <option value="author" {% if sort_attr == 'author' %}selected="selected"{% endif %}>Автору</option>
+                            <option value="title" {% if sort_attr == 'title' %}selected="selected"{% endif %}>Заглавию</option>
+                            <option value="date-of-publication" {% if sort_attr == 'date-of-publication' %}selected="selected"{% endif %}>Году публикации</option>
+                        </select>
+                        {% empty %}
+                            <select name="sort" style="width: auto;">
+                                <option value="0">релевантности</option>
+                                <option value="author">Автору</option>
+                                <option value="title">Заглавию</option>
+                                <option value="date-of-publication">Году публикации</option>
+                            </select>
+                        {% endfor %}
+                        <button class="btn btn-small">Сортировать</button>
+                        {% for search_breadcumb in search_breadcumbs %}
+
+                            {% if forloop.last %}
+                                <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">
+                                <input type="hidden" name="q" value="{{ search_breadcumb.value }}">
+                            {% else %}
+                                <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">
+                                <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
+                            {% endif %}
+                        {% endfor %}
+
+                    </form>
+                    <hr/>
+                </div>
+
+                <ul class="list">
+                    {% for doc in docs %}
+                    <li>
+                        <div class="title"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">
+                            {{ doc.record.title.0 }}</a></div>
+                        <div class="author">
+                            {% for author in doc.record.author %}
+                                {{ author }}{% if not forloop.last %}; {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="subjects">
+                            {% for subject in doc.record|hash:'subject-heading' %}
+                                <span class="label label-info">{{ subject }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="info">
+                            <ul>
+                            {% if doc.record|hash:'code-language' %}
+                                <li><b>Язык</b>:
+                                {% for lang in doc.record|hash:'code-language' %}
+                                    {% if not forloop.last %}
+                                        {{ lang|language_title }},
+                                    {% else %}
+                                        {{ lang|language_title }}
+                                    {% endif %}
+                                {% endfor %}
+                                </li>
+                            {% endif %}
+                            {% if doc.record|hash:'date-of-publication' %}
+                                <li><b>Дата публикации</b>:
+                                {% for dop in doc.record|hash:'date-of-publication' %}
+                                    {% if not forloop.last %}
+                                        {{ dop }},
+                                    {% else %}
+                                        {{ dop }}
+                                    {% endif %}
+                                {% endfor %}
+                                </li>
+                            {% endif %}
+                            {% if doc.record|hash:'content-type' %}
+                                <li><b>Тип содержания</b>:
+                                {% for content_type in doc.record|hash:'content-type' %}
+                                    {% if not forloop.last %}
+                                        {{ content_type|content_type_title }},
+                                    {% else %}
+                                        {{ content_type|content_type_title }}
+                                    {% endif %}
+                                {% endfor %}
+                                </li>
+                            {% endif %}
+                            {% if doc.record|hash:'publisher' %}
+                                <li><b>Издатель</b>:
+                                {% for publisher in doc.record|hash:'publisher' %}
+                                    {% if not forloop.last %}
+                                        {{ publisher }},
+                                    {% else %}
+                                        {{ publisher }}
+                                    {% endif %}
+                                {% endfor %}
+                                </li>
+                            {% endif %}
+                            </ul>
+                        </div>
+                    </li>
+                        <hr/>
+                    {% endfor %}
+                </ul>
+                {% admin_pagination results_page %}
+            </div>
+        </div>
+        <div class="span2">
+            <div class="row">
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    {% for facet in facets %}
+                        <li><b>{{ facet|facet_title }}</b>
+                            <ul style="list-style: none">
+                                {% for value in facets|hash:facet %}
+                                    {% if facet == 'date-of-publication' %}
+                                        <li><a href="{% add_get_append q=value.0|date_from_isostring|date:"Y" attr='date-of-publication' %}">{{ value.0|date_from_isostring|date:"Y" }}</a> (<b>{{ value.1 }}</b>)</li>
+                                    {% elif facet == 'content-type' %}
+                                        <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>
+                                    {% elif facet == 'subject-heading' %}
+                                        <li><a href="{% add_get_append q=value.0 attr=facet %}">{{ value.0|lower|capfirst }}</a> (<b>{{ value.1 }}</b>)</li>
+                                    {% elif facet == 'code-language' %}
+                                        <li><a href="{% add_get_append q=value.0 attr='code-language' %}">{{ value.0|language_title }}</a> (<b>{{ value.1 }}</b>)</li>
+                                    {% else %}
+                                        <li><a href="{% add_get_append q=value.0 attr=facet %}">{{ value.0 }}</a> (<b>{{ value.1 }}</b>)</li>
+                                    {% endif %}
+                                {% empty %}
+                                    <li style="color: #808080;">сведений нет</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    <script type="text/javascript">
+        $('#save_request_button').click(function(){
+            $.ajax({
+                url:$(this).attr('href'),
+                type:'GET',
+                dataType:"json",
+                async:true,
+                success:function (response) {
+                    if (response['status'] == 'ok'){
+                        var button = $('#save_request_button');
+                        button.html('Сохранен');
+                        button.addClass('disabled');
+                        button.attr('href', '#1');
+
+                    }
+                    else{
+                        alert('При сохранении возникла ошибка');
+                    }
+                }
+            });
+            return false;
+        });
+    </script>
+    {% endif %}
+{% endblock %}

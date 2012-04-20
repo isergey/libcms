@@ -1,0 +1,17 @@
+{% extends 'frontend_base.html' %}
+{% load pagination_tag %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Новости</li>
+
+    </ul>
+    <ul class="news">
+    {% for news in news_list %}
+        <li><a href="{% url news:frontend:show news.id %}?back={{ request.get_full_path }}">{{ news.news_content.title }}</a></li>
+    {% endfor %}
+    </ul>
+    {% admin_pagination news_page %}
+{% endblock %}
