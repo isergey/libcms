@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 
-from models import Source, Record, Upload
+from models import Source, Record, Upload, IndexStatus
 
 
 
@@ -21,3 +21,9 @@ class UploadAdmin(admin.ModelAdmin):
     list_display = ('file', 'processed', 'success')
 
 admin.site.register(Upload, UploadAdmin)
+
+
+class IndexStatusAdmin(admin.ModelAdmin):
+    list_display = ('catalog', 'last_index_date', 'indexed')
+
+admin.site.register(IndexStatus, IndexStatusAdmin)
