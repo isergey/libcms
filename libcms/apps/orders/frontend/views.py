@@ -112,7 +112,7 @@ def zorder(request, library_id):
     #        link = reverse('zgate_index', args=(catalog.id,)) + '?zstate=preorder+%s+1+default+1+1.2.840.10003.5.28+rus' % session_id
         link = zcatalog.url + '?preorder+%s+1+default+1+1.2.840.10003.5.28+rus' % session_id
         resp =  redirect(link)
-        set_cookies_to_response(cookies, resp, domain='cgi.kitap.tatar.ru')
+        set_cookies_to_response(cookies, resp, domain='.kitap.tatar.ru')
         return resp
     return HttpResponse(u'Zgate order')
 
