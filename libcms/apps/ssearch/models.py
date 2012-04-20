@@ -94,7 +94,7 @@ class IndexStatus(models.Model):
     catalog = models.CharField(max_length=32, unique=True)
     last_index_date = models.DateTimeField()
     indexed = models.IntegerField(default=0)
-
+    deleted = models.IntegerField(default=0)
 
 
 class Record(models.Model):

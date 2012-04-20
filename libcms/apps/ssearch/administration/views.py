@@ -204,11 +204,11 @@ def _indexing(slug, reset=False):
                            str(index_status.last_index_date)
                            )
 
-    index_status.last_index_date = datetime.datetime.now()
-    index_status.save()
 
     solr = sunburnt.SolrInterface(solr_address)
     docs = list()
+
+    start_index_date = datetime.datetime.now()
 
     conn.query(select_query)
     r=conn.use_result()
@@ -238,7 +238,34 @@ def _indexing(slug, reset=False):
 
     solr.commit()
     index_status.indexed = i
+
+
+    records = []
+    if slug == 'sc2':
+        if IndexStatus(catalog=slug).last_index_date:
+            records = Record.objects.using('records').filter(deleted=True, update_date__gte=index_status.last_index_date).values('gen_id')
+        else:
+            records = Record.objects.using('records').filter(deleted=True).values('gen_id')
+    if slug == 'ebooks':
+        if IndexStatus(catalog=slug).last_index_date:
+            records = Ebook.objects.using('records').filter(deleted=True, update_date__gte=index_status.last_index_date).values('gen_id')
+        else:
+            records = Ebook.objects.using('records').filter(deleted=True).values('gen_id')
+
+
+    record_gen_ids = []
+    for record in records:
+        record_gen_ids.append(record['gen_id'])
+
+
+    if record_gen_ids:
+        solr.delete(record_gen_ids)
+        solr.commit()
+
+    index_status.deleted = len(record_gen_ids)
+    index_status.last_index_date = start_index_date
     index_status.save()
+
     return True
 
 
