@@ -24,6 +24,6 @@ admin.site.register(Upload, UploadAdmin)
 
 
 class IndexStatusAdmin(admin.ModelAdmin):
-    list_display = ('catalog', 'last_index_date', 'indexed')
+    list_display = ('catalog', 'last_index_date', 'indexed','deleted')
 
 admin.site.register(IndexStatus, IndexStatusAdmin)
