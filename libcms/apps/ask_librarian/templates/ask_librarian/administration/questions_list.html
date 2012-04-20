@@ -1,0 +1,27 @@
+{% extends 'ask_librarian/administration/questions.html' %}
+{% load i18n %}
+{% block breadcrumb %}
+    <li class="active">{% trans 'Questions list' %}</li>
+{% endblock %}
+{% block section_content %}
+    <table class="bordered-table zebra-striped">
+        <thead>
+        <tr>
+            <th>Вопрос</th>
+            <th>Информация</th>
+            <th>Статус</th>
+        </tr>
+        </thead>
+
+        {% for question in questions %}
+            <tr>
+                <td class="span12">
+                    <p>{{ question.text }}</p>
+                    <p><a href="{% url ask_librarian:admin_questions_detail question.id %}">Подробнее</a></p>
+                </td>
+                <td>{{ question.create_date }}</td>
+                <td><span class="status{{ question.status }}">{{ question.get_status_display }}</span></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

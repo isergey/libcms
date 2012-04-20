@@ -1,10 +1,13 @@
-<ul>
+
     {% for news in news_list %}
-        <li>
-            <div class="title"><a href="{% url news:frontend:show news.id %}">{{ news.news_content.title }}</a></div>
-            <div class="teaser">{{ news.news_content.teaser }}</div>
-            <div class="create_date">{{ news.create_date }}</div>
-        </li>
+{#        <li>#}
+{#            <div class="title"><a href="{% url news:frontend:show news.id %}">{{ news.news_content.title }}</a></div>#}
+{#            <div class="teaser">{{ news.news_content.teaser }}</div>#}
+{#            <div class="create_date">{{ news.create_date }}</div>#}
+{#        </li>#}
+        <p>
+            <span>{{ news.create_date|date:"d.m.Y" }}</span> <a href="{% url news:frontend:show news.id %}">{{ news.news_content.teaser }}</a>
+        </p>
     {% endfor %}
-</ul>
+
 

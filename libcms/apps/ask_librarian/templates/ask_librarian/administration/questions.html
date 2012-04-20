@@ -1,0 +1,34 @@
+{% extends 'ask_librarian/administration/module.html' %}
+{% load i18n %}
+{% block module_content %}
+    <div class="row">
+        <div class="span16">
+{# Закомментированы примеры содержимого#}
+{#            <h2>{% trans 'Questions' %}#}
+{#                <small>{% trans 'Administration' %}</small>#}
+{#            </h2>#}
+            <ul class="breadcrumb">
+                <li><b><a href="{% url ask_librarian:admin_questions %}">{% trans 'Questions' %}</a></b> <span class="divider">/</span></li>
+
+                {% block breadcrumb %}
+                    <li class="active">{% trans 'Stats' %}</li>
+                {% endblock %}
+{#                <li><a href="#">Middle page</a> <span class="divider">/</span></li>#}
+{#                <li><a href="#">Another one</a> <span class="divider">/</span></li>#}
+{#                <li class="active">You are here</li>#}
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span3 panel">
+            <ul class="section_menu">
+                {% include 'ask_librarian/administration/questions_menu.html' %}
+            </ul>
+        </div>
+        <div class="span13">
+                {% block section_content %}
+                {% endblock %}
+        </div>
+
+    </div>
+{% endblock %}

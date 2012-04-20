@@ -1,10 +1,69 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+{% extends 'theme_frontend_base.html' %}
+{% load news_tags %}
+{% load events_tags %}
+{% load ssearch_tags %}
+{% load cache %}
+{% block content %}
+<div class="left">
 
-</body>
-</html>
+    <div class="Bg" id="banners">
+
+        <!-- 1 banner -->
+        <div class="banners show">
+            <img src="{{ STATIC_URL }}theme/banner/loremIpsum.jpg" class="banner-background">
+            <div class="banner-node">
+                <h2>Забронируй свою книгу заранее</h2>
+                <a href="#"><div class="ban-button-left"></div><div class="ban-button-middle">Забронировать</div><div class="ban-button-right"></div></a>
+            </div>
+        </div>
+        <!-- 2 banner -->
+        <div class="banners">
+            <img src="{{ STATIC_URL }}theme/banner/loremIpsum.jpg" class="banner-background">
+            <div class="banner-node">
+                <h2>Забронируй свою книгу заранее</h2>
+                <a href="#"><div class="ban-button-left"></div><div class="ban-button-middle">Забронировать</div><div class="ban-button-right"></div></a>
+            </div>
+        </div>
+        <!-- 3 banner -->
+        <div class="banners">
+            <img src="{{ STATIC_URL }}theme/banner/loremIpsum.jpg" class="banner-background">
+            <div class="banner-node">
+                <h2>Забронируй свою книгу заранее</h2>
+                <a href="#"><div class="ban-button-left"></div><div class="ban-button-middle">Забронировать</div><div class="ban-button-right"></div></a>
+            </div>
+        </div>
+
+    </div>
+    <div class="zag">
+        <h3 class="item1">Читаем вместе</h3>
+        <p class="vsego">Всего <span class="item1">{% cache 3600 'ssearch_all_count' %}{% ssearch_all_count %} {% endcache %} </span><br/><span class="item2">документов в сводном каталоге</span></p>
+        <div class="clear"></div>
+    </div>
+
+
+    <div class="innerLeft">
+        <img src="{{ STATIC_URL }}theme/images/book1.jpg" />
+        <p>Ревизор <a href="{% url ssearch:frontend:index %}?fattr=text&fq=Ревизор+гоголь&attr=title&q=Ревизор+%3A+комедия+в+5-и+действиях">Николай Гоголь</a></p>
+    </div>
+
+    <div class="innerCenter">
+        <img src="{{ STATIC_URL }}theme/images/book2.jpg" />
+        <p>Герой Нашего<br />Времени<a href="{% url  ssearch:frontend:index %}?fattr=text&fq=Герой+Нашего+Времени&attr=title&q=Герой+Нашего+Времени">Михаил Лермонтов</a></p>
+    </div>
+
+    <div class="innerRight">
+        <img src="{{ STATIC_URL }}theme/images/book3.jpg" />
+        <p>Человек в футляре <a href="{% url ssearch:frontend:index %}?fattr=text&fq=чехов&attr=title&q=Человек+в+футляре">Антон Чехов</a></p>
+    </div>
+
+    <div class="clear"></div>
+
+</div>
+
+<div class="right">
+
+    <h3>Новости</h3>
+    {% news_feed %}
+    <a href="{% url news:frontend:index %}" class="last">Архив новостей</a>
+</div>
+{% endblock %}

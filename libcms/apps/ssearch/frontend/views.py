@@ -195,6 +195,8 @@ def search(request):
         terms += terms_constructor(attrs, qs)
     except WrongSearchAttribute:
         return HttpResponse(u'Задан непрвильный атрибут поиска')
+    except IndexError:
+        return HttpResponse(u'Некорректный набор атрибутов')
 
 
     query = None
@@ -234,7 +236,7 @@ def search(request):
 
     facets = cache.get(terms_facet_hash, None)
     if not facets:
-        solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=20, mincount=1)
+        solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=15, mincount=1)
 
     solr_searcher = solr_searcher.field_limit("id")
     paginator = Paginator(solr_searcher, 20) # Show 25 contacts per page

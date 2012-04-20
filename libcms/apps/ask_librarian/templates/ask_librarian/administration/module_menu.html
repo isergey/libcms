@@ -1,0 +1,8 @@
+{% load i18n %}
+{% load core_active_menu_item_tag %}
+
+{% url ask_librarian:admin_questions as admin_questions %}
+{% url ask_librarian:admin_managers as admin_managers %}
+
+<li class="{% active request admin_questions %}"><a href="{{ admin_questions }}">{% trans 'Questions' %}</a></li>
+<li class="{% active request admin_managers %}"><a href="{{ admin_managers }}">{% trans 'Managers' %}</a></li>

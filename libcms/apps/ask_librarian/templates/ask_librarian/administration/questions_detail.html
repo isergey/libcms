@@ -1,0 +1,88 @@
+{% extends 'ask_librarian/administration/questions.html' %}
+{% load i18n %}
+{% block breadcrumb %}
+    <li><a href="{% url ask_librarian:admin_questions_list %}">{% trans 'Questions list' %}</a><span
+            class="divider">/</span></li>
+    <li class="active">{% trans 'Question detail' %}</li>
+{% endblock %}
+{% block section_content %}
+    <h4>{% trans 'Question' %}: {% if not answer %}<span class="label important">{% trans 'The question has no answer' %}</span>{% endif %}</h4>
+    <table class="zebra-striped question_detail">
+        <tbody>
+        <tr>
+            <th>{% trans 'Question' %}:</th>
+            <td>{{ question.text }}
+        </tr>
+        <tr>
+            <th>{% trans 'Status' %}:</th>
+            <td><span class="status{{ question.status }}">{{ question.get_status_display }}</span>
+        </tr>
+        <tr>
+            <th>{% trans 'Answer language' %}:</th>
+            <td>
+                <ul style="margin: 0; list-style: none;">
+                    {% for answer_language in question.answer_language.all %}
+                        <li>{{ answer_language.name }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <th>{% trans 'Create date' %}:</th>
+            <td>{{ question.create_date }}
+        </tr>
+        <tr>
+            <th>{% trans 'Category' %}:</th>
+            <td>
+                {% for category in  question.get_category_path %}
+                    {% if forloop.last %}<b>{{ category }}</b>{% else %}{{ category }}{% endif %}
+                    {% if not forloop.last %}→{% endif %}
+                {% endfor %}
+
+            </td>
+        </tr>
+        <tr>
+            <th>{% trans 'User' %}:</th>
+            <td>
+                {% if question.user %}
+                    {{ question.user }}
+                {% else %}
+                    {% trans 'Unregistered' %}
+                {% endif %}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    {% if  not answer%}
+        <div class="actions">
+            <a class="btn success" href="#1">{% trans 'Answer the question' %}</a>
+            <a class="btn primary" href="#1">{% trans 'Assign to answer manager' %}</a>
+            {% if question.status != 2 %}<a class="btn danger" href="#1">{% trans 'Reject question' %}</a>{% endif %}
+        </div>
+    {% endif %}
+
+    {% if answer %}
+        <hr/>
+        <hr/>
+        <h4>{% trans 'Answer' %}:</h4>
+        <table class="zebra-striped question_detail">
+            <tbody>
+            <tr>
+                <th>{% trans 'Question' %}:</th>
+                <td>{{ answer.text }}
+            </tr>
+            <tr>
+                <th>{% trans 'Create date' %}:</th>
+                <td>{{ answer.create_date }}
+            </tr>
+            <tr>
+                <th>{% trans 'Manager' %}:</th>
+                <td>
+                        {{ answer.manager  }}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

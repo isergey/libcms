@@ -1,4 +1,6 @@
 # -*- encoding: utf-8 -*-
+from django.conf import settings
+import sunburnt
 import datetime
 from django.template import Library
 
@@ -133,3 +135,14 @@ language_titles = {
 @register.filter
 def language_title(code):
     return language_titles.get(code, code)
+
+
+
+@register.inclusion_tag('ssearch/tags/count.html')
+def ssearch_all_count():
+    solr = sunburnt.SolrInterface(settings.SOLR['host'])
+    responce = solr.query(id='*').field_limit("id").execute()
+
+    return {
+        'count': responce.result.numFound
+    }
