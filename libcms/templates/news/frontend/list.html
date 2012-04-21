@@ -4,7 +4,7 @@
 {% block content %}
     <div class="breadcrumb">
         <span><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></span>
-        <span class="active">Новости</span>
+        <span class="active">Новости <a href="{% url news:frontend:rss %}"><img src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a></span>
     </div>
     <hr/>
     <ul class="news">
