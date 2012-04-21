@@ -1,0 +1,56 @@
+{% extends 'theme_frontend_base.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans 'Login' %}
+{% endblock %}
+{% block content %}
+    <form method="POST" class="form-horizontal">{% csrf_token %}
+        <fieldset>
+            {% include 'frontend/base_form_fields.html' %}
+            <div class="form-actions">
+                <input type="submit" value="Войти" class="btn"/>
+            </div>
+        </fieldset>
+    </form>
+    <hr/>
+
+    <div>
+        {% include 'accounts/frontend/oauth_buttons.html' %}
+    </div>
+    <hr/>
+{#    <div>#}
+{#        <h3>Login using OpenId from:</h3>#}
+{#        <ul>#}
+{#            {% for name in social_auth.backends.openid %}#}
+{#                <li>#}
+{#                    {% if name != "livejournal" and name != "openid" %}#}
+{#                        <a rel="nofollow" href="{% url socialauth_begin name %}">{{ name|title }}</a>#}
+{#                    {% else %}#}
+{#                        {% if name == "livejournal" %}#}
+{#                            <form action="{% url socialauth_begin "livejournal" %}" method="post">{% csrf_token %}#}
+{#                                <div>#}
+{#                                    <label for="openid_lj_user">LiveJournal user:</label>#}
+{#                                    <input id="openid_lj_user" type="text" value="" name="openid_lj_user" />#}
+{#                                    <input type="submit" value="Login"/>#}
+{#                                </div>#}
+{#                            </form>#}
+{#                        {% else %}#}
+{#                            {% if name == "openid" %}#}
+{#                                <form action="{% url socialauth_begin "openid" %}" method="post">{% csrf_token %}#}
+{#                                    <div>#}
+{#                                        <label for="openid_identifier">Other provider</label>#}
+{#                                        <input id="openid_identifier" type="text" value="" name="openid_identifier" />#}
+{#                                        <input type="submit" value="Login" />#}
+{#                                    </div>#}
+{#                                    <p class="helptext">Like your personal <a href="https://www.myopenid.com/" title="My OpenId">myopenid</a></p>#}
+{#                                </form>#}
+{#                            {% endif %}#}
+{#                        {% endif %}#}
+{#                    {% endif %}#}
+{#                </li>#}
+{#            {% endfor %}#}
+{#        </ul>#}
+{#    </div>#}
+
+
+{% endblock %}

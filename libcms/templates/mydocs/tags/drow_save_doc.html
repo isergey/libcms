@@ -1,0 +1,68 @@
+<div>
+    {% if already_saved %}
+        <a class="button success" href="{% url mydocs:frontend:index %}#{{ gen_id }}">Сохранен в документах</a>
+
+    {% else %}
+        <style>
+            #save_doc_form textarea {
+                width: 99%;
+            }
+        </style>
+
+        <div class="modal hide" id="save_doc_modal" style="display: none">
+
+            <form action="{% url mydocs:frontend:save %}" method="POST" id="save_doc_form" style="margin: 0">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">×</a>
+
+                    <h3>Сохранение документа</h3>
+                </div>
+                <div class="modal-body">
+                    <fieldset>
+                        {% include 'frontend/base_form_fields.html' %}
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+{#                    <a href="#" class="btn" data-dismiss="modal">Закрыть</a>#}
+                    <input type="submit" value="Сохранить" class="order_button" id='save_doc_submit'/>
+                </div>
+            </form>
+        </div>
+        {% if user.id %}
+            <a class="button" data-toggle="modal" href="#save_doc_modal" id="save_doc_button" >Сохранить документ</a>
+        {% else %}
+            <a class="button disabled" href="#1" id="save_doc_button" onclick="alert('Необходимо войти на портал')" >Сохранить документ</a>
+        {% endif %}
+        <script type="text/javascript">
+            $('#save_doc_form').submit(function () {
+                $.ajax({
+                    url:'{% url mydocs:frontend:save %}',
+                    type:'POST',
+                    dataType:"json",
+                    async:false,
+                    data:$(this).serialize(),
+                    statusCode: {
+                        401: function() {
+                            alert("Вы должны войти на портал.");
+                        },
+                        500: function() {
+                            alert("На сервере возникла ошибка. Администраторы оповещены.");
+                        }
+                    },
+                    success:function (response) {
+                        if (response.status == 'error') {
+                            alert("При сохранении возникла ошибка");
+                        }
+                        if (response.status == 'ok') {
+                            $('#save_doc_submit').addClass('btn-success');
+                            $('#save_doc_submit').attr('disabled','disabled');
+                            $('#save_doc_submit').attr('value','Сохранено');
+                        }
+                    }
+                });
+
+                return false;
+            });
+        </script>
+    {% endif %}
+</div>

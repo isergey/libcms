@@ -1,0 +1,26 @@
+{% extends 'theme_frontend_base.html' %}
+{% load i18n %}
+{% block title %}
+    Регистрация
+{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Регистрация</li>
+
+    </ul>
+    <h3 style="margin-left: 160px;">Регистрация</h3>
+    <p></p>
+    <form method="POST" class="form-horizontal">{% csrf_token %}
+        <fieldset>
+            {% include 'frontend/base_form_fields.html' %}
+            <div class="form-actions">
+                <input type="submit" value="Регистрация" class="btn"/>
+            </div>
+        </fieldset>
+    </form>
+    <div>
+        {% include 'accounts/frontend/oauth_buttons.html' %}
+    </div>
+{% endblock %}

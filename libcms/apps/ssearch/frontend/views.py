@@ -372,6 +372,7 @@ def detail(request, gen_id):
 
 @login_required
 def saved_search_requests(request):
+
     saved_requests = SavedRequest.objects.filter(user=request.user)
     srequests = []
     for saved_request in saved_requests:
@@ -391,8 +392,9 @@ def saved_search_requests(request):
     })
 
 
-@login_required
 def save_search_request(request):
+    if not request.user.is_authenticated():
+        return HttpResponse(u'Вы должны быть войти на портал', status=401)
     search_request =  request.GET.get('srequest', None)
     if SavedRequest.objects.filter(user=request.user).count() > 500:
         return HttpResponse(u'{"status": "error", "error": "Вы достигли максимально разрешенного количества запросов"}')
@@ -400,8 +402,9 @@ def save_search_request(request):
     SavedRequest(user=request.user, search_request=search_request).save()
     return HttpResponse(u'{"status": "ok"}')
 
-@login_required
 def delete_search_request(request, id):
+    if not request.user.is_authenticated():
+        return HttpResponse(u'Вы должны быть войти на портал', status=401)
     sr = get_object_or_404(SavedRequest, user=request.user, id=id)
     sr.delete()
     return HttpResponse(u'{"status": "ok"}')

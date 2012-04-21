@@ -1,7 +1,7 @@
 ﻿* {
 	margin: 0;
 	padding: 0;
-	font-family: Arial;
+	font-family: Helvetica, Arial, sans-serif;
 }
 
 html {
@@ -273,3 +273,4 @@ ul{
 	font-size: 9px;
 	color: #505050;
 }
+

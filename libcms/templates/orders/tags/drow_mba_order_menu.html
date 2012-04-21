@@ -1,0 +1,217 @@
+<style>
+   #copy_doc_form textarea,  #delivery_doc_form textarea {
+        width: 99%;
+    }
+    #copy_doc_form textarea {
+        height: 50px;
+    }
+    #delivery_doc_form textarea {
+        height: 150px;
+    }
+</style>
+
+<div class="modal hide" id="copy_doc_modal" style="display: none">
+
+    <form action="" method="POST" id="copy_doc_form" style="margin: 0">{% csrf_token %}
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+
+            <h3>Заказ копии документа</h3>
+        </div>
+        <div class="modal-body">
+            <fieldset>
+                <div class="control-group ">
+                    <label class="control-label" for="copy_cbs_select">Укажите ЦБС к которой принадлежит библиотека</label>
+                    <div class="controls">
+                        <select name="cbs" id="copy_cbs_select">
+                            <option disabled="" selected="">Выберите ЦБС</option>
+                            {% for cbs in cbses %}
+                                <option value="{{ cbs.id }}">{{ cbs.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% include 'frontend/base_form_fields.html' with form=copy_form %}
+            </fieldset>
+        </div>
+        <div class="modal-footer">
+{#            <a href="#" class="btn" data-dismiss="modal">Отменить</a>#}
+            <input type="submit" value="Заказать" class="order_button" id='copy_doc_submit'/>
+        </div>
+    </form>
+</div>
+
+<div class="modal hide" id="delivery_doc_modal" style="display: none">
+
+    <form action="" method="POST" id="delivery_doc_form" style="margin: 0">{% csrf_token %}
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+
+            <h3>Заказ доставки документа</h3>
+        </div>
+        <div class="modal-body">
+            <fieldset>
+                <div class="control-group ">
+                    <label class="control-label" for="delivery_cbs_select">Укажите ЦБС к которой принадлежит библиотека</label>
+                    <div class="controls">
+                        <select name="cbs" id="delivery_cbs_select">
+                            <option disabled="" selected="">Выберите ЦБС</option>
+                            {% for cbs in cbses %}
+                                <option value="{{ cbs.id }}">{{ cbs.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% include 'frontend/base_form_fields.html' with form=delivery_form %}
+            </fieldset>
+        </div>
+        <div class="modal-footer">
+{#            <a href="#" class="btn" data-dismiss="modal">Отменить</a>#}
+            <input type="submit" value="Заказать" class="order_button" id='delivery_doc_submit'/>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+{% if user.id %}
+    <ul>
+        <li><a data-toggle="modal" href="#copy_doc_modal" id="copy_doc_button" class="order">Заказать</a><p>Заказать копию документа или его части для получения в другой библиотеке</p></li>
+        <li><a data-toggle="modal" href="#delivery_doc_modal" id="delivery_doc_button" class="order">Заказать</a><p>Заказать документ во временное пользование с получением его в другой библиотеке</p></li>
+    </ul>
+{% else %}
+    <ul>
+        <li> <a class="btn disabled" href="#1" onclick="alert('Необходимо войти на портал')">Заказать</a><p>Заказать копию документа или его части для получения в другой библиотеке</p></li>
+        <li><a class="btn disabled" href="#1" onclick="alert('Необходимо войти на портал')">Заказать</a><p>Заказать документ во временное пользование с получением его в другой библиотеке</p></li>
+    </ul>
+{% endif %}
+
+
+
+<script type="text/javascript">
+    function load_cbs_list(result_select_id){
+        $.ajax({
+            url:'{% url participants:frontend:branches %}',
+            type:'POST',
+            dataType:"json",
+            async:true,
+            success:function (orgs) {
+                $('#'+result_select_id).html(tmpl("cbs_list_tmpl", {'orgs':orgs}));
+            }
+        });
+    }
+    function load_lib_list(result_select_id, cbs_id){
+        $.ajax({
+            url:'{% url participants:frontend:branches %}',
+            type:'POST',
+            dataType:"json",
+            async:true,
+            data:{id:cbs_id},
+            success:function (orgs) {
+                $('#'+result_select_id).html(tmpl("lib_list_tmpl", {'orgs':orgs}));
+                $('#'+result_select_id).parent().parent().show();
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+
+    $('#id_copy-manager_id').parent().parent().hide();
+    $('#id_delivery-manager_id').parent().parent().hide();
+
+    $('#copy_doc_button').click(function(){
+        load_cbs_list('copy_cbs_select');
+    });
+    $("#copy_cbs_select").change(function () {
+        load_lib_list('id_copy-manager_id', $(this).val());
+    });
+
+    $('#delivery_doc_button').click(function(){
+        load_cbs_list('delivery_cbs_select');
+    });
+    $("#delivery_cbs_select").change(function () {
+        load_lib_list('id_delivery-manager_id', $(this).val());
+    });
+
+
+</script>
+
+<script type="text/html" id="cbs_list_tmpl">
+    <option disabled="" selected="">Выберите ЦБС</option>
+    <% for (var i in orgs) { %>
+    <option value="<%=orgs[i].id%>"><%=orgs[i].name%></option>
+    <% } %>
+</script>
+
+<script type="text/html" id="lib_list_tmpl">
+    <option disabled="" selected="">Выберите библиотеку</option>
+    <% for (var i in orgs) { %>
+        <option value="<%=orgs[i].id%>"><%=orgs[i].name%></option>
+    <% } %>
+</script>
+
+
+<script type="text/javascript">
+    $('#copy_doc_form').submit(function () {
+        $.ajax({
+            url:'{% url orders:frontend:mba_order_copy %}',
+            type:'POST',
+            dataType:"json",
+            async:false,
+            data:$(this).serialize(),
+            statusCode: {
+                401: function() {
+                    alert("Вы должны войти на портал.");
+                },
+                500: function() {
+                    alert("На сервере возникла ошибка. Администраторы оповещены.");
+                }
+            },
+            success:function (response) {
+                if (response.status == 'error') {
+                    alert("При заказе возникла ошибка. Укажите библиотеку.");
+                }
+                if (response.status == 'ok') {
+                    $('#copy_doc_submit').addClass('order_success');
+                    $('#copy_doc_submit').attr('disabled','disabled');
+                    $('#copy_doc_submit').attr('value','Заказ отправлен');
+                }
+            }
+        });
+
+        return false;
+    });
+
+    $('#delivery_doc_form').submit(function () {
+        $.ajax({
+            url:'{% url orders:frontend:mba_order_delivery %}',
+            type:'POST',
+            dataType:"json",
+            async:false,
+            data:$(this).serialize(),
+            statusCode: {
+                401: function() {
+                    alert("Вы должны войти на портал.");
+                },
+                500: function() {
+                    alert("На сервере возникла ошибка. Администраторы оповещены.");
+                }
+            },
+            success:function (response) {
+                if (response.status == 'error') {
+                    alert("При заказе возникла ошибка. Укажите библиотеку.");
+                }
+                if (response.status == 'ok') {
+                    $('#delivery_doc_submit').addClass('order_success');
+                    $('#delivery_doc_submit').attr('disabled','disabled');
+                    $('#delivery_doc_submit').attr('value','Заказ отправлен');
+                }
+            }
+        });
+
+        return false;
+    });
+</script>

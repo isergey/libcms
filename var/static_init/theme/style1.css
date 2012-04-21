@@ -129,7 +129,7 @@ a {
 	float:right;
 	margin: 10px 0;
 }
-#content .left.left3  .bookImg a,#content  a.saveIzbBut{
+#content .left.left3  .bookImg a.button ,#content  a.saveIzbBut, .sortBut{
 	display:block;
 	width:143px;
 	background: url(images/button2.png) no-repeat;
@@ -139,6 +139,11 @@ a {
 	text-align: center;
 	padding: 4px 0 7px;
 	margin: 10px 0 0 10px;
+}
+.sortBut{
+    border: 0;
+    display: inline-block;
+    cursor: pointer;
 }
 #content .left2 input{
 	display: block;
@@ -261,7 +266,7 @@ a {
 #content .right.right3 .bookAction p.title{
 	font-weight:bold;
 }
-#content .right.right3 .bookAction a{
+#content .right.right3 .bookAction a.order, .order_button{
 	display:block;
 	width:100px;
 	float:left;
@@ -273,6 +278,7 @@ a {
 	text-align: center;
 	padding:7px 0;
 	margin: 3px 15px 0 0;
+    cursor: pointer;
 }
 #content .right.right3 h3{
 	font-size: 16px;
@@ -422,7 +428,7 @@ a {
 #content .searchRes, #content .searchRes2{
 	margin:0 10px;
 }
-#content .right div.navigat2, #content .searchRes div.navigat2{
+#content .right div.navigat2, #content div.navigat2{
 	float: right;
 }
 #content .right div.navigat2 ul , #content .searchRes div.navigat2 ul {
