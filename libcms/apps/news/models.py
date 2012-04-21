@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+from django.shortcuts import urlresolvers
 from django.conf import settings
 from django.db import models
 
@@ -10,6 +11,8 @@ class News(models.Model):
         permissions = (
             ("can_views_prof_news", "Can view professional news"),
         )
+    def get_absolute_url(self):
+        return urlresolvers.reverse('news:frontend:show', args=[self.id])
 
 class NewsContent(models.Model):
     news = models.ForeignKey(News)
