@@ -36,7 +36,9 @@
     </div>
     <div class="zag">
         <h3 class="item1">Читаем вместе</h3>
-        <p class="vsego">Всего <span class="item1">{% cache 3600 'ssearch_all_count' %}{% ssearch_all_count %} {% endcache %} </span><br/><span class="item2">документов в сводном каталоге</span></p>
+{#        <p class="vsego">Всего <span class="item1">{% cache 3600 'ssearch_all_count' %}{% ssearch_all_count %} {% endcache %} </span><br/><span class="item2">документов в сводном каталоге</span></p>#}
+        <p class="vsego">Всего <span class="item1">{% ssearch_all_count %}</span><br/><span class="item2">документов в сводном каталоге</span></p>
+
         <div class="clear"></div>
     </div>
 

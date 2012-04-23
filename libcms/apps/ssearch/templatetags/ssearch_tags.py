@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+import socket
 from django.conf import settings
 import sunburnt
 import datetime
@@ -140,9 +141,13 @@ def language_title(code):
 
 @register.inclusion_tag('ssearch/tags/count.html')
 def ssearch_all_count():
-    solr = sunburnt.SolrInterface(settings.SOLR['host'])
-    responce = solr.query(id='*').field_limit("id").execute()
-
+    try:
+        solr = sunburnt.SolrInterface(settings.SOLR['host'])
+        responce = solr.query(id='*').field_limit("id").execute()
+    except socket.error:
+        return {
+            'count': 0
+        }
     return {
         'count': responce.result.numFound
     }

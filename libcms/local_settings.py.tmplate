@@ -194,6 +194,9 @@ SOLR = {
     'host': 'http://localhost:8982/solr',
 }
 
+EBOOKS_STORE = "/home/sergey/PycharmProjects/edocs/"
+
+
 ORDERS = {
     'db_catalog':  PROJECT_PATH + '../var/orders_data/',
     'rdx_path':  PROJECT_PATH + '../rdx',

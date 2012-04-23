@@ -198,6 +198,7 @@ dtf - фасет даты
     <!-- att 1030            Thematic-number -->
     <!-- att 1031            Material-type -->
     <!-- att 1032            Doc-id -->
+    <xsl:call-template name="Doc-id"/>
     <!-- att 1033            Host-item -->
     <!-- att 1034            Content-type -->
     <xsl:call-template name="Content-type"/>
@@ -206,6 +207,7 @@ dtf - фасет даты
 
     <!-- Расширенные -->
     <xsl:call-template name="Fond"/>
+    <xsl:call-template name="Tom"/>
 </xsl:template>
 
 
@@ -730,6 +732,14 @@ dtf - фасет даты
     </xsl:for-each>
 </xsl:template>
 
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<xsl:template name="Doc-id">
+    <xsl:for-each select="field[@id='856']/subfield[@id='u']">
+        <field name="doc-id_s">
+            <xsl:value-of select="."/>
+        </field>
+    </xsl:for-each>
+</xsl:template>
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Content-type">
@@ -798,6 +808,16 @@ dtf - фасет даты
     </xsl:for-each>
 </xsl:template>
 
+<xsl:template name="Tom">
+    <xsl:param name="count" select="1"/>
+    <xsl:variable name="v" select="field[@id='461']/subfield[@id='1']/field[@id='200']/subfield[@id='v']"/>
+
+    <xsl:for-each select="$v[1]">
+            <field name="tom_s">
+                <xsl:value-of select="."/>
+            </field>
+    </xsl:for-each>
+</xsl:template>
 
 <!-- Фасеты -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->

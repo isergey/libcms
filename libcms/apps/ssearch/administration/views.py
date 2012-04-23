@@ -145,14 +145,21 @@ def indexing(request):
         reset = False
 
     for slug in settings.SOLR['catalogs'].keys():
-        print slug
         _indexing(slug, reset)
-        print slug
+        break
 
     return HttpResponse('Ok')
 
+
+
+# регулярки, с помощью которых вычленяются номера томов
+re_t1_t2 = re.compile(ur"(?P<t1>\d+)\D+(?P<t2>\d+)" ,re.UNICODE)
+re_t1 = re.compile(ur"(?P<t1>\d+)" ,re.UNICODE)
+
 @transaction.commit_on_success
 def _indexing(slug, reset=False):
+
+
     try:
         solr_address = settings.SOLR['host']
         db_conf =  settings.DATABASES.get(settings.SOLR['catalogs'][slug]['database'], None)
@@ -211,8 +218,8 @@ def _indexing(slug, reset=False):
     start_index_date = datetime.datetime.now()
 
     conn.query(select_query)
-    r=conn.use_result()
-    res = r.fetch_row(how=1)
+    rows=conn.use_result()
+    res = rows.fetch_row(how=1)
 
     i=0
     while res:
@@ -221,9 +228,44 @@ def _indexing(slug, reset=False):
         doc_tree = xslt_transformer(doc_tree)
         doc = doc_tree_to_dict(doc_tree)
         doc = add_sort_fields(doc)
+
+        # для сортировки по тому, извлекаем строку содержащую номер тома или промежуток и посещаем резултат вычисления
+        # в поле tom_f, которое в последствии сортируется
+        # если трока типа т.1 то в том добавляется float 1
+        # если строка содержит т.1-2 то добавляется float (1+2) / 2 - средне арифметическое, чтобы усреднить для сортировки
+
+        tom = doc.get('tom_s', None)
+        if tom and isinstance(tom, unicode):
+            tom = tom.strip().replace(u' ',u'')
+            r = re_t1_t2.search(tom)
+            if r:
+                groups = r.groups()
+                doc['tom_f'] = (int(groups[0]) + int(groups[1])) / 2.0
+            else:
+                r = re_t1.search(tom)
+                if r:
+                    doc['tom_f'] = float(r.groups()[0])
+
         doc['system-add-date_dt'] = res[0]['add_date']
         doc['system-update-date_dt'] = res[0]['update_date']
         doc['system-catalog_s'] = slug
+
+
+
+
+        if slug == 'ebooks':
+            full_text_file =None
+#            doc['system-update-date_dt'] = res[0]['doc-id_s']
+            urls = doc.get('doc-id_s', None)
+            if urls and type(urls) == list:
+                for url in doc.get('doc-id_s', None):
+                    full_text_file =  url.split('/')[-1]
+            else:
+                full_text_file =  urls.split('/')[-1]
+            if full_text_file:
+                text =  full_text_extract(full_text_file)
+                if text:
+                    doc['full-text'] = text
         docs.append(doc)
         i+=1
         if len(docs) > 200:
@@ -231,7 +273,7 @@ def _indexing(slug, reset=False):
             solr.add(docs)
             docs = list()
 
-        res = r.fetch_row(how=1)
+        res = rows.fetch_row(how=1)
 
     if docs:
         solr.add(docs)
@@ -239,7 +281,7 @@ def _indexing(slug, reset=False):
     solr.commit()
     index_status.indexed = i
 
-
+    # удаление
     records = []
     if slug == 'sc2':
         if IndexStatus(catalog=slug).last_index_date:
@@ -332,3 +374,20 @@ def add_sort_fields(doc):
             else:
                 continue
     return doc
+
+
+
+import zipfile
+def full_text_extract(zip_file_name):
+#    zip_file_name = settings.EBOOKS_STORE + zip_file_name
+    try:
+#        print settings.EBOOKS_STORE + zip_file_name + '.edoc'
+        file = zipfile.ZipFile( settings.EBOOKS_STORE + zip_file_name + '.edoc', "r")
+        # читаем содержимое, попутно вырезая ять в коне слова
+        text =  file.read("Text.txt").decode('utf-8').replace(u'ъ ', u'').replace(u'ъ,', u',').replace(u'ъ.', u'.').replace(u'ъ:', u':').replace(u'ъ;', u';')
+        file.close()
+        return text
+    except IOError:
+        return None
+
+

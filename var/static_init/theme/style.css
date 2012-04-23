@@ -109,11 +109,11 @@ ul{
 	display: block;
 	height: 18px;
 	width: 270px;
-	top: 4px;
+	top: 6px;
 	left: 15px;
 	background: transparent;
 	border: 0;
-	border-right: 1px dotted #848484;
+	/*border-right: 1px dotted #848484;*/
 	outline: 0;
 	font-size: 14px;
 	color: #505050;
@@ -126,7 +126,7 @@ ul{
 	background: url('images/search-button.png');
 	position: relative;
 	left: 448px;
-	top: -19px;
+	top: -13px;
 	cursor: pointer;
 }
 
@@ -192,7 +192,7 @@ ul{
 	color: #505050;
 	border-radius: 10px;
 	box-shadow: inset 1px 1px 5px #848484;
-	padding: 4px 5px;
+	padding: 6px 5px;
 	font-size: 14px;
 }
 #nav-menu a:hover {

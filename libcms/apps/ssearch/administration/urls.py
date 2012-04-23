@@ -7,4 +7,5 @@ urlpatterns = patterns('',
     url(r'^upload/$', views.upload, name="upload"),
     url(r'^process/$', views.pocess, name="process"),
     url(r'^indexing/$', views.indexing, name="indexing"),
+    url(r'^fte/$', views.full_text_extract, name="fte"),
 )

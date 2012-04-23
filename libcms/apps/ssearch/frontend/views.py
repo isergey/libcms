@@ -24,70 +24,127 @@ from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transforme
 #xslt_bib_draw = etree.parse('libcms/xsl/full_document.xsl')
 #xslt_bib_draw_transformer = etree.XSLT(xslt_bib_draw)
 
-def index(request):
-    q = request.GET.get('q', None)
-    fq = request.GET.get('fq', None)
-    if not q and not fq:
-        return init_search(request)
-    else:
-        return search(request)
 
-
-
-def init_search(request):
-    return render(request, 'ssearch/frontend/index.html')
 
 
 
 
 attr_map = {
-    u'author': {
-        'attr': u'author_t'
-    },
-    u'title': {
-        'attr': u'title_t'
-    },
-    u'subject-heading': {
-        'attr': u'subject-heading_t'
-    },
-    u'date-of-publication': {
-        'attr': u'date-of-publication_dt'
-    },
-    u'code-language':{
-        'attr': u'code-language_t'
-    },
-    u'isbn': {
-        'attr': u'isbn_t'
-    },
-    u'issn': {
-        'attr': u'issn_t'
-    },
-    u'text': {
-        'attr': u'text_t'
-    },
-    u'content-type': {
-        'attr': u'content-type_t'
-    },
-    u'fond': {
-        'attr': u'fond_t'
-    },
-}
+    'text': {
+        'order': 1,
+        'attr': u'text_t',
+        'title':u'Везде',
+        'display': True,
+        },
+    'title': {
+        'order': 2,
+        'attr': u'title_t',
+        'title':u'Заглавие',
+        'display': True,
+        },
+    'author': {
+        'order': 3,
+        'attr': u'author_t',
+        'title':u'Автор',
+        'display': True,
+        },
+    'subject-heading': {
+        'order': 4,
+        'attr': u'subject-heading_t',
+        'title':u'Тематика',
+        'display': True,
+        },
+    'date-of-publication': {
+        'order': 5,
+        'attr': u'date-of-publication_dt',
+        'title':u'Год публикации',
+        'display': True,
+        },
+    'code-language':{
+        'order': 6,
+        'attr': u'code-language_t',
+        'title':u'Язык',
+        'display': False,
+        },
+    'isbn': {
+        'order': 7,
+        'attr': u'isbn_t',
+        'title':u'ISBN',
+        'display': True,
+        },
+    'issn': {
+        'order': 8,
+        'attr': u'issn_t',
+        'title':u'ISSN',
+        'display': True,
+        },
+    'content-type': {
+        'order': 9,
+        'attr': u'content-type_t',
+        'title':u'Тип содержания',
+        'display': False,
+        },
+    'fond': {
+        'order': 10,
+        'attr': u'fond_t',
+        'title':u'Фонд',
+        'display': False,
+        },
+    }
 
 
 sort_attr_map = {
     u'author': {
         'attr': u'author_ts',
         'order': 'asc',
-    },
+        },
     u'title': {
         'attr': u'title_ts',
         'order': 'asc',
-    },
+        },
     u'date-of-publication': {
         'attr': u'date-of-publication_dts',
         'order': 'desc',
-    },
-}
+        },
+    u'tom': {
+        'attr': u'tom_f',
+        'order': 'asc',
+        },
+    }
+
+def _make_search_attrs():
+    search_attrs = []
+    for attr in attr_map:
+
+        if not attr_map[attr].get('display', False):
+            continue
+        search_attrs.append({
+            'title': attr_map[attr].get('title', attr),
+            'value': attr,
+            'order': attr_map[attr].get('order', 1000),
+            })
+
+    search_attrs.sort(key=lambda x: x['order'])
+    return search_attrs
+
+
+def index(request, catalog=None):
+    q = request.GET.get('q', None)
+    fq = request.GET.get('fq', None)
+    if not q and not fq:
+        return init_search(request)
+    else:
+        return search(request, catalog)
+
+
+
+def init_search(request):
+    search_attrs = _make_search_attrs()
+    return render(request, 'ssearch/frontend/index.html', {
+        'search_attrs': search_attrs
+    })
+
+
 
 #reverse_attr_map = {}
 #
@@ -132,7 +189,7 @@ resolvers = {
 
 
 # тип поля, которое может быть только одно в документе
-origin_types = ['ts', 'ss', 'dts']
+origin_types = ['ts', 'ss', 'dts', 'f']
 
 class WrongSearchAttribute(Exception): pass
 
@@ -160,7 +217,10 @@ def terms_constructor(attrs, values):
     return terms
 
 
-def search(request):
+def search(request, catalog=None):
+
+    search_attrs = _make_search_attrs()
+
     search_deep_limit = 5 # ограничение вложенных поисков
     solr = sunburnt.SolrInterface(settings.SOLR['host'])
 
@@ -224,6 +284,17 @@ def search(request):
 
     facet_fields = ['author_sf', 'content-type_t','date-of-publication_dtf', 'subject-heading_sf', 'code-language_t', 'fond_sf' ]
     solr_searcher = solr.query(query)
+    exclude_kwargs = {}
+
+    if catalog == u'sc2':
+        exclude_kwargs = {'system-catalog_s':u"ebooks"}
+        solr_searcher = solr_searcher.exclude(**exclude_kwargs)
+    elif catalog == u'ebooks':
+        exclude_kwargs = {'system-catalog_s':u"sc2"}
+        solr_searcher = solr_searcher.exclude(**exclude_kwargs)
+    else:
+        pass
+
     for sort_attr in sort_attrs:
         if sort_attr['order'] == 'desc':
             solr_searcher = solr_searcher.sort_by(u'-' + sort_attr['attr'])
@@ -231,7 +302,7 @@ def search(request):
             solr_searcher = solr_searcher.sort_by( sort_attr['attr'])
 
     # ключ хеша зависит от языка
-    terms_facet_hash = hashlib.md5(unicode(terms) + u'_facets_' + get_language()).hexdigest()
+    terms_facet_hash = hashlib.md5(unicode(terms) + u'_facets_' + get_language() + u'#'.join(exclude_kwargs.values())).hexdigest()
 
 
     facets = cache.get(terms_facet_hash, None)
@@ -310,7 +381,8 @@ def search(request):
         'search_breadcumbs':search_breadcumbs,
         'sort':sort,
         'search_statisics':search_statisics,
-        'search_request': json_search_breadcumbs
+        'search_request': json_search_breadcumbs,
+        'search_attrs': search_attrs
     })
 
 

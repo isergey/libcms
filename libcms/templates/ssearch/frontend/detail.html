@@ -7,7 +7,7 @@
 {% block content %}
     <style>
         .record {
-            font-size: 12px;
+            font-size: 14px;
         }
     </style>
     <div  class="info">
@@ -48,7 +48,7 @@
         <div class="bookDesc">
 {#            <h3>Гоголь Николай Васильевич. Невский проспект: Кн.для чтения с параллельными текстами на англ.и рус.яз.</h3>#}
             <p id="bib_dump">
-                {{ doc_dump|safe|striptags }}
+                {{ doc_dump|safe }}
             </p>
             <div id="marc_dump">
                 {{ marc_dump|safe }}

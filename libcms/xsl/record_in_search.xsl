@@ -113,11 +113,11 @@
                             <xsl:text>, </xsl:text>
                             <xsl:value-of select="."/>
                         </xsl:when>
-                        <xsl:when test="@id='v'">
+                        <!--<xsl:when test="@id='v'">
                             <xsl:text>. </xsl:text>
                             <xsl:value-of select="."/>
                             <xsl:text>. </xsl:text>
-                        </xsl:when>
+                        </xsl:when>-->
                     </xsl:choose>
                 </xsl:for-each>
                 <xsl:if test="not(subfield[@id='v'])">

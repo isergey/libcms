@@ -38,26 +38,32 @@
 
             <div class="sel_imul">
                 <div class="sel_selected">
-                    <div class="selected-text">Тематика</div>
+                    <div class="selected-text">Везде</div>
                 </div>
                 <div class="sel_options">
-                    <div class="sel_option" value="text" id="so_text">Везде</div>
-                    <div class="sel_option" value="author" id="so_author">Автор</div>
-                    <div class="sel_option" value="title" id="so_title">Заглавие</div>
-                    <div class="sel_option" value="subject-heading" id="so_subject-heading">Тематика</div>
-                    <div class="sel_option" value="date-of-publication" id="so_date-of-publication">Год публикации</div>
-                    <div class="sel_option" value="isbn" id="so_isbn">ISBN</div>
-                    <div class="sel_option" value="issn" id="so_issn">ISSN</div>
+                    {% for search_attr in search_attrs %}
+                        <div class="sel_option" value="{{ search_attr.value }}" id="so_text">{{ search_attr.title }}</div>
+                    {% endfor %}
+{#                    <div class="sel_option" value="text" id="so_text">Везде</div>#}
+{#                    <div class="sel_option" value="author" id="so_author">Автор</div>#}
+{#                    <div class="sel_option" value="title" id="so_title">Заглавие</div>#}
+{#                    <div class="sel_option" value="subject-heading" id="so_subject-heading">Тематика</div>#}
+{#                    <div class="sel_option" value="date-of-publication" id="so_date-of-publication">Год публикации</div>#}
+{#                    <div class="sel_option" value="isbn" id="so_isbn">ISBN</div>#}
+{#                    <div class="sel_option" value="issn" id="so_issn">ISSN</div>#}
                 </div>
             </div>
             <select id="ourselect" style="display: none;" name="attr">
-                <option value="text" {% if request.GET.attr == 'text' %}selected="selected"{% endif %}>Везде</option>
-                <option value="author" {% if request.GET.attr == 'author' %}selected="selected"{% endif %}>Автор</option>
-                <option value="title" {% if request.GET.attr == 'title' %}selected="selected"{% endif %}>Заглавие</option>
-                <option value="subject-heading" {% if request.GET.attr == 'subject-heading' %}selected="selected"{% endif %}>Тематика</option>
-                <option value="date-of-publication" {% if request.GET.attr == 'date-of-publication' %}selected="selected"{% endif %}>Год публикации</option>
-                <option value="isbn" {% if request.GET.attr == 'isbn' %}selected="selected"{% endif %}>ISBN</option>
-                <option value="issn" {% if request.GET.attr == 'issn' %}selected="selected"{% endif %}>ISSN</option>
+                {% for search_attr in search_attrs %}
+                    <option value="{{ search_attr.value }}" {% if request.GET.attr == search_attr.value %}selected="selected"{% endif %}>{{ search_attr.title }}</option>
+                {% endfor %}
+{#                <option value="text" {% if request.GET.attr == 'text' %}selected="selected"{% endif %}>Везде</option>#}
+{#                <option value="author" {% if request.GET.attr == 'author' %}selected="selected"{% endif %}>Автор</option>#}
+{#                <option value="title" {% if request.GET.attr == 'title' %}selected="selected"{% endif %}>Заглавие</option>#}
+{#                <option value="subject-heading" {% if request.GET.attr == 'subject-heading' %}selected="selected"{% endif %}>Тематика</option>#}
+{#                <option value="date-of-publication" {% if request.GET.attr == 'date-of-publication' %}selected="selected"{% endif %}>Год публикации</option>#}
+{#                <option value="isbn" {% if request.GET.attr == 'isbn' %}selected="selected"{% endif %}>ISBN</option>#}
+{#                <option value="issn" {% if request.GET.attr == 'issn' %}selected="selected"{% endif %}>ISSN</option>#}
             </select>
 
             <div id="search">
@@ -122,6 +128,7 @@
                                 <option value="author" {% if sort_attr == 'author' %}selected="selected"{% endif %}>Автору</option>
                                 <option value="title" {% if sort_attr == 'title' %}selected="selected"{% endif %}>Заглавию</option>
                                 <option value="date-of-publication" {% if sort_attr == 'date-of-publication' %}selected="selected"{% endif %}>Году публикации</option>
+                                <option value="tom" {% if sort_attr == 'tom' %}selected="selected"{% endif %}>Тому/части</option>
                             </select>
                         {% empty %}
                             <select name="sort" style="width: auto;" class="sort_select">
@@ -129,6 +136,7 @@
                                 <option value="author">Автору</option>
                                 <option value="title">Заглавию</option>
                                 <option value="date-of-publication">Году публикации</option>
+                                <option value="tom">Тому/части</option>
                             </select>
                         {% endfor %}
                         <a href="#1" id="add_sort_button" title="Добавить условие сортировки">добавить</a>

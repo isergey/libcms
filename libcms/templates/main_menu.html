@@ -3,8 +3,9 @@
 {% url pages:frontend:show 'index'  as  about_url %}
 <a href="{{ about_url }}" {% if request.path == about_url %}class="active"{% endif %}>О проекте</a>
 <a href="#">Спроси библиотекаря</a>
-<a href="{% url ssearch:frontend:index %}" class="{% active_path 'ssearch:frontend:index'  %}">Электронный каталог</a>
-<a href="#">Электронная коллекция</a>
+<a href="{% url ssearch:frontend:ecatalog %}" class="{% active_path 'ssearch:frontend:ecatalog'  %} {% active 'ssearch:frontend:index'  %}">Электронный каталог</a>
+<a href="{% url ssearch:frontend:ecollection %}" class="{% active_path 'ssearch:frontend:ecollection'  %} {% active 'ssearch:frontend:index'  %}">Электронная коллекция</a>
+
 <a href="#">Отзывы</a>
 <a href="{% url news:frontend:index %}" class="{% active_path 'news:frontend:index'  %}">Новости</a>
 {% url pages:frontend:show 'for_professional'  as  for_professional_url %}
