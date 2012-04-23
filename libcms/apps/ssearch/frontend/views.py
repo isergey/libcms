@@ -84,8 +84,14 @@ attr_map = {
         'title':u'Тип содержания',
         'display': False,
         },
-    'fond': {
+    'full-text': {
         'order': 10,
+        'attr': u'full-text',
+        'title':u'Полный текст',
+        'display': False,
+        },
+    'fond': {
+        'order': 11,
         'attr': u'fond_t',
         'title':u'Фонд',
         'display': False,
@@ -112,7 +118,7 @@ sort_attr_map = {
         },
     }
 
-def _make_search_attrs():
+def _make_search_attrs(catalog):
     search_attrs = []
     for attr in attr_map:
 
@@ -124,6 +130,13 @@ def _make_search_attrs():
             'order': attr_map[attr].get('order', 1000),
             })
 
+    if catalog == u'ebooks':
+        search_attrs.append({
+            'title':attr_map['full-text']['title'],
+            'value':attr_map['full-text']['attr'],
+            'order':attr_map['full-text']['order'],
+            })
+    print catalog
     search_attrs.sort(key=lambda x: x['order'])
     return search_attrs
 
@@ -132,14 +145,14 @@ def index(request, catalog=None):
     q = request.GET.get('q', None)
     fq = request.GET.get('fq', None)
     if not q and not fq:
-        return init_search(request)
+        return init_search(request, catalog)
     else:
         return search(request, catalog)
 
 
 
-def init_search(request):
-    search_attrs = _make_search_attrs()
+def init_search(request, catalog=None):
+    search_attrs = _make_search_attrs(catalog)
     return render(request, 'ssearch/frontend/index.html', {
         'search_attrs': search_attrs
     })
@@ -219,7 +232,7 @@ def terms_constructor(attrs, values):
 
 def search(request, catalog=None):
 
-    search_attrs = _make_search_attrs()
+    search_attrs = _make_search_attrs(catalog)
 
     search_deep_limit = 5 # ограничение вложенных поисков
     solr = sunburnt.SolrInterface(settings.SOLR['host'])
@@ -294,6 +307,8 @@ def search(request, catalog=None):
         solr_searcher = solr_searcher.exclude(**exclude_kwargs)
     else:
         pass
+
+    print search_attrs
 
     for sort_attr in sort_attrs:
         if sort_attr['order'] == 'desc':
