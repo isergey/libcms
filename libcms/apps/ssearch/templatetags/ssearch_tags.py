@@ -25,6 +25,7 @@ facet_titles = {
     'anywhere': u'Везде',
     'code-language': u'Язык',
     'text': u'Везде',
+    'full-text': u'Полный текст',
 }
 
 @register.filter
