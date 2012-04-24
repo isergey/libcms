@@ -146,7 +146,6 @@ def indexing(request):
 
     for slug in settings.SOLR['catalogs'].keys():
         _indexing(slug, reset)
-        break
 
     return HttpResponse('Ok')
 

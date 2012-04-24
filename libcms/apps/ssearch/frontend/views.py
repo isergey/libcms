@@ -297,6 +297,8 @@ def search(request, catalog=None):
 
     facet_fields = ['author_sf', 'content-type_t','date-of-publication_dtf', 'subject-heading_sf', 'code-language_t', 'fond_sf' ]
     solr_searcher = solr.query(query)
+    solr_searcher = solr_searcher.highlight(fields=['full-text'])
+
     exclude_kwargs = {}
 
     if catalog == u'sc2':
@@ -308,7 +310,7 @@ def search(request, catalog=None):
     else:
         pass
 
-    print search_attrs
+#    print search_attrs
 
     for sort_attr in sort_attrs:
         if sort_attr['order'] == 'desc':
@@ -389,6 +391,7 @@ def search(request, catalog=None):
             'href': query_dict.urlencode()
         })
     json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
+#    print docs
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
         'results_page': results_page,

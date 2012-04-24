@@ -222,7 +222,9 @@
             background: #287c1e;
 
         }
-
+        .highlights em {
+            background: #d3ff82;
+        }
     </style>
         {% for doc in docs %}
             <div class="listBook">
@@ -288,6 +290,11 @@
                             {% endfor %}
                         </p>
                     {% endif %}
+                {% if doc.solr_highlights %}
+                <div class="highlights">
+                    {{ doc.solr_highlights|hash:"full-text"|hash:0|safe }}
+                </div>
+                {% endif %}
                     <p class="item5"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">Подробная информация</a></p>
                 </div>
             </div>
