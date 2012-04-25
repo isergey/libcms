@@ -556,10 +556,10 @@ def beautify(value):
 
 
 
-import pymorphy
+#import pymorphy
 import uuid
 from ..models import SearchRequestLog
-morph = pymorphy.get_morph(settings.PYMORPHY_CDB_DICTS, 'cdb')
+#morph = pymorphy.get_morph(settings.PYMORPHY_CDB_DICTS, 'cdb')
 def log_search_request(request, catalog):
 
     def clean_term(term):
@@ -572,7 +572,7 @@ def log_search_request(request, catalog):
         n_terms = []
         #нормализация
         for t in terms:
-            n_term = morph.normalize(t.upper())
+            n_term = t #morph.normalize(t.upper())
             if isinstance(n_term, set):
                 n_terms.append(n_term.pop().lower())
             elif isinstance(n_term, unicode):
