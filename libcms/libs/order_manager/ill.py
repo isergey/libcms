@@ -19,7 +19,7 @@ class ILLTransactions(object):
         try:
             tree = ET.XML(xml_string)
             for el_transaction in tree.findall(transaction_tag):
-                
+
                 self.add_transaction(ILLTransaction().from_xml(el_transaction))
         except SyntaxError as e:
             raise SyntaxError('Not valid xml: ' + e.message)
@@ -56,7 +56,7 @@ class ILLTransaction(object):
         else:
             raise TypeError('Argument must be  ILLAPDU object')
 
-    def from_xml(self, xml_transaction):   
+    def from_xml(self, xml_transaction):
         if isinstance(xml_transaction, str) or isinstance(xml_transaction, unicode):
             try:
                 tree = ET.XML(xml_transaction)
@@ -120,7 +120,7 @@ class ILLAPDU(object):
 
 
     def from_xml(self, xml_illapdu):
-        
+
         if isinstance(xml_illapdu, str) or isinstance(xml_illapdu, unicode):
             try:
                 tree = ET.XML(xml_illapdu)
@@ -132,7 +132,7 @@ class ILLAPDU(object):
                 tree = xml_illapdu
             else:
                 raise TypeError('xml_illapdu must be str or unicode or Element type')
-        
+
         el_delivery_status = xml_illapdu.find('ILLRequest')
         if el_delivery_status:
             self.set_delivery_status(ILLRequest().from_xml(el_delivery_status))
@@ -148,11 +148,11 @@ class ILLAPDU(object):
         el_delivery_status = xml_illapdu.find('Recall')
         if el_delivery_status:
             self.set_delivery_status(Recall().from_xml(el_delivery_status))
-        
+
         if self.delivery_status == None:
             return None
             #raise TypeError('Wrong type xml_illapdu. Must be str or unicode or Element type')
-            
+
         return self
 
 
@@ -185,7 +185,7 @@ class ILLRequest(object):
             'dtots':{# dateTimeOfThisService
                      'date': now.strftime("%Y%m%d"),
                      'time': now.strftime("%H%M%S"),
-            }
+                     }
         }
 
         self.requester_id = {
@@ -224,13 +224,13 @@ class ILLRequest(object):
         self.requester_note = '' # requesterNote
 
         self.third_party_info_type = { # thirdPartyInfoType
-                                        'tpit':{
-                                                'stl':{ #sendToList
-                                                        'stlt':{
-                                                                'si':'' # systemId
-                                                         }    
-                                                 }
-                                         }
+                                       'tpit':{
+                                           'stl':{ #sendToList
+                                                   'stlt':{
+                                                       'si':'' # systemId
+                                                   }
+                                           }
+                                       }
         }
     def from_xml(self, xml_illrequest):
         if isinstance(xml_illrequest, str) or isinstance(xml_illrequest, unicode):
@@ -330,8 +330,8 @@ class ILLRequest(object):
 
         if temp_text:
             self.third_party_info_type['tpit']['stl']['stlt']['si'] = temp_text
-        
-            
+
+
         return self
 
     def to_xml(self, as_element=False):
@@ -378,7 +378,7 @@ class ILLRequest(object):
         csrec = ET.SubElement(requester_optional_messages, "canSendRECEIVED")
         csrec.text = str(self.requester_optional_messages['csrec'])
         csret = ET.SubElement(requester_optional_messages, "canSendRETURNED")
-            
+
         csret.text = str(self.requester_optional_messages['csret'])
         rs = ET.SubElement(requester_optional_messages, "requesterSHIPPED")
         rs.text = str(self.requester_optional_messages['rs'])
@@ -411,21 +411,21 @@ class ILLRequest(object):
                     sid = ET.XML(self.supplemental_item_description)
                 except SyntaxError as e:
                     raise SyntaxError('Not valid xml: ' + e.message)
-                # иначе проверим является ли объект типа Element
+                    # иначе проверим является ли объект типа Element
             else:
-                if type(self.supplemental_item_description).__name__ == 'Element':
+                if type(self.supplemental_item_description) == ET._Element:
                     sid = self.supplemental_item_description
                 else:
                     raise TypeError('supplemental_item_description must be str or unicode or Element type')
             supplemental_item_description = ET.SubElement(root, "supplementalItemDescription")
             external = ET.SubElement(supplemental_item_description, "external")
-            
+
             external_syntax = sid.get('syntax')
             if external_syntax:
                 external.set('syntax', external_syntax)
             else:
                 external.set('syntax', 'unknown')
-            
+
             external.append(sid)
 
         if self.requester_note:
@@ -459,7 +459,7 @@ class ILLShipped(object):
             'dtots':{# dateTimeOfThisService
                      'date': now.strftime("%Y%m%d"),
                      'time': now.strftime("%H%M%S"),
-            }
+                     }
         }
 
         self.requester_id = {
@@ -478,11 +478,11 @@ class ILLShipped(object):
         self.shipped_service_type = '1' # shippedServiceType
 
         self.supply_details = { # supplyDetails
-                               'ds':None, #dateShipped
-                               'dd': {# dateDue
-                                      'ddf': None, # dateDueField
-                                      'renewable': None, # renewable
-                               }
+                                'ds':None, #dateShipped
+                                'dd': {# dateDue
+                                       'ddf': None, # dateDueField
+                                       'renewable': None, # renewable
+                                }
         }
         self.responder_note = '' # responderNote
 
@@ -494,7 +494,7 @@ class ILLShipped(object):
                 raise SyntaxError('Not valid xml: ' + e.message)
         # иначе проверим является ли объект типа Element
         else:
-            if type(xml_shipped).__name__ == 'Element':
+            if type(xml_shipped) == ET._Element:
                 tree = xml_shipped
             else:
                 raise TypeError('xml_shipped must be str or unicode or Element type')
@@ -626,7 +626,7 @@ class ILLAnswer(object):
             'dtots':{# dateTimeOfThisService
                      'date': now.strftime("%Y%m%d"),
                      'time': now.strftime("%H%M%S"),
-            }
+                     }
         }
 
         self.requester_id = {
@@ -711,7 +711,7 @@ class ILLAnswer(object):
                 raise SyntaxError('Not valid xml: ' + e.message)
         # иначе проверим является ли объект типа Element
         else:
-            if type(xml_illanswer).__name__ == 'Element':
+            if type(xml_illanswer) == ET._Element:
                 tree = xml_illanswer
             else:
                 raise TypeError('xml_illanswer must be str or unicode or Element type')
@@ -772,7 +772,7 @@ class Recall(object):
             'dtots':{# dateTimeOfThisService
                      'date': now.strftime("%Y%m%d"),
                      'time': now.strftime("%H%M%S"),
-            }
+                     }
         }
 
         self.requester_id = {
@@ -788,7 +788,7 @@ class Recall(object):
         }
 
         self.responder_note = ''
-        
+
 
     def to_xml(self, as_element=False):
         root = ET.Element(self.type)
@@ -822,7 +822,7 @@ class Recall(object):
         if self.responder_note:
             responder_note = ET.SubElement(root, "responderNote")
             responder_note.text = str(self.responder_note)
-        
+
         if as_element == False:
             return ET.tostring(root, encoding='UTF-8')
         else:
@@ -837,7 +837,7 @@ class Recall(object):
                 raise SyntaxError('Not valid xml: ' + e.message)
         # иначе проверим является ли объект типа Element
         else:
-            if type(xml_illanswer).__name__ == 'Element':
+            if type(xml_illanswer) == ET._Element:
                 tree = xml_illanswer
             else:
                 raise TypeError('xml_illanswer must be str or unicode or Element type')
@@ -869,7 +869,7 @@ class Recall(object):
         temp_text = tree.findtext('responderId/personOrInstitutionSymbol/institutionSymbol')
         if temp_text:
             self.responder_id['pois']['is'] = temp_text
-        
+
         temp_text = tree.findtext('responderNote')
         if temp_text:
             self.responder_note = temp_text

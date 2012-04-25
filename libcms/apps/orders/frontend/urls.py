@@ -8,4 +8,5 @@ urlpatterns = patterns(views,
     url(r'^mbaorder/$', views.mba_orders, name="mba_orders"),
     url(r'^mbaorder/copy/$', views.mba_order_copy, name="mba_order_copy"),
     url(r'^mbaorder/delivery/$', views.mba_order_delivery, name="mba_order_delivery"),
+    url(r'^mbaorder/delete/(?P<order_id>[a-z0-9]+)/$', views.delete_order, name="mba_delete_order"),
 )

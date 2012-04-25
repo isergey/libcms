@@ -548,3 +548,15 @@ def _make_mba_order(gen_id, user_id, order_type, order_manager_id, copy_info=u''
         comments=comments,
         copy_info=copy_info
     )
+
+
+@login_required
+def delete_order(request, order_id=''):
+    order_manager = OrderManager(settings.ORDERS['db_catalog'], settings.ORDERS['rdx_path'])
+    transactions = order_manager.get_order(order_id=order_id.encode('utf-8'), user_id=request.user.username)
+    if len(transactions):
+        if check_for_can_delete(transactions[0]):
+            pass
+    order_manager.delete_order(order_id=order_id.encode('utf-8'), user_id=request.user.username)
+
+    return redirect(urlresolvers.reverse('orders:frontend:mba_orders'))
