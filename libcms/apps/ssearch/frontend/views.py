@@ -324,7 +324,7 @@ def search(request, catalog=None):
 
     facets = cache.get(terms_facet_hash, None)
     if not facets:
-        solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=15, mincount=1)
+        solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=30, mincount=1)
 
     solr_searcher = solr_searcher.field_limit("id")
     paginator = Paginator(solr_searcher, 20) # Show 25 contacts per page
@@ -395,7 +395,7 @@ def search(request, catalog=None):
             'href': query_dict.urlencode()
         })
     if catalog == u'ebooks' and len(search_breadcumbs) > 1 and star:
-        return HttpResponse(u'Нельзя использовать * при вложенных запросах')
+        return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
     json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
 #    print docs
     return render(request, 'ssearch/frontend/index.html', {
