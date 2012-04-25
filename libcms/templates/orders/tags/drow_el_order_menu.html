@@ -1,7 +1,7 @@
 <ul>
     {% for owner in owners %}
-        <li>
-        {% if owner.has_catalog %}<a class="order" href="{% url orders:frontend:zorder owner.owner.id %}?id={{ record_id|urlencode }}">Забронировать</a><p>{{ owner.owner.name }}</p>{% else %}(заказ невозможен: отсутвует информация о сервере заказа){% endif %}</li>
+        <li><b>{{ owner.owner.name }}</b>
+        {% if owner.has_catalog %}<a href="{% url orders:frontend:zorder owner.owner.id %}?id={{ record_id|urlencode }}">заказать</a>{% else %}(заказ невозможен: отсутвует информация о сервере заказа){% endif %}</li>
     {% endfor %}
     {% if empty_codes %}
         {% for empty_code in empty_codes %}
@@ -10,8 +10,3 @@
     {% endif %}
 
 </ul>
-{#<ul>#}
-{#    <li><a href="#">Забронировать</a><p>Национальная библиотека Республики Татарстан</p></li>#}
-{#    <li><a href="#">Забронировать</a><p>Национальная библиотека Республики Татарстан</p></li>#}
-{#    <li><a href="#">Забронировать</a><p>Национальная библиотека Республики Татарстан</p></li>#}
-{#</ul>#}
