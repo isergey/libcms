@@ -2,15 +2,14 @@
 {% load i18n %}
 {% block title %}{% trans 'Forums list' %}{% trans 'Forum permissions' %}{% endblock %}
 {% block content %}
-    {% include 'forum/frontend/style.html' %}
     <h3>{% trans 'Editing permissions for forum' %}: {{ forum.title }}</h3>
     <hr/>
     <div class="span12">
         <p>{% trans 'Select group for edit permissions' %}</p>
         <ul>
-        {% for group in groups %}
-            <li><a href="{% url forum:frontend:assign_forum_permissions forum.id group.id %}">{{ group.name }}</a></li>
-        {% endfor %}
+            {% for group in groups %}
+                <li><a href="{% url forum:frontend:assign_forum_permissions forum.id group.id %}">{{ group.name }}</a></li>
+            {% endfor %}
         </ul>
     </div>
 

@@ -1,11 +1,10 @@
 {% extends 'forum_base.html' %}
 {% load guardian_tags %}
 {% load i18n %}
+{% load pagination_tag %}
 {% block title %} {{ topic.subject }} {% endblock %}
 {% block content %}
     {% get_obj_perms request.user for topic as "topic_perms" %}
-
-    {% include 'forum/frontend/style.html' %}
     <h3><a href="{% url forum:frontend:forums %}">{% trans 'Forums' %}</a> → <a href="{% url forum:frontend:topics topic.forum.slug %}">{{ topic.forum.title }}</a> → {{ topic.subject }} {% if topic.closed %}({% trans 'Topic is closed' %}) {% endif %}
     </h3>
     <hr/>
@@ -15,12 +14,17 @@
                 <div class="message row {% if not article.public %}hided{% endif %}" id="{{ article.id }}">
                     <div class="span2">
                         <b>{{ article.author }}</b><br/>
+
+
+                        {#                        {{ article.author|get_user_org  }}#}
+
                         {{ article.created }}<br>
+
                     </div>
                     <div class="text span9">{{ article.text|safe }}</div>
                     <div class="toolbar span1">
 
-                        {% if article.author == request.user or "can_change_articles" in topic_perms %}
+                        {% if "can_change_articles" in topic_perms %}
                             <a class="btn btn-small btn-warning" href="{% url forum:frontend:edit_article topic.forum.slug topic.id article.id %}#form" title="{% trans 'Edit message' %}"><i class="icon-edit"></i></a>
                         {% endif %}
 
@@ -42,43 +46,53 @@
                 </div>
             {% endfor %}
         </div>
+        <div class="row">
+            {% admin_pagination page %}
+        </div>
 
         <div class="row">
-{#            <hr/>#}
-        {% if not topic.closed %}
-            {% if quote_article %}
-                <h3>{% trans 'Quoted message' %}</h3>
-                <div class="message quote_message">{{ quote_article.text|safe }}</div>
+            <hr/>
+            {#            <hr/>#}
+            {% if not topic.closed %}
+                {% if quote_article %}
+                    <h3>{% trans 'Quoted message' %}</h3>
+                    <div class="message quote_message">{{ quote_article.text|safe }}</div>
+                {% endif %}
+
+                {% if edit_article %}
+                    <h3>{% trans 'Edited message' %}</h3>
+                    <div class="message edit_message">{{ edit_article.text|safe }}</div>
+                {% endif %}
+                <div id="preview_message">
+
+                </div>
+                {% if not  "can_publish_own_articles" in topic_perms %}
+                    <div class="alert alert-block">
+                        <h4 class="alert-heading">Внимание!</h4>
+                        <p>Ваше сообщение будет опубликовано после проверки модератором.</p>
+                    </div>
+
+                {% endif %}
+                {% if "can_add_articles" in topic_perms or "can_change_articles" in topic_perms %}
+                    <form method="POST" action="?page=last">{% csrf_token %}<a name="form">&nbsp;</a>
+                        {% if not quote_article and not edit_article %}
+                            <legend>{% trans 'Send a message' %}</legend>
+                        {% endif %}
+                        <fieldset>
+                            {% include 'frontend/base_form_fields.html' with form=form %}
+                            <div class="form-actions">
+                                {#                        <a class="btn" id="preview_button">{% trans "Preview message" %}</a>#}
+                                {#                        <a class="btn .btn-info .btn-mini" href="#form" onclick="tinyMCE.execCommand('mceToggleEditor',false,'id_text');">{% trans 'Switch editor' %}</a>#}
+                                <button type="submit" class="btn">{% trans "Send message" %}</button>
+                                <a href="#form" onclick="tinyMCE.execCommand('mceToggleEditor',false,'id_text');">{% trans 'Switch editor' %}</a>
+
+                            </div>
+                        </fieldset>
+                    </form>
+                {% endif %}
+            {% else %}
+                <h2>{% trans 'Topic is closed' %}</h2>
             {% endif %}
-
-            {% if edit_article %}
-                <h3>{% trans 'Edited message' %}</h3>
-                <div class="message edit_message">{{ edit_article.text|safe }}</div>
-            {% endif %}
-            <div id="preview_message">
-
-            </div>
-
-            {% if "can_add_articles" in topic_perms or "can_change_articles" in topic_perms %}
-                <form method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
-                    {% if not quote_article and not edit_article %}
-                        <legend>{% trans 'Send a message' %}</legend>
-                    {% endif %}
-                    <fieldset>
-                        {% include 'frontend/base_form_fields.html' with form=form %}
-                        <div class="form-actions">
-                            {#                        <a class="btn" id="preview_button">{% trans "Preview message" %}</a>#}
-                            {#                        <a class="btn .btn-info .btn-mini" href="#form" onclick="tinyMCE.execCommand('mceToggleEditor',false,'id_text');">{% trans 'Switch editor' %}</a>#}
-                            <button type="submit" class="btn">{% trans "Send message" %}</button>
-                            <a href="#form" onclick="tinyMCE.execCommand('mceToggleEditor',false,'id_text');">{% trans 'Switch editor' %}</a>
-
-                        </div>
-                    </fieldset>
-                </form>
-            {% endif %}
-        {% else %}
-            <h2>{% trans 'Topic is closed' %}</h2>
-        {% endif %}
 
 
         </div>

@@ -37,9 +37,43 @@ def forums(request):
     else:
         form = ForumForm()
 
+
+    last_articles_dict = {}
+    last_topics_dict = {}
+    last_forums_dict = {}
+    if request.user.has_perms(['forum.can_hide_articles']):
+        last_articles = Article.objects.filter(deleted=False).order_by('-created')[:10]
+    else:
+        last_articles = Article.objects.filter(public=True, deleted=False).order_by('-created')[:10]
+
+    for last_article in last_articles:
+        last_articles_dict[last_article.id] = {'article': last_article}
+        last_topics_dict[last_article.topic_id] = None
+
+    topics = Topic.objects.filter(id__in=last_topics_dict.keys())
+
+    for topic in topics:
+        last_topics_dict[topic.id] = topic
+        last_forums_dict[topic.forum_id] = None
+
+    lforums = Forum.objects.filter(id__in=last_forums_dict.keys())
+
+    for lforum in lforums:
+        last_forums_dict[lforum.id] = lforum
+
+    for last_article in last_articles:
+        last_articles_dict[last_article.id]['topic']=last_topics_dict[last_article.topic_id]
+        last_articles_dict[last_article.id]['forum'] = last_forums_dict[last_topics_dict[last_article.topic_id].forum_id]
+
+
+    last_articles_list =  []
+    for last_article in last_articles:
+        last_articles_list.append(last_articles_dict[last_article.id])
+
     return render(request, 'forum/frontend/forums.html', {
         'forums': forums,
-        'form': form
+        'form': form,
+        'last_articles': last_articles_list
     })
 
 
@@ -102,8 +136,19 @@ def forum_topics(request, slug):
     if not request.user.has_perm("can_view_topics", forum):
         return HttpResponseForbidden()
 
-    topics = Topic.objects.filter(forum=forum)
+    topics_qs = Topic.objects.filter(forum=forum)
+    # пагинация сообщений в топике форума
+    paginator = Paginator(topics_qs, 20)
+    page_num = request.GET.get('page', '1')
 
+    if page_num == 'last':
+        page_num = paginator.num_pages
+    try:
+        page = paginator.page(int(page_num))
+    except (InvalidPage, ValueError):
+        raise Http404()
+
+    #    topics = paginator.object_list
     if request.method == 'POST':
 
         if forum.closed:
@@ -129,12 +174,6 @@ def forum_topics(request, slug):
 
             article.public = True
 
-#            # потому что топикстартер
-#            if request.user.has_perm('can_hide_topics', forum):
-#                article.public = True
-#            else:
-#                article.public = False
-
             article.author = request.user
             article.topic = topic
             article.save()
@@ -143,7 +182,7 @@ def forum_topics(request, slug):
             for group in groups:
                 if  u"can_create_topics" in  groups[group]:
                     assign(u"can_add_articles", group, topic)
-#                    assign(u"can_view_articles", group, topic)
+                #                    assign(u"can_view_articles", group, topic)
                 if  u"can_view_topics" in  groups[group]:
                     assign(u"can_view_articles", group, topic)
 
@@ -156,9 +195,10 @@ def forum_topics(request, slug):
         article_form = ArticleForm(prefix='article')
     return render(request, 'forum/frontend/topics.html', {
         'forum': forum,
-        'topics': topics,
+        #        'topics': topics,
         'topic_form': topic_form,
         'article_form': article_form,
+        'page': page,
         })
 
 @login_required
@@ -176,7 +216,7 @@ def topic_delete(request, id):
 
 @login_required
 def topic_close(request, id):
-    if not request.user.has_perms(['forum.can_close_topics']):
+    if not request.user.has_perms(['forum.can_close_topics']) and not request.user.has_perms(['forum.can_close_own_topics']):
         return HttpResponseForbidden()
 
     topic = get_object_or_404(Topic, id=id)
@@ -243,7 +283,7 @@ def topic_articles(request, slug, id, aid=None, eid=None):
     # если пользователь редактирует свое сообщение
     if eid:
         edit_article = get_object_or_404(Article, id=eid)
-        if request.user != edit_article.author and not request.user.has_perm("can_hide_articles", topic):
+        if not request.user.has_perm("can_change_articles", topic):
             return  HttpResponseForbidden()
     else:
         edit_article = None
@@ -275,7 +315,7 @@ def topic_articles(request, slug, id, aid=None, eid=None):
             article.topic = topic
             if quote_article:
                 article.text = u"[quote][b]%s[/b]:\n%s[/quote] %s" % (
-                quote_article.author.username, quote_article.text, article.text)
+                    quote_article.author.username, quote_article.text, article.text)
 
             article.save()
 
@@ -296,7 +336,8 @@ def topic_articles(request, slug, id, aid=None, eid=None):
         'articles': articles,
         'quote_article': quote_article,
         'edit_article': edit_article,
-        'form': form
+        'form': form,
+        'page': page
 
     })
 
@@ -393,7 +434,7 @@ def assign_forum_permissions(request, id, gid):
     perms = []
     for group_perm in GroupObjectPermission.objects.filter(group=group,content_type=ctype, object_pk=obj.id):
         perms.append(group_perm.permission)
-    #print perms
+        #print perms
     PermissionsForm = get_permissions_form(obj_permissions.select_related(), initial=perms)
     if request.method == 'POST':
         form = PermissionsForm(request.POST)

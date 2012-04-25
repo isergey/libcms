@@ -1,15 +1,20 @@
 {% extends 'forum_base.html' %}
 {% load guardian_tags %}
+{% load pagination_tag %}
 {% load i18n %}
 {% block title %} {{ forum.title }} {% endblock %}
 {% block content %}
+    <style>
+        form input {
+            width: 100%;
+        }
+    </style>
     {% get_obj_perms request.user for forum as "forum_perms" %}
 
-    {% include 'forum/frontend/style.html' %}
     <h3><a href="{% url forum:frontend:forums %}">{% trans 'Forums' %}</a> → {{ forum.title }}</h3>
     <hr/>
     <div class="forums span12">
-        {% for topic in topics %}
+        {% for topic in page.object_list %}
             <div class="row" style="margin-bottom: 10px">
                 <div class="span2"><span class="created">{{ topic.created|date:"d.m.Y" }}</span></div>
                 <div class="span10 {% if topic.closed %}close{% endif %}">
@@ -24,45 +29,49 @@
                                 <a class="topic_open btn btn-small" href="{% url forum:frontend:topic_open topic.id %}" title="{% trans 'Open topic' %}"><i class="icon-ok-circle"></i></a>
                             {% endif %}
                         {% endif %}
-                        {% if "can_delete_topics" in forum_perms %}
-                            <a class="topic_delete btn btn-small btn-danger" href="{% url forum:frontend:topic_delete topic.id %}" title="{% trans 'Delete topic' %}"><i class="icon-trash icon-white"></i></a>
-                        {% endif %}
                         {% if request.user.is_superuser %}
                             <a class="btn btn-small btn-warning" href="{% url forum:frontend:topic_permissions topic.id %}" title="{% trans 'Edit permissions' %}"><i class="icon-lock"></i></a>
+                        {% endif %}
+                        {% if "can_delete_topics" in forum_perms %}
+                            <a class="topic_delete btn btn-small btn-danger" href="{% url forum:frontend:topic_delete topic.id %}" title="{% trans 'Delete topic' %}"><i class="icon-trash icon-white"></i></a>
                         {% endif %}
                     </span>
                 </div>
             </div>
         {% endfor %}
-        {% if "can_create_topics" in  forum_perms %}
         <div class="row">
-            <form method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
-                    <legend>{% trans 'Create topic' %}</legend>
-                <fieldset>
-                    {% include 'frontend/base_form_fields.html' with form=topic_form %}
-                    {% include 'frontend/base_form_fields.html' with form=article_form %}
-                    <div class="form-actions">
-                        <button type="submit" class="btn">{% trans "Create topic" %}</button>
-                    </div>
-                </fieldset>
-            </form>
+            {% admin_pagination page %}
         </div>
+        {% if "can_create_topics" in  forum_perms %}
+            <div class="row">
+                <hr/>
+                <form method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
+                    <legend>{% trans 'Create topic' %}</legend>
+                    <fieldset>
+                        {% include 'frontend/base_form_fields.html' with form=topic_form %}
+                        {% include 'frontend/base_form_fields.html' with form=article_form %}
+                        <div class="form-actions">
+                            <button type="submit" class="btn">{% trans "Create topic" %}</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
         {% endif %}
     </div>
     <script type="text/javascript">
-{#        $('#preview_button').click(function(){#}
-{#            $.ajax({#}
-{#                url:'{% url forum:frontend:article_preview %}',#}
-{#                type:'POST',#}
-{#                dataType:"json",#}
-{#                data: { text: $('#id_text').val()},#}
-{#                success:function (render) {#}
-{#                    $('#preview_message').html(render['text']);#}
-{#                }#}
-{#            });#}
-{##}
-{#        });#}
-{##}
+        {#        $('#preview_button').click(function(){#}
+        {#            $.ajax({#}
+        {#                url:'{% url forum:frontend:article_preview %}',#}
+        {#                type:'POST',#}
+        {#                dataType:"json",#}
+        {#                data: { text: $('#id_text').val()},#}
+        {#                success:function (render) {#}
+        {#                    $('#preview_message').html(render['text']);#}
+        {#                }#}
+        {#            });#}
+        {##}
+        {#        });#}
+        {##}
 
         $('.topic_delete').click(function(){
             if(!confirm('Вы уверены что хотите удалить?')) return false;

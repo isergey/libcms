@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import *
+from django.conf.urls.defaults import *
 import views
 urlpatterns = patterns(views,
     url(r'^$', views.forums , name="forums"),
@@ -20,9 +20,9 @@ urlpatterns = patterns(views,
 
     url(r'^article_preview/$', views.article_preview , name="article_preview"),
 
-    url(r'^(?P<slug>[_\-0-9A-Za-z]+)/$', views.forum_topics , name="topics"),
-    url(r'^(?P<slug>[_\-0-9A-Za-z]+)/(?P<id>\d+)/$', views.topic_articles , name="articles"),
-    url(r'^(?P<slug>[_\-0-9A-Za-z]+)/(?P<id>\d+)/replay/(?P<aid>\d+)/$', views.topic_articles , name="replay_article"),
-    url(r'^(?P<slug>[_\-0-9A-Za-z]+)/(?P<id>\d+)/edit/(?P<eid>\d+)/$', views.topic_articles , name="edit_article"),
+    url(r'^(?P<slug>[a-zA-Z0-9-_]+)/$', views.forum_topics , name="topics"),
+    url(r'^(?P<slug>[a-zA-Z0-9-_]+)/(?P<id>\d+)/$', views.topic_articles , name="articles"),
+    url(r'^(?P<slug>[a-zA-Z0-9-_]+)/(?P<id>\d+)/replay/(?P<aid>\d+)/$', views.topic_articles , name="replay_article"),
+    url(r'^(?P<slug>[a-zA-Z0-9-_]+)/(?P<id>\d+)/edit/(?P<eid>\d+)/$', views.topic_articles , name="edit_article"),
     #    url(r'^(?P<slug>[_-a-z0-9]+)/(?P<id>\d+)/$', views.show , name="show_topic"),
 )

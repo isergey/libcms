@@ -25,7 +25,7 @@ class Forum(models.Model):
             ("can_close_topics", "Can close all topics in forum"),
             ("can_close_own_topics", "Can close own topics in forum"),
             ("can_hide_topics", "Can hide topics in forum"),
-        )
+            )
 
     def __unicode__(self):
         return self.title
@@ -48,7 +48,7 @@ class Topic(models.Model):
             ("can_delete_articles", "Can delete articles from topic"),
             ("can_hide_articles", "Can hide articles in topic"),
             ("can_publish_own_articles", "Can publish own articles in topic"),
-        )
+            )
 
 
 class Article(models.Model):
@@ -64,4 +64,3 @@ class Article(models.Model):
 
     def __unicode__(self):
         return u'(%s, %s)' % (self.topic, self.author)
-
