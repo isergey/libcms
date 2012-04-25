@@ -73,17 +73,20 @@
     </div>
 
 <script type="text/javascript">
-    $('#bib_dump').show();
-    $('#marc_dump').hide();
-$('.bookImg .sel_option').click(function(){
-    if ($(this).attr('value') == '1'){
+    $.ready(function(){
         $('#bib_dump').show();
         $('#marc_dump').hide();
-    }
-    if ($(this).attr('value') == '2'){
-        $('#bib_dump').hide();
-        $('#marc_dump').show();
-    }
+        $('.bookImg .sel_option').click(function(){
+            if ($(this).attr('value') == '1'){
+                $('#bib_dump').show();
+                $('#marc_dump').hide();
+            }
+            if ($(this).attr('value') == '2'){
+                $('#bib_dump').hide();
+                $('#marc_dump').show();
+            }
+    });
+
 });
 </script>
     <div class="social">
