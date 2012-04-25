@@ -1,7 +1,6 @@
 <style>
     #copy_doc_form textarea,  #delivery_doc_form textarea {
         width: 99%;
-
     }
     #copy_doc_form textarea {
         height: 50px;
@@ -11,7 +10,7 @@
     }
 </style>
 
-<div class="modal hide" id="copy_doc_modal">
+<div class="modal hide" id="copy_doc_modal" style="display: none">
 
     <form action="" method="POST" id="copy_doc_form" style="margin: 0">{% csrf_token %}
         <div class="modal-header">
@@ -36,13 +35,13 @@
             </fieldset>
         </div>
         <div class="modal-footer">
-{#            <a href="#" class="btn" data-dismiss="modal">Отменить</a>#}
-            <input type="submit" value="Заказать" class="btn btn-primary " id='copy_doc_submit'/>
+            {#            <a href="#" class="btn" data-dismiss="modal">Отменить</a>#}
+            <input type="submit" value="Заказать" class="order_button" id='copy_doc_submit'/>
         </div>
     </form>
 </div>
 
-<div class="modal hide" id="delivery_doc_modal">
+<div class="modal hide" id="delivery_doc_modal" style="display: none">
 
     <form action="" method="POST" id="delivery_doc_form" style="margin: 0">{% csrf_token %}
         <div class="modal-header">
@@ -67,8 +66,8 @@
             </fieldset>
         </div>
         <div class="modal-footer">
-{#            <a href="#" class="btn" data-dismiss="modal">Отменить</a>#}
-            <input type="submit" value="Заказать" class="btn btn-primary " id='delivery_doc_submit'/>
+            {#            <a href="#" class="btn" data-dismiss="modal">Отменить</a>#}
+            <input type="submit" value="Заказать" class="order_button" id='delivery_doc_submit'/>
         </div>
     </form>
 </div>
@@ -78,11 +77,15 @@
 
 
 {% if user.id %}
-    <a class="btn " data-toggle="modal" href="#copy_doc_modal" id="copy_doc_button" >Заказать копию документа</a>
-    <a class="btn " data-toggle="modal" href="#delivery_doc_modal" id="delivery_doc_button" >Заказать доставку документа</a>
+    <ul>
+        <li><a data-toggle="modal" href="#copy_doc_modal" id="copy_doc_button" class="order">Заказать</a><p>Заказать копию документа или его части для получения в другой библиотеке</p></li>
+        <li><a data-toggle="modal" href="#delivery_doc_modal" id="delivery_doc_button" class="order">Заказать</a><p>Заказать документ во временное пользование с получением его в другой библиотеке</p></li>
+    </ul>
 {% else %}
-    <a class="btn disabled" href="#1" onclick="alert('Необходимо войти на портал')">Заказать копию документа</a>
-    <a class="btn disabled" href="#1" onclick="alert('Необходимо войти на портал')">Заказать доставку документа</a>
+    <ul>
+        <li> <a class="btn disabled" href="#1" onclick="alert('Необходимо войти на портал')">Заказать</a><p>Заказать копию документа или его части для получения в другой библиотеке</p></li>
+        <li><a class="btn disabled" href="#1" onclick="alert('Необходимо войти на портал')">Заказать</a><p>Заказать документ во временное пользование с получением его в другой библиотеке</p></li>
+    </ul>
 {% endif %}
 
 
@@ -146,7 +149,7 @@
 <script type="text/html" id="lib_list_tmpl">
     <option disabled="" selected="">Выберите библиотеку</option>
     <% for (var i in orgs) { %>
-        <option value="<%=orgs[i].id%>"><%=orgs[i].name%></option>
+    <option value="<%=orgs[i].id%>"><%=orgs[i].name%></option>
     <% } %>
 </script>
 
@@ -172,7 +175,7 @@
                     alert("При заказе возникла ошибка. Укажите библиотеку.");
                 }
                 if (response.status == 'ok') {
-                    $('#copy_doc_submit').addClass('btn-success');
+                    $('#copy_doc_submit').addClass('order_success');
                     $('#copy_doc_submit').attr('disabled','disabled');
                     $('#copy_doc_submit').attr('value','Заказ отправлен');
                 }
@@ -202,7 +205,7 @@
                     alert("При заказе возникла ошибка. Укажите библиотеку.");
                 }
                 if (response.status == 'ok') {
-                    $('#delivery_doc_submit').addClass('btn-success');
+                    $('#delivery_doc_submit').addClass('order_success');
                     $('#delivery_doc_submit').attr('disabled','disabled');
                     $('#delivery_doc_submit').attr('value','Заказ отправлен');
                 }
