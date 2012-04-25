@@ -5,14 +5,14 @@
 {% load mydocs_tags %}
 {% block title %}детальная информация{% endblock %}
 {% block content %}
-    <div id="fb-root"></div>
-    <script>(function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/ru_RU/all.js#xfbml=1&appId=314686941912414";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
+{#    <div id="fb-root"></div>#}
+{#    <script>(function(d, s, id) {#}
+{#        var js, fjs = d.getElementsByTagName(s)[0];#}
+{#        if (d.getElementById(id)) return;#}
+{#        js = d.createElement(s); js.id = id;#}
+{#        js.src = "//connect.facebook.net/ru_RU/all.js#xfbml=1&appId=314686941912414";#}
+{#        fjs.parentNode.insertBefore(js, fjs);#}
+{#    }(document, 'script', 'facebook-jssdk'));</script>#}
     <style>
         .record {
             font-size: 14px;
@@ -98,8 +98,11 @@
 
 </script>
     <div class="social">
-        <div class="fb-like" data-href="{{ request.path }}" data-send="false" data-width="450" data-show-faces="true" data-font="arial"></div>    </div>
-
+        <div id="vk_like"></div>
+        <script type="text/javascript">
+            VK.Widgets.Like("vk_like", {type: "button"});
+        </script>
+    </div>
     {#    <style type="text/css">#}
 {#        .marc_dump span.fieldlabel, span.subfieldlabel {#}
 {#            font-family: monospace;#}
