@@ -394,6 +394,7 @@ def search(request, catalog=None):
             'value': value,
             'href': query_dict.urlencode()
         })
+    log_search_request({'attr': new_key, 'value': value},catalog)
     if catalog == u'ebooks' and len(search_breadcumbs) > 1 and star:
         return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
     json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
@@ -548,3 +549,59 @@ def beautify(value):
     .replace(u"%#dot#question#" , u'.? ')
 
     return value
+
+
+
+
+
+
+
+
+import uuid
+from models import SearchRequestLog
+morph = pymorphy.get_morph(settings.PROJECT_PATH + '../var/data/pymorphy/ru/cdb', 'cdb')
+def log_search_request(request, catalog):
+
+    def clean_term(term):
+        """
+        Возвращает кортеж из ненормализованног и нормализованного терма
+        """
+        terms = term.strip().lower().split()
+        nn_term = u' '.join(terms)
+
+        n_terms = []
+        #нормализация
+        for t in terms:
+            n_term = morph.normalize(t.upper())
+            if isinstance(n_term, set):
+                n_terms.append(n_term.pop().lower())
+            elif isinstance(n_term, unicode):
+                n_terms.append(n_term.lower())
+
+        n_term = u' '.join(n_terms)
+        return (nn_term, n_term)
+
+
+    search_request_id =  uuid.uuid4().hex
+    term_groups = []
+
+
+    term = request.get('value', None)
+    if term:
+        forms = clean_term(term)
+        term_groups.append({
+            'nn': forms[0],
+            'n':  forms[1],
+            'use': request.get('attr',u'not defined'),
+
+            })
+
+
+    for group in term_groups:
+        SearchRequestLog(
+            catalog=catalog,
+            search_id=search_request_id,
+            use=group['use'],
+            normalize=group['n'],
+            not_normalize=group['nn'],
+        ).save()

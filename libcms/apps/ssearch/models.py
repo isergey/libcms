@@ -1,5 +1,7 @@
+# coding: utf-8
 import datetime
 import zlib
+from django.db import connection
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -135,3 +137,271 @@ class SavedRequest(models.Model):
     user = models.ForeignKey(User, related_name='saved_request_user')
     search_request = models.CharField(max_length=1024)
     add_time = models.DateTimeField(auto_now_add=True)
+
+
+
+
+
+DEFAULT_LANG_CHICES = (
+    ('rus', u'Русский'),
+    ('eng', u'English'),
+    ('tat', u'Татарский'),
+    )
+
+ATTRIBUTES = {
+    'fond': u'Коллекция',
+    'title': u'Заглавие',
+    'author': u'Автор',
+    'content-type': u'Тип содержания',
+    'date-of-publication': u'Год публикации',
+    'subject-heading': u'Тематика',
+    'anywhere': u'Везде',
+    'code-language': u'Язык',
+    'text': u'Везде',
+    'full-text': u'Полный текст',
+    }
+
+def dictfetchall(cursor):
+    """Returns all rows from a cursor as a dict"""
+    desc = cursor.description
+    return [
+    dict(zip([col[0] for col in desc], row))
+    for row in cursor.fetchall()
+    ]
+
+
+def execute(query, params):
+    cursor = connection.cursor()
+    cursor.execute(query, params)
+    return dictfetchall(cursor)
+
+
+def get_search_attributes_in_log():
+    select = """
+    SELECT
+         ssearch_searchrequestlog.use as attribute
+    FROM
+        ssearch_searchrequestlog
+    GROUP BY
+        ssearch_searchrequestlog.use
+    """
+    results = execute(select, [])
+    choices = []
+
+    for row in results:
+        choices.append(
+            (
+                row['attribute'],
+                ATTRIBUTES.get(row['attribute'], row['attribute'])
+                )
+        )
+
+    return choices
+
+
+
+def date_group(group):
+    group_by = ['YEAR(datetime)']
+
+    if group > u'0':
+        group_by.append('MONTH(datetime)')
+
+    if group > u'1':
+        group_by.append('DAY(datetime)')
+
+    group_by = 'GROUP BY ' + ', '.join(group_by)
+
+    return group_by
+
+
+
+
+def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list()):
+    """
+    Статистика по количеству запросов в каталог(и)
+    """
+    if not start_date:
+        start_date = datetime.datetime.now()
+
+    if not end_date:
+        end_date = datetime.datetime.now()
+
+    start_date = start_date.strftime('%Y-%m-%d 00:00:00')
+    end_date = end_date.strftime('%Y-%m-%d 23:59:59')
+
+    group_by = date_group(group)
+
+    select = """
+        SELECT
+            count(ssearch_searchrequestlog.use) as count, ssearch_searchrequestlog.datetime as datetime
+        FROM
+            ssearch_searchrequestlog
+    """
+    params = []
+    where = ['WHERE date(datetime) BETWEEN %s  AND  %s']
+    params.append(start_date)
+    params.append(end_date)
+
+    if catalogs:
+        catalog_ids = []
+        for catalog in catalogs:
+            catalog_ids.append(str(catalog.id))
+        catalog_ids = u', '.join(catalog_ids)
+        where.append(' AND ssearch_searchrequestlog.catalog_id in (%s)' % catalog_ids)
+
+    where = u' '.join(where)
+    results = execute( select + where + group_by, params)
+
+
+
+    rows = []
+    format = '%d.%m.%Y'
+    if group == u'0':
+        format = '%Y'
+    if group == u'1':
+        format = '%m.%Y'
+    if group == u'2':
+        format = '%d.%m.%Y'
+
+    for row in results:
+        rows.append((row['datetime'].strftime(format), row['count']))
+    return rows
+
+
+
+
+def requests_by_attributes(start_date=None, end_date=None, attributes=list(), catalogs=list()):
+    if not start_date:
+        start_date = datetime.datetime.now()
+
+    if not end_date:
+        end_date = datetime.datetime.now()
+
+    start_date = start_date.strftime('%Y-%m-%d 00:00:00')
+    end_date = end_date.strftime('%Y-%m-%d 23:59:59')
+
+
+    select = u"""
+        SELECT
+            count(ssearch_searchrequestlog.use) as count, ssearch_searchrequestlog.use as attribute
+        FROM
+            ssearch_searchrequestlog
+    """
+    params = []
+
+
+
+
+    where = ['WHERE date(datetime) BETWEEN %s  AND  %s']
+    params.append(start_date)
+    params.append(end_date)
+
+
+    if catalogs:
+        catalog_ids = []
+        for catalog in catalogs:
+            catalog_ids.append(str(catalog.id))
+        catalog_ids = u', '.join(catalog_ids)
+        where.append(' AND ssearch_searchrequestlog.catalog_id in (%s)' % catalog_ids)
+
+    if attributes:
+        attributes_args = []
+        for attribute in attributes:
+            attributes_args.append(u'%s')
+            params.append(attribute)
+
+        attributes_args = u', '.join(attributes_args)
+        where.append('AND ssearch_searchrequestlog.use in (%s)' % attributes_args)
+
+    where = u' '.join(where)
+
+
+    results = execute(
+        select + ' ' + where +
+        u"""
+        GROUP BY
+            ssearch_searchrequestlog.use
+        ORDER BY
+            count desc;
+        """,
+        params
+    )
+
+    rows = []
+
+    for row in results:
+        rows.append((ATTRIBUTES.get(row['attribute'], row['attribute']), row['count']))
+    return rows
+
+def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs=list()):
+    if not start_date:
+        start_date = datetime.datetime.now()
+
+    if not end_date:
+        end_date = datetime.datetime.now()
+
+    start_date = start_date.strftime('%Y-%m-%d 00:00:00')
+    end_date = end_date.strftime('%Y-%m-%d 23:59:59')
+
+
+    select = u"""
+        SELECT
+            count(ssearch_searchrequestlog.not_normalize) as count, ssearch_searchrequestlog.not_normalize as normalize
+        FROM
+            ssearch_searchrequestlog
+    """
+    params = []
+
+
+
+
+    where = [u'WHERE date(datetime) BETWEEN %s  AND  %s']
+    params.append(start_date)
+    params.append(end_date)
+
+
+    if catalogs:
+        catalog_ids = []
+        for catalog in catalogs:
+            catalog_ids.append(str(catalog.id))
+        catalog_ids = u', '.join(catalog_ids)
+        where.append(' AND ssearch_searchrequestlog.catalog_id in (%s)' % catalog_ids)
+
+    if attributes:
+        attributes_args = []
+        for attribute in attributes:
+            attributes_args.append(u'%s')
+            params.append(attribute)
+
+        attributes_args = u', '.join(attributes_args)
+        where.append(u'AND ssearch_searchrequestlog.use in (%s)' % attributes_args)
+
+    where = u' '.join(where)
+
+
+    results = execute(
+        'select normalize, count from (' + select + ' ' + where +
+        u"""
+        GROUP BY
+            ssearch_searchrequestlog.not_normalize
+        ORDER BY
+            count desc
+        LIMIT 100) as res where res.count > 1;
+        """,
+        params
+    )
+
+    rows = []
+
+    for row in results:
+        rows.append((row['normalize'], row['count']))
+    return rows
+
+
+class SearchRequestLog(models.Model):
+    catalog = models.CharField(max_length=32, null=True, db_index=True)
+    search_id = models.CharField(max_length=32, verbose_name=u'Идентификатор запроса', db_index=True)
+    use = models.CharField(max_length=32, verbose_name=u"Точка доступа", db_index=True)
+    normalize = models.CharField(max_length=256, verbose_name=u'Нормализованный терм', db_index=True)
+    not_normalize = models.CharField(max_length=256, verbose_name=u'Ненормализованный терм', db_index=True)
+    datetime = models.DateTimeField(auto_now_add=True, auto_now=True, db_index=True)
