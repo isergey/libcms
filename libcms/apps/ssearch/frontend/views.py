@@ -372,9 +372,13 @@ def search(request, catalog=None):
     search_breadcumbs = []
     query_dict = None
 
+    star = False
     for term in terms[:search_deep_limit]:
         key = term.keys()[0]
         value = term[key]
+        if value.strip() == '*':
+            star = True
+
         if type(value) == datetime.datetime:
             value = unicode(value.year)
 
@@ -390,6 +394,8 @@ def search(request, catalog=None):
             'value': value,
             'href': query_dict.urlencode()
         })
+    if catalog == u'ebooks' and len(search_breadcumbs) > 1 and star:
+        return HttpResponse(u'Нельзя использовать * при вложенных запросах')
     json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
 #    print docs
     return render(request, 'ssearch/frontend/index.html', {
