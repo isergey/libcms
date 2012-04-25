@@ -7,7 +7,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
+{#    <link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" />#}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}theme/style.css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}theme/style1.css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}theme/extend.css" />
@@ -15,7 +15,7 @@
     <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
     <script src="{{ STATIC_URL }}theme/select.js"></script>
-    <script src="{{ STATIC_URL }}theme/script.js" type="text/javascript"></script>
+{#    <script src="{{ STATIC_URL }}theme/script.js" type="text/javascript"></script>#}
     <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?49"></script>
 
     <script type="text/javascript">
@@ -25,13 +25,17 @@
 </head>
 <body>
 <div id="header">
+
     <a id="logo" href="{% url index:frontend:index %}"><img src="{{ STATIC_URL }}theme/images/logo.png" /></a>
     {% if not request.user.is_authenticated %}
         <a id="auth" href="{% url accounts:frontend:registration %}"><span>Регистрация</span></a>
         <a id="auth" href="{% url accounts:frontend:login %}"><span>Вход</span></a>
     {% else %}
-        <a id="auth" href="{% url accounts:frontend:logout %}"><span>Выход</span></a>
-        <a id="auth" href="#"><span>Личный кабинет</span></a>
+        <div style="position: absolute; right: 1px">{% include 'cabinet.html' %}</div>
+{#        <a id="auth" href="{% url accounts:frontend:logout %}"><span>Выход</span></a>#}
+        <a id="auth" href="#" style="background: none; z-index: -1000"><span style="color: #ffffff; padding-left: 70px">Личный кабинет</span></a>
+
+
     {% endif %}
 
     <div id="language">
@@ -40,20 +44,33 @@
         <a class="language" href="/en{{ request.path|rmlocale }}">Eng</a>
     </div>
     <div id="search">
-        <div id="left"></div><div id="middle"></div><div id="right"></div>
-        <form action="{%   url ssearch:frontend:index %}">
-            <div id="search-elements">
-                <input type="text" id="search-input" placeholder="Поиск" name="q"/>
-                <input type="hidden" name="attr" value="text">
-                <input type="submit" value="" id="search-submit">
-            </div>
-        </form>
+
+{#        <div>#}
+{#            <ul style="float: right;">#}
+{#                <li>Мои заказы</li>#}
+{#                <li>Мои документы</li>#}
+{#                <li>Сохраненные запросы</li>#}
+{#                <li>Мои библиотеки</li>#}
+{#            </ul>#}
+{#        </div>#}
+{#        <div>#}
+            <div id="left"></div><div id="middle"></div><div id="right"></div>
+            <form action="{%   url ssearch:frontend:index %}">
+                <div id="search-elements">
+                    <input type="text" id="search-input" placeholder="Поиск" name="q"/>
+                    <input type="hidden" name="attr" value="text">
+                    <input type="submit" value="" id="search-submit">
+                </div>
+            </form>
+{#        </div>#}
     </div>
-    <ol id="offers">
-        <li>Найдите интересующую книгу</li>
-        <li><a href="{% url accounts:frontend:registration %}">Зарегистрируйте</a> бесплатный аккаунт</li>
-        <li>Закажите книгу в библиотеке</li>
-    </ol>
+    {% if not request.user.is_authenticated %}
+        <ol id="offers">
+            <li>Найдите интересующую книгу</li>
+            <li><a href="{% url accounts:frontend:registration %}">Зарегистрируйте</a> бесплатный аккаунт</li>
+            <li>Закажите книгу в библиотеке</li>
+        </ol>
+    {% endif %}
 </div>
 <div id="navigator">
     <div id="nav-background">
@@ -65,6 +82,7 @@
 </div>
 
 <div id="content">
+
     {% block content %}{% endblock %}
 </div>
 <div id="fill_space" style="clear: both;"></div>
