@@ -166,9 +166,9 @@ def _get_orders(xml):
         if task_status:
             status_titles = {
                 '0': u'Не выполнен',
-                '1': u'Отказ',
-                '2': u'Выполнен',
-                '3': u'Выдан'
+                '3': u'Отказ',
+                '1': u'Выполнен',
+                '2': u'Выдан'
             }
             order['task_status'] = status_titles.get(task_status[0].text,task_status[0].text)
         else:
