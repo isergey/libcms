@@ -559,7 +559,7 @@ def beautify(value):
 import pymorphy
 import uuid
 from ..models import SearchRequestLog
-morph = pymorphy.get_morph(settings.PROJECT_PATH + '../var/data/pymorphy/ru/cdb', 'cdb')
+morph = pymorphy.get_morph(settings.PYMORPHY_CDB_DICTS, 'cdb')
 def log_search_request(request, catalog):
 
     def clean_term(term):
