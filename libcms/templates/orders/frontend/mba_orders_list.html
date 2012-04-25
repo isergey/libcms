@@ -74,10 +74,6 @@
                                 </div>
                             </div>
                             {% if order.can_delete %}
-{#                                <a  href="{% url orders:frontend:mba_delete_order order.order_id %}">#}
-{#                                    <img src="/media/images/icons/delete_16.png" alt="удалить заказ"/>#}
-{#                                    Удалить заказ#}
-{#                                </a>#}
                                 <a class="btn btn-danger" href="{% url orders:frontend:mba_delete_order order.order_id %}"><i class="icon-trash icon-white" alt="удалить заказ"></i></a>
                             {% endif %}
 
