@@ -395,6 +395,7 @@ def search(request, catalog=None):
             'value': value,
             'href': query_dict.urlencode()
         })
+    
     log_search_request({'attr': new_key, 'value': value},catalog)
 
     if catalog == u'ebooks' and len(search_breadcumbs) > 1 and star:
