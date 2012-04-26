@@ -1,0 +1,20 @@
+{% extends 'backend_base.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% block module_title %}Smart search{% endblock %}
+{% block module_menu %}
+    {% include 'ssearch/administration/module_menu.html' %}
+{% endblock %}
+{% block module_content %}
+{#    {% active_path 'accounts:administration:index' %}#}
+{#    <a class="{% active 'accounts:administration:index' %}" href="{% url accounts:administration:index %}">wedwed</a>#}
+    <ul class="breadcrumb">
+    {% block breadcrumb %}
+        {% breadcrumb "Smart search" %}
+    {% endblock %}
+    </ul>
+    {% block action_content %}
+        Выберите пункт меню для дальнейших действий
+    {% endblock %}
+{% endblock %}
