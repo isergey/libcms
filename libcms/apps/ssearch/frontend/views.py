@@ -37,7 +37,7 @@ def rss(request):
 #    records =  list(Ebook.objects.filter(add_date__gte=seven_days_ago, add_date__lte=now))
 #    records +=  list(Record.objects.filter(add_date__gte=seven_days_ago, add_date__lte=now))
     for record in records:
-        rd.append(xml_doc_to_dict(record.content))
+        records_dicts.append(xml_doc_to_dict(record.content))
     for rd in records_dicts:
         print rd['title'][0]
     return HttpResponse(u'Rss')
