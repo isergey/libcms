@@ -361,11 +361,12 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
     params.append(start_date)
     params.append(end_date)
 
-
+    catalogs_where = []
     if catalogs:
         for catalog in catalogs:
-            where.append(' AND ssearch_searchrequestlog.catalog = "%s"' % catalog)
-
+            catalogs_where.append(' ssearch_searchrequestlog.catalog = "%s"' % catalog)
+        where.append('AND (' + u'OR'.join(catalogs_where) + ')' )
+    
     if attributes:
         attributes_args = []
         for attribute in attributes:
