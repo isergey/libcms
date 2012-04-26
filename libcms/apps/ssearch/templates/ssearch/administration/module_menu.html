@@ -1,6 +1,6 @@
 {% load active_link %}
 <ul class="nav nav-list">
-    <li class="nav-header">Страницы</li>
-    <li class="{% active 'pages:administration:pages_list' %}"><a href="{% url pages:administration:pages_list %}">Список</a></li>
-    <li class="{% active_path 'pages:administration:create_page' %}"><a href="{% url pages:administration:create_page %}">Добавить</a></li>
+    <li class="nav-header">Smart search</li>
+    <li class="{% active_path 'ssearch:administration:statistics' %}"><a href="{% url ssearch:administration:statistics %}">Статистика</a></li>
+{#    <li class="{% active_path 'pages:administration:create_page' %}"><a href="{% url pages:administration:create_page %}">Добавить</a></li>#}
 </ul>

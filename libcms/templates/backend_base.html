@@ -27,6 +27,7 @@
                             <li><a href="{% url events:administration:index %}">События</a></li>
                             <li><a href="{% url participants:administration:index %}">Библиотеки</a></li>
                             <li class="divider"></li>
+                            <li><a href="{% url ssearch:administration:index %}">Smart search</a></li>
                             <li><a href="{% url filebrowser:administration:index %}">Файлы</a></li>
                             <li><a href="{% url accounts:administration:index %}">Аккаунты</a></li>
 {#                            <li><a href="#">{% trans 'Settings' %}</a></li>#}
@@ -62,6 +63,6 @@
 
 </body>
 <script type="text/javascript">
-    $('#topbar').dropdown();
+//    $('#topbar').dropdown();
 </script>
 </html>

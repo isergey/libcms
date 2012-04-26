@@ -1,4 +1,4 @@
-<script type="text/javascript" src="{{ STATIC_URL }}js/highcharts/highcharts.js"></script>
+
 <script type="text/javascript">
     var example = 'column-rotated-labels',
             theme = 'default';
@@ -6,7 +6,7 @@
 
 <script type="text/javascript">
     Highcharts.theme = { colors:['#4572A7'] };// prevent errors in default theme
-    var highchartsOptions = Highcharts.getOptions();
+    var highchartsOptions = null;
 </script>
 
 
@@ -20,8 +20,11 @@
     }
 
     var data_rows = {{ data_rows|safe}};
+//    var data_rows = [["26.04.2012", 14]];
+
     var chart;
-    jQuery(document).ready(function () {
+//    $(document).ready(function () {
+        var highchartsOptions = Highcharts.getOptions();
         var categories = new Array();
         var data = new Array();
         for (i in data_rows){
@@ -88,5 +91,5 @@
         if (chart_type == 'bar'){
             chart.setSize(width, data_rows.length * 20 + 400);
         }
-    });
+//    });
 </script>
