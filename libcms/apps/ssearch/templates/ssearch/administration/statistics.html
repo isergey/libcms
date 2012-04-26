@@ -32,13 +32,13 @@
         <a href="?statistics=terms" class="button">Статистика по фразам</a>
     </div>
     <hr/>
-    <div class="column span-19 prepend-1 last">
-        <form action="" method="POST">{% csrf_token %}
+    <div class="">
+        <form  action="" class="form-horizontal" method="POST">{% csrf_token %}
             <fieldset>
-                {{ catalog_form }}
-                {{ period_form.as_div }}
-                {{ group_form.as_div }}
-                {{ attributes_form.as_div }}
+                {% include 'administration/base_form_fields.html' with form=catalog_form %}
+                {% include 'administration/base_form_fields.html' with form=period_form %}
+                {% include 'administration/base_form_fields.html' with form=group_form %}
+                {% include 'administration/base_form_fields.html' with form=attributes_form %}
             </fieldset>
             <input type="submit" value="Показать" class="btn"/>
         </form>
