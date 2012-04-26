@@ -250,14 +250,7 @@ def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list()):
             for catalog in catalogs:
                 catalogs_where.append(' ssearch_searchrequestlog.catalog = "%s" ' % catalog)
             where.append('AND (' + u'OR'.join(catalogs_where) + ')' )
-#        print catalog
-#        catalog_ids = []
-#        for catalog in catalogs:
-#            catalog_ids.append(unicode(catalog))
-#        catalog_ids = u', '.join(catalog_ids)
-#        print u', '.join(catalogs)
-#        print ' AND ssearch_searchrequestlog.catalog in (%s)' % u', '.join(catalogs)
-#        where.append(' AND ssearch_searchrequestlog.catalog in (%s)' % u', '.join(catalogs))
+
 
     where = u' '.join(where)
     results = execute( select + where + group_by, params)
@@ -308,8 +301,13 @@ def requests_by_attributes(start_date=None, end_date=None, attributes=list(), ca
 
 
     if catalogs:
-        for catalog in catalogs:
-            where.append(' AND ssearch_searchrequestlog.catalog = "%s"' % catalog)
+        if len(catalogs) == 1:
+            where.append('AND ' + 'ssearch_searchrequestlog.catalog = "%s" ' % catalogs[0]  )
+        else:
+            catalogs_where = []
+            for catalog in catalogs:
+                catalogs_where.append(' ssearch_searchrequestlog.catalog = "%s" ' % catalog)
+            where.append('AND (' + u'OR'.join(catalogs_where) + ')' )
 
     if attributes:
         attributes_args = []
@@ -369,7 +367,7 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
 
     if catalogs:
         if len(catalogs) == 1:
-            where.append('AND ' + 'ssearch_searchrequestlog.catalog = "%s" ' % catalog  )
+            where.append('AND ' + 'ssearch_searchrequestlog.catalog = "%s" ' % catalogs[0]  )
         else:
             catalogs_where = []
             for catalog in catalogs:
