@@ -6,4 +6,9 @@
     <p>{% trans 'Question identifier' %}: {{ question.id }}</p>
     <p>{% trans 'Question text' %}: {{ question.text }}</p>
     <p>{% trans 'Question category' %}: {{ question.category }}</p>
+
+    {% if answer %}
+        Ответ:
+        <p>{{ answer.text|safe }}</p>
+    {% endif %}
 {% endblock %}

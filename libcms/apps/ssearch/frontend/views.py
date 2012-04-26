@@ -26,7 +26,20 @@ from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transforme
 
 
 
-
+def rss(request):
+    now = datetime.date.today()
+    seven_days_ago = now - datetime.timedelta(4)
+    rd = []
+#    print datetime.date.today().isoformat()
+#    print Record.objects.filter(add_date__gte=seven_days_ago, add_date__lte=now)
+    records =  list(Ebook.objects.using('records').filter(add_date__gte=seven_days_ago, add_date__lte=now))
+    records +=  list(Record.objects.using('records').filter(add_date__gte=seven_days_ago, add_date__lte=now))
+#    records =  list(Ebook.objects.filter(add_date__gte=seven_days_ago, add_date__lte=now))
+#    records +=  list(Record.objects.filter(add_date__gte=seven_days_ago, add_date__lte=now))
+    for record in records:
+        rd.append(xml_doc_to_dict(record.content))
+    print rd
+    return HttpResponse(u'Rss')
 
 
 attr_map = {

@@ -2,7 +2,7 @@
 import datetime
 from django.shortcuts import render, Http404, HttpResponse,redirect, get_object_or_404
 from forms import QuestionForm
-from models import Question, Category, AnswerManager, ManagerNonActivePeriod
+from models import Question, Category, AnswerManager, ManagerNonActivePeriod, Answer
 
 
 def index(request):
@@ -64,8 +64,13 @@ def ask_question(request):
 
 def question_detail(request, id):
     question = get_object_or_404(Question, id=id)
+    try:
+        answer = Answer.objects.get(question=question)
+    except Answer.DoesNotExist:
+        answer = None
     return render(request, 'ask_librarian/frontend/question_detail.html', {
-        'question':question
+        'question':question,
+        'answer': answer
     })
 
 
