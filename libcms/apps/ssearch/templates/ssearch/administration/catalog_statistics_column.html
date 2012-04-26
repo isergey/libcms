@@ -19,8 +19,11 @@
         rotation = 0
     }
 
-    var data_rows = {{ data_rows|safe}};
-//    var data_rows = [["26.04.2012", 14]];
+{#    var data_rows = {{ data_rows|safe}};#}
+    var data_rows = [
+        ["26.04.2012", 14],
+                ["27.04.2012", 34]
+    ];
 
     var chart;
 //    $(document).ready(function () {
@@ -33,7 +36,7 @@
         }
         chart = new Highcharts.Chart({
             chart:{
-                renderTo:'container',
+                renderTo:'chart_container',
                 defaultSeriesType:'{{ chart_type }}',
                 margin:margin
             },
@@ -86,8 +89,8 @@
                 }
             ]
         });
-        var width = $('#container').width();
-        var height =  $('#container').height();
+        var width = $('#chart_container').width();
+        var height =  $('#chart_container').height();
         if (chart_type == 'bar'){
             chart.setSize(width, data_rows.length * 20 + 400);
         }
