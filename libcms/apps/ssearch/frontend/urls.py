@@ -1,10 +1,10 @@
 # coding: utf-8
 from django.conf.urls import *
 import views
-
+import feeds
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
-    url(r'^rss/$', views.rss, name='rss'),
+    url(r'^rss/$', feeds.LatestEntriesFeed(), name='rss'),
     url(r'^ecatalog/$', views.index, name='ecatalog', kwargs={'catalog':'sc2'}),
     url(r'^ecollection/$', views.index, name='ecollection', kwargs={'catalog':'ebooks'}),
     url(r'^detail/(?P<gen_id>[A-Za-z]+)/$', views.detail, name='detail'),

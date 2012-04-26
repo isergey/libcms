@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import get_language
 from django.core.cache import cache
-from django.shortcuts import render, HttpResponse, get_object_or_404, Http404
+from django.shortcuts import render, HttpResponse, get_object_or_404, Http404, urlresolvers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import  QueryDict
 from ..models import Record, Ebook, SavedRequest
@@ -24,7 +24,11 @@ from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transforme
 #xslt_bib_draw = etree.parse('libcms/xsl/full_document.xsl')
 #xslt_bib_draw_transformer = etree.XSLT(xslt_bib_draw)
 
-
+class RecordObject(object):
+    id = None
+    title = u''
+    def get_absolute_url(self):
+        return urlresolvers.reverse('ssearch:frontend:detail', args=[self.id])
 
 def rss(request):
     now = datetime.date.today()
@@ -37,10 +41,12 @@ def rss(request):
 #    records =  list(Ebook.objects.filter(add_date__gte=seven_days_ago, add_date__lte=now))
 #    records +=  list(Record.objects.filter(add_date__gte=seven_days_ago, add_date__lte=now))
     for record in records:
-        records_dicts.append(xml_doc_to_dict(record.content))
-    for rd in records_dicts:
-        print rd['title'][0]
-    return HttpResponse(u'Rss')
+        rd = xml_doc_to_dict(record.content)
+        ro = RecordObject()
+        ro.id =  rd['id']
+        ro.title = rd['title'][0]
+        records_dicts.append(ro)
+    return records_dicts
 
 
 attr_map = {
