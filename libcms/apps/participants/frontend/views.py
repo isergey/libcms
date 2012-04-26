@@ -29,7 +29,7 @@ def index(request):
 
 def branches(request, id=None):
 
-    id = request.POST.get('id', None)
+#    id = request.POST.get('id', None)
     library=None
     if id:
         library = get_object_or_404(Library, id=int(id))

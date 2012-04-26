@@ -1,0 +1,21 @@
+{% extends 'frontend_base.html' %}
+{% block title %}Библиотеки{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{%  url participants:frontend:index %}">Библиотеки</a> <span class="divider">/</span></li>
+        <li><a href="{%  url participants:frontend:branches library.parent.id %}">{{ library.parent.name }}</a> <span class="divider">/</span></li>
+        <li class="active">{{ library.name }}</li>
+    </ul>
+
+
+
+    <div class="participants">
+        <h3>{{ library.name }}</h3>
+        Сайт: {% if library.http_service  %}<a href="{{ library.http_service }}" target="_blank"> {{ library.http_service }}</a>{% else %} не указан {% endif %}<br/>
+        Адрес: {{ library.postal_address }}
+
+    </div>
+    <div id="map_canvas" style="width: 100%; height: 550px"></div>
+    {% include 'participants/frontend/map_js.html' %}
+{% endblock %}

@@ -24,13 +24,13 @@
     <ul class="list">
         {% for library in libraries_page.object_list %}
             <li class="title">
-                <a style="font-size: 16px" href="{% url participants:administration:edit library.id %}" title="{{ library }}">{{ library }}</a>
+                <a style="font-size: 14px" href="{% url participants:administration:edit library.id %}" title="{{ library }}">{{ library }}</a>
 
             {% if not library.is_leaf_node %}
                 <a class="btn" href="{% url participants:administration:list library.id %}">Филиалы</a>
             {% endif %}
             <span class="buttons">
-                <a class="btn btn-mini" href="{% url participants:administration:create library.id %}"><i class="icon-plus"></i>Добавить филиал</a>
+                {% if not parent  %}<a class="btn btn-mini" href="{% url participants:administration:create library.id %}"><i class="icon-plus"></i>Добавить филиал</a>{% endif %}
             <a class="btn btn-danger" href="{% url participants:administration:delete library.id %}"><i class="icon-trash icon-white"></i></a>
             </span>
             </li>
