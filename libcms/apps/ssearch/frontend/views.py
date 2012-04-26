@@ -30,7 +30,7 @@ class RecordObject(object):
     def get_absolute_url(self):
         return urlresolvers.reverse('ssearch:frontend:detail', args=[self.id])
 
-def rss(request):
+def rss():
     now = datetime.date.today()
     seven_days_ago = now - datetime.timedelta(4)
     records_dicts = []
