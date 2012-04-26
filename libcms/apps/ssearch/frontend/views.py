@@ -396,8 +396,10 @@ def search(request, catalog=None):
             'href': query_dict.urlencode()
         })
     log_search_request({'attr': new_key, 'value': value},catalog)
+
     if catalog == u'ebooks' and len(search_breadcumbs) > 1 and star:
         return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
+
     json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
 #    print docs
     return render(request, 'ssearch/frontend/index.html', {
