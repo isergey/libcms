@@ -243,8 +243,8 @@ def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list()):
     params.append(end_date)
 
     if catalogs:
-        if len(catalogs) == 1:
-            where.append('AND ' + 'ssearch_searchrequestlog.catalog = "%s" ' % catalog  )
+        if len(c) == 1:
+            where.append('AND ' + 'ssearch_searchrequestlog.catalog = "%s" ' % catalogs[1]  )
         else:
             catalogs_where = []
             for catalog in catalogs:
