@@ -16,5 +16,5 @@ class QuestionForm(forms.ModelForm):
     )
     class Meta:
         model = Question
-        exclude = ['user']
+        exclude = ['user','status']
 

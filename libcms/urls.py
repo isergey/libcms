@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     (r'^participants/', include('participants.urls', namespace='participants')),
     (r'^forum/', include('forum.urls', namespace='forum')),
 
-#    (r'^ask_librarian/', include('ask_librarian.urls', namespace='ask_librarian')),
+    (r'^ask_librarian/', include('ask_librarian.urls', namespace='ask_librarian')),
     (r'^ssearch/', include('ssearch.urls', namespace='ssearch')),
     (r'^rbooks/', include('rbooks.urls', namespace='rbooks')),
     (r'^orders/', include('orders.urls', namespace='orders')),
