@@ -11,11 +11,6 @@ class UploadForm(forms.models.ModelForm):
         model = Upload
         exclude = ('timestamp','processed', 'success')
 
-        GROUP_CHOICES = (
-            (u'2', u'По дням'),
-            (u'1', u'По месяцам'),
-            (u'0', u'По годам'),
-            )
 
 
 GROUP_CHOICES = (

@@ -376,8 +376,9 @@ def search(request, catalog=None):
     for term in terms[:search_deep_limit]:
         key = term.keys()[0]
         value = term[key]
-        if value.strip() == '*':
-            star = True
+        if isinstance(value, basestring):
+            if value.strip() == '*':
+                star = True
 
         if type(value) == datetime.datetime:
             value = unicode(value.year)
