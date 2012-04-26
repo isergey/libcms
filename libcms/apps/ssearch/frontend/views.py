@@ -29,7 +29,7 @@ from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transforme
 def rss(request):
     now = datetime.date.today()
     seven_days_ago = now - datetime.timedelta(4)
-    rd = []
+    records_dicts = []
 #    print datetime.date.today().isoformat()
 #    print Record.objects.filter(add_date__gte=seven_days_ago, add_date__lte=now)
     records =  list(Ebook.objects.using('records').filter(add_date__gte=seven_days_ago, add_date__lte=now))
@@ -38,7 +38,8 @@ def rss(request):
 #    records +=  list(Record.objects.filter(add_date__gte=seven_days_ago, add_date__lte=now))
     for record in records:
         rd.append(xml_doc_to_dict(record.content))
-    print rd
+    for rd in records_dicts:
+        print rd['title'][0]
     return HttpResponse(u'Rss')
 
 
