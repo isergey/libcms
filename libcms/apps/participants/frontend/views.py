@@ -22,8 +22,14 @@ def make_library_dict(library):
 
 def index(request):
     cbs_list = Library.objects.filter(parent=None).order_by('weight')
+    js_orgs = []
+    for org in cbs_list:
+        js_orgs.append(make_library_dict(org))
+
+    js_orgs = simplejson.dumps(js_orgs, encoding='utf-8', ensure_ascii=False)
     return render(request, 'participants/frontend/cbs_list.html',{
-        'cbs_list': cbs_list
+        'cbs_list': cbs_list,
+        'js_orgs': js_orgs
     })
 
 

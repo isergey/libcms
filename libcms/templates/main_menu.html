@@ -2,7 +2,7 @@
 <a href="{% url index:frontend:index %}"  class="{% active 'index:frontend:index'  %}">Главная</a>
 {% url pages:frontend:show 'index'  as  about_url %}
 <a href="{{ about_url }}" {% if request.path == about_url %}class="active"{% endif %}>О проекте</a>
-<a href="#">Спроси библиотекаря</a>
+<a href="{% url participants:frontend:index %}" class="{% active_path 'participants:frontend:index'  %}">Библиотеки</a>
 <a href="{% url ssearch:frontend:ecatalog %}" class="{% active_path 'ssearch:frontend:ecatalog'  %} {% active 'ssearch:frontend:index'  %}">Электронный каталог</a>
 <a href="{% url ssearch:frontend:ecollection %}" class="{% active_path 'ssearch:frontend:ecollection'  %} {% active 'ssearch:frontend:index'  %}">Электронная коллекция</a>
 
