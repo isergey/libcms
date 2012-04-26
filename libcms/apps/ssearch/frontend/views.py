@@ -43,7 +43,7 @@ def rss():
     for record in records:
         rd = xml_doc_to_dict(record.content)
         ro = RecordObject()
-        ro.id =  rd['id']
+        ro.id =  record.gen_id
         ro.title = rd['title'][0]
         records_dicts.append(ro)
     return records_dicts
