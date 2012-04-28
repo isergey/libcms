@@ -94,7 +94,13 @@
             <span>Поиск:</span>
             {% for search_breadcumb in search_breadcumbs %}
                 {% if not forloop.last %}
-                    <span><a href="?{{ search_breadcumb.href }}">{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</a></span> →
+                    {% if search_breadcumb.attr == 'content-type' %}
+                        <span><a href="?{{ search_breadcumb.href }}">{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|content_type_title }}</a></span> →
+                    {% elif search_breadcumb.attr == 'code-language' %}
+                        <span><a href="?{{ search_breadcumb.href }}">{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|language_title }}</a></span> →
+                    {% else %}
+                        <span><a href="?{{ search_breadcumb.href }}">{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</a></span> →
+                    {% endif %}
                 {% else %}
                     {#                <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>#}
                     {% if search_breadcumb.attr == 'content-type' %}

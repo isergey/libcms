@@ -58,6 +58,7 @@ content_type_titles = {
 
 @register.filter
 def content_type_title(code):
+    print code, content_type_titles.get(code.lower(), code)
     return content_type_titles.get(code.lower(), code)
 #
 
