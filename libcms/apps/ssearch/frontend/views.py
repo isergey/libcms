@@ -156,7 +156,7 @@ def _make_search_attrs(catalog):
             'value':attr_map['full-text']['attr'],
             'order':attr_map['full-text']['order'],
             })
-    print catalog
+
     search_attrs.sort(key=lambda x: x['order'])
     return search_attrs
 
@@ -261,8 +261,10 @@ def search(request, catalog=None):
     attrs = request.GET.getlist('attr', [])
     sort = request.GET.getlist('sort', [])
 
-    sort_attrs = []
+    if qs and attrs:
+        log_search_request({'attr': attrs[0], 'value': qs[0]}, catalog)
 
+    sort_attrs = []
 
     for sort_attr in sort:
         sort_attr = sort_attr_map.get(sort_attr, None)
@@ -393,7 +395,6 @@ def search(request, catalog=None):
     query_dict = None
 
     star = False
-    last_search_value = None
     for term in terms[:search_deep_limit]:
         key = term.keys()[0]
         value = term[key]
@@ -416,8 +417,7 @@ def search(request, catalog=None):
             'value': value,
             'href': query_dict.urlencode()
         })
-        last_search_value = {'attr': new_key, 'value': unicode(value)}
-    log_search_request(last_search_value, catalog)
+
 
     if catalog == u'ebooks' and len(search_breadcumbs) > 1 and star:
         return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
@@ -585,8 +585,7 @@ def beautify(value):
 import uuid
 from ..models import SearchRequestLog
 #morph = pymorphy.get_morph(settings.PYMORPHY_CDB_DICTS, 'cdb')
-def log_search_request(request, catalog):
-
+def log_search_request(last_search_value, catalog):
     def clean_term(term):
         """
         Возвращает кортеж из ненормализованног и нормализованного терма
@@ -611,13 +610,13 @@ def log_search_request(request, catalog):
     term_groups = []
 
 
-    term = request.get('value', None)
+    term = last_search_value.get('value', None)
     if term:
         forms = clean_term(term)
         term_groups.append({
             'nn': forms[0],
             'n':  forms[1],
-            'use': request.get('attr',u'not defined'),
+            'use': last_search_value.get('attr',u'not defined'),
 
             })
 

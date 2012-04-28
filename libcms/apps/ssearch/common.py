@@ -108,6 +108,13 @@ def resolve_date(date):
         u'[--03-14---03-14]',
     ]
     """
+    try:
+        year = int(date)
+        return datetime.datetime(year=year, month=1, day=1)
+    except ValueError:
+        pass
+
+
     if date.startswith('[') and date.endswith(']'): # указан период или приблизительная дата
         date = date[1:-1]
         if  len(date) < 2:
