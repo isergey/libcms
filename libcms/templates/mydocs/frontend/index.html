@@ -19,7 +19,7 @@
                     <div class="alert alert-info">
                         {{ record.saved_doc.comments }}
                     </div>
-                    <a href="{% url ssearch:frontend:detail record.saved_doc.gen_id %}" class="delete">Детальная информация</a>
+                    <a href="{% url ssearch:frontend:detail record.saved_doc.gen_id %}">Детальная информация</a>
                     <a style="float: right;" href="{% url mydocs:frontend:delete record.saved_doc.id %}" class="delete">удалить</a>
                     {% if not forloop.last %}<hr/>{% endif %}
                 </li>
