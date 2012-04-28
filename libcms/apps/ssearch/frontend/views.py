@@ -393,6 +393,7 @@ def search(request, catalog=None):
     query_dict = None
 
     star = False
+    last_search_value = None
     for term in terms[:search_deep_limit]:
         key = term.keys()[0]
         value = term[key]
@@ -415,8 +416,8 @@ def search(request, catalog=None):
             'value': value,
             'href': query_dict.urlencode()
         })
-
-    log_search_request({'attr': new_key, 'value': unicode(value)},catalog)
+        last_search_value = {'attr': new_key, 'value': unicode(value)}
+    log_search_request(last_search_value, catalog)
 
     if catalog == u'ebooks' and len(search_breadcumbs) > 1 and star:
         return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
