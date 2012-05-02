@@ -14,7 +14,7 @@
             <li>
                 <span class="title"><a href="{% url participants:administration:district_edit district.id %}">{{ district }}</a></span>
             <span style="float: right;">
-                <a class="btn btn-danger" href="{% url participants:administration:district_delete district.id %}">
+                <a class="btn btn-danger {% if not perms.participants.delete_district %} disabled {% endif %}" href="{% url participants:administration:district_delete district.id %}">
                     <i class="icon-trash icon-white"></i>
                 </a>
             </span>

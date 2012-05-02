@@ -12,7 +12,7 @@
 <ul class="nav nav-list">
     <li class="nav-header">Районы</li>
     <li class="{% active 'participants:administration:district_list' %}">
-        <a href="{% url participants:administration:district_list %}">Список</a>
+        <a class="disabled" href="{% url participants:administration:district_list %}">Список</a>
     </li>
     <li class="{% active_path 'participants:administration:district_create' %}">
         <a href="{% url participants:administration:district_create %}">Создать</a>

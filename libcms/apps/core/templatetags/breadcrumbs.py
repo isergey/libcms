@@ -10,6 +10,7 @@ register = template.Library()
 
 @register.tag
 def breadcrumb(parser, token):
+#    print token.split_contents()[1:]
     """
      Renders the breadcrumb.
      Examples:

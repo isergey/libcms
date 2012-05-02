@@ -30,8 +30,14 @@
                 <a class="btn" href="{% url participants:administration:list library.id %}">Филиалы</a>
             {% endif %}
             <span class="buttons">
-                {% if not parent  %}<a class="btn btn-mini" href="{% url participants:administration:create library.id %}"><i class="icon-plus"></i>Добавить филиал</a>{% endif %}
-            <a class="btn btn-danger" href="{% url participants:administration:delete library.id %}"><i class="icon-trash icon-white"></i></a>
+
+                {% if not parent  %}<a class="btn btn-mini {% if not perms.participants.add_library %} disabled {% endif %}" href="{% url participants:administration:create library.id %}"><i class="icon-plus"></i>Добавить филиал</a>{% endif %}
+                {% if parent %}
+                    <a class="btn btn-danger {% if not perms.participants.delete_library %} disabled {% endif %}" href="{% url participants:administration:delete library.id %}"><i class="icon-trash icon-white"></i></a>
+                {% else %}
+                    <a class="btn btn-danger {% if not perms.participants.delete_cbs %} disabled {% endif %}" href="{% url participants:administration:delete library.id %}"><i class="icon-trash icon-white"></i></a>
+                {% endif %}
+
             </span>
             </li>
         {% endfor %}

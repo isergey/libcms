@@ -3,7 +3,7 @@
 from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
 
-from models import Library, UserLibrary#, Country, City, District
+from models import Library, UserLibrary, LibraryContentEditor #, Country, City, District
 
 
 admin.site.register(Library, MPTTModelAdmin)
@@ -12,6 +12,12 @@ class UserLibraryAdmin(admin.ModelAdmin):
     list_display = ["user",'library']
 
 admin.site.register(UserLibrary, UserLibraryAdmin)
+
+class LibraryContentEditorAdmin(admin.ModelAdmin):
+    list_display = ["user",'library']
+
+admin.site.register(LibraryContentEditor, LibraryContentEditorAdmin)
+
 
 #
 #class CountryAdmin(admin.ModelAdmin):

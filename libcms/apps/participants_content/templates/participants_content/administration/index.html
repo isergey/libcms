@@ -1,0 +1,21 @@
+{% extends 'backend_base.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% block module_title %}Контент библиотек{% endblock %}
+{% block module_menu %}
+    {% include 'participants_pages/administration/module_menu.html' %}
+{% endblock %}
+{% block module_content %}
+    {#    {% active_path 'accounts:administration:index' %}#}
+    {#    <a class="{% active 'accounts:administration:index' %}" href="{% url accounts:administration:index %}">wedwed</a>#}
+    <ul class="breadcrumb">
+        {% block breadcrumb %}
+            {% breadcrumb_url library.name%}
+            {% breadcrumb "Страницы" %}
+        {% endblock %}
+    </ul>
+    {% block action_content %}
+        Summary
+    {% endblock %}
+{% endblock %}

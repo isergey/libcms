@@ -94,9 +94,16 @@ class Library(MPTTModel):
     class Meta:
         verbose_name = u"Библиотека"
         verbose_name_plural = u"Библиотеки"
+        permissions = (
+            ("add_cbs", "Can create cbs"),
+            ("change_cbs", "Can change cbs"),
+            ("delete_cbs", "Can delete cbs"),
+        )
 
     class MPTTMeta:
         order_insertion_by=['weight']
+
+
 
 class UserLibrary(models.Model):
     library = models.ForeignKey(Library)
@@ -115,7 +122,27 @@ class UserLibrary(models.Model):
             raise ValidationError(u'У библиотеки нет ill адреса, она не сможет получать заказы. ill адрес необходимо узнать у администратора службы МБА и присвоить его библиотеке.')
 
     class Meta:
-        verbose_name = u"Пользователь библиотеки"
-        verbose_name_plural = u"Пользователи библиотеки"
+        verbose_name = u"Пользователь МБА"
+        verbose_name_plural = u"Пользователи МБА"
 
 
+
+class LibraryContentEditor(models.Model):
+    library = models.ForeignKey(Library)
+    user = models.ForeignKey(User, unique=True)
+
+    def __unicode__(self):
+        return self.user.username
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        try:
+            library = self.library
+        except Library.DoesNotExist:
+            raise ValidationError(u'Укажите организацию к которой принадлежит пользователь.')
+
+        if self.library.parent_id:
+            raise ValidationError(u'Привязка осуществляется только к ЦБС')
+    class Meta:
+        verbose_name = u"Редактор контента ЦБС"
+        verbose_name_plural = u"Редакторы контента ЦБС"
