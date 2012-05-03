@@ -14,27 +14,28 @@
 
     {% if parent %}
         <h3>
-        <a href="{% url participants_pages:administration:index library.id %}">Страницы</a> →
-        {% for ancestor in parent.get_ancestors %}
-            <a href="{% url participants_pages:administration:pages_list library.id ancestor.id %}">
-                {% if not ancestor.get_cur_lang_content %}
-                    {{ ancestor }}
-                {% else %}
-                    {{ ancestor.get_cur_lang_content }}
-                {% endif %}
-            </a> →
-        {% endfor %}
-        {% if not parent.get_cur_lang_content %}
-            {{ parent }}
-        {% else %}
-            {{ parent.get_cur_lang_content }}
-        {% endif %}
+            <a href="{% url participants_pages:administration:index library.id %}">Страницы</a> →
+            {% for ancestor in parent.get_ancestors %}
+                <a href="{% url participants_pages:administration:pages_list library.id ancestor.id %}">
+                    {% if not ancestor.get_cur_lang_content %}
+                        {{ ancestor }}
+                    {% else %}
+                        {{ ancestor.get_cur_lang_content }}
+                    {% endif %}
+                </a> →
+            {% endfor %}
+            {% if not parent.get_cur_lang_content %}
+                {{ parent }}
+            {% else %}
+                {{ parent.get_cur_lang_content }}
+            {% endif %}
         </h3>
     {% else %}
         <h3>
-        Страницы
+            Страницы
         </h3>
     {% endif %}
+    <hr/>
     <style type="text/css">
         .not_public a{
             color: #ff4500;
@@ -62,7 +63,7 @@
 {#            <a href="{% url pages:administration:create_page page.id %}">{% trans 'Add subpage' %}</a>#}
             <span class="buttons">
                 <a class="btn" href="{% url participants_pages:administration:create_page library.id page.id %}"><i class="icon-plus"></i>Создать подстраницу</a>
-                <a class="btn btn-danger" href="{% url participants_pages:administration:delete_page library.id page.id %}"><i class="icon-trash icon-white"></i></a>
+                <a class="btn btn-danger {% if not perms.participants_page.delete_cbs %} disabled {% endif %}" href="{% url participants_pages:administration:delete_page library.id page.id %}"><i class="icon-trash icon-white"></i></a>
             </span>
         </li>
     {% endfor %}

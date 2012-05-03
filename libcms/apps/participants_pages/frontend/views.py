@@ -6,7 +6,8 @@ from django.utils.translation import to_locale, get_language
 from ..models import Page, Content
 from participants.models import Library
 
-def index(request):
+def index(request, library_id):
+    library = get_object_or_404(Library, id=library_id)
     cur_language = translation.get_language()
     page = get_object_or_404(Page, slug='index')
     try:
@@ -16,7 +17,8 @@ def index(request):
 
     return render(request, 'participants_pages/frontend/show.html', {
         'page': page,
-        'content': content
+        'content': content,
+        'library':library
     })
 
 def show(request, library_id, slug):

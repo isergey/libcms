@@ -2,6 +2,7 @@
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
+from django.http import HttpResponseForbidden
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
 from common.pagination import get_page
@@ -11,7 +12,22 @@ from django.utils.translation import to_locale, get_language
 from core.forms import LanguageForm
 from participants_pages.models import Page, Content
 from forms import PageForm, ContentForm, get_content_form
-from participants.models import Library
+from participants.models import Library, LibraryContentEditor
+
+def get_cbs(library_node):
+    if library_node.parent_id:
+        return library_node.get_root()
+    else:
+        return library_node
+
+def check_owning(user, library):
+    if user.is_superuser:
+        return True
+    else:
+        if LibraryContentEditor.objects.filter(user=user, library=library).count():
+            return True
+        else:
+            return False
 
 #@permission_required_or_403('accounts.view_users')
 def index(request, library_id):
@@ -19,9 +35,13 @@ def index(request, library_id):
 
 
 @login_required
-@permission_required_or_403('participants_pages.add_page')
 def pages_list(request, library_id, parent=None):
+
+    if not request.user.has_module_perms('participants_pages'):
+        return HttpResponseForbidden()
     library = get_object_or_404(Library, id=library_id)
+
+
     if parent:
         parent = get_object_or_404(Page, id=parent)
 
@@ -49,6 +69,9 @@ def pages_list(request, library_id, parent=None):
 @permission_required_or_403('participants_pages.add_page')
 def create_page(request, library_id, parent=None):
     library = get_object_or_404(Library, id=library_id)
+    cbs = get_cbs(library)
+    if not check_owning(request.user, cbs):
+        return HttpResponse(u'У Вас нет прав на создание страниц в этой ЦБС')
     if parent:
         parent = get_object_or_404(Page, id=parent)
 
@@ -59,7 +82,7 @@ def create_page(request, library_id, parent=None):
             if parent:
                 page.parent = parent
 
-            if not request.user.has_perm('pages.public_page'):
+            if not request.user.has_perm('participants_pages.public_page'):
                 page.public = False
             page.library = library
             page.save()
@@ -77,6 +100,10 @@ def create_page(request, library_id, parent=None):
 @permission_required_or_403('participants_pages.change_page')
 def edit_page(request, library_id, id):
     library = get_object_or_404(Library, id=library_id)
+    cbs = get_cbs(library)
+    if not check_owning(request.user, cbs):
+        return HttpResponse(u'У Вас нет прав на редактирование страницы в этой ЦБС')
+
     langs = []
     for lang in settings.LANGUAGES:
         langs.append({
@@ -120,7 +147,10 @@ def edit_page(request, library_id, id):
 @login_required
 @permission_required_or_403('participants_pages.delete_page')
 def delete_page(request, library_id, id):
-#    library = get_object_or_404(Library, id=library_id)
+    library = get_object_or_404(Library, id=library_id)
+    cbs = get_cbs(library)
+    if not check_owning(request.user, cbs):
+        return HttpResponse(u'У Вас нет прав на удаление страницы в этой ЦБС')
     page = get_object_or_404(Page, id=id)
     page.delete()
     return redirect('participants_pages:administration:pages_list', library_id=library_id)
@@ -129,6 +159,9 @@ def delete_page(request, library_id, id):
 @permission_required_or_403('participants_pages.add_page')
 def create_page_content(request, library_id, page_id):
     library = get_object_or_404(Library, id=library_id)
+    cbs = get_cbs(library)
+    if not check_owning(request.user, cbs):
+        return HttpResponse(u'У Вас нет прав на создание страницы в этой ЦБС')
     page = get_object_or_404(Page, id=page_id)
     if request.method == 'POST':
         content_form = ContentForm(request.POST, prefix='content_form')
@@ -155,6 +188,9 @@ def create_page_content(request, library_id, page_id):
 @permission_required_or_403('participants_pages.change_page')
 def edit_page_content(request, library_id,  page_id, lang):
     library = get_object_or_404(Library, id=library_id)
+    cbs = get_cbs(library)
+    if not check_owning(request.user, cbs):
+        return HttpResponse(u'У Вас нет прав на редактирование страницы в этой ЦБС')
     lang_form = LanguageForm({'lang': lang})
     if not lang_form.is_valid():
         return HttpResponse(_(u'Language is not registered in system.') + _(u" Language code: ") + lang)

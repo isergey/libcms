@@ -9,22 +9,30 @@
 
 {% block action_content %}
     <h3>
-        {% for ancestor in page.get_ancestors %}
-            <a href="{% url participants_pages:administration:pages_list library.id ancestor.id %}">
-                {% if not ancestor.get_cur_lang_content %}
-                    {{ ancestor }}
-                {% else %}
-                    {{ ancestor.get_cur_lang_content }}
-                {% endif %}
-            </a> →
-        {% endfor %}
+        <a href="{% url participants_pages:administration:index library.id %}">Страницы</a> →
+        {% if page.parent_id %}
+            {% for ancestor in page.parent.get_ancestors %}
+                <a href="{% url participants_pages:administration:pages_list library.id ancestor.id %}">
+                    {% if not ancestor.get_cur_lang_content %}
+                        {{ ancestor }}
+                    {% else %}
+                        {{ ancestor.get_cur_lang_content }}
+                    {% endif %}
+                </a> →
+            {% endfor %}
+            {% if not page.parent.get_cur_lang_content %}
+                <a href="{% url participants_pages:administration:pages_list library.id page.parent.id %}">{{ page.parent }}</a> →
+            {% else %}
+                <a href="{% url participants_pages:administration:pages_list library.id page.parent.id %}">{{ page.parent.get_cur_lang_content }}</a> →
+            {% endif %}
+        {% endif %}
         {% if not page.get_cur_lang_content %}
-            {{ page }}
+            {{ page }} (нет заглавия для текущего языка)
         {% else %}
             {{ page.get_cur_lang_content }}
         {% endif %}
-
     </h3>
+    <hr/>
     <form class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Редактирование страницы</legend>
         <fieldset>

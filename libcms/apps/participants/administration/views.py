@@ -13,7 +13,6 @@ from forms import LibraryForm, LibraryTypeForm, DistrictForm
 #@permission_required_or_403('accounts.view_users')
 
 def check_owning(user, library):
-    print user, library
     if user.is_superuser:
         return True
     else:

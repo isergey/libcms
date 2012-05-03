@@ -17,17 +17,17 @@
         <a href="{% url pages:administration:index %}">Страницы</a> →
         {% for ancestor in parent.get_ancestors %}
             <a href="{% url pages:administration:pages_list ancestor.id %}">
-                {% if not ancestor|get_cur_lang_content %}
+                {% if not ancestor.get_cur_lang_content %}
                     {{ ancestor }}
                 {% else %}
-                    {{ ancestor|get_cur_lang_content }}
+                    {{ ancestor.get_cur_lang_content }}
                 {% endif %}
             </a> →
         {% endfor %}
-        {% if not parent|get_cur_lang_content %}
+        {% if not parent.get_cur_lang_content %}
             {{ parent }}
         {% else %}
-            {{ parent|get_cur_lang_content }}
+            {{ parent.get_cur_lang_content }}
         {% endif %}
         </h3>
     {% else %}
@@ -35,6 +35,7 @@
         Страницы
         </h3>
     {% endif %}
+    <hr/>
     <style type="text/css">
         .not_public a{
             color: #ff4500;

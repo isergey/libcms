@@ -10,12 +10,27 @@
 {% endblock %}
 
 {% block action_content %}
+    <h3>
+    <a href="{% url pages:administration:index %}">Страницы</a> →
     {% if parent %}
-        {% for ancestor in parent.get_ancestors %}
-            <a href="{% url pages:administration:pages_list ancestor.id %}">{{ ancestor }}</a> →
-        {% endfor %}
-        {{ parent }}
+            {% for ancestor in parent.get_ancestors %}
+                <a href="{% url pages:administration:pages_list ancestor.id %}">
+                    {% if not ancestor.get_cur_lang_content %}
+                        {{ ancestor }}
+                    {% else %}
+                        {{ ancestor.get_cur_lang_content }}
+                    {% endif %}
+                </a> →
+            {% endfor %}
+            {% if not parent.get_cur_lang_content %}
+                {{ parent }}
+            {% else %}
+                {{ parent.get_cur_lang_content }}
+            {% endif %}
+
     {% endif %}
+    </h3>
+    <hr/>
     <form class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Создание страницы</legend>
         <fieldset>

@@ -1,31 +1,26 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.utils.translation import to_locale, get_language
+from django.utils.translation import get_language
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 from participants.models import Library
-class Permissions(User):
-    """
-    Класс для создания прав достпа
-    """
-    class Meta:
-        proxy = True
-        permissions = (
-            ("view_page", "Can view page"),
-            ("public_page", "Can public page"),
-        )
+#class Permissions(User):
+#    """
+#    Класс для создания прав достпа
+#    """
+#    class Meta:
+#        proxy = True
+#        permissions = (
+#            ("view_page", "Can view page"),
+#            ("public_page", "Can public page"),
+#        )
 
 
 
 
 class Page(MPTTModel):
-    def set_title(self, title):
-        self.title = title
-    def get_title(self, title):
-        return self.title
-
 
     library = models.ForeignKey(
         Library,
@@ -44,7 +39,6 @@ class Page(MPTTModel):
         verbose_name=u'Slug',
         max_length=255,
         db_index=True,
-        unique=True,
         help_text=u'Внимание! Последующее редактирование поля slug невозможно!'
     )
 
@@ -89,6 +83,10 @@ class Page(MPTTModel):
 
     class Meta:
         ordering = ['-create_date']
+        permissions = (
+            ("view_page", "Can view page"),
+            ("public_page", "Can public page"),
+            )
 
     def __unicode__(self):
         return  self.slug
