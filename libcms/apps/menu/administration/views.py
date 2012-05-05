@@ -218,7 +218,7 @@ def delete_menu(request, id):
 
 
 @login_required
-@permission_required_or_403('menu.create_menu')
+#@permission_required_or_403('menu.create_menu')
 def item_list(request, menu_id):
     menu = get_object_or_404(Menu, id=menu_id)
     nodes = list(menu.root_item.get_descendants())
@@ -238,7 +238,7 @@ def item_list(request, menu_id):
 
 
 @login_required
-@permission_required_or_403('menu.create_menu')
+@permission_required_or_403('menu.add_menu_item')
 @transaction.commit_on_success
 def create_item(request, menu_id, parent=None):
     menu = get_object_or_404(Menu, id=menu_id)
@@ -295,7 +295,7 @@ def create_item(request, menu_id, parent=None):
 
 
 @login_required
-@permission_required_or_403('menu.change_menu')
+@permission_required_or_403('menu.change_menu_item')
 @transaction.commit_on_success
 def item_edit(request, id, menu_id=None):
     menu = get_object_or_404(Menu, id=menu_id)
@@ -379,7 +379,7 @@ def item_edit(request, id, menu_id=None):
     })
 
 @login_required
-@permission_required_or_403('menu.delete_menu')
+@permission_required_or_403('menu.delete_menu_item')
 def item_delete(request, menu_id, id):
     item = get_object_or_404(MenuItem, id=id)
     item.delete()
