@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import socket
+import copy
 import datetime
 import simplejson
 from lxml import etree
@@ -14,7 +16,7 @@ from urt.models import LibReader
 from ..models import UserOrderTimes
 
 from participants.models import Library
-from common import ThreadWorker
+from thread_worker import ThreadWorker
 from order_manager.manager import OrderManager
 from forms import DeliveryOrderForm, CopyOrderForm
 from ssearch.models import  Record, Ebook
@@ -27,9 +29,9 @@ def set_cookies_to_response(cookies, response, domain=None):
 class MBAOrderException(Exception):
     pass
 
-
 xslt_bib_draw = etree.parse('libcms/xsl/full_document.xsl')
 xslt_bib_draw_transformer = etree.XSLT(xslt_bib_draw)
+
 
 @login_required
 def index(request):
@@ -38,7 +40,91 @@ def index(request):
         'links':links,
     })
 
+@login_required
+def books_on_hand(request):
+    """
+    Выданные книги.
+    Отображение списка библиотек и книг, которые были выданы в соответствующих библиотека
+    """
 
+    ruslan_order_urls = settings.RUSLAN_ORDER_URLS
+    links = list(LibReader.objects.select_related('library').filter(user=request.user))
+
+    have_zservice = []
+    for link in links:
+        if link.library.z_service:
+            have_zservice.append(link)
+
+    args = []
+    for link in have_zservice:
+        args.append({'id':link.id, 'url':ruslan_order_urls['books'] % (link.lib_login, link.lib_password, link.library.z_service , link.lib_login)})
+
+
+    results = ThreadWorker(_get_content, args).do()
+    for result in results:
+        for link in have_zservice:
+            if hasattr(result, 'value') and link.id == result.value['id']:
+                if 'result' in result.value:
+                    link.books = _get_books(result.value['result'])
+                if 'exception' in result.value:
+                    if type(result.value['exception']) == socket.timeout:
+                        link.error = u'Сервер с заказами недоступен'
+                    else:
+                        raise result.value['exception']
+
+
+    return render(request, 'orders/frontend/on_hand.html',{
+        'links':have_zservice,
+    })
+
+
+
+@login_required
+def reservations(request):
+    ruslan_order_urls = settings.RUSLAN_ORDER_URLS
+    links = list(LibReader.objects.select_related('library').filter(user=request.user))
+
+    have_zservice = []
+    for link in links:
+        if link.library.z_service:
+            have_zservice.append(link)
+
+    args = []
+    for link in have_zservice:
+        args.append({'id':link.id, 'url':ruslan_order_urls['orders'] % (link.lib_login, link.lib_password, link.library.z_service , link.lib_login)})
+
+
+    results = ThreadWorker(_get_content, args).do()
+    for result in results:
+        for link in have_zservice:
+            if hasattr(result, 'value') and link.id == result.value['id']:
+                if 'result' in result.value:
+                    link.reservations = _get_orders(result.value['result'])
+                if 'exception' in result.value:
+                    if type(result.value['exception']) == socket.timeout:
+                        link.error = u'Сервер с заказами недоступен'
+                    else:
+                        raise result.value['exception']
+
+    return render(request, 'orders/frontend/reservations.html',{
+        'links': have_zservice,
+        })
+
+
+@login_required
+def books_on_hand_in_lib(request, id):
+    ruslan_order_urls = settings.RUSLAN_ORDER_URLS
+    library = get_object_or_404(Library, id=id)
+    lib_reader = get_object_or_404(LibReader, library=library, user=request.user)
+
+    if not library.z_service:
+        return HttpResponse(u'Отсутвуют параметры связи с базой заказаов библиотеки. Если Вы видите это сообщение, пожалуйста, сообщите администратору портала.')
+    print ruslan_order_urls['orders'] % (lib_reader.lib_login, lib_reader.lib_password, library.z_service, lib_reader.lib_login)
+    books = _get_content('http://www.unilib.neva.ru/cgi-bin/zurlcirc?z39.50r://8007756:a6Tka0l1@ruslan.ru/circ?8007756')
+    books = _get_books(books)
+    return render(request, 'orders/frontend/on_hand_in_lib.html',{
+        'books': books
+    })
 
 @login_required
 def lib_orders(request, id):
@@ -67,6 +153,7 @@ def lib_orders(request, id):
         'books': books,
         'library':library
     })
+
 
 @login_required
 def zorder(request, library_id):
@@ -119,20 +206,18 @@ def zorder(request, library_id):
 
 
 
-def _get_content(url):
+def _get_content(args):
     # необходимо чтобы функция имела таймаут
-    uh = urllib2.urlopen(url, timeout=10)
-    result = uh.read()
-    #    print result
-    return result
+    uh = urllib2.urlopen(args['url'], timeout=10)
+    try:
+        result = uh.read()
+    except Exception as e:
+        return {'id':args['id'], 'exception': e}
+    return {'id':args['id'], 'result': result}
 
 
 def _get_orders(xml):
-#    url='http://www.unilib.neva.ru/cgi-bin/zurles?z39.50r://%s:%s@ruslan.ru/ir-extend-1?8003330' % (lib_login, lib_password)
-#    opener = urllib2.build_opener()
-#    result = opener.open(url)
-#    results = result.read()
-    print 'xml', xml
+
     try:
         orders_root = etree.XML(xml)
     except etree.XMLSyntaxError:
@@ -143,9 +228,10 @@ def _get_orders(xml):
     for order_tree in order_trees:
         order = {}
         record_tree = order_tree.xpath('taskSpecificParameters/targetPart/itemRequest/record')
+        record_root = copy.deepcopy(record_tree[0]) # иначе возникнет ошибка трансформации
         if record_tree:
             try:
-                bib_record = xslt_bib_draw_transformer(record_tree[0],abstract='false()')
+                bib_record = xslt_bib_draw_transformer(record_root,abstract='false()')
                 order['record'] = etree.tostring(bib_record, encoding='utf-8').replace('<b/>', '')
             except etree.XSLTApplyError as e:
                 order['record'] = e.message
@@ -200,14 +286,13 @@ def _get_books(xml):
     books = []
     record_trees = rcords_root.xpath('/records/*')
     for record_tree in record_trees:
-        book = {}
-        try:
-            bib_record = xslt_bib_draw_transformer(record_tree, abstract='false()')
-            book['record'] = etree.tostring(bib_record, encoding='utf-8')
-        except etree.XSLTApplyError as e:
-            book['record'] = e.message
 
-        description_tree = record_tree.xpath('field[@id="999"]/subfield[@id="z"]')
+        rcord_root = copy.deepcopy(record_tree) # иначе возникнет ошибка трансформации
+        book = {}
+        bib_record = xslt_bib_draw_transformer(rcord_root, abstract='false()')
+        book['record'] = etree.tostring(bib_record, encoding='utf-8')
+
+        description_tree = rcord_root.xpath('field[@id="999"]/subfield[@id="z"]')
         if description_tree:
             book['description'] = description_tree[0].text
         else:

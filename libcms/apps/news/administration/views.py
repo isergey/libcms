@@ -24,9 +24,11 @@ def index(request):
 def news_list(request):
     type = request.GET.get('type', u'public')
     if type ==  u'prof':
-        news_page = get_page(request, News.objects.filter(prof=True).order_by('-create_date'))
+        news_page = get_page(request, News.objects.filter(type=1).order_by('-create_date'))
+    elif type == u'public':
+        news_page = get_page(request, News.objects.filter(type=0).order_by('-create_date'))
     else:
-        news_page = get_page(request, News.objects.filter(prof=False).order_by('-create_date'))
+        news_page = get_page(request, News.objects.filter(type=2).order_by('-create_date'))
 
     news_contents = list(NewsContent.objects.filter(news__in=list(news_page.object_list), lang=get_language()[:2]))
 

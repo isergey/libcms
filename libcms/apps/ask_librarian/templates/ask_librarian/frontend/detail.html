@@ -1,0 +1,72 @@
+{% extends 'ask_librarian/frontend/index.html' %}
+{% load cache %}
+{% block title %}Спроси библиотекаря{% endblock %}
+{% block breadcrumb %}
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url ask_librarian:frontend:index %}">Спроси библиотекаря</a> <span class="divider">/</span></li>
+        <li>Вопрос № {{ question.id }}</li>
+    </ul>
+{% endblock %}
+{% block content %}
+    <style>
+        form#recomended_form textarea{
+            width: 99%;
+        }
+    </style>
+        <div>
+            <h3>Вопрос:</h3>
+            {{ question.question }}<br/>
+            {% if question.category_id %}
+                <b>Категория:
+                {% cache 30 questions_category question.category_id %}
+                    {% for ancestor in  question.category.get_t_ancestors %}
+                        {{ ancestor }}  →
+                    {% endfor %}
+                        {{ question.category }}
+                {% endcache %}
+                </b>
+            {% endif %}
+            <br/>
+
+            <b>Статус</b>: <span class="question_status{{ question.status }}">{{ question.get_status_display }} </span>
+        <hr/>
+        </div>
+        <div>
+            <h3>Ответ:</h3>
+        {% if question.is_ready %}
+            {{ question.answer|safe }}
+        {% else %}
+            Ответа на вопрос еще нет.
+        {% endif %}
+        </div>
+        {% if recomendations %}
+            <div>
+                <hr/>
+                <h3>Рекомендации к этому вопросу</h3>
+                <ul>
+                    {% for  recomendation in recomendations %}
+                        <li>{{ recomendation.text }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <div>
+        <hr/>
+            <div class="alert alert-info">
+                Если у вас есть ответ на вопрос или дополнительная информация, которая поможет дополнить ответ,
+                Вы можете указать ее в рекомендации. Мы будем очень признательны.
+            </div>
+            <form id="recomended_form" class="" method="POST">{% csrf_token %}
+                <legend>Рекомендовать:</legend>
+                <fieldset>
+                    {% include 'frontend/base_form_fields.html' with form=recomendation_form %}
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Отправить</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'ask_librarian/frontend/index.html' %}
+{% load pagination_tag %}
+{% load cache %}
+{% block title %}Спроси библиотекаря{% endblock %}
+{% block breadcrumb %}
+    <ul class="breadcrumb">
+
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        {% if category %}
+            {% cache 30 questions_breadcrumb category.id %}
+            <li><a href="{% url ask_librarian:frontend:index %}">Спроси библиотекаря</a> <span class="divider">/</span></li>
+
+                {% if category.is_root_node %}
+                    <li>{{ category }}</li>
+                {% else %}
+                    {% for ancestor in  category.get_t_ancestors %}
+                        <li><a href="{% url ask_librarian:frontend:index %}?category={{ ancestor.category_id }}">{{ ancestor }}</a> <span class="divider">/</span></li>
+                    {% endfor %}
+                    <li>{{ category }}</li>
+                {% endif %}
+            {% endcache %}
+        {% else %}
+            <li>Спроси библиотекаря</li>
+        {% endif %}
+
+    </ul>
+
+{% endblock %}
+
+{% block index_content %}
+    <div class="span12">
+        <form action="" method="GET">
+            Перейти к вопросу №: <input type="text" style=" width: 50px;" name="id"/> <input type="submit" value="Перейти" class="btn"/>
+        </form>
+        <hr/>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+        {% for question in questions_page.object_list %}
+            <li>
+                {{ question.question }}<br/>
+                {% if question.category_id %}
+                    <b>
+                    {% cache 30 questions_category question.category_id %}
+                        {% for ancestor in  question.category.get_t_ancestors %}
+                            {{ ancestor }}  →
+                        {% endfor %}
+                            {{ question.category }}
+                    {% endcache %}
+                    </b>
+                    <br/>
+                    <a href="{% url ask_librarian:frontend:detail question.id %}">подробнее</a>
+                {% endif %}
+            <hr/>
+            </li>
+        {% empty %}
+            <li>Вопросов нет</li>
+        {% endfor %}
+        </ul>
+        {% admin_pagination questions_page %}
+    </div>
+{% endblock %}

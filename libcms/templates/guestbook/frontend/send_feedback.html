@@ -1,0 +1,26 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <style type="text/css">
+    form.feedback_from textarea{
+        width: 99%;
+    }
+    </style>
+    <div class="span12">
+        <ul class="breadcrumb">
+            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url guestbook:frontend:index %}">Гостевая книга</a> <span class="divider">/</span></li>
+            <li class="active">Оставить запись</li>
+
+        </ul>
+        <form class="feedback_from" method="POST">{% csrf_token %}
+            <legend>Оставить запись</legend>
+            <fieldset>
+                {% include 'frontend/base_form_fields.html' %}
+                <div class="form-actions">
+                    <button type="submit" class="btn">Написать</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+{% endblock %}

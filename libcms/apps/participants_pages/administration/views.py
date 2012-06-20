@@ -11,7 +11,7 @@ from django.utils.translation import to_locale, get_language
 
 from core.forms import LanguageForm
 from participants_pages.models import Page, Content
-from forms import PageForm, ContentForm, get_content_form
+from forms import get_content_form, get_page_form
 from participants.models import Library, LibraryContentEditor
 
 def get_cbs(library_node):
@@ -46,17 +46,19 @@ def pages_list(request, library_id, parent=None):
         parent = get_object_or_404(Page, id=parent)
 
     pages_page = get_page(request, Page.objects.filter(parent=parent))
-    contents = list(Content.objects.filter(page__in=list(pages_page.object_list), lang=get_language()[:2]))
+    pages_page.object_list = list(pages_page.object_list)
+    pages = pages_page.object_list
+    contents = list(Content.objects.filter(page__in=pages, lang=get_language()[:2]))
 
     pages_dict = {}
-    for page in pages_page.object_list:
+    for page in pages:
         pages_dict[page.id] = {'page':page}
 
     for content in contents:
         pages_dict[content.page_id]['page'].content = content
 
-    pages = [page['page'] for page in pages_dict.values()]
-
+#    pages = [page['page'] for page in pages_dict.values()]
+#    pages = pages_page.object_list
 
     return render(request, 'participants_pages/administration/pages_list.html', {
         'parent': parent,
@@ -74,7 +76,7 @@ def create_page(request, library_id, parent=None):
         return HttpResponse(u'У Вас нет прав на создание страниц в этой ЦБС')
     if parent:
         parent = get_object_or_404(Page, id=parent)
-
+    PageForm = get_page_form(library, parent)
     if request.method == 'POST':
         page_form = PageForm(request.POST, prefix='page_form')
         if page_form.is_valid():
@@ -99,6 +101,7 @@ def create_page(request, library_id, parent=None):
 @login_required
 @permission_required_or_403('participants_pages.change_page')
 def edit_page(request, library_id, id):
+
     library = get_object_or_404(Library, id=library_id)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
@@ -112,10 +115,10 @@ def edit_page(request, library_id, id):
         })
 
     page = get_object_or_404(Page, id=id)
-
+    PageForm = get_page_form(library, page.parent_id)
     if request.method == 'POST':
         page_form = PageForm(request.POST, prefix='page_form', instance=page)
-
+        page_form.is_valid()
         if page_form.is_valid():
             page = page_form.save(commit=False)
             if not request.user.has_perm('participants_pages.public_page'):
@@ -144,6 +147,8 @@ def edit_page(request, library_id, id):
 #    page.save()
 #    return redirect('pages:administration:pages_list')
 
+
+
 @login_required
 @permission_required_or_403('participants_pages.delete_page')
 def delete_page(request, library_id, id):
@@ -154,6 +159,8 @@ def delete_page(request, library_id, id):
     page = get_object_or_404(Page, id=id)
     page.delete()
     return redirect('participants_pages:administration:pages_list', library_id=library_id)
+
+
 
 @login_required
 @permission_required_or_403('participants_pages.add_page')
@@ -227,7 +234,34 @@ def edit_page_content(request, library_id,  page_id, lang):
     })
 
 
+def page_up(request, library_id, id):
 
+    library = get_object_or_404(Library, id=library_id)
+    cbs = get_cbs(library)
+    if not check_owning(request.user, cbs):
+        return HttpResponse(u'У Вас нет прав на редактирование страниц в этой ЦБС')
+    page = get_object_or_404(Page, id=id)
+    page.up()
+
+    if page.parent_id:
+        return redirect('participants_pages:administration:pages_list', library_id=library_id, parent=page.parent_id)
+    else:
+        return redirect('participants_pages:administration:pages_list', library_id=library_id)
+
+
+def page_down(request, library_id, id):
+
+    library = get_object_or_404(Library, id=library_id)
+    cbs = get_cbs(library)
+    if not check_owning(request.user, cbs):
+        return HttpResponse(u'У Вас нет прав на редактирование страниц в этой ЦБС')
+
+    page = get_object_or_404(Page, id=id)
+    page.down()
+    if page.parent_id:
+        return redirect('participants_pages:administration:pages_list', library_id=library_id, parent=page.parent_id)
+    else:
+        return redirect('participants_pages:administration:pages_list', library_id=library_id)
 
 
 

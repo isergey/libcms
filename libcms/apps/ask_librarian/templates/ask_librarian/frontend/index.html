@@ -1,96 +1,47 @@
 {% extends 'frontend_base.html' %}
-{% load i18n %}
-{% load mptt_tags %}
-{% block content %}
-    <style type="text/css">
-        .categories {
-            width: 800px;
-            background: #edecd6;
+{% load ask_librarian_tags %}
+{% load cache %}
+{% block title %}Спроси библиотекаря{% endblock %}
 
-        }
-        .category {
-            float: left;
-            margin: 5px 5px;
-            background: #edecd6;
-        }
-        .root{
-            width: 800px;
-            list-style-type: none;
-            padding: 0;
-        }
-        .root>li{
+{% block index_content %}
+        <div class="span12">
+            {% block breadcrumb %}
+                <ul class="breadcrumb">
+                    <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+                    <li>Спроси библиотекаря</li>
+                </ul>
+            {% endblock %}
+        </div>
 
-            width: 380px;
-            margin-top: 50px;
-            margin-left: 5px;
-            background: #edecd6;
-        }
-        .root ul{
-            padding-left: 20px;
-            list-style: none;
-        }
-    </style>
-    <h1>{% trans 'Ask a librarian' %}</h1>
-    <div class="categories">
-        <ul class="root">
-            {% recursetree categories %}
-                <li>
-                    <a href="{% url ask_librarian:by_category node.id %}">{{ node.name }}</a>({{ node.get_count }})
-                    {% if not node.is_leaf_node %}
-                        <ul class="children">
-                            {{ children }}
-                        </ul>
-                    {% endif %}
-                </li>
-            {% endrecursetree %}
-        </ul>
-{#        <select name="classifiers" multiple="multiple" size="10">#}
-{#            {% for node,structure in categories|tree_info:"ancestors" %}#}
-{#                {% if node.is_child_node %}#}
-{#                    <option value="{{ node.pk }}">#}
-{#                        {{ structure.ancestors|tree_path }} :: {{ node }}#}
-{#                    </option>#}
-{#                {% endif %}#}
-{#            {% endfor %}#}
-{#        </select>#}
-{#        {% for category in categories %}#}
-{#            {% drilldown_tree_for_node category as drilldown count ask_librarian.Question.category in question_count %}#}
-{#            {% for node,structure in drilldown|tree_info %}#}
-{#                {% if structure.new_level %}<ul><li>{% else %}</li><li>{% endif %}#}
-{#                {% ifequal node genre %}#}
-{#                    <strong>{{ node.name }}</strong>#}
+        <div class="span3">
+        <a style="display: block; padding: 15px 0 15px 0" class="btn btn-success" href="{% url ask_librarian:frontend:ask %}">Задать вопрос</a>
+            {% cache 30 questions_category_menu %}
+                {% drow_categories_tree %}
+            {% endcache %}
+        </div>
+        <div class="span9">
+            {% block content %}
+
+            {% endblock %}
+        </div>
+{#    <ul class="breadcrumb">#}
+{#        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>#}
+{#        {% for ancestor in content.page.get_ancestors_titles %}#}
+{#            <li><a href="{% url pages:frontend:show ancestor.url_path %}">#}
+{#                {% if not ancestor.title %}#}
+{#                    {{ ancestor }}#}
 {#                {% else %}#}
-{#                    <a href="#">{{ node.name }}</a>#}
-{#                    {% ifequal node.parent_id category.pk %}({{ node.question_count }}){% endifequal %}#}
-{#                {% endifequal %}#}
-{#                {% for level in structure.closed_levels %}</li></ul>{% endfor %}#}
-{#            {% endfor %}#}
+{#                    {{ ancestor.title }}#}
+{#                {% endif %}#}
+{#            </a> <span class="divider">/</span></li>#}
 {#        {% endfor %}#}
-{##}
-{#                <ul>#}
-{#                    {% recursetree categories %}#}
-{#                        {{ node }}#}
-{#                        {% drilldown_tree_for_node node as drilldown cumulative count ask_librarian.Question.category in question_count %}#}
-{#                        {{ drilldown }}#}
-{#                        {{ children }}#}
-{#                        {% drilldown_tree_for_node node as drilldown cumulative count ask_librarian.Question.category in game_count %}#}
-{#                        {% for node,structure in drilldown|tree_info %}#}
-{#                            {% if structure.new_level %}<ul><li>{% else %}</li><li>{% endif %}#}
-{#                            {% ifequal node genre %}#}
-{#                                <strong>{{ node.name }}</strong>#}
-{#                            {% else %}#}
-{#                                <a href="#">{{ node.name }}</a>#}
-{#                                {% ifequal node.parent_id genre.pk %}({{ node.game_count }}){% endifequal %}#}
-{#                            {% endifequal %}#}
-{#                            {% for level in structure.closed_levels %}</li></ul>{% endfor %}#}
-{#                        {% endfor %}#}
-{#                    {% endrecursetree %}#}
-{#                </ul>#}
-    </div>
-    <div>
-{% for question in questions %}
-    <p>{{ question.text }}</p>
-{% endfor %}
-    </div>
-
+{#        <li>#}
+{#            {% if not content.title %}#}
+{#                заглавие страницы для этого языка не указано.#}
+{#            {% else %}#}
+{#                {{ content.title }}#}
+{#            {% endif %}#}
+{#        </li>#}
+{#    </ul>#}
+{#    {{ content.content|safe }}#}
 {% endblock %}

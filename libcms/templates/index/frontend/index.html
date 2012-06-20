@@ -2,70 +2,144 @@
 {% load news_tags %}
 {% load events_tags %}
 {% load ssearch_tags %}
+{% load participiants_tags %}
 {% load cache %}
 {% block content %}
-<div class="left">
-
-    <div class="Bg" id="banners">
-
-        <!-- 1 banner -->
-        <div class="banners show">
-            <img src="{{ STATIC_URL }}theme/banner/loremIpsum.jpg" class="banner-background">
-            <div class="banner-node">
-                <h2>Забронируй свою книгу заранее</h2>
-                <a href="{% url ssearch:frontend:index %}"><div class="ban-button-left"></div><div class="ban-button-middle">Забронировать</div><div class="ban-button-right"></div></a>
+    <div class="span12" style="margin-bottom: 10px">
+{#        <div class="actions">#}
+        <div class="actions">
+            <div class="row">
+                <div class="span3" style="font-family: Sans Sherif; font-size: 18px;">
+                    Поиск по электронному каталогу и коллекциям
+                </div>
+                <div class="span8">
+                    <form  action="{% url ssearch:frontend:index %}" class="form-search" method="GET" style="margin: 0">
+                        <div class="input-prepend">
+                            <input type="hidden" name="attr" value="text">
+                            <input  name="q" class="span7" size="16" type="text"><input type="submit" class="btn btn-success" value="Поиск" style="width: 80px">
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-{#        <!-- 2 banner -->#}
-{#        <div class="banners">#}
-{#            <img src="{{ STATIC_URL }}theme/banner/loremIpsum.jpg" class="banner-background">#}
-{#            <div class="banner-node">#}
-{#                <h2>Забронируй свою книгу заранее</h2>#}
-{#                <a href="#"><div class="ban-button-left"></div><div class="ban-button-middle">Забронировать</div><div class="ban-button-right"></div></a>#}
-{#            </div>#}
+
 {#        </div>#}
-{#        <!-- 3 banner -->#}
-{#        <div class="banners">#}
-{#            <img src="{{ STATIC_URL }}theme/banner/loremIpsum.jpg" class="banner-background">#}
-{#            <div class="banner-node">#}
-{#                <h2>Забронируй свою книгу заранее</h2>#}
-{#                <a href="#"><div class="ban-button-left"></div><div class="ban-button-middle">Забронировать</div><div class="ban-button-right"></div></a>#}
-{#            </div>#}
-{#        </div>#}
-
     </div>
-    <div class="zag">
-        <h3 class="item1">Читаем вместе</h3>
-{#        <p class="vsego">Всего <span class="item1">{% cache 3600 'ssearch_all_count' %}{% ssearch_all_count %} {% endcache %} </span><br/><span class="item2">документов в сводном каталоге</span></p>#}
-        <p class="vsego">Всего <span class="item1">{% ssearch_all_count %}</span><br/><span class="item2">документов в сводном каталоге</span></p>
+    <div class="span12">
+        <div class="row">
+                <div class="span6">
 
-        <div class="clear"></div>
+                    <div class="banners thumbnail">
+                        <div style="background: url('{{ STATIC_URL }}theme/banner/loremIpsum.jpg'); height: 246px">
+                            <div class="banner-node" style="position: relative; top: 192px; color: #ffffff; padding-left: 10px">
+                                <div style="background: #34832B; padding: 10px;">
+                                    Всего 100500 записей в электронном каталоге. Вы можете <a style="color: #ffffff; font-weight: bold;" href="{% url ssearch:frontend:index %}">найти</a> и забронировать книги в библиотеках Республиках Татарстан.
+                                    {#                        <a  style=" color: #ffffff; text-decoration: none " href="{% url ssearch:frontend:index %}">Забронируй свою книгу заранее</a>#}
+                                </div>
+                                {#                                <a style="color: #ffffff;" href="{% url ssearch:frontend:index %}">Забронировать</a>#}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="span6">
+                    <h3>Новости <a href="{% url news:frontend:rss %}"><img src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a></h3>
+                    {% news_feed %}
+                    <a href="{% url news:frontend:index %}" class="last">Архив новостей</a>
+                </div>
+        </div>
+        <div class="row">
+            <style>
+                .incomes .thumbnail{
+                    margin-top: 10px;
+                    background: #f8f8f8;
+                    width: 450px;
+                }
+                .incomes .thumbnail .image{
+                    width: 90px;
+                    float: left;
+                    margin-right: 10px;
+                }
+                .incomes .thumbnail .info{
+                    float: left;
+                }
+            </style>
+            <div class="incomes span6">
+                <h3 style="padding-top: 10px;">Последния поступления</h3>
+                <div class="row">
+                    <div class="span6">
+                        <div class="thumbnail ">
+
+                                <div class="image">
+                                    <img height="120" width="85" src="{{ STATIC_URL }}theme/images/book1.jpg"/>
+                                </div>
+                                <div class="info">
+                                    <h4>Ревизор</h4>
+                                    <p>Николай Гоголь</p>
+                                    <p><a href="{% url ssearch:frontend:index %}?fattr=text&fq=Ревизор+гоголь&attr=title&q=Ревизор+%3A+комедия+в+5-и+действиях">подробнее</a></p>
+                                </div>
+                            <div style="clear: both;"> </div>
+                        </div>
+                        <div class="thumbnail ">
+
+                            <div class="image">
+                                <img height="120" width="85" src="{{ STATIC_URL }}theme/images/book2.jpg"/>
+                            </div>
+                            <div class="info">
+                                <h4>Герой нашего времени</h4>
+                                <p>Михаил Лермонтов</p>
+                                <p><a href="{% url ssearch:frontend:index %}?fattr=text&fq=Герой+Нашего+Времени&attr=title&q=Герой+Нашего+Времени">подробнее</a></p>
+                            </div>
+                            <div style="clear: both;"> </div>
+                        </div>
+                        <div class="thumbnail ">
+
+                            <div class="image">
+                                <img height="120" width="85" src="{{ STATIC_URL }}theme/images/book3.jpg"/>
+                            </div>
+                            <div class="info">
+                                <h4>Антон Чехов</h4>
+                                <p>Человек в футляре</p>
+                                <p><a href="{% url ssearch:frontend:index %}?fattr=text&fq=чехов&attr=title&q=Человек+в+футляре">подробнее</a></p>
+                            </div>
+                            <div style="clear: both;"> </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="span6" style="text-align: center; font-size: 14px; padding-top: 10px;"><a href="#">Остальные новинки >></a></div>
+            </div>
+
+            <div class="span6">
+                <h3 style="margin: 10px 0 10px 0;">Карта библиотек</h3>
+{#                <div class="thumbnail" id="map_canvas" style="width: 100%; height: 400px;">map div</div>#}
+                {% cbs_map %}
+{#                <h3 style="margin: 10px 0 10px 0;">О портале</h3>#}
+{#                <div class="thumbnail">#}
+{#                    <p style="text-align: left;"><span style="font-family: Verdana, sans-serif;"><span style="font-size: small;">&nbsp;</span></span></p>#}
+{#                    <p style="text-align: left;">Национальная электронная библиотека Республики Татарстан – это портал, обеспечивающий доступ к информационно-библиотечным услугам для населения республики на основе фондов общедоступных библиотек Татарстана. Он является единым окном доступа к ресурсам сразу всех библиотек.</p>#}
+{#                    <p>Основная цель портала - повышение качества и оперативности библиотечно-информационного обслуживания пользователей.</p>#}
+{#                    <p>Основными сервисами портала являются:</p>#}
+{#                    <ul>#}
+{#                        <li>предос­тавле­ние доступа к корпоративным и локальным базам данных библиотек и справочной информации</li>#}
+{#                        <li>поиск документов в общедоступных библиотеках республики </li>#}
+{#                        <li>заказ документа в выбранной библиотеке</li>#}
+{#                        <li>заказ печатной копии документа </li>#}
+{#                        <li>справочная служба «Спроси библиотекаря»</li>#}
+{#                    </ul>#}
+{#                    <p>Дополнительная информация о сервисах представлена в разделе «Справка».</p>#}
+{#                    <p>Портал и сервисы будут развиваться поэтапно. Будет увеличиваться количество библиотек, участвующих в проекте (в 2010 году – 4 библиотеки). Будут совершенствоваться предоставляемые через портал информационно-библиотечные услуги.</p>#}
+{#                    <p>Конечная цель – обеспечить каждому жителю республики доступ к ресурсам любой библиотеки.</p>#}
+{#                    <p class="system-pagebreak">&nbsp;</p>#}
+{#                </div>#}
+            </div>
+            <script>
+                initialize();
+            </script>
+        </div>
     </div>
 
 
-    <div class="innerLeft">
-        <img src="{{ STATIC_URL }}theme/images/book1.jpg" />
-        <p>Ревизор <a href="{% url ssearch:frontend:index %}?fattr=text&fq=Ревизор+гоголь&attr=title&q=Ревизор+%3A+комедия+в+5-и+действиях">Николай Гоголь</a></p>
-    </div>
+    <hr/>
 
-    <div class="innerCenter">
-        <img src="{{ STATIC_URL }}theme/images/book2.jpg" />
-        <p>Герой Нашего<br />Времени<a href="{% url  ssearch:frontend:index %}?fattr=text&fq=Герой+Нашего+Времени&attr=title&q=Герой+Нашего+Времени">Михаил Лермонтов</a></p>
-    </div>
-
-    <div class="innerRight">
-        <img src="{{ STATIC_URL }}theme/images/book3.jpg" />
-        <p>Человек в футляре <a href="{% url ssearch:frontend:index %}?fattr=text&fq=чехов&attr=title&q=Человек+в+футляре">Антон Чехов</a></p>
-    </div>
-
-    <div class="clear"></div>
-
-</div>
-
-<div class="right">
-
-    <h3>Новости <a href="{% url news:frontend:rss %}"><img src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a></h3>
-    {% news_feed %}
-    <a href="{% url news:frontend:index %}" class="last">Архив новостей</a>
-</div>
 {% endblock %}

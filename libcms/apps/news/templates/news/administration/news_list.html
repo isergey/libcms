@@ -11,18 +11,26 @@
 
 {% block action_content %}
     Тип новостей:
+
+
     {% if request.GET.type ==  'public' or not request.GET.type %}
-        <b><a href="{% add_get type='public' %}">Общие</a></b>
+        <b><a href="{% add_get type='public' %}">Публичные</a></b>
     {% else %}
-        <a href="{% add_get type='public' %}">Общие</a>
+        <a href="{% add_get type='public' %}">Публичные</a>
     {% endif %}
 
     {% if request.GET.type ==  'prof' %}
-        <b><a href="{% add_get type='prof' %}">Профессиональные</a></b>
+        | <b><a href="{% add_get type='prof' %}">Профессиональные</a></b>
     {% else %}
-        <a href="{% add_get type='prof' %}">Профессиональные</a>
+        | <a href="{% add_get type='prof' %}">Профессиональные</a>
+    {% endif %}
+    {% if request.GET.type ==  'all' %}
+        | <b><a href="{% add_get type='all' %}">Общие</a></b>
+    {% else %}
+        | <a href="{% add_get type='all' %}">Общие</a>
     {% endif %}
 
+    <hr/>
     <table class="table table-striped">
         <thead>
         <tr>

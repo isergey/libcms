@@ -83,6 +83,17 @@ class Page(MPTTModel):
 
         return super(Page, self).save(*args, **kwargs)
 
+    def up(self):
+        previous = self.get_previous_sibling()
+        if previous:
+            self.move_to(previous, position='left')
+
+    def down(self):
+        next = self.get_next_sibling()
+        if next:
+            self.move_to(next, position='right')
+
+
 
 class Content(models.Model):
     page = models.ForeignKey(Page, verbose_name=u'Родительская страница')

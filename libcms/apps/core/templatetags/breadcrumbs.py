@@ -37,8 +37,8 @@ def breadcrumb_url(parser, token):
      Same as breadcrumb
      but instead of url context variable takes in all the
      arguments URL tag takes.
-         {% breadcrumb "Title of breadcrumb" person_detail person.id %}
-         {% breadcrumb person.name person_detail person.id %}
+         {% breadcrumb_url "Title of breadcrumb" person_detail person.id %}
+         {% breadcrumb_url person.name person_detail person.id %}
      """
 
     bits = token.split_contents()

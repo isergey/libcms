@@ -18,7 +18,7 @@ urlpatterns += patterns('',
         {
             'template_name': 'accounts/frontend/registration/password_reset_form.html',
             'email_template_name': 'accounts/frontend/registration/password_reset_email.html',
-            'post_reset_redirect': 'accounts/password/reset/done/'
+            'post_reset_redirect': '/accounts/password/reset/done/'
         },
         name='password_reset'
     ),

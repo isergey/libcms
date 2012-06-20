@@ -1,33 +1,29 @@
-{% extends 'frontend_base.html' %}
+{% extends 'participants/frontend/library_content.html' %}
 {% load participants_pages_tags %}
 {% block title %}{{ content.title }}{% endblock %}
-{% block content %}
+{% block  breadcrumb %}
     <ul class="breadcrumb">
         <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
         <li><a href="{% url participants:frontend:index %}">Библиотеки</a> <span class="divider">/</span></li>
-        <li><a href="{% url participants:frontend:branches library.id %}">{{ library.name }}</a> <span class="divider">/</span></li>
-    {% for ancestor in content.page.get_ancestors_titles %}
-        <li><a href="{% url participants_pages:frontend:show library.id ancestor.url_path %}">
-            {% if not ancestor.title %}
-                {{ ancestor }}
+        <li><a href="{% url participants:frontend:branches library.code %}">{{ library.name }}</a> <span class="divider">/</span></li>
+        {% for ancestor in content.page.get_ancestors_titles %}
+            <li><a href="{% url participants_pages:frontend:show library.id ancestor.url_path %}">
+                {% if not ancestor.title %}
+                    {{ ancestor }}
+                {% else %}
+                    {{ ancestor.title }}
+                {% endif %}
+            </a> <span class="divider">/</span></li>
+        {% endfor %}
+        <li>
+            {% if not content.title %}
+                заглавие страницы для этого языка не указано.
             {% else %}
-                {{ ancestor.title }}
+                {{ content.title }}
             {% endif %}
-        </a> <span class="divider">/</span></li>
-    {% endfor %}
-    <li>
-    {% if not content.title %}
-        заглавие страницы для этого языка не указано.
-    {% else %}
-        {{ content.title }}
-    {% endif %}
-    </li>
+        </li>
     </ul>
-    <div class="span2">
-        {% drow_page_tree library.id %}
-    </div>
-    <div class="span8">
+{% endblock %}
+{% block content %}
         {{ content.content|safe }}
-    </div>
-
 {% endblock %}

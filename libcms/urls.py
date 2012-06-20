@@ -18,8 +18,8 @@ urlpatterns = patterns('',
     (r'^participants/(?P<library_id>\d+)/pages/', include('participants_pages.urls', namespace='participants_pages')),
     (r'^participants/', include('participants.urls', namespace='participants')),
 
-    (r'^forum/', include('forum.urls', namespace='forum')),
 
+    (r'^personal/', include('personal.urls', namespace='personal')),
     (r'^ask_librarian/', include('ask_librarian.urls', namespace='ask_librarian')),
     (r'^ssearch/', include('ssearch.urls', namespace='ssearch')),
     (r'^rbooks/', include('rbooks.urls', namespace='rbooks')),
@@ -27,8 +27,8 @@ urlpatterns = patterns('',
     (r'^urt/', include('urt.urls', namespace='urt')),
     (r'^mydocs/', include('mydocs.urls', namespace='mydocs')),
     (r'^zgate/', include('zgate.urls')),
-
-
+    (r'^forum/', include('forum.urls', namespace='forum')),
+    (r'^guestbook/', include('guestbook.urls', namespace='guestbook')),
 
 #    (r'^mydocs/', include('mydocs.urls',)),
     # Uncomment the next line to enable the admin:

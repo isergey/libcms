@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponse, 
 from django.utils import translation
 from django.utils.translation import get_language
 from common.pagination import get_page
-from participants.models import Library, District
+from ..models import Library, District
 
 def make_library_dict(library):
     return {
@@ -33,12 +33,12 @@ def index(request):
     })
 
 
-def branches(request, id=None):
+def branches(request, code=None):
     if request.method == "POST":
-        id = request.POST.get('id', None)
+        code = request.POST.get('code', None)
     library=None
-    if id:
-        library = get_object_or_404(Library, id=int(id))
+    if code:
+        library = get_object_or_404(Library, code=code)
     libraries = Library.objects.filter(parent=library).order_by('weight')
 
     js_orgs = []
@@ -57,8 +57,8 @@ def branches(request, id=None):
     })
 
 
-def detail(request, id):
-    library = get_object_or_404(Library, id=id)
+def detail(request, code):
+    library = get_object_or_404(Library, code=code)
     js_orgs = []
     js_orgs.append(make_library_dict(library))
 

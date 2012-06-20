@@ -1,0 +1,26 @@
+{% extends 'ask_librarian/administration/index.html' %}
+{% load breadcrumbs %}
+{% block breadcrumb %}
+    {% breadcrumb "Спроси библиотекаря" ask_librarian:administration:index %}
+    {% breadcrumb "Вопросы" ask_librarian:administration:questions_list %}
+    {% breadcrumb "Ответ на вопрос" %}
+{% endblock %}
+
+{% block action_content %}
+    <h3>Ответ на вопрос</h3>
+    <hr/>
+    <style type="text/css">
+        form#question_form textarea{
+            width: 99%;
+        }
+    </style>
+    <form id="question_form" class="" method="POST">{% csrf_token %}
+        <fieldset>
+            {% include 'frontend/base_form_fields.html' with form=form %}
+            {#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Ответить</button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

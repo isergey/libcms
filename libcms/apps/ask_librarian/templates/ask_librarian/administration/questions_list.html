@@ -1,27 +1,50 @@
-{% extends 'ask_librarian/administration/questions.html' %}
-{% load i18n %}
+{% extends 'ask_librarian/administration/index.html' %}
+{% load active_link %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load pagination_tag %}
 {% block breadcrumb %}
-    <li class="active">{% trans 'Questions list' %}</li>
+    {% breadcrumb "Спроси библиотекаря" ask_librarian:administration:index %}
+    {% breadcrumb "Вопросы" %}
 {% endblock %}
-{% block section_content %}
-    <table class="bordered-table zebra-striped">
-        <thead>
-        <tr>
-            <th>Вопрос</th>
-            <th>Информация</th>
-            <th>Статус</th>
-        </tr>
-        </thead>
 
-        {% for question in questions %}
-            <tr>
-                <td class="span12">
-                    <p>{{ question.text }}</p>
-                    <p><a href="{% url ask_librarian:admin_questions_detail question.id %}">Подробнее</a></p>
-                </td>
-                <td>{{ question.create_date }}</td>
-                <td><span class="status{{ question.status }}">{{ question.get_status_display }}</span></td>
-            </tr>
+{% block action_content %}
+    <h3>Вопросы</h3>
+    <hr/>
+    <ul style="list-style: none; margin: 0">
+        {% for question in questions_page.object_list %}
+            <li>
+                <div>{{ question }}</div>
+                {% if question.is_processing or question.is_ready %}
+                    <div style="padding-top: 10px">
+                        <b>Ответственность:</b> {{ question.manager.user }};<br/>
+                        <b>Принят на обработку:</b> {{ question.start_process_date }}; {% if question.end_process_date %}<b>Ответ дан:</b> {{ question.end_process_date }}{% endif %}
+                    </div>
+                {% endif %}
+                <div>
+                    <a class="btn" href="{% url ask_librarian:administration:question_detail question.id %}">Детальная информация</a>
+                    {% if question.is_new %}
+                        <a class="btn btn-warning" href="{% url ask_librarian:administration:questions_to_process question.id %}">Забрать на обработку</a>
+                    {% endif %}
+                    {% if question.is_new %}
+                        <a class="btn btn-success" href="{% url ask_librarian:administration:question_answer question.id %}">Дать ответ</a>
+                    {% endif %}
+                    {% if question.is_processing and question.manager.user_id == request.user.id %}
+                        <a class="btn btn-success" href="{% url ask_librarian:administration:question_answer question.id %}">Дать ответ</a>
+                    {% endif %}
+                    {% if question.is_ready and question.manager.user_id == request.user.id or request.user.is_superuser %}
+                        <a class="btn btn-success" href="{% url ask_librarian:administration:question_edit question.id %}">Редактировать</a>
+                    {% endif %}
+                    <a style="float: right;" class="btn btn-danger" href="{% url ask_librarian:administration:question_delete question.id %}">Удалить</a>
+                </div>
+                <hr/>
+            </li>
+        {% empty %}
+            <li>Ничего нет.</li>
         {% endfor %}
-    </table>
+        </ul>
+        {% admin_pagination questions_page %}
+
 {% endblock %}
+
+

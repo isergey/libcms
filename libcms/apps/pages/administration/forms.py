@@ -5,22 +5,25 @@ from django.contrib.auth.models import User, Group
 
 from pages.models import Page, Content
 
-class PageForm(forms.ModelForm):
-    class Meta:
-        model=Page
-        exclude = ('parent','url_path')
-    def __init__(self, parent=None, *args, **kwargs):
-        super(PageForm, self).__init__(*args, **kwargs)
-        self.parent = parent
+def get_page_form(parent=None):
+    class PageForm(forms.ModelForm):
+        class Meta:
+            model=Page
+            exclude = ('parent', 'library', 'url_path')
 
-    def clean_slug(self):
-        slug = self.cleaned_data['slug']
-        if self.instance.slug:
+
+        def clean_slug(self):
+            slug = self.cleaned_data['slug']
+            if self.instance.slug:
+                return slug
+            else:
+                if Page.objects.filter(parent=parent, slug=slug).count():
+                    raise forms.ValidationError(u'На этом уровне страницы с таким slug уже существует')
             return slug
-        else:
-            if Page.objects.filter(parent=self.parent, slug=slug).count():
-                raise forms.ValidationError(u'На этом уровне страницы с таким slug уже существует')
-        return slug
+    return PageForm
+
+
+
 class ContentForm(forms.ModelForm):
     class Meta:
         model=Content

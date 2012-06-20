@@ -1,0 +1,24 @@
+{% load mptt_tags %}
+{% load ask_librarian_tags %}
+
+<div class="menu">
+    <span class="title">Категории вопросов</span>
+    <ul class="items" style="list-style: none; margin: 0">
+        {% if nodes %}
+            {% recursetree nodes %}
+                <li {% if path == node.item_title.url  %}class="active"{% endif %}>
+                    <a href="?category={{ node.id }}">{{ node.node_title.title }} (<b>{%  get_question_category_count node %}</b>)</a>
+                </li>
+                {% if not node.is_leaf_node %}
+
+                    <li><ul class="children" style="list-style: none;">
+                        {{ children }}
+                    </ul>
+                    </li>
+                {% endif %}
+            {% endrecursetree %}
+        {% endif %}
+    </ul>
+</div>
+
+

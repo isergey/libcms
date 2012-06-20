@@ -1,0 +1,76 @@
+{% extends 'theme_frontend_base.html' %}
+{% block title %}Заказы на бронирование{% endblock %}
+{% block content %}
+    <div class="span12">
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url personal:frontend:index %}">Личный кабинет</a> <span class="divider">/</span></li>
+        <li class="active">Заказы на бронирование</li>
+    </ul>
+
+    {% if links %}
+        <ul style="list-style: none; margin: 0;">
+            {% for link in links %}
+                <li>
+                    <div class="thumbnail" style="margin-bottom: 10px;">
+                        <h3>{{ link.library.name }}</h3>
+                        <div class="on_hand">
+                            <ul style="list-style: none">
+                                {% if link.error %}
+                                    <li><div class="alert alert-error">{{ link.error }}</div></li>
+                                {% else %}
+                                    {% for order in link.reservations %}
+                                        <li>{{ order.record|safe }}
+                                            <div class="alert alert-success">
+                                                <b>Номер</b>: {{ order.target_reference }}<br/>
+                                                <b>Статус</b>: {{ order.task_status }}<br/>
+                                                <b>Дата создания</b>: {{ order.creation_date_time }}<br/>
+                                                <b>Отчет</b>: {{ order.status_or_error_report }}
+                                            </div>
+                                        </li>
+                                        {% if not forloop.last %}<hr/>{% endif %}
+                                    {% empty %}
+                                        <li>Заказов нет</li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>
+            В настоящий момент Вы не связали свой аккаунт на портале с какой-либо ЦБС.
+            Чтобы воспользоваться сервисами предоставляемыми библиотеками необходимо <a href="{% url urt:frontend:link %}">связать</a> совой аккаунт с идентификатором читателя выданного в библиотеке.
+        </p>
+    {% endif %}
+
+    </div>
+{#    <script>#}
+{#    $().ready(function(){#}
+{#        $('.on_hand').each(function (){#}
+{#            var id = $(this).attr('id');#}
+{#            var elem = $(this);#}
+{#            $.ajax({#}
+{#                url: id,#}
+{#                success: function(data) {#}
+{#                    elem.html(data);#}
+{#                },#}
+{#                statusCode: {#}
+{#                    404: function() {#}
+{#                        elem.html('<div class="alert alert-error">Ошибка: отсутвует страница с информацией о заказах.</div>');#}
+{#                    },#}
+{#                    500: function() {#}
+{#                        elem.html('<div class="alert alert-error">Ошибка: на сервере произошло что-то страшное. Попробуйте зайти позднее</div>');#}
+{#                    },#}
+{#                    403: function() {#}
+{#                        elem.html('<div class="alert alert-error">Ошибка: доступ к информацие о заказах запрещен.</div>');#}
+{#                    }#}
+{#                }#}
+{#            });#}
+{#        });#}
+{#    });#}
+{##}
+{#    </script>#}
+{% endblock %}

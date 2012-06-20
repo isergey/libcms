@@ -63,7 +63,9 @@
 {#            <a href="{% url pages:administration:create_page page.id %}">{% trans 'Add subpage' %}</a>#}
             <span class="buttons">
                 <a class="btn" href="{% url participants_pages:administration:create_page library.id page.id %}"><i class="icon-plus"></i>Создать подстраницу</a>
-                <a class="btn btn-danger {% if not perms.participants_page.delete_cbs %} disabled {% endif %}" href="{% url participants_pages:administration:delete_page library.id page.id %}"><i class="icon-trash icon-white"></i></a>
+                <a class="btn" href="{% url participants_pages:administration:page_up library.id page.id %}" title="передвинуть вверх">↑</a>
+                <a class="btn" href="{% url participants_pages:administration:page_down library.id page.id %}" title="передвинуть вниз">↓</a>
+                <a  style="margin-left: 20px" class="btn btn-danger {% if not perms.participants_page.delete_cbs %} disabled {% endif %}" href="{% url participants_pages:administration:delete_page library.id page.id %}"><i class="icon-trash icon-white"></i></a>
             </span>
         </li>
     {% endfor %}

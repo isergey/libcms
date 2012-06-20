@@ -1,0 +1,36 @@
+{% extends 'ask_librarian/administration/index.html' %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    {% breadcrumb "Спроси библиотекаря" ask_librarian:administration:index %}
+    {% breadcrumb "Категории" ask_librarian:administration:categories_list %}
+    {% breadcrumb "Создание категории" %}
+{% endblock %}
+
+{% block action_content %}
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+        <legend>Создание категории</legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=category_form %}
+            {% for category_title_form in category_title_forms %}
+                <p>Название категории на языке: <b>{{  category_title_form.lang }}</b>↴</p>
+                {% include 'administration/base_form_fields.html' with form=category_title_form.form %}
+            {% endfor %}
+{#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Создать</button>
+                <button type="reset" class="btn">Отмена</button>
+            </div>
+        </fieldset>
+    </form>
+{#    <script type="text/javascript">#}
+{#        $('a').click(function(){#}
+{#            if (confirm("Вы не сохранили страницу. Всё равно покинуть?")) {#}
+{#                return True;#}
+{#            } else {#}
+{#                return false;#}
+{#            }#}
+{#        });#}
+{#    </script>#}
+
+{% endblock %}

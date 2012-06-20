@@ -3,9 +3,15 @@ from django.shortcuts import urlresolvers
 from django.conf import settings
 from django.db import models
 
+NEWS_TYPE_CHOICES = (
+    (0, u'Публичные'),
+    (1, u'Профессиональные'),
+    (2, u'Общие'),
+)
+
 class News(models.Model):
     create_date = models.DateTimeField(auto_now=True, verbose_name=u"Дата создания", db_index=True)
-    prof = models.BooleanField(verbose_name=u'Профессиональные?', default=False, db_index=True)
+    type = models.IntegerField(verbose_name=u'Вид новостей', default=(0, u'Публичные'), choices=NEWS_TYPE_CHOICES, db_index=True)
     publicated = models.BooleanField(verbose_name=u'Опубликовано?', default=True, db_index=True)
     class Meta:
         permissions = (

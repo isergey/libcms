@@ -1,0 +1,59 @@
+{% extends 'theme_frontend_base.html' %}
+{% load participants_pages_tags %}
+{% block title %}Библиотеки{% endblock %}
+{% block content %}
+    <div class="span12">
+        <ul class="breadcrumb">
+            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{%  url participants:frontend:index %}">Библиотеки</a> <span class="divider">/</span></li>
+            <li class="active">{{ library.name }}</li>
+        </ul>
+        <div class="row">
+            <div class="span2">
+                <style>
+                    .cbs_menu ul.items, ul.participants{
+                        margin: 0;
+                        list-style: none;
+                    }
+                    .cbs_menu ul{
+                        list-style: none;
+                    }
+                </style>
+                <div class="cbs_menu" style="border-right: #d6d6d6 solid 1px;">
+                {% drow_page_tree library.id %}
+                </div>
+            </div>
+            <div class="span5" >
+                <ul class="participants">
+                    {% for library in  libraries %}
+                        <li><a href="{% url participants:frontend:detail library.code %}">{{ library.name }}<br/></a>
+                            Сайт: {% if library.http_service  %}<a href="{{ library.http_service }}" target="_blank"> {{ library.http_service }}</a>
+                            {% else %} не указан {% endif %}
+                        </li>
+                    {% empty %}
+                        Список еще не сформирован
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="span5">
+                <style>
+                    #map_canvas{
+                        background: white;
+
+                        box-shadow: 0 0 10px #999;
+                        border-radius: 2px;
+                        border: #ffffff solid 10px;
+                        padding: 10px;
+                    }
+                </style>
+                <div id="map_canvas" style="height: 400px"></div>
+                {% include 'participants/frontend/map_js.html' %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="span12">
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

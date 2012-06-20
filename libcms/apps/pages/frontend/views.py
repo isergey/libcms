@@ -21,13 +21,27 @@ def index(request):
 
 def show(request, slug):
     cur_language = translation.get_language()
-    page = get_object_or_404(Page, url_path=slug)
+#    page = get_object_or_404(Page, url_path=slug)
+    page = Page.objects.get(url_path=slug)
     try:
         content = Content.objects.get(page=page, lang=cur_language[:2])
     except Content.DoesNotExist:
         content = None
+    children = None
+
+#    if not page.is_leaf_node():
+#        children = list(Page.objects.filter(parent=page, public=True))
+#        contents = Content.objects.filter(page__in=children, lang=cur_language[:2])
+#        cd = {}
+#        for child in children:
+#            cd[child.id] = child
+#
+#        for contend_page in contents:
+#            if contend_page.page_id in cd:
+#                cd[contend_page.page_id].content = contend_page
 
     return render(request, 'pages/frontend/show.html', {
         'page': page,
-        'content': content
+        'content': content,
+#        'children': children,
     })

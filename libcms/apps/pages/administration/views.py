@@ -10,7 +10,7 @@ from django.utils.translation import to_locale, get_language
 
 from core.forms import LanguageForm
 from pages.models import Page, Content
-from forms import PageForm, ContentForm, get_content_form
+from forms import ContentForm, get_content_form, get_page_form
 
 #@permission_required_or_403('accounts.view_users')
 def index(request):
@@ -24,7 +24,8 @@ def pages_list(request, parent=None):
         parent = get_object_or_404(Page, id=parent)
 
     pages_page = get_page(request, Page.objects.filter(parent=parent))
-    contents = list(Content.objects.filter(page__in=list(pages_page.object_list), lang=get_language()[:2]))
+    pages_page.object_list = list(pages_page.object_list)
+    contents = list(Content.objects.filter(page__in=pages_page.object_list, lang=get_language()[:2]))
 
     pages_dict = {}
     for page in pages_page.object_list:
@@ -33,12 +34,12 @@ def pages_list(request, parent=None):
     for content in contents:
         pages_dict[content.page_id]['page'].content = content
 
-    pages = [page['page'] for page in pages_dict.values()]
+#    pages = [page['page'] for page in pages_dict.values()]
 
 
     return render(request, 'pages/administration/pages_list.html', {
         'parent': parent,
-        'pages': pages,
+        'pages': pages_page.object_list,
         'pages_page': pages_page,
     })
 
@@ -47,9 +48,9 @@ def pages_list(request, parent=None):
 def create_page(request, parent=None):
     if parent:
         parent = get_object_or_404(Page, id=parent)
-
+    PageForm = get_page_form(parent)
     if request.method == 'POST':
-        page_form = PageForm(parent, request.POST, prefix='page_form')
+        page_form = PageForm(request.POST, prefix='page_form')
 
         if page_form.is_valid():
             page = page_form.save(commit=False)
@@ -80,7 +81,7 @@ def edit_page(request, id):
         })
 
     page = get_object_or_404(Page, id=id)
-
+    PageForm = get_page_form(page.parent_id)
     if request.method == 'POST':
         page_form = PageForm(request.POST, prefix='page_form', instance=page)
 
@@ -183,3 +184,19 @@ def edit_page_content(request, page_id, lang):
 
 
 
+def page_up(request, id):
+    page = get_object_or_404(Page, id=id)
+    page.up()
+    if page.parent_id:
+        return redirect('pages:administration:pages_list', parent=page.parent_id)
+    else:
+        return redirect('pages:administration:pages_list')
+
+
+def page_down(request, id):
+    page = get_object_or_404(Page, id=id)
+    page.down()
+    if page.parent_id:
+        return redirect('pages:administration:pages_list', parent=page.parent_id)
+    else:
+        return redirect('pages:administration:pages_list')

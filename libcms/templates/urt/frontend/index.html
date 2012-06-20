@@ -1,0 +1,42 @@
+{% extends 'theme_frontend_base.html' %}
+{% block title %}Прикрепление к библиотеке{% endblock %}
+{% block content %}
+    <style>
+    ul.links .link_info{
+        padding: 10px;
+    }
+    ul.links .thumbnail{
+        margin-bottom: 10px;
+    }
+    </style>
+    <div class="span12">
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url personal:frontend:index %}">Личный кабинет</a> <span class="divider">/</span></li>
+        <li class="active">Мои библиотеки</li>
+    </ul>
+    <p><a href="{% url urt:frontend:link %}" class="btn">Добавить связь</a></p>
+    <hr/>
+    {% if links %}
+    <h3>Установлена связь со следующими библиотеками:</h3>
+        <ul class="links" style="list-style: none; margin: 0">
+        {% for link in links %}
+            <li>
+                <div class="thumbnail">
+                    <div class="link_info">
+                        <b>{{ link.library.name }}</b> (идентификатор: <b>{{ link.lib_login }}</b>)
+                    </div>
+                    <div class="actions">
+                        <a href="{% url urt:frontend:edit_link link.id %}">редактировать</a>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert">
+        В настоящий момент Вы не связали свой аккаунт с какой-либо ЦБС
+        </div>
+    {% endif %}
+    </div>
+{% endblock %}

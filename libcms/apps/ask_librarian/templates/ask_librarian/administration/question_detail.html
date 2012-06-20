@@ -1,0 +1,64 @@
+{% extends 'ask_librarian/administration/index.html' %}
+{% load breadcrumbs %}
+{% block breadcrumb %}
+    {% breadcrumb "Спроси библиотекаря" ask_librarian:administration:index %}
+    {% breadcrumb "Вопросы" ask_librarian:administration:questions_list %}
+    {% breadcrumb "Детальная информация" %}
+{% endblock %}
+
+{% block action_content %}
+    <h3>Детальная информация</h3>
+    <hr/>
+    <h3>Вопрос:</h3>
+    <div>{{ question }}</div>
+    <div>
+    {% if question.is_ready %}
+        <h3>Ответ:</h3>
+        {{ question.answer|safe }}
+
+    {% endif %}
+    </div>
+    <div>
+        <hr/>
+        <b>Статус</b>: <span class="question_status{{ question.status }}">{{ question.get_status_display }} </span><br/>
+        {% if question.category_id %}
+            <b>Категория</b>:
+                {% for ancestor in  question.category.get_t_ancestors %}
+                    {{ ancestor }}  →
+                {% endfor %}
+                {{ question.category }}
+
+        {% endif %}
+    </div>
+
+    {% if question.is_processing or question.is_ready %}
+    <div style="padding-top: 10px">
+        <b>Ответственность:</b> {{ question.manager.user }};<br/>
+        <b>Принят на обработку:</b> {{ question.start_process_date }}; {% if question.end_process_date %}<b>Ответ дан:</b> {{ question.end_process_date }}{% endif %}
+    </div>
+    {% endif %}
+    <div>
+    <hr/>
+        {% if question.is_new %}
+            <a class="btn btn-warning" href="{% url ask_librarian:administration:questions_to_process question.id %}">Забрать на обработку</a>
+        {% endif %}
+        {% if question.is_new or question.is_processing %}
+            <a class="btn btn-success" href="{% url ask_librarian:administration:question_answer question.id %}">Дать ответ</a>
+        {% endif %}
+        {% if question.is_ready and question.manager.user_id == request.user.id or request.user.is_superuser %}
+            <a class="btn btn-success" href="{% url ask_librarian:administration:question_edit question.id %}">Редактировать</a>
+        {% endif %}
+        <a style="float: right;" class="btn btn-danger" href="{% url ask_librarian:administration:question_delete question.id %}">Удалить</a>
+    </div>
+    {% if recomendations %}
+        <div>
+            <hr/>
+            <h3>Рекомендации к этому вопросу</h3>
+            <ul>
+                {% for  recomendation in recomendations %}
+                    <li>{{ recomendation.text }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,12 +1,30 @@
 {% load active_link %}
-<a href="{% url index:frontend:index %}"  class="{% active 'index:frontend:index'  %}">Главная</a>
 {% url pages:frontend:show 'index'  as  about_url %}
 <a href="{{ about_url }}" {% if request.path == about_url %}class="active"{% endif %}>О проекте</a>
 <a href="{% url participants:frontend:index %}" class="{% active_path 'participants:frontend:index'  %}">Библиотеки</a>
 <a href="{% url ssearch:frontend:ecatalog %}" class="{% active_path 'ssearch:frontend:ecatalog'  %} {% active 'ssearch:frontend:index'  %}">Электронный каталог</a>
-<a href="{% url ssearch:frontend:ecollection %}" class="{% active_path 'ssearch:frontend:ecollection'  %} {% active 'ssearch:frontend:index'  %}">Электронная коллекция</a>
-
-<a href="#">Отзывы</a>
+<a href="{% url ssearch:frontend:ecollection %}" class="{% active_path 'ssearch:frontend:ecollection'  %} {% active 'ssearch:frontend:index'  %}">Электронные коллекции</a>
+<a href="{% url guestbook:frontend:index %}" class="{% active_path 'guestbook:frontend:index'  %}">Отзывы</a>
 <a href="{% url news:frontend:index %}" class="{% active_path 'news:frontend:index'  %}">Новости</a>
+<a href="{% url ask_librarian:frontend:index %}" class="{% active_path 'ask_librarian:frontend:index'  %}">Спроси библиотекаря</a>
 {% url pages:frontend:show 'for_professional'  as  for_professional_url %}
 <a href="{{ for_professional_url }}" {% if request.path == for_professional_url %}class="active"{% endif %}>Профессионалам</a>
+{#{% url pages:frontend:show 'index'  as  about_url %}#}
+{#<li><a href="{{ about_url }}" {% if request.path == about_url %}class="active"{% endif %}>О проекте</a></li>#}
+{#<li><a href="{% url participants:frontend:index %}" class="{% active_path 'participants:frontend:index'  %}">Библиотеки</a></li>#}
+{#<li><a href="{% url ssearch:frontend:ecatalog %}" class="{% active_path 'ssearch:frontend:ecatalog'  %} {% active 'ssearch:frontend:index'  %}">Электронный каталог</a></li>#}
+{#<li><a href="{% url ssearch:frontend:ecollection %}" class="{% active_path 'ssearch:frontend:ecollection'  %} {% active 'ssearch:frontend:index'  %}">Электронная коллекция</a></li>#}
+{##}
+{#<li><a href="#">Отзывы</a></li>#}
+{#<li><a href="{% url news:frontend:index %}" class="{% active_path 'news:frontend:index'  %}">Новости</a></li>#}
+{#<li><a href="#">Спроси библиотекаря</a></li>#}
+{#{% url pages:frontend:show 'for_professional'  as  for_professional_url %}#}
+{#<li><a href="{{ for_professional_url }}" {% if request.path == for_professional_url %}class="active"{% endif %}>Профессионалам</a></li>#}
+{#<table width="100%">#}
+{#    <tr>#}
+{#        <td>wefwef</td>#}
+{#        <td>wefwef</td>#}
+{#        <td>wefwef</td>#}
+{#        <td>wefwef</td>#}
+{#    </tr>#}
+{#</table>#}

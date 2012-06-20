@@ -1,0 +1,49 @@
+{% extends 'ask_librarian/administration/index.html' %}
+{% load active_link %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+
+{% block breadcrumb %}
+    {% breadcrumb "Спроси библиотекаря" ask_librarian:administration:index %}
+    {% breadcrumb "Категории" %}
+
+{% endblock %}
+
+{% block action_content %}
+    <style type="text/css">
+        ul.root li>*{
+            margin-bottom: 10px;
+        }
+        ul.root, ul.root  ul * {
+            list-style: none;
+        }
+    </style>
+    <h3>Категории</h3>
+    <hr/>
+
+    <ul class="root" style="margin: 0; padding: 0">
+        {% recursetree nodes %}
+            <li>
+                <a href="{% url ask_librarian:administration:category_edit node.id %}">{{ node.t_title }}</a>
+{#                <a href="#1">{{ node.t_title }}</a>#}
+
+                <a class="btn" href="{% url ask_librarian:administration:category_create node.id %}"><i class="icon-plus" title="Добавить подкатегорию"></i></a>
+                <a class="btn" href="{% url ask_librarian:administration:category_up  node.id %}" title="передвинуть вверх">↑</a>
+                <a class="btn" href="{% url ask_librarian:administration:category_down node.id %}" title="передвинуть вниз">↓</a>
+                <a style="margin-left: 20px" class="delete btn btn-danger" href="{% url ask_librarian:administration:category_delete node.id %}"><i class="icon-trash icon-white" title="Удалить категорию"></i></a>
+                {% if not node.is_leaf_node %}
+                    <ul class="children">
+                        {{ children }}
+                    </ul>
+                {% endif %}
+            </li>
+        {% endrecursetree %}
+    </ul>
+    <script type="text/javascript">
+        $("a.delete").click(function () {
+            if (!confirm('Вы уверены, что хотите удалить? Удаляться так же дочерние элементы!')) return false;
+        });
+    </script>
+{% endblock %}
+
+

@@ -13,4 +13,8 @@ urlpatterns = patterns('',
     url(r'^pages/delete/(?P<id>\d+)/$', views.delete_page, name="delete_page"),
     url(r'^pages/content/create/(?P<page_id>\d+)/$', views.create_page_content, name="create_page_content"),
     url(r'^pages/content/edit/(?P<page_id>\d+)/(?P<lang>[a-z]{2})$', views.edit_page_content, name="edit_page_content"),
+
+
+    url(r'^pages/up/(?P<id>\d+)/$', views.page_up , name="page_up"),
+    url(r'^pages/down/(?P<id>\d+)/$', views.page_down , name="page_down"),
 )

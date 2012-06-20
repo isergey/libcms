@@ -1,0 +1,49 @@
+{% extends 'guestbook/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Гостевая книга" guestbook:administration:index %}
+    {% breadcrumb "Список отзывов" %}
+{% endblock %}
+
+{% block action_content %}
+    {% if feedbacks_page.object_list %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Отзыв</th>
+            <th class="span2">Дата добавления</th>
+            <th class="span2">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for feedback in feedbacks_page.object_list %}
+
+            <tr>
+                {% if feedback.publicated %}
+                    <td><a href="{% url guestbook:administration:edit_feedback feedback.id %}">{{feedback.content|safe }}</a></td>
+                {% else %}
+                    <td><a  style="color: red;" title="Редактировать неопубликованный отзыв." href="{% url guestbook:administration:edit_feedback feedback.id %}">{{feedback.content }}</a></td>
+                {% endif %}
+                <td>{{ feedback.add_date }}</td>
+                <td><a class="delete btn btn-danger"  href="{% url guestbook:administration:delete_feedback feedback.id %}"><i class="icon-trash icon-white" title="Удалить"></i></a></td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>Список отзывов пуст.</p>
+    {% endif %}
+    {% admin_pagination feedbacks_page %}
+    <script type="text/javascript">
+        $("a.delete").click(function () {
+            if (!confirm('Вы уверены, что хотите удалить?')) return false;
+        });
+    </script>
+{% endblock %}
+
+

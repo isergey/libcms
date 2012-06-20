@@ -2,12 +2,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import translation
 from django.utils.translation import get_language
+from django.db.models import Q
 from common.pagination import get_page
 from news.models import News, NewsContent
 
 
+
 def index(request):
-    news_page = get_page(request, News.objects.filter(prof=False, publicated=True).order_by('-create_date'))
+    news_page = get_page(request, News.objects.filter(publicated=True).exclude(type=1).order_by('-create_date'))
 
     news_contents = list(NewsContent.objects.filter(news__in=list(news_page.object_list), lang=get_language()[:2]))
 
@@ -25,7 +27,11 @@ def index(request):
 
 def show(request, id):
     cur_language = translation.get_language()
-    news = get_object_or_404(News, id=id)
+    try:
+        news = News.objects.get(Q(type=0)|Q(type=2),id=id)
+    except News.DoesNotExist:
+        raise Http404()
+
     try:
         content = NewsContent.objects.get(news=news, lang=cur_language[:2])
     except Content.DoesNotExist:

@@ -21,12 +21,6 @@ from participants.models import Library
 
 
 class Page(MPTTModel):
-
-    library = models.ForeignKey(
-        Library,
-        verbose_name=u'ЦБС, которой принадлежит страница'
-    )
-
     parent = TreeForeignKey(
         'self',
         null=True,
@@ -34,7 +28,10 @@ class Page(MPTTModel):
         related_name='children',
         verbose_name=u'Родительская страница'
     )
-
+    library = models.ForeignKey(
+        Library,
+        verbose_name=u'ЦБС, которой принадлежит страница'
+    )
     slug = models.SlugField(
         verbose_name=u'Slug',
         max_length=255,
@@ -92,11 +89,12 @@ class Page(MPTTModel):
         return  self.slug
 
     def save(self, *args, **kwargs):
+
         old = None
         if self.id:
             old = Page.objects.get(id=self.id)
 
-        if old and self.slug != old.slug:
+        if old:
             self.slug = old.slug
         else:
             url_pathes = []
@@ -111,6 +109,17 @@ class Page(MPTTModel):
             self.url_path =  u'/'.join(url_pathes)
 
         return super(Page, self).save(*args, **kwargs)
+
+
+    def up(self):
+        previous = self.get_previous_sibling()
+        if previous:
+            self.move_to(previous, position='left')
+
+    def down(self):
+        next = self.get_next_sibling()
+        if next:
+            self.move_to(next, position='right')
 
 
 class Content(models.Model):

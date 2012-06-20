@@ -1,0 +1,203 @@
+{% extends 'theme_frontend_base.html' %}
+{% load hash %}
+{% load localeurl_tags %}
+{% load ssearch_tags %}
+{% load order_tags %}
+{% load mydocs_tags %}
+{% block title %}детальная информация{% endblock %}
+{% block content %}
+{#    <div id="fb-root"></div>#}
+{#    <script>(function(d, s, id) {#}
+{#        var js, fjs = d.getElementsByTagName(s)[0];#}
+{#        if (d.getElementById(id)) return;#}
+{#        js = d.createElement(s); js.id = id;#}
+{#        js.src = "//connect.facebook.net/ru_RU/all.js#xfbml=1&appId=314686941912414";#}
+{#        fjs.parentNode.insertBefore(js, fjs);#}
+{#    }(document, 'script', 'facebook-jssdk'));</script>#}
+    <style>
+        .record {
+            font-size: 14px;
+        }
+    </style>
+    <div  class="info">
+        <a href="{% url index:frontend:index %}">Главная</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="{% url ssearch:frontend:index %}">Поиск</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        {% if request.GET.back %}
+            <a href="{{ request.GET.back }}">Результаты поиска</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        {% endif %}
+        <a href="#" class="active">Детальная информация</a>
+    </div>
+    <div class="left left3">
+{#        <span class="number">11.</span>#}
+        <div class="bookImg">
+{#            <img src="images/book5.jpg" />#}
+            <div class="select_cont">
+                <div class="sel_imul">
+                    <div class="sel_selected">
+                        <div class="selected-text">Просмотр</div>
+                    </div>
+                    <div class="sel_options">
+                        <div class="sel_option" value="1">Карточка</div>
+                        <div class="sel_option" value="2">Marc</div>
+{#                        <div class="sel_option" value="3">Просмотр 3</div>#}
+                    </div>
+                </div>
+                <select id="ourselect" style="display: none;">
+                    <option value="1">Карточка</option>
+                    <option value="2">Marc</option>
+{#                    <option value="2">Просмотр 3</option>#}
+                </select>
+            </div>
+{#            <a href="#">Сохранить в избранном</a>#}
+            {% drow_save_doc request.user gen_id %}
+        </div>
+    </div>
+
+    <div class="right right3">
+        <div class="bookDesc">
+{#            <h3>Гоголь Николай Васильевич. Невский проспект: Кн.для чтения с параллельными текстами на англ.и рус.яз.</h3>#}
+            <p id="bib_dump">
+                {{ doc_dump|safe }}
+            </p>
+            <div id="marc_dump">
+                {{ marc_dump|safe }}
+            </div>
+{#            {{ doc }}#}
+            <ul style="color: #0074D1">
+                {% for subject in doc|hash:'subject-heading' %}
+                    <li class="label label-info">{{ subject }}</li>
+                {% endfor %}
+            </ul>
+{#            <p>ББК 81.432.1-922-3+Р1</p>#}
+        </div>
+        <div class="bookAction">
+            {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}
+
+            {% if doc.holders %}
+                <p class="title">Так же вы можете:</p>
+                {% drow_mba_order_menu request.user gen_id %}
+            {% endif %}
+
+        </div>
+    </div>
+
+<script type="text/javascript">
+
+        $('#bib_dump').show();
+        $('#marc_dump').hide();
+        $('.bookImg .sel_option').click(function(){
+            if ($(this).attr('value') == '1'){
+                $('#bib_dump').show();
+                $('#marc_dump').hide();
+            }
+            if ($(this).attr('value') == '2'){
+                $('#bib_dump').hide();
+                $('#marc_dump').show();
+            }
+        });
+
+
+</script>
+    <div class="social">
+        <div id="vk_like"></div>
+        <script type="text/javascript">
+            VK.Widgets.Like("vk_like", {type: "button"});
+        </script>
+        <iframe src="//www.facebook.com/plugins/like.php?href={{ request.path|rmlocale }}&amp;send=false&amp;layout=standard&amp;width=450&amp;show_faces=true&amp;action=like&amp;colorscheme=light&amp;font=arial&amp;height=80&amp;appId=314686941912414" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:80px;" allowTransparency="true"></iframe>
+    </div>
+        {#    <style type="text/css">#}
+{#        .marc_dump span.fieldlabel, span.subfieldlabel {#}
+{#            font-family: monospace;#}
+{#            color: blue;#}
+{#        }#}
+{##}
+{#        .marc_dump span.data, span.indicator {#}
+{#            font-family: monospace;#}
+{#        }#}
+{##}
+{#        .marc_dump span.label {#}
+{#            font-family: monospace;#}
+{#        }#}
+{#        .record {#}
+{#            font-weight: normal;#}
+{#        }#}
+{#    </style>#}
+{#    <div class="span10">#}
+{##}
+{#        <ul class="nav nav-tabs">#}
+{#        <li class="dropdown active">#}
+{#                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Просмотр <b class="caret"></b></a>#}
+{#                <ul class="dropdown-menu">#}
+{#                    <li><a href="#card" data-toggle="tab">Карточка</a></li>#}
+{#                    <li><a href="#marc" data-toggle="tab">Marc</a></li>#}
+{#                </ul>#}
+{#            </li>#}
+{#        </ul>#}
+{#        <div class="tab-content">#}
+{#            <div class="tab-pane active" id="card">{{ doc_dump|safe }}</div>#}
+{#            <div class="tab-pane" id="marc">{{ marc_dump|safe }}</div>#}
+{#        </div>#}
+{#        <div class="holders" style="clear: both;">#}
+{#            <hr/>#}
+{#            <h3>Держатели:</h3>#}
+{#            {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}#}
+{#        </div>#}
+{#        <hr/>#}
+{#        <h3>Сохранить документ</h3>#}
+{#        {% drow_save_doc request.user gen_id %}#}
+{#        <hr/>#}
+{#        {% if doc.holders %}#}
+{#            <h3>Заказать доставку</h3>#}
+{#            {% drow_mba_order_menu request.user gen_id %}#}
+{#        {% endif %}#}
+{#    </div>#}
+
+
+
+
+
+{#    <hr/>#}
+{#    <div id="vk_like"></div>#}
+{#    <hr/>#}
+{#    <h3>Возможно, Вам будет интересно почитать так же:</h3>#}
+{#    <ul style="list-style: none">#}
+{#        {% for doc in mlt_docs %}#}
+{#            <li>#}
+{#                <div class="title"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">#}
+{#                    {{ doc.record.title.0 }}</a></div>#}
+{#                <div class="author">#}
+{#                    {% for author in doc.record.author %}#}
+{#                        {{ author }} {% if not forloop.last %}; {% endif %}#}
+{#                    {% endfor %}#}
+{#                </div>#}
+{#                <div class="info">#}
+{#                    {% for lang in doc.record|hash:'code-language' %}#}
+{#                        {{ lang }}#}
+{#                    {% endfor %}#}
+{#                    {% for dop in doc.record|hash:'date-of-publication' %}#}
+{#                        {{ dop }}#}
+{#                    {% endfor %}#}
+{#                    {% for content_type in doc.record|hash:'content-type' %}#}
+{#                        {{ content_type }}#}
+{#                    {% endfor %}#}
+{#                    {% for publisher in doc.record|hash:'publisher' %}#}
+{#                        {{ publisher }}#}
+{#                    {% endfor %}#}
+{#                </div>#}
+{#            </li>#}
+{#            <hr/>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+    <!-- Put this script tag to the <head> of your page -->
+{#    <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?49"></script>#}
+{##}
+{#    <script type="text/javascript">#}
+{#        VK.init({apiId: 2797756, onlyWidgets: true});#}
+{#    </script>#}
+{##}
+{#    <!-- Put this div tag to the place, where the Like block will be -->#}
+{##}
+{#    <script type="text/javascript">#}
+{#        VK.Widgets.Like("vk_like", {type: "button"});#}
+{#    </script>#}
+{% endblock %}

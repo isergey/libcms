@@ -1,8 +1,26 @@
-{% load i18n %}
-{% load core_active_menu_item_tag %}
+{% load active_link %}
+{% load ask_librarian_tags %}
 
-{% url ask_librarian:admin_questions as admin_questions %}
-{% url ask_librarian:admin_managers as admin_managers %}
-
-<li class="{% active request admin_questions %}"><a href="{{ admin_questions }}">{% trans 'Questions' %}</a></li>
-<li class="{% active request admin_managers %}"><a href="{{ admin_managers }}">{% trans 'Managers' %}</a></li>
+<ul class="nav nav-list">
+    <li class="nav-header">Вопросы</li>
+    <li class="{% active 'ask_librarian:administration:questions_list' %}"><a href="{% url ask_librarian:administration:questions_list %}">Список</a></li>
+    <li><ul style="list-style: none; margin-left: 10px;">
+        {% url ask_librarian:administration:questions_list as questions_list_url %}
+        <li {% if request.GET.status == '0' and request.path == questions_list_url %}class="active"{% endif %}><a class="question_status0" style="text-decoration: none" href="{{ questions_list_url }}?status=0">Новые (<b>{% get_question_status_count 0 %}</b>)</a></li>
+        <li {% if request.GET.status == '2' and request.path == questions_list_url %}class="active"{% endif %}><a class="question_status2" style="text-decoration: none" href="{{ questions_list_url }}?status=2">В обработке (<b>{% get_question_status_count 2 %}</b>)</a></li>
+        <li {% if request.GET.status == '1' and request.path == questions_list_url %}class="active"{% endif %}><a class="question_status1" style="text-decoration: none" href="{{ questions_list_url }}?status=1">Готовые (<b>{% get_question_status_count 1 %}</b>)</a></li>
+    </ul></li>
+</ul>
+<br/>
+<ul class="nav nav-list">
+    <li class="nav-header">Мои вопросы</li>
+    {% url ask_librarian:administration:questions_processes as questions_processes_url %}
+    <li {% if request.GET.status == '2' and request.path == questions_processes_url %}class="active"{% endif %}><a class="question_status2" style="text-decoration: none" href="{{ questions_processes_url }}?status=2">В обработке (<b>{% get_question_status_count 2 request.user %}</b>) </a></li>
+    <li {% if request.GET.status == '1' and request.path == questions_processes_url %}class="active"{% endif %}><a class="question_status1" style="text-decoration: none" href="{{ questions_processes_url }}?status=1">Готовые (<b>{% get_question_status_count 1 request.user %}</b>) </a></li>
+</ul>
+<br/>
+<ul class="nav nav-list">
+    <li class="nav-header">Категории</li>
+    <li class="{% active 'ask_librarian:administration:categories_list' %}"><a href="{% url ask_librarian:administration:categories_list %}">Список</a></li>
+    <li class="{% active_path 'ask_librarian:administration:category_create' %}"><a href="{% url ask_librarian:administration:category_create %}">Создать</a></li>
+</ul>

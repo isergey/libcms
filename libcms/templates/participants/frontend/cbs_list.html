@@ -1,0 +1,40 @@
+{% extends 'theme_frontend_base.html' %}
+{% block title %}Библиотеки{% endblock %}
+{% block content %}
+    <div class="span12">
+        <ul class="breadcrumb">
+            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li class="active">Библиотеки</li>
+        </ul>
+    <div class="row">
+        <div class="span7">
+            <style>
+                #map_canvas{
+                    background: white;
+
+                    box-shadow: 0 0 10px #999;
+                    border-radius: 2px;
+                    border: #ffffff solid 10px;
+                }
+            </style>
+            <div id="map_canvas" style="height: 400px"></div>
+            {% include 'participants/frontend/map_cbs_js.html' %}
+        </div>
+        <div class="span4">
+
+            <ul class="participants" style="list-style: none; margin: 0">
+                {% for cbs in  cbs_list %}
+                    <li><a href="{% url participants:frontend:branches cbs.code %}">{{ cbs.name }}<br/></a>
+                        Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
+                        {% else %} не указан {% endif %}
+                    </li>
+                {% empty %}
+                    Список еще не сформирован
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+
+    </div>
+{% endblock %}

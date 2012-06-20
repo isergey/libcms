@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db import transaction
 from django.utils.translation import ugettext as _
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
+from django.http import HttpResponseForbidden
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
 from common.pagination import get_page
@@ -16,7 +17,10 @@ from forms import MenuForm,MenuTitleForm,  MenuItemForm, MenuItemTitleForm
 
 
 #@permission_required_or_403('accounts.view_users')
+@login_required
 def index(request):
+    if not request.user.has_module_perms('menu'):
+        return HttpResponseForbidden()
     return redirect('menu:administration:menu_list')
     #return render(request, 'menus/administration/index.html')
 
@@ -24,8 +28,10 @@ def index(request):
 
 
 @login_required
-@permission_required_or_403('menu.add_menu')
+#@permission_required_or_403('menu.add_menu')
 def menu_list(request):
+    if not request.user.has_module_perms('menu'):
+        return HttpResponseForbidden()
     menus_page = get_page(request, Menu.objects.all())
     menu_titles = list(MenuTitle.objects.filter(menu__in=list(menus_page.object_list), lang=get_language()[:2]))
 
@@ -42,7 +48,7 @@ def menu_list(request):
     return render(request, 'menu/administration/menus_list.html', {
         'menus': menus,
         'menus_page': menus_page,
-    })
+        })
 
 
 
@@ -103,7 +109,7 @@ def create_menu(request):
     return render(request, 'menu/administration/create_menu.html', {
         'menu_form': menu_form,
         'menu_title_forms': menu_title_forms
-     })
+    })
 
 
 
@@ -238,7 +244,7 @@ def item_list(request, menu_id):
 
 
 @login_required
-@permission_required_or_403('menu.add_menu_item')
+@permission_required_or_403('menu.add_menuitem')
 @transaction.commit_on_success
 def create_item(request, menu_id, parent=None):
     menu = get_object_or_404(Menu, id=menu_id)
@@ -295,7 +301,7 @@ def create_item(request, menu_id, parent=None):
 
 
 @login_required
-@permission_required_or_403('menu.change_menu_item')
+@permission_required_or_403('menu.change_menuitem')
 @transaction.commit_on_success
 def item_edit(request, id, menu_id=None):
     menu = get_object_or_404(Menu, id=menu_id)
@@ -379,7 +385,7 @@ def item_edit(request, id, menu_id=None):
     })
 
 @login_required
-@permission_required_or_403('menu.delete_menu_item')
+@permission_required_or_403('menu.delete_menuitem')
 def item_delete(request, menu_id, id):
     item = get_object_or_404(MenuItem, id=id)
     item.delete()
@@ -463,6 +469,7 @@ def item_delete(request, menu_id, id):
 #    })
 #
 #
+
 
 
 

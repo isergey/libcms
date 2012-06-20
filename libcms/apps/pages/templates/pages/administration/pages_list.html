@@ -63,7 +63,9 @@
 {#            <a href="{% url pages:administration:create_page page.id %}">{% trans 'Add subpage' %}</a>#}
             <span class="buttons">
                 <a class="btn" href="{% url pages:administration:create_page page.id %}"><i class="icon-plus"></i>Создать подстраницу</a>
-                <a class="btn btn-danger" href="{% url pages:administration:delete_page page.id %}"><i class="icon-trash icon-white"></i></a>
+                <a class="btn" href="{% url pages:administration:page_up page.id %}" title="передвинуть вверх">↑</a>
+                <a class="btn" href="{% url pages:administration:page_down page.id %}" title="передвинуть вниз">↓</a>
+                <a style="margin-left: 20px" class="btn btn-danger" href="{% url pages:administration:delete_page page.id %}"><i class="icon-trash icon-white"></i></a>
             </span>
         </li>
     {% endfor %}

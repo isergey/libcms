@@ -293,7 +293,7 @@ RUSMARC
           <xsl:apply-templates select="field[@id='899']"/>
         </xsl:if>
       </xsl:if>
-      <xsl:apply-templates select="field[@id='999']/subfield[@id='z']"/>
+      <!--<xsl:apply-templates select="field[@id='999']/subfield[@id='z']"/>-->
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>

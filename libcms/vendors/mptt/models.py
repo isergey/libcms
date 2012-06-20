@@ -273,7 +273,21 @@ class MPTTModelBase(ModelBase):
                     manager.init_from_model(cls)
 
                 # make sure we have a tree manager somewhere
-                tree_manager = TreeManager()
+                tree_manager = None
+                for attr in sorted(dir(cls)):
+                    try:
+                        obj = getattr(cls, attr)
+                    except AttributeError:
+                        continue
+                    if isinstance(obj, TreeManager):
+                        tree_manager = obj
+                        # prefer any locally defined manager (i.e. keep going if not local)
+                        if obj.model is cls:
+                            break
+                if tree_manager and tree_manager.model is not cls:
+                    tree_manager = tree_manager._copy_to_model(cls)
+                elif tree_manager is None:
+                    tree_manager = TreeManager()
                 tree_manager.contribute_to_class(cls, '_tree_manager')
                 tree_manager.init_from_model(cls)
 
@@ -307,7 +321,7 @@ class MPTTModelBase(ModelBase):
                                     self.used = True
                                 return self.manager
 
-                        setattr(cls, tree_manager_attr, _WarningDescriptor(manager))
+                        setattr(cls, tree_manager_attr, _WarningDescriptor(tree_manager))
                     elif hasattr(another, 'init_from_model'):
                         another.init_from_model(cls)
 
@@ -387,9 +401,10 @@ class MPTTModel(models.Model):
         If called from a template where the tree has been walked by the
         ``cache_tree_children`` filter, no database query is required.
         """
-
         if hasattr(self, '_cached_children'):
-            return self._cached_children
+            qs = self._tree_manager.filter(pk__in=[n.pk for n in self._cached_children])
+            qs._result_cache = self._cached_children
+            return qs
         else:
             if self.is_leaf_node():
                 return self._tree_manager.none()

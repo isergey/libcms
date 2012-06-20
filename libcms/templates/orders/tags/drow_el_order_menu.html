@@ -1,7 +1,7 @@
-<ul>
+<ul style="list-style: none; margin: 0">
     {% for owner in owners %}
         <li>
-            {% if owner.has_catalog %}<a class="order" href="{% url orders:frontend:zorder owner.owner.id %}?id={{ record_id|urlencode }}">Забронировать</a><p>{{ owner.owner.name }}</p>{% else %}(заказ невозможен: отсутвует информация о сервере заказа){% endif %}</li>
+            {% if owner.has_catalog %}<a class="order btn" href="{% url orders:frontend:zorder owner.owner.id %}?id={{ record_id|urlencode }}">Забронировать</a> {{ owner.owner.name }}{% else %}(заказ невозможен: отсутвует информация о сервере заказа){% endif %}</li>
     {% endfor %}
     {% if empty_codes %}
         {% for empty_code in empty_codes %}

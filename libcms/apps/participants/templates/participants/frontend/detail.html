@@ -4,7 +4,7 @@
     <ul class="breadcrumb">
         <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
         <li><a href="{%  url participants:frontend:index %}">Библиотеки</a> <span class="divider">/</span></li>
-        {% if library.parent_id %}<li><a href="{%  url participants:frontend:branches library.parent.id %}">{{ library.parent.name }}</a> <span class="divider">/</span></li>{% endif %}
+        {% if library.parent_id %}<li><a href="{%  url participants:frontend:branches library.parent.code %}">{{ library.parent.name }}</a> <span class="divider">/</span></li>{% endif %}
         <li class="active">{{ library.name }}</li>
     </ul>
 

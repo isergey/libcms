@@ -13,8 +13,10 @@ from events.models import Event, EventContent
 from forms import EventForm, EventContentForm
 
 @login_required
-@permission_required_or_403('event.add_event')
+@permission_required_or_403('events.add_event')
 def index(request):
+    if not request.user.has_module_perms('events'):
+        return HttpResponseForbidden()
     return redirect('events:administration:events_list')
 
 
@@ -164,6 +166,7 @@ def delete_event(request, id):
     event = get_object_or_404(Event, id=id)
     event.delete()
     return redirect('events:administration:events_list')
+
 
 
 

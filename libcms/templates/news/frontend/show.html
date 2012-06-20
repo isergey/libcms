@@ -1,18 +1,19 @@
 {% extends 'theme_frontend_base.html' %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <div class="breadcrumb">
-        <span><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></span>
-        {% if request.GET.back %}
-            <span><a href="{{ request.GET.back }}">Новости</a> <span class="divider">/</span></span>
-        {% else %}
-            <span><a href="{% url news:frontend:index %}">Новости</a> <span class="divider">/</span></span>
-        {% endif %}
-        <span class="active">{{ content.title }}</span>
+    <div class="span12">
+        <div class="breadcrumb">
+            <span><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></span>
+            {% if request.GET.back %}
+                <span><a href="{{ request.GET.back }}">Новости</a> <span class="divider">/</span></span>
+            {% else %}
+                <span><a href="{% url news:frontend:index %}">Новости</a> <span class="divider">/</span></span>
+            {% endif %}
+            <span class="active">{{ content.title }}</span>
+        </div>
+        <hr/>
+        <div class="text">
+            {{ content.content|safe }}
+        </div>
     </div>
-    <hr/>
-    <div class="text">
-        {{ content.content|safe }}
-    </div>
-
 {% endblock %}

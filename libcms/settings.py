@@ -148,6 +148,7 @@ INSTALLED_APPS = (
     'events',
     'participants',
     'participants_pages',
+    'personal',
     'ask_librarian',
     'ssearch',
     'rbooks',
@@ -156,6 +157,7 @@ INSTALLED_APPS = (
     'orders',
     'zgate',
     'mydocs',
+    'guestbook',
 )
 
 

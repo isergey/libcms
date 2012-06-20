@@ -1,0 +1,30 @@
+{% extends 'backend_base.html' %}
+{% load active_link %}
+{% load breadcrumbs %}
+{% block module_title %}Спроси библиотекаря{% endblock %}
+{% block module_menu %}
+    {% include 'ask_librarian/administration/module_menu.html' %}
+{% endblock %}
+{% block module_content %}
+    <style type="text/css">
+        .question_status0 {
+            color: #ff1315;
+        }
+        .question_status1 {
+            color: green;
+        }
+        .question_status2 {
+            color: #e0904c;
+        }
+    </style>
+{#    {% active_path 'accounts:administration:index' %}#}
+{#    <a class="{% active 'accounts:administration:index' %}" href="{% url accounts:administration:index %}">wedwed</a>#}
+    <ul class="breadcrumb">
+    {% block breadcrumb %}
+        {% breadcrumb "Спроси библиотекаря"  %}
+    {% endblock %}
+    </ul>
+    {% block action_content %}
+        Summary
+    {% endblock %}
+{% endblock %}
