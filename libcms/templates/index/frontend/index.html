@@ -33,7 +33,7 @@
                         <div style="background: url('{{ STATIC_URL }}theme/banner/loremIpsum.jpg'); height: 246px">
                             <div class="banner-node" style="position: relative; top: 192px; color: #ffffff; padding-left: 10px">
                                 <div style="background: #34832B; padding: 10px;">
-                                    Всего 100500 записей в электронном каталоге. Вы можете <a style="color: #ffffff; font-weight: bold;" href="{% url ssearch:frontend:index %}">найти</a> и забронировать книги в библиотеках Республиках Татарстан.
+                                    Всего {% ssearch_all_count %} записей в электронном каталоге. Вы можете <a style="color: #ffffff; font-weight: bold;" href="{% url ssearch:frontend:index %}">найти</a> и забронировать книги в библиотеках Республиках Татарстан.
                                     {#                        <a  style=" color: #ffffff; text-decoration: none " href="{% url ssearch:frontend:index %}">Забронируй свою книгу заранее</a>#}
                                 </div>
                                 {#                                <a style="color: #ffffff;" href="{% url ssearch:frontend:index %}">Забронировать</a>#}
