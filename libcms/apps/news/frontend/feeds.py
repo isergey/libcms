@@ -24,7 +24,7 @@ class LatestEntriesFeed(Feed):
 
 
 def index():
-    news_list =  News.objects.filter(prof=False, publicated=True).order_by('-create_date')[:5]
+    news_list =  News.objects.filter(publicated=True).exclude(type=2).order_by('-create_date')[:5]
 
     news_contents = list(NewsContent.objects.filter(news__in=list(news_list), lang=get_language()[:2]))
 
