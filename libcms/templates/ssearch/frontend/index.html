@@ -73,7 +73,7 @@
 
                 {% if request.GET.q %}
                     <li><a href="{% url ssearch:frontend:index %}">Поиск</a> <span class="divider">/</span></li>
-                    <li class="active">Результаты поиска</li>
+                    <li class="active">Результаты поиска:  найдено документов: <b>{{ search_statisics.num_found }}</b>, время выполнения запрос: <b>{{ search_statisics.search_time }}</b> сек.</li>
                 {% else %}
                     <li class="active">Поиск</li>
                 {% endif %}
@@ -102,13 +102,14 @@
                 <div class="input-append">
                     <input  name="q" class="span8" id="appendedInputButton" size="16" type="text"><input type="submit" class="btn btn-success span2" value="Поиск">
                 </div>
-                <br/>
+                <br/>увув
                 Искать в найденном: <input type="checkbox" name="in_founded"  {% if request.GET.in_founded %}checked="checked"{% endif %}>
             </form>
         </div>
     </div>
     <div class="row">
         <div class="span12">
+
             {% if search_breadcumbs %}
             <div class="actions">
                 <div>

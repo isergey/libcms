@@ -13,7 +13,7 @@
 
             {% if request.GET.q %}
                 <li><a href="{% url ssearch:frontend:index %}">Поиск</a> <span class="divider">/</span></li>
-                <li class="active">Результаты поиска</li>
+                <li class="active">Результаты поиска:  найдено документов: <b>{{ search_statisics.num_found }}</b>, время выполнения запрос: <b>{{ search_statisics.search_time }}</b> сек.</li>
             {% else %}
                 <li class="active">Поиск</li>
             {% endif %}
