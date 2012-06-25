@@ -4,6 +4,7 @@
     {% trans 'Login' %}
 {% endblock %}
 {% block content %}
+    <div class="span12">
     <form method="POST" class="form-horizontal">{% csrf_token %}
         <fieldset>
             {% include 'frontend/base_form_fields.html' %}
@@ -16,6 +17,7 @@
 
     <div>
         {% include 'accounts/frontend/oauth_buttons.html' %}
+    </div>
     </div>
     <hr/>
 {#    <div>#}
