@@ -173,8 +173,12 @@ def index(request, catalog=None):
 
 def init_search(request, catalog=None):
     search_attrs = _make_search_attrs(catalog)
+    stats = None
+    if catalog == u'ebooks':
+        stats = statictics()
     return render(request, 'ssearch/frontend/index.html', {
-        'search_attrs': search_attrs
+        'search_attrs': search_attrs,
+        'stats': stats
     })
 
 
@@ -451,52 +455,7 @@ def compare(word1, word2):
         else:
             return (float(lev) / word2_len) * 1 / (float(lev) / word1_len)
 
-def statictics(request):
-    collections = [
-        {u'Фонд И.А.Второва': 915},
-        {u'Фонд Второва': 239},
-        {u'Коллекция И. А.Сахарова': 96},
-        {u'Фонд И. А. Второва': 34},
-        {u'Коллекция И. А. Сахарова': 31},
-        {u'Коллекция И.А.Сахарова': 27},
-        {u'Татарика ': 20},
-        {u'И. А. Сахарова': 20},
-        {u'Фонд И.А. Второва': 3},
-        {u'Фонд И.А.Второва ': 2},
-        {u'Коллекция И. А. Сахарва': 1},
-    ]
 
-
-    solr = sunburnt.SolrInterface(settings.SOLR['host'])
-    facet_fields = ['fond_sf' ]
-    qkwargs = {'*':'*'}
-    solr_searcher = solr.query(**qkwargs).paginate(start=0, rows=0)
-    exclude_kwargs = {'system-catalog_s':u"sc2"}
-    solr_searcher = solr_searcher.exclude(**exclude_kwargs)
-    solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=30, mincount=1)
-    solr_searcher = solr_searcher.field_limit("id")
-    response = solr_searcher.execute()
-    collections = []
-    for key in response.facet_counts.facet_fields.keys():
-        for val in response.facet_counts.facet_fields[key]:
-            collections.append({val[0]: val[1]})
-
-
-    deleted = True
-    while deleted:
-        deleted = False
-        for i, col in enumerate(collections):
-            for col2 in collections[i+1:]:
-                if compare(col.keys()[0], col2.keys()[0]) > 0.95:
-                    col[col.keys()[0]] += col2[col2.keys()[0]]
-                    collections.remove(col2)
-                    deleted = True
-
-
-    for col in collections:
-        print col.keys()[0], col.values()[0]
-
-    return HttpResponse('Ok')
 
 def detail(request, gen_id):
 #    shards=['http://localhost:8983/solr','http://localhost:8982/solr']
@@ -694,3 +653,53 @@ def log_search_request(last_search_value, catalog):
             normalize=group['n'],
             not_normalize=group['nn'],
         ).save()
+
+
+
+def statictics():
+    solr = sunburnt.SolrInterface(settings.SOLR['host'])
+    facet_fields = ['fond_sf' ]
+    qkwargs = {'*':'*'}
+    solr_searcher = solr.query(**qkwargs).paginate(start=0, rows=0)
+    exclude_kwargs = {'system-catalog_s':u"sc2"}
+    solr_searcher = solr_searcher.exclude(**exclude_kwargs)
+    solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=30, mincount=1)
+    solr_searcher = solr_searcher.field_limit("id")
+    response = solr_searcher.execute()
+    collections = []
+    for key in response.facet_counts.facet_fields.keys():
+        for val in response.facet_counts.facet_fields[key]:
+            collections.append({val[0]: val[1]})
+
+
+    deleted = True
+    while deleted:
+        deleted = False
+        for i, col in enumerate(collections):
+            for col2 in collections[i+1:]:
+                if compare(col.keys()[0], col2.keys()[0]) > 0.95:
+                    col[col.keys()[0]] += col2[col2.keys()[0]]
+                    collections.remove(col2)
+                    deleted = True
+
+    stats = {
+        'collections': [],
+        'count_all': 0,
+        'count_last_month': 0,
+        }
+    for col in collections:
+        stats['collections'].append({
+            'title': col.keys()[0],
+            'value': col.values()[0]
+        })
+    now = datetime.datetime.now()
+    before_30_now = now - datetime.timedelta(30)
+    count_all = Ebook.objects.using('records').all().exclude(deleted=True).count()
+    count_last_month = Ebook.objects.using('records').filter(add_date__year=now.year, add_date__month=now.month).exclude(deleted=True).count()
+    count_last_30 = Ebook.objects.using('records').filter(add_date__gte=before_30_now, add_date__lte=now).exclude(deleted=True).count()
+    stats['count_all'] = count_all
+    stats['count_last_month'] = count_last_month
+    stats['count_last_30'] = count_last_30
+    return stats
+
+

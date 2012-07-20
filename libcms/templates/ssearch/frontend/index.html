@@ -65,6 +65,7 @@
 
     </style>
     <div class="serach_area span12">
+
     <div class="row">
         <div class="span12">
             <ul class="breadcrumb">
@@ -97,120 +98,144 @@
                     <option value="isbn" {% if request.GET.attr == 'isbn' %}selected="selected"{% endif %}>ISBN</option>
                     <option value="issn" {% if request.GET.attr == 'issn' %}selected="selected"{% endif %}>ISSN</option>
                 </select>
-    {#            <input type="text" class="search-query" name="q" style="width: 64%" value="{{ request.GET.q }}"/>#}
-    {#            <input type="submit" class="btn btn-success" style="width: 10%" value="Поиск">#}
+                {#            <input type="text" class="search-query" name="q" style="width: 64%" value="{{ request.GET.q }}"/>#}
+                {#            <input type="submit" class="btn btn-success" style="width: 10%" value="Поиск">#}
                 <div class="input-append">
                     <input  name="q" class="span8" id="appendedInputButton" size="16" type="text"><input type="submit" class="btn btn-success span2" value="Поиск">
                 </div>
                 <br/>
                 Искать в найденном: <input type="checkbox" name="in_founded"  {% if request.GET.in_founded %}checked="checked"{% endif %}>
             </form>
+
         </div>
+
     </div>
+    {% if not docs and stats %}
+        <div class="row">
+            <div class="span12 ">
+                <div class="well">
+                    <div>Статистика по коллекциям:</div>
+                    <div>
+                        <ul>
+                            {% for collection in stats.collections %}
+                                <li>{{ collection.title }}: <b>{{ collection.value }}</b></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div>Всего документов в коллекции: {{ stats.count_all }}</div>
+                    <div>Добавлено за текущий месяц: {{ stats.count_last_month }}</div>
+                    <div>Добавлено за последние 30 дней: {{ stats.count_last_30 }}</div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     <div class="row">
         <div class="span12">
 
             {% if search_breadcumbs %}
-            <div class="actions">
-                <div>
-                    {% if request.user.is_authenticated %}
-                       <a href="{% url ssearch:frontend:save_search_request %}?srequest={{ search_request|urlencode }}"  class="btn btn-mini" id="save_request_button">Сохранить запрос</a> →
-                    {% endif %}
-                    <b>Поиск</b>:
-                    {% for search_breadcumb in search_breadcumbs %}
-                        {% if not forloop.last %}
-                            <span><a href="?{{ search_breadcumb.href }}">{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</a></span> →
-                        {% else %}
-                            {#                <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>#}
-                            {% if search_breadcumb.attr == 'content-type' %}
-                                <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|content_type_title }}</span>
-                            {% elif search_breadcumb.attr == 'code-language' %}
-                                <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|language_title }}</span>
-                            {% else %}
-                                <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</span>
-                            {% endif %}
+                <div class="actions">
+                    <div>
+                        {% if request.user.is_authenticated %}
+                            <a href="{% url ssearch:frontend:save_search_request %}?srequest={{ search_request|urlencode }}"  class="btn btn-mini" id="save_request_button">Сохранить запрос</a> →
                         {% endif %}
-                    {% endfor %}
-
-                </div>
-                <div class="sorting">
-{#                    <form action="{{ request.path }}?{{ request.GET.urlencode }}" method="GET" class="form-inline" style="float: right;">#}
-{#                        <label>Сортировать по:</label>#}
-{#                        {% for sort_attr in sort %}#}
-{#                            <select name="sort" style="width: auto;">#}
-{#                                <option value="0">релевантности</option>#}
-{#                                <option value="author" {% if sort_attr == 'author' %}selected="selected"{% endif %}>Автору</option>#}
-{#                                <option value="title" {% if sort_attr == 'title' %}selected="selected"{% endif %}>Заглавию</option>#}
-{#                                <option value="date-of-publication" {% if sort_attr == 'date-of-publication' %}selected="selected"{% endif %}>Году публикации</option>#}
-{#                            </select>#}
-{#                        {% empty %}#}
-{#                            <select name="sort" style="width: auto;">#}
-{#                                <option value="0">релевантности</option>#}
-{#                                <option value="author">Автору</option>#}
-{#                                <option value="title">Заглавию</option>#}
-{#                                <option value="date-of-publication">Году публикации</option>#}
-{#                            </select>#}
-{#                        {% endfor %}#}
-{#                        <button class="btn btn-small">Сортировать</button>#}
-{#                        {% for search_breadcumb in search_breadcumbs %}#}
-{##}
-{#                            {% if forloop.last %}#}
-{#                                <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">#}
-{#                                <input type="hidden" name="q" value="{{ search_breadcumb.value }}">#}
-{#                            {% else %}#}
-{#                                <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">#}
-{#                                <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">#}
-{#                            {% endif %}#}
-{#                        {% endfor %}#}
-{##}
-{#                    </form>#}
-                    <form action="{{ request.path }}?{{ request.GET.urlencode }}" method="GET" class="form-inline" style="float: right;">
-                        <label>Сортировать по:</label>
-                        {% for sort_attr in sort %}
-                            <select name="sort" style="width: auto;" class="sort_select">
-                                <option value="0">релевантности</option>
-                                <option value="author" {% if sort_attr == 'author' %}selected="selected"{% endif %}>Автору</option>
-                                <option value="title" {% if sort_attr == 'title' %}selected="selected"{% endif %}>Заглавию</option>
-                                <option value="date-of-publication" {% if sort_attr == 'date-of-publication' %}selected="selected"{% endif %}>Году публикации</option>
-                                <option value="tom" {% if sort_attr == 'tom' %}selected="selected"{% endif %}>Тому/части</option>
-                            </select>
-                        {% empty %}
-                            <select name="sort" style="width: auto;" class="sort_select">
-                                <option value="0">релевантности</option>
-                                <option value="author">Автору</option>
-                                <option value="title">Заглавию</option>
-                                <option value="date-of-publication">Году публикации</option>
-                                <option value="tom">Тому/части</option>
-                            </select>
-                        {% endfor %}
-                        <a href="#1" id="add_sort_button" title="Добавить условие сортировки">добавить</a>
-                        <button class="btn btn-small">Сортировать</button>
+                        <b>Поиск</b>:
                         {% for search_breadcumb in search_breadcumbs %}
-
-                            {% if forloop.last %}
-                                <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">
-                                <input type="hidden" name="q" value="{{ search_breadcumb.value }}">
+                            {% if not forloop.last %}
+                                <span><a href="?{{ search_breadcumb.href }}">{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</a></span> →
                             {% else %}
-                                <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">
-                                <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
+                                {#                <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>#}
+                                {% if search_breadcumb.attr == 'content-type' %}
+                                    <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|content_type_title }}</span>
+                                {% elif search_breadcumb.attr == 'code-language' %}
+                                    <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|language_title }}</span>
+                                {% else %}
+                                    <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</span>
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
-                        <script type="text/javascript">
-                            $('#add_sort_button').click(function(){
-                                if ($('.sort_select').length >= 3){
-                                    return false;
-                                }
-                                $('.sort_select').last().clone().insertAfter($('.sort_select').last());
+
+                    </div>
+                    <div class="sorting">
+                        {#                    <form action="{{ request.path }}?{{ request.GET.urlencode }}" method="GET" class="form-inline" style="float: right;">#}
+                        {#                        <label>Сортировать по:</label>#}
+                        {#                        {% for sort_attr in sort %}#}
+                        {#                            <select name="sort" style="width: auto;">#}
+                        {#                                <option value="0">релевантности</option>#}
+                        {#                                <option value="author" {% if sort_attr == 'author' %}selected="selected"{% endif %}>Автору</option>#}
+                        {#                                <option value="title" {% if sort_attr == 'title' %}selected="selected"{% endif %}>Заглавию</option>#}
+                        {#                                <option value="date-of-publication" {% if sort_attr == 'date-of-publication' %}selected="selected"{% endif %}>Году публикации</option>#}
+                        {#                            </select>#}
+                        {#                        {% empty %}#}
+                        {#                            <select name="sort" style="width: auto;">#}
+                        {#                                <option value="0">релевантности</option>#}
+                        {#                                <option value="author">Автору</option>#}
+                        {#                                <option value="title">Заглавию</option>#}
+                        {#                                <option value="date-of-publication">Году публикации</option>#}
+                        {#                            </select>#}
+                        {#                        {% endfor %}#}
+                        {#                        <button class="btn btn-small">Сортировать</button>#}
+                        {#                        {% for search_breadcumb in search_breadcumbs %}#}
+                        {##}
+                        {#                            {% if forloop.last %}#}
+                        {#                                <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">#}
+                        {#                                <input type="hidden" name="q" value="{{ search_breadcumb.value }}">#}
+                        {#                            {% else %}#}
+                        {#                                <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">#}
+                        {#                                <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">#}
+                        {#                            {% endif %}#}
+                        {#                        {% endfor %}#}
+                        {##}
+                        {#                    </form>#}
+                        <form action="{{ request.path }}?{{ request.GET.urlencode }}" method="GET" class="form-inline" style="float: right;">
+                            <label>Сортировать по:</label>
+                            {% for sort_attr in sort %}
+                                <select name="sort" style="width: auto;" class="sort_select">
+                                    <option value="0">релевантности</option>
+                                    <option value="author" {% if sort_attr == 'author' %}selected="selected"{% endif %}>Автору</option>
+                                    <option value="title" {% if sort_attr == 'title' %}selected="selected"{% endif %}>Заглавию</option>
+                                    <option value="date-of-publication" {% if sort_attr == 'date-of-publication' %}selected="selected"{% endif %}>Году публикации</option>
+                                    <option value="tom" {% if sort_attr == 'tom' %}selected="selected"{% endif %}>Тому/части</option>
+                                </select>
+                            {% empty %}
+                                <select name="sort" style="width: auto;" class="sort_select">
+                                    <option value="0">релевантности</option>
+                                    <option value="author">Автору</option>
+                                    <option value="title">Заглавию</option>
+                                    <option value="date-of-publication">Году публикации</option>
+                                    <option value="tom">Тому/части</option>
+                                </select>
+                            {% endfor %}
+                            <a href="#1" id="add_sort_button" title="Добавить условие сортировки">добавить</a>
+                            <button class="btn btn-small">Сортировать</button>
+                            {% for search_breadcumb in search_breadcumbs %}
+
+                                {% if forloop.last %}
+                                    <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">
+                                    <input type="hidden" name="q" value="{{ search_breadcumb.value }}">
+                                {% else %}
+                                    <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">
+                                    <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
+                                {% endif %}
+                            {% endfor %}
+                            <script type="text/javascript">
+                                $('#add_sort_button').click(function(){
+                                    if ($('.sort_select').length >= 3){
+                                        return false;
+                                    }
+                                    $('.sort_select').last().clone().insertAfter($('.sort_select').last());
 //                                $('.sort_select').last().insertAfter($('.sort_select').clone());
-                            });
-                        </script>
-                    </form>
+                                });
+                            </script>
+                        </form>
+                    </div>
+
+                    <div style="clear: both;"> </div>
                 </div>
-                <div style="clear: both;"> </div>
-            </div>
 
             {% endif %}
+
         </div>
+
         {% if docs %}
             <div class="results span10">
 
@@ -218,67 +243,67 @@
 
                 <ul class="list">
                     {% for doc in docs %}
-                    <li class="textBook">
-                        <p class="item1"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a></p>
-                        <p class="item2">
-                            {% for author in doc.record.author %}
-                                {{ author }}{% if not forloop.last %}; {% endif %}
-                            {% endfor %}
-                        </p>
-                        <p class="item3">
-                            {% for subject in doc.record|hash:'subject-heading' %}
-                                <span class="label label-info">{{ subject }}</span>
-                            {% endfor %}
-                        </p>
-                        {% if doc.record|hash:'code-language' %}
-                            <p class="item4">Язык:
-                                {% for lang in doc.record|hash:'code-language' %}
-                                    {% if not forloop.last %}
-                                        {{ lang|language_title }},
-                                    {% else %}
-                                        {{ lang|language_title }}
-                                    {% endif %}
+                        <li class="textBook">
+                            <p class="item1"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a></p>
+                            <p class="item2">
+                                {% for author in doc.record.author %}
+                                    {{ author }}{% if not forloop.last %}; {% endif %}
                                 {% endfor %}
                             </p>
-                        {% endif %}
-                        {% if doc.record|hash:'date-of-publication' %}
-                            <p class="item4">Дата публикации:
-                                {% for dop in doc.record|hash:'date-of-publication' %}
-                                    {% if not forloop.last %}
-                                        {{ dop }},
-                                    {% else %}
-                                        {{ dop }}
-                                    {% endif %}
+                            <p class="item3">
+                                {% for subject in doc.record|hash:'subject-heading' %}
+                                    <span class="label label-info">{{ subject }}</span>
                                 {% endfor %}
                             </p>
-                        {% endif %}
-                        {% if doc.record|hash:'publisher' %}
-                            <p class="item4">Издатель:
-                                {% for publisher in doc.record|hash:'publisher' %}
-                                    {% if not forloop.last %}
-                                        {{ publisher }},
-                                    {% else %}
-                                        {{ publisher }}
-                                    {% endif %}
-                                {% endfor %}
-                            </p>
-                        {% endif %}
-                        {% if doc.record|hash:'content-type' %}
-                            <p class="item4">Тип содержания:
-                                {% for content_type in doc.record|hash:'content-type' %}
-                                    {% if not forloop.last %}
-                                        {{ content_type|content_type_title }},
-                                    {% else %}
-                                        {{ content_type|content_type_title }}
-                                    {% endif %}
-                                {% endfor %}
-                            </p>
-                        {% endif %}
-                    </li>
+                            {% if doc.record|hash:'code-language' %}
+                                <p class="item4">Язык:
+                                    {% for lang in doc.record|hash:'code-language' %}
+                                        {% if not forloop.last %}
+                                            {{ lang|language_title }},
+                                        {% else %}
+                                            {{ lang|language_title }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                            {% if doc.record|hash:'date-of-publication' %}
+                                <p class="item4">Дата публикации:
+                                    {% for dop in doc.record|hash:'date-of-publication' %}
+                                        {% if not forloop.last %}
+                                            {{ dop }},
+                                        {% else %}
+                                            {{ dop }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                            {% if doc.record|hash:'publisher' %}
+                                <p class="item4">Издатель:
+                                    {% for publisher in doc.record|hash:'publisher' %}
+                                        {% if not forloop.last %}
+                                            {{ publisher }},
+                                        {% else %}
+                                            {{ publisher }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                            {% if doc.record|hash:'content-type' %}
+                                <p class="item4">Тип содержания:
+                                    {% for content_type in doc.record|hash:'content-type' %}
+                                        {% if not forloop.last %}
+                                            {{ content_type|content_type_title }},
+                                        {% else %}
+                                            {{ content_type|content_type_title }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                        </li>
                         <hr/>
                     {% endfor %}
                 </ul>
-                    {% admin_pagination results_page %}
+                {% admin_pagination results_page %}
             </div>
             <div class="facets span2">
                 <div class="row">
@@ -307,30 +332,32 @@
                     </ul>
                 </div>
             </div>
-        </div>
-    </div>
-    <script type="text/javascript">
-        $('#save_request_button').click(function(){
-            $.ajax({
-                url:$(this).attr('href'),
-                type:'GET',
-                dataType:"json",
-                async:true,
-                success:function (response) {
-                    if (response['status'] == 'ok'){
-                        var button = $('#save_request_button');
-                        button.html('Сохранен');
-                        button.addClass('disabled');
-                        button.attr('href', '#1');
 
-                    }
-                    else{
-                        alert('При сохранении возникла ошибка');
-                    }
-                }
-            });
-            return false;
-        });
-    </script>
-    {% endif %}
+            </div>
+            <script type="text/javascript">
+                $('#save_request_button').click(function(){
+                    $.ajax({
+                        url:$(this).attr('href'),
+                        type:'GET',
+                        dataType:"json",
+                        async:true,
+                        success:function (response) {
+                            if (response['status'] == 'ok'){
+                                var button = $('#save_request_button');
+                                button.html('Сохранен');
+                                button.addClass('disabled');
+                                button.attr('href', '#1');
+
+                            }
+                            else{
+                                alert('При сохранении возникла ошибка');
+                            }
+                        }
+                    });
+                    return false;
+                });
+            </script>
+        {% endif %}
+    </div>
+    </div>
 {% endblock %}
