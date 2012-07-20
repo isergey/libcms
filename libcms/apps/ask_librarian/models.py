@@ -84,6 +84,10 @@ class QuestionManager(models.Model):
 
 class Question(models.Model):
     user = models.ForeignKey(User, null=True, verbose_name=u'Пользователь')
+    fio = models.CharField(verbose_name=u'ФИО', blank=True, max_length=128)
+    email = models.EmailField(verbose_name=u'email', blank=True, max_length=256, help_text=u'На этот адрес будет выслан ответ на вопрос')
+    city = models.CharField(verbose_name=u'Город', blank=True, max_length=64)
+    country = models.CharField(verbose_name=u'Страна', blank=True, max_length=64)
     category = models.ForeignKey(Category, null=True, verbose_name=u'Тематика', help_text=u'Укажите тематику, к которой относиться вопрос')
     question = models.TextField(max_length=2048, verbose_name=u'Вопрос')
     answer = models.TextField(max_length=10000, verbose_name=u'Ответ')

@@ -1,0 +1,16 @@
+<div>
+    <h3>Вопрос:</h3>
+    {{ question.question }}<br/>
+    <hr/>
+</div>
+<div>
+    <h3>Ответ:</h3>
+    {% if question.is_ready %}
+        {{ question.answer|safe }}
+    {% else %}
+        Ответа на вопрос еще нет.
+    {% endif %}
+</div>
+<script type="text/javascript">
+    window.print();
+</script>

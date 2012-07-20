@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from django.db import transaction
 from django.utils.translation import ugettext as _
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from guardian.decorators import permission_required_or_403
+from guardian.models import GroupObjectPermission
+
+from guardian.forms import GroupObjectPermissionsForm
+from guardian.shortcuts import get_perms_for_model, get_perms, remove_perm, assign, get_groups_with_perms
 from django.contrib.auth.decorators import login_required
 from common.pagination import get_page
 from django.contrib.auth import login, REDIRECT_FIELD_NAME
 from django.utils.translation import to_locale, get_language
-
-from core.forms import LanguageForm
+from django.contrib.auth.models import Group
+from django.contrib.contenttypes.models import ContentType
+from core.forms import LanguageForm, get_permissions_form, get_groups_form
 from pages.models import Page, Content
 from forms import ContentForm, get_content_form, get_page_form
 
@@ -48,6 +54,7 @@ def pages_list(request, parent=None):
 def create_page(request, parent=None):
     if parent:
         parent = get_object_or_404(Page, id=parent)
+
     PageForm = get_page_form(parent)
     if request.method == 'POST':
         page_form = PageForm(request.POST, prefix='page_form')
@@ -61,6 +68,10 @@ def create_page(request, parent=None):
                 page.public = False
 
             page.save()
+            if parent:
+                # наследование прав от родителя
+                copy_perms_for_groups(parent, page)
+
             return redirect('pages:administration:create_page_content', page_id=page.id)
     else:
         page_form = PageForm(prefix='page_form')
@@ -179,8 +190,52 @@ def edit_page_content(request, page_id, lang):
         'content_form': content_form,
     })
 
+from guardian.core import ObjectPermissionChecker
+@permission_required_or_403('pages.change_page')
+def page_permissions(request, id):
+    obj = get_object_or_404(Page, id=id)
+
+    GroupsForm = get_groups_form(Group.objects.all(), initial=list(get_groups_with_perms(obj)))
+    groups_form = GroupsForm()
 
 
+    return render(request, 'pages/administration/permissions.html', {
+        'page': obj,
+        'groups_form': groups_form,
+    })
+
+
+
+@login_required
+@transaction.commit_on_success
+def assign_page_permissions(request, id):
+    obj = get_object_or_404(Page, id=id)
+    perm = 'view_page'
+
+
+    if request.method == 'POST':
+        GroupsForm = get_groups_form(Group.objects.all())
+        groups_form = GroupsForm(request.POST)
+        if groups_form.is_valid():
+            assign_permission(groups_form.cleaned_data['groups'], [obj], perm)
+            assign_permission(groups_form.cleaned_data['groups'], obj.get_descendants(), perm)
+    return HttpResponse(u'{"status":"ok"}')
+
+
+def assign_permission(new_groups, objects, perm):
+    groups = Group.objects.all()
+    for obj in objects:
+        for group in groups:
+            remove_perm(perm, group, obj)
+        for new_group in new_groups:
+            assign(perm, new_group, obj)
+
+
+def copy_perms_for_groups(obj, new_obj):
+    group_and_perms =  get_groups_with_perms(obj, True)
+    for gp in group_and_perms:
+        for perm in group_and_perms[gp]:
+            assign(perm, gp, new_obj)
 
 
 

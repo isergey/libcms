@@ -1,0 +1,54 @@
+{% extends 'pages/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load pages_tags %}
+{% load localeurl_tags %}
+
+{% block breadcrumb %}
+    {% breadcrumb "Страницы" professionals_pages:administration:pages_list %}
+    {% breadcrumb "Редактирование контента" %}
+
+{% endblock %}
+
+{% block action_content %}
+    <style type="text/css">
+        form input[type=text]{
+            width: 99%;
+        }
+    </style>
+
+    <h3>
+        <a href="{% url professionals_pages:administration:index %}">Страницы</a> →
+        {% for ancestor in content.page.get_ancestors %}
+            <a href="{% url professionals_pages:administration:pages_list ancestor.id %}">
+                {% if not ancestor.get_cur_lang_content %}
+                    {{ ancestor }}
+                {% else %}
+                    {{ ancestor.get_cur_lang_content }}
+                {% endif %}
+            </a> →
+        {% endfor %}
+        {% if not content.title %}
+            заглавие страницы для этого языка не указано.
+        {% else %}
+            {{ content.title }}
+        {% endif %}
+
+    </h3>
+{#    <div class="well">URL этой страницы: {% url participants_pages:frontend:show library.id page.url_path  as page_url %} <a href="/{{ content.lang }}{{ page_url|rmlocale }}">/{{ content.lang }}{{ page_url|rmlocale }}</a></div>#}
+
+    <div class="well">URL этой страницы: {% url professionals_pages:frontend:show page.url_path  as page_url %} <a href="/{{ content.lang }}{{ page_url|rmlocale }}">/{{ content.lang }}{{ page_url|rmlocale }}</a></div>
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+        <legend>Редактирование контента для языка: <b>{{ content.lang }}</b></legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=content_form %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" name="save" value="save_edit">Сохранить и продолжить редактирование</button>
+                <button type="submit" class="btn btn-primary" name="save" value="save">Сохранить</button>
+                <button type="reset" class="btn">Отмена</button>
+            </div>
+        </fieldset>
+    </form>
+    {% include 'professionals_pages/administration/editor.html' %}
+{% endblock %}

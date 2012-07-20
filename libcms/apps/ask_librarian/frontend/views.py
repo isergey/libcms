@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404, Http404
 from common.pagination import get_page
 
 from ..models import Question,  Category, Recomendation
-from forms import QuestionForm, RecomendationForm
+from forms import QuestionForm, RecomendationForm, DateFilterForm
 
 def index(request):
     id =  request.GET.get('id', None)
@@ -31,10 +31,23 @@ def index(request):
     else:
         categories = list(Category.objects.all())
 
-    if categories:
-        questions_page = get_page(request, Question.objects.filter(category__in=categories, status=1).order_by('-create_date'), 10)
+    filtered_by_date = False
+
+    if request.method == 'POST':
+        date_filter_form = DateFilterForm(request.POST)
+        if date_filter_form.is_valid():
+            date =  date_filter_form.cleaned_data['date']
+            questions_page = get_page(request, Question.objects.filter(create_date__year=date.year,create_date__month=date.month, create_date__day=date.day).order_by('-id'), 10)
+            filtered_by_date = True
     else:
-        questions_page = get_page(request, Question.objects.filter(status=1).order_by('-create_date'), 10)
+        date_filter_form = DateFilterForm()
+
+
+    if not filtered_by_date:
+        if categories:
+            questions_page = get_page(request, Question.objects.filter(category__in=categories, status=1).order_by('-create_date'), 10)
+        else:
+            questions_page = get_page(request, Question.objects.filter(status=1).order_by('-create_date'), 10)
     questions_page.object_list = list(questions_page.object_list)
     cd = {}
 
@@ -45,10 +58,13 @@ def index(request):
         if question.category_id in cd:
             question.category = cd[question.category_id]
 
+
+
     return render(request, 'ask_librarian/frontend/questions_list.html', {
         'questions_page': questions_page,
         'category': category,
-        'categories': categories
+        'categories': categories,
+        'date_filter_form': date_filter_form
     })
 
 
@@ -75,6 +91,12 @@ def detail(request, id):
         'recomendations': recomendations
     })
 
+def printed_detail(request, id):
+    question = get_object_or_404(Question, id=id)
+    return render(request, 'ask_librarian/frontend/printed_detail.html', {
+        'question': question,
+    })
+
 @transaction.commit_on_success
 def ask(request):
     if request.method == 'POST':
@@ -88,7 +110,16 @@ def ask(request):
                 'question': question,
             })
     else:
-        form = QuestionForm()
+        if request.user.is_authenticated():
+            form = QuestionForm(
+                initial={
+                    'fio': request.user.last_name + u' ' + request.user.first_name,
+                    'email': request.user.email,
+                }
+            )
+        else:
+            form = QuestionForm()
+
 
     return render(request, 'ask_librarian/frontend/ask.html', {
         'form': form

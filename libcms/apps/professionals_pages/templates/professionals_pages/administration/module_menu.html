@@ -1,0 +1,6 @@
+{% load active_link %}
+<ul class="nav nav-list">
+    <li class="nav-header">Страницы</li>
+    <li class="{% active 'professionals_pages:administration:pages_list' %}"><a href="{% url professionals_pages:administration:pages_list %}">Список</a></li>
+    <li class="{% active_path 'professionals_pages:administration:create_page' %}"><a href="{% url professionals_pages:administration:create_page %}">Добавить</a></li>
+</ul>

@@ -390,6 +390,18 @@ def item_delete(request, menu_id, id):
     item = get_object_or_404(MenuItem, id=id)
     item.delete()
     return redirect('menu:administration:item_list', menu_id=menu_id)
+
+
+def item_up(request, menu_id, id):
+    item = get_object_or_404(MenuItem, id=id)
+    item.up()
+    return redirect('menu:administration:item_list', menu_id=menu_id)
+
+def item_down(request, menu_id, id):
+    item = get_object_or_404(MenuItem, id=id)
+    item.down()
+    return redirect('menu:administration:item_list', menu_id=menu_id)
+
 #@login_required
 #@permission_required_or_403('menus.public_menu')
 #def toggle_menu_public(request, id):
@@ -469,7 +481,6 @@ def item_delete(request, menu_id, id):
 #    })
 #
 #
-
 
 
 

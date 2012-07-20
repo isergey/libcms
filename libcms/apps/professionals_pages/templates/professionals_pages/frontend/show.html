@@ -1,0 +1,29 @@
+{% extends 'professionals/frontend/index.html' %}
+{% load localeurl_tags %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block  breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url professionals:frontend:index %}">Проф. страница</a> <span class="divider">/</span></li>
+
+        {% for ancestor in content.page.get_ancestors_titles %}
+            <li><a href="{% url professionals_pages:frontend:show ancestor.url_path %}">
+                {% if not ancestor.title %}
+                    {{ ancestor }}
+                {% else %}
+                    {{ ancestor.title }}
+                {% endif %}
+            </a> <span class="divider">/</span></li>
+        {% endfor %}
+        <li>
+            {% if not content.title %}
+                заглавие страницы для этого языка не указано.
+            {% else %}
+                {{ content.title }}
+            {% endif %}
+        </li>
+    </ul>
+{% endblock %}
+{% block index_content %}
+    {{ content.content|safe }}
+{% endblock %}

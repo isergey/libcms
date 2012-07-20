@@ -1,0 +1,107 @@
+{#{% extends 'forum_base.html' %}#}
+{#{% load i18n %}#}
+{#{% block title %}{% trans 'Forums list' %}{% trans 'Forum permissions' %}{% endblock %}#}
+{#{% block content %}#}
+{#    <h3>Редактирование прав доступа для страницы</h3>#}
+{#    <hr/>#}
+{#    <div class="span12">#}
+{#        <p>{% trans 'Select group for edit permissions' %}</p>#}
+{#        <ul>#}
+{#            {% for group in groups %}#}
+{#                <li><a href="{% url forum:frontend:assign_forum_permissions forum.id group.id %}">{{ group.name }}</a></li>#}
+{#            {% endfor %}#}
+{#        </ul>#}
+{#    </div>#}
+{##}
+{#{% endblock %}#}
+
+{% extends 'pages/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    {% breadcrumb "Страницы" pages:administration:pages_list %}
+    {% breadcrumb "Редактирование прав доступа" %}
+
+{% endblock %}
+
+{% block action_content %}
+    <style type="text/css">
+        #groups_form{
+            margin: 0;
+        }
+        #groups_form ul {
+            list-style: none;
+
+        }
+    </style>
+<h3>
+    <a href="{% url pages:administration:index %}">Страницы</a> →
+    {% if page.parent_id %}
+        <a href="{% url pages:administration:pages_list page.parent_id %}">
+            {% if not page.parent.get_cur_lang_content %}
+                {{ page.parent }}
+            {% else %}
+                {{ page.parent.get_cur_lang_content }}
+            {% endif %}
+        </a> →
+        {% for ancestor in page.parent.get_ancestors %}
+            <a href="{% url pages:administration:pages_list ancestor.id %}">
+                {% if not ancestor.get_cur_lang_content %}
+                    {{ ancestor }}
+                {% else %}
+                    {{ ancestor.get_cur_lang_content }}
+                {% endif %}
+            </a> →
+        {% endfor %}
+    {% endif %}
+    {% if not page.get_cur_lang_content %}
+        {{ page.slug }}
+    {% else %}
+        {{ page.get_cur_lang_content }}
+    {% endif %}
+
+</h3>
+<hr/>
+<h3>Редактирование прав доступа для страницы</h3>
+<div class="alert"><b>Внимание!</b> Изменения прав доступа распространяются на дочерние страницы</div>
+<hr/>
+    <ul style="list-style: none; margin: 0">
+        <li><a data-toggle="modal" href="#myModal" id='perm_view_page'>Просмотр страницы</a></li>
+    </ul>
+
+{##}
+    <div id="myModal" class="modal hide" style="display: none; ">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h3>Укажите группы, пользователи которых смогут просматривать эту страницу</h3>
+        </div>
+        <div class="modal-body">
+            <form action="" id="groups_form">
+                <fieldset>
+                    {{ groups_form }}
+                    <div class="form-actions">
+                        <input type="submit" value="Сохранить" class="btn" id='groups_form_submit'>
+                    </div>
+                </fieldset>
+
+            </form>
+        </div>
+
+    </div>
+    <script type="text/javascript">
+    $('#groups_form').submit(function(){
+        $.ajax({
+            url: '{% url pages:administration:assign_page_permissions page.id %}',
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(data) {
+                alert('Права сохранены');
+            }
+        });
+        return false;
+    });
+    </script>
+{% endblock %}

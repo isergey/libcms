@@ -1,0 +1,47 @@
+{% extends 'theme_frontend_base.html' %}
+{% load ask_librarian_tags %}
+{% load cache %}
+{% block title %}Спроси библиотекаря{% endblock %}
+
+{% block content %}
+        <div class="span12">
+            {% block breadcrumb %}
+                <ul class="breadcrumb">
+                    <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+                    <li>Спроси библиотекаря</li>
+                </ul>
+            {% endblock %}
+        </div>
+
+        <div class="span3">
+        <a style="display: block; padding: 15px 0 15px 0" class="btn btn-success" href="{% url ask_librarian:frontend:ask %}">Задать вопрос</a>
+            {% cache 30 questions_category_menu %}
+                {% drow_categories_tree %}
+            {% endcache %}
+        </div>
+        <div class="span9">
+            {% block index_content %}
+
+            {% endblock %}
+        </div>
+{#    <ul class="breadcrumb">#}
+{#        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>#}
+{#        {% for ancestor in content.page.get_ancestors_titles %}#}
+{#            <li><a href="{% url pages:frontend:show ancestor.url_path %}">#}
+{#                {% if not ancestor.title %}#}
+{#                    {{ ancestor }}#}
+{#                {% else %}#}
+{#                    {{ ancestor.title }}#}
+{#                {% endif %}#}
+{#            </a> <span class="divider">/</span></li>#}
+{#        {% endfor %}#}
+{#        <li>#}
+{#            {% if not content.title %}#}
+{#                заглавие страницы для этого языка не указано.#}
+{#            {% else %}#}
+{#                {{ content.title }}#}
+{#            {% endif %}#}
+{#        </li>#}
+{#    </ul>#}
+{#    {{ content.content|safe }}#}
+{% endblock %}

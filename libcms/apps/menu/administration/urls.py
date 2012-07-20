@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import *
+from django.conf.urls.defaults import *
 
 import views
 
@@ -13,6 +13,8 @@ urlpatterns = patterns('',
     url(r'^menu/(?P<menu_id>\d+)/items/(?P<parent>\d+)/create/$', views.create_item, name="item_create"),
     url(r'^menu/(?P<menu_id>\d+)/items/edit/(?P<id>\d+)/$', views.item_edit, name="item_edit"),
     url(r'^menu/(?P<menu_id>\d+)/items/delete/(?P<id>\d+)/$', views.item_delete, name="item_delete"),
+    url(r'^menu/(?P<menu_id>\d+)/items/up/(?P<id>\d+)/$', views.item_up, name="item_up"),
+    url(r'^menu/(?P<menu_id>\d+)/items/down/(?P<id>\d+)/$', views.item_down, name="item_down"),
 #    url(r'^pages/(?P<parent>\d+)/$', views.pages_list, name="pages_list"),
 #    url(r'^pages/create/$', views.create_page , name="create_page"),
 #    url(r'^pages/create/(?P<parent>\d+)/$', views.create_page , name="create_page"),

@@ -1,0 +1,41 @@
+{% extends 'professionals_news/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Проф. Новости" professionals_news:administration:index %}
+    {% breadcrumb "Список" %}
+{% endblock %}
+
+{% block action_content %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Новость</th>
+            <th class="span2">Дата создания</th>
+            <th class="span2">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for news in news_list %}
+
+            <tr>
+                <td><a href="{% url professionals_news:administration:edit_news news.id %}">{{ news.news_content.title }}</a></td>
+                <td>{{ news.create_date }}</td>
+                <td><a class="delete btn btn-danger"  href="{% url professionals_news:administration:delete_news news.id %}"><i class="icon-trash icon-white" title="Удалить"></i></a></td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+    {% admin_pagination news_page %}
+    <script type="text/javascript">
+        $("a.delete").click(function () {
+            if (!confirm('Вы уверены, что хотите удалить?')) return false;
+        });
+    </script>
+{% endblock %}
+
+

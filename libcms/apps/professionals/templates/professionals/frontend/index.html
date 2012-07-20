@@ -1,0 +1,32 @@
+{% extends 'theme_frontend_base.html' %}
+{% load professionals_pages_tags %}
+{% load news_tags %}
+{% load events_tags %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block index_content %}
+    <style type="text/css">
+        .prof_menu ul{
+            list-style: none;
+        }
+        .prof_menu>ul{
+            margin: 0;
+        }
+    </style>
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Проф. страница</li>
+    </ul>
+        <div class="span2">
+
+                <div class="prof_menu">
+                    {% professionals_pages_tree %}
+                    <hr/>
+                </div>
+        </div>
+        <div class="span10">
+            {% block content %}wefwefwef{% endblock %}
+        </div>
+
+{% endblock %}

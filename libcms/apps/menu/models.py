@@ -40,6 +40,15 @@ class MenuItem(MPTTModel):
     def __unicode__(self):
         return self.title()
 
+    def up(self):
+        previous = self.get_previous_sibling()
+        if previous:
+            self.move_to(previous, position='left')
+
+    def down(self):
+        next = self.get_next_sibling()
+        if next:
+            self.move_to(next, position='right')
 
 class MenuItemTitle(models.Model):
     item = models.ForeignKey(MenuItem)

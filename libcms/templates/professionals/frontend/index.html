@@ -1,0 +1,58 @@
+{% extends 'theme_frontend_base.html' %}
+{% load professionals_pages_tags %}
+{% load professionals_news_tags %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block content %}
+    <style type="text/css">
+        .prof_menu ul{
+            list-style: none;
+        }
+        .prof_menu>ul{
+            margin: 0;
+        }
+        .prof_news_feed ul{
+            list-style: none;
+            margin: 0;
+        }
+        .prof_news_feed .title{
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .prof_news_feed .teaser{
+            padding: 5px 0;
+        }
+        .prof_news_feed .create_date{
+            color: #8c8c8c;
+        }
+    </style>
+    <div class="span12">
+    {% block  breadcrumbs %}
+        <ul class="breadcrumb">
+            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li class="active">Проф. страница</li>
+        </ul>
+    {% endblock %}
+    </div>
+
+        <div class="span2">
+
+                <div class="prof_menu">
+                    {% professionals_pages_tree %}
+                    <hr/>
+                </div>
+        </div>
+        <div class="span10">
+            {% block index_content %}
+
+                <div class="prof_news_feed">
+                {% professionals_news_feed %}
+                </div>
+                <div>
+                    <a href="{% url professionals_news:frontend:index %}" class="btn" style="margin-top: 10px;">Остальные новости</a>
+                </div>
+            {% endblock %}
+        </div>
+
+{% endblock %}

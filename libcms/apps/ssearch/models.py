@@ -131,15 +131,15 @@ class Ebook(models.Model):
         db_table = 'ebooks'
 
 
-
+class DetailAccessLog(models.Model):
+    gen_id = models.CharField(max_length=64, db_index=True, verbose_name=u'Документ, к которому было произведено обращение')
+    catalog = models.CharField(max_length=32, db_index=True, verbose_name=u'Каталог, в котором находиться документ')
+    date_time = models.DateTimeField(db_index=True, auto_now_add=True, verbose_name=u'Время обращения')
 
 class SavedRequest(models.Model):
     user = models.ForeignKey(User, related_name='saved_request_user')
     search_request = models.CharField(max_length=1024)
     add_time = models.DateTimeField(auto_now_add=True)
-
-
-
 
 
 DEFAULT_LANG_CHICES = (

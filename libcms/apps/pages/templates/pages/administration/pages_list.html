@@ -44,6 +44,8 @@
     <ul class="list" style="list-style: none; padding: 0; margin: 0">
     {% for page in pages %}
         <li>
+            <a class="btn btn-warning" title="Настройка прав доступа" href="{% url pages:administration:page_permissions page.id %}"><i class="icon-lock"></i></a>
+
             {% if not page.public %}
                 <span class="title not_public">
                 <i class="icon-eye-close" title="Не опубликовано"></i>

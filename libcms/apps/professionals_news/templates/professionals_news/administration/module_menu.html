@@ -1,0 +1,6 @@
+{% load active_link %}
+<ul class="nav nav-list">
+    <li class="nav-header">Новости</li>
+    <li class="{% active 'professionals_news:administration:news_list' %}"><a href="{% url professionals_news:administration:news_list %}">Список</a></li>
+    <li class="{% active_path 'professionals_news:administration:create_news' %}"><a href="{% url professionals_news:administration:create_news %}">Создать новость</a></li>
+</ul>

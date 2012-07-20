@@ -1,0 +1,38 @@
+{% extends 'professionals/frontend/index.html' %}
+{% load pagination_tag %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block  breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url professionals:frontend:index %}">Проф. страница</a> <span class="divider">/</span></li>
+        <li class="active">Проф. новости</li>
+    </ul>
+{% endblock %}
+{% block index_content %}
+
+    <style>
+        ul.news {
+            list-style: none;
+            margin: 0;
+        }
+        .news .title{
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .news .teaser{
+            padding: 5px 0;
+        }
+        .news .create_date{
+            color: #8c8c8c;
+        }
+    </style>
+    <ul class="news">
+    {% for news in news_list %}
+        <div class="title"><a href="{% url professionals_news:frontend:show news.id %}">{{ news.news_content.title }}</a></div>
+        <div class="teaser">{{ news.news_content.teaser }}</div>
+        <div class="create_date">{{ news.create_date }}</div>
+{#        <li><a href="{% url professionals_news:frontend:show news.id %}?back={{ request.get_full_path }}">{{ news.news_content.title }}</a></li>#}
+    {% endfor %}
+    </ul>
+    {% admin_pagination news_page %}
+{% endblock %}

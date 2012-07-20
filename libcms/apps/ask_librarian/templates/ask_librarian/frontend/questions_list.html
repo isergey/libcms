@@ -27,9 +27,33 @@
 
 {% endblock %}
 {% block content %}
-    <form action="" method="GET">
-        Перейти к вопросу №: <input type="text" style=" width: 50px;" name="id"/> <input type="submit" value="Перейти" class="btn"/>
-    </form>
+    <div class="row">
+        <div class="span4">
+            <form action="" method="GET">
+                Перейти к вопросу №: <input type="text" style=" width: 50px;" name="id"/><br/>
+                <input type="submit" value="Перейти" class="btn"/>
+            </form>
+        </div>
+        <div class="span5">
+            <form action="" method="POST">{% csrf_token %}
+                Найти вопросы по дате:
+                {% for field in date_filter_form.visible_fields %}
+                    <div class="control-group {% if field.errors %}error{% endif %}">
+                        <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                        <div class="controls">
+                            {{ field }}
+                            {% if field.errors %}
+                                {{ field.errors }}
+                            {% endif %}
+                            {% if  field.help_text %}<p class="help-block">{{ field.help_text }}</p>{% endif %}
+                        </div>
+
+                    </div>
+                {% endfor %}
+                <input type="submit" value="Найти" class="btn"/>
+            </form>
+        </div>
+    </div>
     <hr/>
     <ul style="list-style: none; padding: 0; margin: 0;">
     {% for question in questions_page.object_list %}

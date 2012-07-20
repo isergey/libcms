@@ -11,7 +11,7 @@ from django.core.cache import cache
 from django.shortcuts import render, HttpResponse, get_object_or_404, Http404, urlresolvers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import  QueryDict
-from ..models import Record, Ebook, SavedRequest
+from ..models import Record, Ebook, SavedRequest, DetailAccessLog
 
 from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
 ## на эти трансформаторы ссылаются из других модулей
@@ -253,7 +253,6 @@ def terms_constructor(attrs, values):
 def search(request, catalog=None):
 
     search_attrs = _make_search_attrs(catalog)
-
     search_deep_limit = 5 # ограничение вложенных поисков
     solr = sunburnt.SolrInterface(settings.SOLR['host'])
 
@@ -293,16 +292,17 @@ def search(request, catalog=None):
     except IndexError:
         return HttpResponse(u'Некорректный набор атрибутов')
 
-
     query = None
+    if len(terms) == 1 and 'text_t' in terms[0] and terms[0]['text_t'] == '*':
+        terms = [{u'*': u'*'}]
+
 
     for term in terms[:search_deep_limit]:
         # если встретилось поле с текстом, то через OR ищем аналогичное с постфиксом _ru
         morph_query = None
         attr = term.keys()[0]
-        if len(attr) > 2 and attr[-2:] == '_t':
+        if len(attr) > 2 and attr[-2:] == '_t' and term.values()[0] != u'*':
             morph_query = solr.Q(**{attr + '_ru': term.values()[0]})
-
         if not query:
             if morph_query:
                 query = solr.Q(solr.Q(**term) | morph_query)
@@ -435,6 +435,68 @@ def search(request, catalog=None):
         'search_attrs': search_attrs
     })
 
+from levenshtein import levenshtein
+
+def compare(word1, word2):
+    word1 = word1.strip().lower().replace(u' ', u'')
+    word2 = word2.strip().lower().replace(u' ', u'')
+    word1_len = len(word1)
+    word2_len = len(word2)
+    lev =  levenshtein(word1, word2)
+    if lev == 0:
+        return 1.0
+    else:
+        if word1_len > word2_len:
+            return (float(lev) / word1_len) * 1 / (float(lev) / word2_len)
+        else:
+            return (float(lev) / word2_len) * 1 / (float(lev) / word1_len)
+
+def statictics(request):
+    collections = [
+        {u'Фонд И.А.Второва': 915},
+        {u'Фонд Второва': 239},
+        {u'Коллекция И. А.Сахарова': 96},
+        {u'Фонд И. А. Второва': 34},
+        {u'Коллекция И. А. Сахарова': 31},
+        {u'Коллекция И.А.Сахарова': 27},
+        {u'Татарика ': 20},
+        {u'И. А. Сахарова': 20},
+        {u'Фонд И.А. Второва': 3},
+        {u'Фонд И.А.Второва ': 2},
+        {u'Коллекция И. А. Сахарва': 1},
+    ]
+
+
+    solr = sunburnt.SolrInterface(settings.SOLR['host'])
+    facet_fields = ['fond_sf' ]
+    qkwargs = {'*':'*'}
+    solr_searcher = solr.query(**qkwargs).paginate(start=0, rows=0)
+    exclude_kwargs = {'system-catalog_s':u"sc2"}
+    solr_searcher = solr_searcher.exclude(**exclude_kwargs)
+    solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=30, mincount=1)
+    solr_searcher = solr_searcher.field_limit("id")
+    response = solr_searcher.execute()
+    collections = []
+    for key in response.facet_counts.facet_fields.keys():
+        for val in response.facet_counts.facet_fields[key]:
+            collections.append({val[0]: val[1]})
+
+
+    deleted = True
+    while deleted:
+        deleted = False
+        for i, col in enumerate(collections):
+            for col2 in collections[i+1:]:
+                if compare(col.keys()[0], col2.keys()[0]) > 0.95:
+                    col[col.keys()[0]] += col2[col2.keys()[0]]
+                    collections.remove(col2)
+                    deleted = True
+
+
+    for col in collections:
+        print col.keys()[0], col.values()[0]
+
+    return HttpResponse('Ok')
 
 def detail(request, gen_id):
 #    shards=['http://localhost:8983/solr','http://localhost:8982/solr']
@@ -460,17 +522,19 @@ def detail(request, gen_id):
 #
 #    for doc in mlt_docs:
 #        doc['record'] = records_dict.get(doc['id'])
-
+    catalog = None
     try:
         record = Record.objects.using('records').get(gen_id=gen_id)
+        catalog = 'records'
     except Record.DoesNotExist:
         try:
             record = Ebook.objects.using('records').get(gen_id=gen_id)
+            catalog = 'ebooks'
         except Record.DoesNotExist:
             raise Http404()
 
-
-
+#    DetailAccessLog(catalog=catalog, gen_id=record.gen_id).save()
+    DetailAccessLog.objects.create(catalog=catalog, gen_id=gen_id, date_time=datetime.datetime.now())
 
     doc_tree = etree.XML(record.content)
 
@@ -484,12 +548,13 @@ def detail(request, gen_id):
     if holders:
         # оставляем уникальных держателей
         doc['holders'] = list(set(holders))
-
+    access_count = DetailAccessLog.objects.filter(catalog=catalog, gen_id=record.gen_id).count()
     return render(request, 'ssearch/frontend/detail.html', {
         'doc_dump': bib_dump.replace('<b/>',''),
         'marc_dump': marc_dump,
         'doc': doc,
         'gen_id': gen_id,
+        'access_count': access_count
     })
 
 @login_required
