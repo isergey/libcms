@@ -309,7 +309,7 @@
                 <div class="row">
                     <ul style="list-style: none; padding: 0; margin: 0;" class="group">
                         {% for facet in facets %}
-                            <li><span class="facet_title">{{ facet|facet_title }}</span>
+                               <li><span class="facet_title">{{ facet|facet_title }}</span>
                                 <ul style="list-style: none">
                                     {% for value in facets|hash:facet %}
                                         {% if facet == 'date-of-publication' %}
