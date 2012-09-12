@@ -385,7 +385,8 @@ def _indexing(slug, reset=False):
             urls = doc.get('doc-id_s', None)
             if urls and type(urls) == list:
                 for url in doc.get('doc-id_s', None):
-                    full_text_file =  url.split('/')[-1]
+                    if url:
+                        full_text_file =  url.split('/')[-1]
             else:
                 full_text_file =  urls.split('/')[-1]
             if full_text_file:
