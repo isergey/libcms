@@ -388,7 +388,7 @@ def _indexing(slug, reset=False):
                     if url:
                         full_text_file =  url.split('/')[-1]
             else:
-                if url:
+                if urls:
                     full_text_file =  urls.split('/')[-1]
             if full_text_file:
                 text =  full_text_extract(full_text_file)
