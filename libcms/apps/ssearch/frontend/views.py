@@ -11,7 +11,7 @@ from django.core.cache import cache
 from django.shortcuts import render, HttpResponse, get_object_or_404, Http404, urlresolvers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import  QueryDict
-from ..models import Record, Ebook, SavedRequest, DetailAccessLog
+from ..models import Record, Ebook, SavedRequest, DetailAccessLog, Dublet, WrongRecord
 
 from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
 ## на эти трансформаторы ссылаются из других модулей
@@ -920,3 +920,96 @@ def dsearch(request, catalog=None):
         'search_request': json_search_breadcumbs,
         'search_attrs': search_attrs
     })
+
+@login_required
+def dublet_on_process(request):
+    if not request.user.is_staff:
+        return  HttpResponse('Fail')
+
+    key = request.GET.get('key', None)
+    if not key:
+        return  HttpResponse('no key')
+
+    try:
+        dublet = Dublet.objects.get(key=key)
+        return HttpResponse(u'{"response": "error"}')
+    except Dublet.DoesNotExist:
+        dublet = Dublet(key=key, owner=request.user, status=0)
+        dublet.save()
+        return HttpResponse(u'{"response": "ok"}')
+
+
+@login_required
+def dublet_on_complete(request):
+    if not request.user.is_staff:
+        return  HttpResponse('Fail')
+
+    if not request.user.is_staff:
+        return  HttpResponse('Fail')
+
+    key = request.GET.get('key', None)
+    if not key:
+        return  HttpResponse('no key')
+
+    try:
+        deublet = Dublet.objects.get(key=key)
+        deublet.status = 1
+        deublet.save()
+        return HttpResponse(u'{"response": "ok"}')
+    except Dublet.DoesNotExist:
+        return HttpResponse(u'{"response": "error"}')
+
+
+@login_required
+def to_wrong(request, gen_id):
+    if not request.user.is_staff:
+        return  HttpResponse('Fail')
+#    shards=['http://localhost:8983/solr','http://localhost:8982/solr']
+#    mlt_docs = []
+#    for shard in shards:
+#        solr = sunburnt.SolrInterface(shard)
+#        mlt_query = solr.query(id=gen_id).mlt(['author_t','subject-heading_t','title_t'],mindf='1', mintf='1')
+##        mlt_query = solr.query(id=gen_id).mlt(["text_t"],mindf='1', mintf='1')
+#        mlt_results = mlt_query.execute().more_like_these
+#        if gen_id in mlt_results:
+#            for doc in  mlt_results[gen_id].docs:
+#                mlt_docs.append(doc)
+#
+#    doc_ids = []
+#    for doc in mlt_docs:
+#        doc_ids.append(doc['id'])
+#
+#    records_dict = {}
+#    records =  list(Ebook.objects.using('records').filter(gen_id__in=doc_ids))
+#    records +=  list(Record.objects.using('records').filter(gen_id__in=doc_ids))
+#    for record in records:
+#        records_dict[record.gen_id] = xml_doc_to_dict(record.content)
+#
+#    for doc in mlt_docs:
+#        doc['record'] = records_dict.get(doc['id'])
+    key = request.GET.get('key', None)
+    if not key:
+        return HttpResponse(u'{"response": "error"}')
+
+    try:
+        dublet = Dublet.objects.get(key=key)
+    except Dublet.DoesNotExist:
+        return HttpResponse(u'{"response": "error"}')
+    catalog = None
+    try:
+        record = Record.objects.using('records').get(gen_id=gen_id)
+        catalog = 'records'
+    except Record.DoesNotExist:
+        try:
+            record = Ebook.objects.using('records').get(gen_id=gen_id)
+            catalog = 'ebooks'
+        except Record.DoesNotExist:
+            raise Http404()
+
+    try:
+        wrong_record = WrongRecord.objects.get(gen_id)
+        return HttpResponse(u'{"response": "error"}')
+    except WrongRecord.DoesNotExist:
+        wrong_record = WrongRecord(key=dublet.key, gen_id=gen_id, catalog=catalog, record_id=record.record_id, sender=request.user)
+        dublet.save()
+        return HttpResponse(u'{"response": "ok"}')

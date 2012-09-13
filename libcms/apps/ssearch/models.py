@@ -411,3 +411,27 @@ class SearchRequestLog(models.Model):
     normalize = models.CharField(max_length=256, verbose_name=u'Нормализованный терм', db_index=True)
     not_normalize = models.CharField(max_length=256, verbose_name=u'Ненормализованный терм', db_index=True)
     datetime = models.DateTimeField(auto_now_add=True, auto_now=True, db_index=True)
+
+
+DUBLET_STATUSES = (
+    (0, u'На обработке'),
+    (1, u'Обработан'),
+)
+class Dublet(models.Model):
+    key = models.CharField(verbose_name=u'Ключ дублетности', db_index=True, unique=True, max_length=128)
+    statuc = models.IntegerField(choices=DUBLET_STATUSES, db_index=True)
+    change_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=u"Время изменения статуса")
+    owner = models.ForeignKey(User)
+
+CATALOGS_CHOICES = (
+    ('records', u'Сводный'),
+    ('ebooks', u'Электронная библиотека'),
+)
+class WrongRecord(models.Model):
+    gen_id = models.CharField(max_length=32, unique=True)
+    record_id = models.CharField(max_length=32, db_index=True)
+    key = models.CharField(verbose_name=u'Ключ дублетности', db_index=True, unique=True, max_length=128)
+    sender = models.ForeignKey(User)
+    catalog = models.CharField(choices=CATALOGS_CHOICES, db_index=True, max_length=16)
+    send_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=u"Время добавления статуса")
+

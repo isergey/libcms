@@ -4,7 +4,7 @@ import views
 import feeds
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
-    url(r'^d$', views.dindex, name='dindex'),
+    url(r'^d/$', views.dindex, name='dindex'),
     url(r'^rss/$', feeds.LatestEntriesFeed(), name='rss'),
     url(r'^ecatalog/$', views.index, name='ecatalog', kwargs={'catalog':'sc2'}),
     url(r'^ecollection/$', views.index, name='ecollection', kwargs={'catalog':'ebooks'}),
