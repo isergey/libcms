@@ -322,6 +322,7 @@ def search(request, catalog=None):
 
 
     facet_fields = ['author_sf', 'content-type_t','date-of-publication_dtf', 'subject-heading_sf', 'code-language_t', 'fond_sf' ]
+    facet_fields = ['dublet_sf' ]
     solr_searcher = solr.query(query)
     solr_searcher = solr_searcher.highlight(fields=['full-text'])
 
