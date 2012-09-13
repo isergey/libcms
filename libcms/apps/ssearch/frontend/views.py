@@ -116,6 +116,12 @@ attr_map = {
         'title':u'Фонд',
         'display': False,
         },
+    'dublet': {
+        'order': 12,
+        'attr': u'dublet_sf',
+        'title':u'Ключ дублетности',
+        'display': False,
+        },
     }
 
 
