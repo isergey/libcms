@@ -829,7 +829,7 @@ def dsearch(request, catalog=None):
 
     facets = cache.get(terms_facet_hash, None)
     if not facets:
-        solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=10000, mincount=2)
+        solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=20000, mincount=2)
 
     solr_searcher = solr_searcher.field_limit("id")
     paginator = Paginator(solr_searcher, 20) # Show 25 contacts per page
