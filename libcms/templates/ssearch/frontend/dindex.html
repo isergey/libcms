@@ -244,7 +244,7 @@
                 <ul class="list">
                     {% for doc in docs %}
                         <li class="textBook">
-                            <p class="item1"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}{% if  doc.record.title.0 == ''  %}[заглавия нет]{% endif %} ></a></p>
+                            <p class="item1"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}{% if  doc.record.title.0|cut:" " == ''  %}[заглавия нет]{% endif %} ></a></p>
                             <p class="item2">
                                 {% for author in doc.record.author %}
                                     {{ author }}{% if not forloop.last %}; {% endif %}
