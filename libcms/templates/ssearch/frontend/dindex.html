@@ -312,17 +312,7 @@
                                <li><span class="facet_title">{{ facet|facet_title }}</span>
                                 <ul style="list-style: none">
                                     {% for value in facets|hash:facet %}
-                                        {% if facet == 'date-of-publication' %}
-                                            <li class="child"><a href="{% add_get_append q=value.0|date_from_isostring|date:"Y" attr='date-of-publication' %}">{{ value.0|date_from_isostring|date:"Y" }}</a> (<b>{{ value.1 }}</b>)</li>
-                                        {% elif facet == 'content-type' %}
-                                            <li class="child"><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>
-                                        {% elif facet == 'subject-heading' %}
-                                            <li class="child"><a href="{% add_get_append q=value.0 attr=facet %}">{{ value.0|lower|capfirst }}</a> (<b>{{ value.1 }}</b>)</li>
-                                        {% elif facet == 'code-language' %}
-                                            <li class="child"><a href="{% add_get_append q=value.0 attr='code-language' %}">{{ value.0|language_title }}</a> (<b>{{ value.1 }}</b>)</li>
-                                        {% else %}
-                                            <li class="child"><a href="{% add_get_append q=value.0 attr=facet %}">{{ value.0 }}</a> (<b>{{ value.1 }}</b>)</li>
-                                        {% endif %}
+                                        <li class="child"><a href="?attr=dublet&q={{value.0 }}">{{ value.0 }}</a> (<b>{{ value.1 }}</b>)</li>
                                     {% empty %}
                                         <li style="color: #808080;">сведений нет</li>
                                     {% endfor %}
