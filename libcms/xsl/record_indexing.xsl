@@ -216,6 +216,7 @@ dtf - фасет даты
     <xsl:call-template name="Subject-heading-facet"/>
     <xsl:call-template name="Date-of-publication-facet"/>
     <xsl:call-template name="Fond-facet"/>
+    <xsl:call-template name="Dublet-facet"/>
 </xsl:template>
 
 
@@ -1048,6 +1049,13 @@ dtf - фасет даты
     </xsl:for-each>
 </xsl:template>
 
+<xsl:template name="Dublet-facet">
+    <xsl:for-each select="field[@id='998']/subfield[@id='a']">
+            <field name="dublet_sf">
+                <xsl:value-of select="."/>
+            </field>
+    </xsl:for-each>
+</xsl:template>
 </xsl:stylesheet>
 
 

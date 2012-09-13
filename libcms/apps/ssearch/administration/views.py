@@ -330,11 +330,10 @@ def _indexing(slug, reset=False):
     elif reset:
         select_query = "SELECT * FROM %s where deleted = 0" % (settings.SOLR['catalogs'][slug]['table'],)
     else:
-        select_query = "SELECT * FROM %s where (update_date > '%s' or  update_date = '%s') and deleted = 0" % \
+        select_query = "SELECT * FROM %s where update_date >= '%s' and deleted = 0" % \
                        (
                            settings.SOLR['catalogs'][slug]['table'],
                            str(index_status.last_index_date),
-                           str(index_status.last_index_date)
                            )
 
 
