@@ -322,12 +322,9 @@ def _indexing(slug, reset=False):
     try:
         index_status = IndexStatus.objects.get(catalog=slug)
     except IndexStatus.DoesNotExist:
-        index_status = None
-
-    if not index_status and not reset:
         index_status = IndexStatus(catalog=slug)
-        select_query = "SELECT * FROM %s where deleted = 0" % (settings.SOLR['catalogs'][slug]['table'],)
-    elif reset:
+
+    if not getattr(index_status, 'last_index_date', None):
         select_query = "SELECT * FROM %s where deleted = 0" % (settings.SOLR['catalogs'][slug]['table'],)
     else:
         select_query = "SELECT * FROM %s where update_date >= '%s' and deleted = 0" % \
@@ -411,19 +408,19 @@ def _indexing(slug, reset=False):
     # удаление
     records = []
     if slug == 'sc2':
-        if IndexStatus(catalog=slug).last_index_date:
+        if getattr(index_status, 'last_index_date', None):
             records = Record.objects.using('records').filter(deleted=True, update_date__gte=index_status.last_index_date).values('gen_id')
         else:
-            records = Record.objects.using('records').filter(deleted=True).values('gen_id')
+            records = Record.objects.using('records').filter(deleted=True).values('gen_id', 'update_date')
     if slug == 'ebooks':
-        if IndexStatus(catalog=slug).last_index_date:
+        if getattr(index_status, 'last_index_date', None):
             records = Ebook.objects.using('records').filter(deleted=True, update_date__gte=index_status.last_index_date).values('gen_id')
         else:
-            records = Ebook.objects.using('records').filter(deleted=True).values('gen_id')
+            records = Ebook.objects.using('records').filter(deleted=True).values('gen_id', 'update_date')
 
 
     record_gen_ids = []
-    for record in records:
+    for record in list(records):
         record_gen_ids.append(record['gen_id'])
 
 

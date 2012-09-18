@@ -533,6 +533,9 @@ def detail(request, gen_id):
         # оставляем уникальных держателей
         doc['holders'] = list(set(holders))
     access_count = DetailAccessLog.objects.filter(catalog=catalog, gen_id=record.gen_id).count()
+
+    print request.META.get('REMOTE_ADDR', None)
+
     return render(request, 'ssearch/frontend/detail.html', {
         'doc_dump': bib_dump.replace('<b/>',''),
         'marc_dump': marc_dump,
