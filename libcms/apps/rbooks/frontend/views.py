@@ -12,13 +12,16 @@ from django.views.decorators.cache import never_cache
 from ..models import in_internal_ip
 
 class AccessDenied(Exception): pass
+
 @never_cache
 def show(request, book):
     try:
         book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
     except AccessDenied as e:
         return HttpResponse(e.message + u' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
-    print book_path
+    if not book_path:
+        raise Http404(u'Книга не найдена')
+
     cur_language = translation.get_language()
     locale_titles = {
         'ru': 'ru_RU',
@@ -37,7 +40,8 @@ def book(request, book):
         book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
     except AccessDenied as e:
         return HttpResponse(e.message + u' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
-
+    if not book_path:
+        raise Http404(u'Книга не найдена')
     token1 = request.GET.get('token1')
     xml = """\
 <Document Version="1.0">\
@@ -64,7 +68,7 @@ def book(request, book):
 @never_cache
 def draw(request, book):
     part = request.GET.get('part')
-    book_path = None
+
     try:
         book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
     except AccessDenied as e:
