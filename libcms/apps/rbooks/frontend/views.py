@@ -11,10 +11,14 @@ from django.shortcuts import HttpResponse, Http404
 from django.views.decorators.cache import never_cache
 from ..models import in_internal_ip
 
-
+class AccessDenied(Exception): pass
 @never_cache
 def show(request, book):
-#    book = request.GET.get('book')
+    try:
+        book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
+    except AccessDenied as e:
+        return HttpResponse(e.message + u' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
+    print book_path
     cur_language = translation.get_language()
     locale_titles = {
         'ru': 'ru_RU',
@@ -29,8 +33,11 @@ def show(request, book):
     })
 @never_cache
 def book(request, book):
+    try:
+        book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
+    except AccessDenied as e:
+        return HttpResponse(e.message + u' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
 
-#    book = request.GET.get('book')
     token1 = request.GET.get('token1')
     xml = """\
 <Document Version="1.0">\
@@ -56,13 +63,31 @@ def book(request, book):
 
 @never_cache
 def draw(request, book):
-    REMOTE_ADDR = request.META.get('REMOTE_ADDR', '0.0.0.0')
-    internal_ip = cache.get('internal_ip' + REMOTE_ADDR, None)
-    if internal_ip == None:
-        internal_ip = in_internal_ip(REMOTE_ADDR)
-        cache.set('internal_ip' + REMOTE_ADDR, internal_ip)
-
     part = request.GET.get('part')
+    book_path = None
+    try:
+        book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
+    except AccessDenied as e:
+        return HttpResponse(e.message)
+
+
+    if not book_path:
+        raise Http404(u'Книга не найдена')
+    zf = ZipFile(book_path)
+
+    response = HttpResponse(mimetype="application/zip")
+    response["Content-Disposition"] = "attachment; filename=%s" % part
+    response.write(zf.read(part))
+
+    return response
+
+
+
+def get_book_path(book, remote_addr):
+    internal_ip = cache.get('internal_ip' + remote_addr, None)
+    if internal_ip == None:
+        internal_ip = in_internal_ip(remote_addr)
+        cache.set('internal_ip' + remote_addr, internal_ip)
 
     book_path_internet = None
     book_path_internal = None
@@ -74,8 +99,8 @@ def draw(request, book):
         settings.RBOOKS.get('dl_path') + book +'.edoc',
         )
     iternal_books = (
-        settings.RBOOKS.get('dl_path') + book +'.2.edoc',
-    ) + internet_books
+                        settings.RBOOKS.get('dl_path') + book +'.2.edoc',
+                        ) + internet_books
 
     if not internal_ip:
         for internet_book in internet_books:
@@ -95,17 +120,11 @@ def draw(request, book):
             book_path = book_path_internal
 
     if not book_path_internal and not book_path_internet:
-        raise Http404(u'Book not founded')
+        raise AccessDenied(u'Просмотр с вашего ip ареса запрещен.')
 
 
 
     if not book_path:
-        raise Http404(u'Book not founded for your network')
+        return None
 
-    zf = ZipFile(book_path)
-
-    response = HttpResponse(mimetype="application/zip")
-    response["Content-Disposition"] = "attachment; filename=%s" % part
-    response.write(zf.read(part))
-
-    return response
+    return book_path
