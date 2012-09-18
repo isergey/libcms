@@ -391,9 +391,10 @@ def _indexing(slug, reset=False):
                 text =  full_text_extract(full_text_file)
                 if text:
                     doc['full-text'] = text
+                    print 'doc text ' + str(len(docs))
         docs.append(doc)
         i+=1
-        if len(docs) > 200:
+        if len(docs) > 100:
             print i
             solr.add(docs)
             docs = list()
