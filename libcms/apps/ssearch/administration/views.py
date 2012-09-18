@@ -388,22 +388,17 @@ def _indexing(slug, reset=False):
                 if urls:
                     full_text_file =  urls.split('/')[-1]
             if full_text_file:
-                print full_text_file
                 text =  full_text_extract(full_text_file)
                 if text:
                     doc['full-text'] = text
-                    print 'doc text ' + str(len(docs)) + ' ' + str(len(text))
 
         docs.append(doc)
         i+=1
         if len(docs) > 20:
-            print 'add ' + str(len(docs))
             solr.add(docs)
-            print i
             docs = list()
-        print 'fetch '
         res = rows.fetch_row(how=1)
-        print 'ok '
+
 
     if docs:
         solr.add(docs)
