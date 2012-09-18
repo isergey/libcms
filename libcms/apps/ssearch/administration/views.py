@@ -388,10 +388,10 @@ def _indexing(slug, reset=False):
                 if urls:
                     full_text_file =  urls.split('/')[-1]
             if full_text_file:
+                print full_text_file
                 text =  full_text_extract(full_text_file)
                 if text:
                     doc['full-text'] = text
-                    print full_text_file
                     print 'doc text ' + str(len(docs))
         docs.append(doc)
         i+=1
