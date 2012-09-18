@@ -1,4 +1,5 @@
 # coding: utf-8
+import os
 import simplejson
 import MySQLdb
 import zlib
@@ -504,14 +505,24 @@ def add_sort_fields(doc):
 import zipfile
 def full_text_extract(zip_file_name):
 #    zip_file_name = settings.EBOOKS_STORE + zip_file_name
-    try:
-#        print settings.EBOOKS_STORE + zip_file_name + '.edoc'
-        file = zipfile.ZipFile( settings.EBOOKS_STORE + zip_file_name + '.edoc', "r")
+    book_pathes = (
+        settings.EBOOKS_STORE + zip_file_name + '.edoc',
+        settings.EBOOKS_STORE + zip_file_name + '.2.edoc',
+        settings.EBOOKS_STORE + zip_file_name + '.1.edoc',
+    )
+
+    book_file = None
+    for book_path in book_pathes:
+        if os.path.isfile(book_path):
+            book_file = book_path
+
+    if book_file:
+        file = zipfile.ZipFile( book_file, "r")
         # читаем содержимое, попутно вырезая ять в коне слова
         text =  file.read("Text.txt").decode('utf-8').replace(u'ъ ', u'').replace(u'ъ,', u',').replace(u'ъ.', u'.').replace(u'ъ:', u':').replace(u'ъ;', u';')
         file.close()
         return text
-    except IOError:
-        return None
+    return None
+
 
 
