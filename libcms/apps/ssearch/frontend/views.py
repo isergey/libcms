@@ -319,9 +319,11 @@ def search(request, catalog=None):
         return HttpResponse(u'Некорректный набор атрибутов')
 
     query = None
-    if len(terms) == 1 and 'text_t' in terms[0] and terms[0]['text_t'] == '*':
+    if len(terms) == 1 and 'text_t' in terms[0] and terms[0]['text_t'].strip() == '*':
         terms = [{u'*': u'*'}]
 
+    if len(terms) > 1 and u'*' in terms[0][terms[0].keys()[0]].strip() == u'*':
+        terms = terms[1:]
 
     for term in terms[:search_deep_limit]:
         # если встретилось поле с текстом, то через OR ищем аналогичное с постфиксом _ru
