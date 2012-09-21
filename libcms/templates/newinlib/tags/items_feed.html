@@ -4,6 +4,11 @@
     }
 </style>
 {% for item in items_list %}
+    {% if item.id_in_catalog %}
+        {% url ssearch:frontend:detail  item.id_in_catalog  as item_url%}
+    {% else %}
+        {%  url newinlib:frontend:show item.id as item_url %}
+    {% endif %}
 {%  url newinlib:frontend:show item.id as item_url %}
     <div class="thumbnail ">
         {% if item.avatar_img_name %}<div class="image"><a href="{{ item_url }}#item_title"><img src="{{ MEDIA_URL }}uploads/newinlib/itemavatars/{{ item.avatar_img_name }}" alt="{{ item.item_content.title }}"></a></div>{% endif %}
@@ -11,11 +16,7 @@
             <h4 style="margin-bottom: 10px;;">{{ item.item_content.title }}</h4>
 {#            <p>Николай Гоголь</p>#}
             {{ item.item_content.content|safe }}
-            {% if item.id_in_catalog %}
-                <p><a href="{% url ssearch:frontend:detail  item.id_in_catalog %}">подробнее</a></p>
-            {% else %}
-                <p><a href="{{ item_url }}">подробнее</a></p>
-            {% endif %}
+            <p><a href="{{ item_url }}">подробнее</a></p>
         </div>
         <div style="clear: both;"> </div>
     </div>
