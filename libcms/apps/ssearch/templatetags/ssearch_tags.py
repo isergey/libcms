@@ -4,6 +4,7 @@ from django.conf import settings
 import sunburnt
 import datetime
 from django.template import Library
+from django.utils.translation import get_language
 
 register = Library()
 
@@ -16,21 +17,70 @@ def date_from_isostring(isostring):
 
 
 facet_titles = {
-    'fond': u'Коллекция',
-    'title': u'Заглавие',
-    'author': u'Автор',
-    'content-type': u'Тип содержания',
-    'date-of-publication': u'Год публикации',
-    'subject-heading': u'Тематика',
-    'anywhere': u'Везде',
-    'code-language': u'Язык',
-    'text': u'Везде',
-    'full-text': u'Полный текст',
+    'fond': {
+        'ru':u'Коллекция',
+        'en':u'Collection',
+        'tt':u'Коллекция'
+    },
+    'title': {
+        'ru':u'Заглавие',
+        'en':u'Title',
+        'tt':u'Исем'
+    },
+    'author': {
+        'ru':u'Автор',
+        'en':u'Author',
+        'tt':u'Автор'
+    },
+    'content-type':{
+        'ru':u'Тип содержания',
+        'en':u'Content type',
+        'tt':u'Эчтәлек тибы'
+    },
+    'date-of-publication': {
+        'ru':u'Год публикации',
+        'en':u'Publication year',
+        'tt':u'Бастырып чыгару елы'
+    },
+    'subject-heading': {
+        'ru':u'Тематика',
+        'en':u'Subject',
+        'tt':u'Темасы'
+    },
+    'anywhere': {
+        'ru':u'Везде',
+        'en':u'Subject',
+        'tt':u'Hәр урында'
+    },
+    'code-language': {
+        'ru':u'Язык',
+        'en':u'Language',
+        'tt':u'Тел'
+    },
+    'text': {
+        'ru':u'Везде',
+        'en':u'Anywhere',
+        'tt':u'Везде'
+    },
+    'full-text': {
+        'ru':u'Полный текст',
+        'en':u'Full text',
+        'tt':u'Hәр урында'
+        },
 }
 
 @register.filter
 def facet_title(code):
-    return facet_titles.get(code, code)
+    lang=get_language()[:2]
+    title = facet_titles.get(code, code)
+    if type(title) == str and title == code:
+        return code
+
+    if lang in title:
+        return  title[lang]
+    else:
+        return  code
+
 
 content_type_titles = {
     'a': u'библиографическое издание',

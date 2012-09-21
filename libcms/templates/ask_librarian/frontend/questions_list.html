@@ -1,13 +1,15 @@
 {% extends 'ask_librarian/frontend/index.html' %}
 {% load pagination_tag %}
 {% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% block title %}Спроси библиотекаря{% endblock %}
 {% block breadcrumb %}
     <ul class="breadcrumb">
 
         <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
         {% if category %}
-            {% cache 30 questions_breadcrumb category.id %}
+            {% cache 30 questions_breadcrumb category.id LANGUAGE_CODE %}
             <li><a href="{% url ask_librarian:frontend:index %}">Спроси библиотекаря</a> <span class="divider">/</span></li>
 
                 {% if category.is_root_node %}
@@ -61,7 +63,7 @@
             {{ question.question }}<br/>
             {% if question.category_id %}
                 <b>
-                {% cache 30 questions_category question.category_id %}
+                {% cache 30 questions_category question.category_id  LANGUAGE_CODE %}
                     {% for ancestor in  question.category.get_t_ancestors %}
                         {{ ancestor }}  →
                     {% endfor %}

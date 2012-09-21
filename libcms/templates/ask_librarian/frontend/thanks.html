@@ -1,5 +1,7 @@
 {% extends 'ask_librarian/frontend/index.html' %}
 {% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% block title %}Спроси библиотекаря{% endblock %}
 {% block breadcrumb %}
     <ul class="breadcrumb">

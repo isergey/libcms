@@ -1,6 +1,8 @@
 {% extends 'theme_frontend_base.html' %}
 {% load ask_librarian_tags %}
 {% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% block title %}Спроси библиотекаря{% endblock %}
 
 {% block content %}
@@ -15,7 +17,7 @@
 
         <div class="span3">
         <a style="display: block; padding: 15px 0 15px 0" class="btn btn-success" href="{% url ask_librarian:frontend:ask %}">Задать вопрос</a>
-            {% cache 30 questions_category_menu %}
+            {% cache 30 questions_category_menu LANGUAGE_CODE %}
                 {% drow_categories_tree %}
             {% endcache %}
 

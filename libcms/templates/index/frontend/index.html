@@ -1,22 +1,24 @@
 {% extends 'theme_frontend_base.html' %}
+{% load i18n %}
 {% load news_tags %}
 {% load events_tags %}
 {% load ssearch_tags %}
 {% load participiants_tags %}
 {% load cache %}
+{% get_current_language as LANGUAGE_CODE %}
 {% block content %}
     <div class="span12" style="margin-bottom: 10px">
 {#        <div class="actions">#}
         <div class="actions">
             <div class="row">
                 <div class="span3" style="font-family: Sans Sherif; font-size: 18px;">
-                    Поиск по электронному каталогу и коллекциям
+                    {% if LANGUAGE_CODE == 'ru' %}Поиск по электронному каталогу и коллекциям{% elif LANGUAGE_CODE == 'tt' %}Электрон каталог һәм коллекцияләр буенча эзләү{% else %}Search in ecatalog and ecollections{% endif %}
                 </div>
                 <div class="span8">
                     <form  action="{% url ssearch:frontend:index %}" class="form-search" method="GET" style="margin: 0">
                         <div class="input-prepend">
                             <input type="hidden" name="attr" value="text">
-                            <input  name="q" class="span7" size="16" type="text"><input type="submit" class="btn btn-success" value="Поиск" style="width: 80px">
+                            <input  name="q" class="span7" size="16" type="text"><input type="submit" class="btn btn-success" value="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}" style="width: 80px">
                         </div>
                     </form>
                 </div>
@@ -42,9 +44,9 @@
                     </div>
                 </div>
                 <div class="span6">
-                    <h3>Новости <a href="{% url news:frontend:rss %}"><img src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a></h3>
+                    <h3 style="margin-top: -5px;">{% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}Яңалыклар{% else %}News{% endif %}<a href="{% url news:frontend:rss %}"> <img src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a></h3>
                     {% news_feed %}
-                    <a href="{% url news:frontend:index %}" class="last">Архив новостей</a>
+                    <a href="{% url news:frontend:index %}" class="last">{% if LANGUAGE_CODE == 'ru' %}Архив новостей{% elif LANGUAGE_CODE == 'tt' %}Архив новостей{% else %}News archive{% endif %}</a>
                 </div>
         </div>
         <div class="row">
@@ -64,7 +66,7 @@
                 }
             </style>
             <div class="incomes span6">
-                <h3 style="padding-top: 10px;">Последние поступления</h3>
+                <h3 style="padding-top: 10px;">{% if LANGUAGE_CODE == 'ru' %}Последние поступления{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}From new arrivals{% endif %}</h3>
                 <div class="row">
                     <div class="span6">
                         <div class="thumbnail ">
@@ -107,11 +109,11 @@
                     </div>
 
                 </div>
-                <div class="span6" style="text-align: center; font-size: 14px; padding-top: 10px;"><a href="#">Остальные новинки >></a></div>
+                <div class="span6" style="text-align: center; font-size: 14px; padding-top: 10px;"><a href="#">{% if LANGUAGE_CODE == 'ru' %}Остальные новинки{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}More new arrivals{% endif %} >></a></div>
             </div>
 
             <div class="span6">
-                <h3 style="margin: 10px 0 10px 0;">Карта библиотек</h3>
+                <h3 style="margin: 10px 0 10px 0;">{% if LANGUAGE_CODE == 'ru' %}Карта библиотек{% elif LANGUAGE_CODE == 'tt' %}Китапханәләр картасы{% else %}Map of libraries{% endif %}</h3>
 {#                <div class="thumbnail" id="map_canvas" style="width: 100%; height: 400px;">map div</div>#}
                 {% cbs_map %}
 {#                <h3 style="margin: 10px 0 10px 0;">О портале</h3>#}

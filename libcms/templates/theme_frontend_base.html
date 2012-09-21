@@ -4,7 +4,7 @@
 
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
+<html>
 <head>
     <meta charset="utf-8"/>
     <title>{% block title %}НЭБ РТ{% endblock %}</title>
@@ -24,9 +24,9 @@
                 </div>
                 <div class="span7">
                     <div style="position: absolute;">
-                        <a class="language" href="/ru{{ request.path|rmlocale }}">Рус</a> |
-                        <a class="language" href="/tt{{ request.path|rmlocale }}">Тат</a> |
-                        <a class="language" href="/en{{ request.path|rmlocale }}">Eng</a>
+                        <a class="language" href="/ru{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Рус</a> |
+                        <a class="language" href="/tt{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Тат</a> |
+                        <a class="language" href="/en{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Eng</a>
                     </div>
 
                     {% if request.user.is_authenticated %}
@@ -95,10 +95,22 @@
     <div class="container" id="footer">
         <div class="row">
             <div class="span3" id="footer-logo">
-                <p>Национальная</p>
-                <p style="font-size: 22px;">ЭЛЕКТРОННАЯ</p>
-                <p style="font-size: 22px;">БИБЛИОТЕКА</p>
-                <p>Республики Татарстан</p>
+                {% if LANGUAGE_CODE == 'ru' %}
+                    <p>Национальная</p>
+                    <p style="font-size: 22px;">ЭЛЕКТРОННАЯ</p>
+                    <p style="font-size: 22px;">БИБЛИОТЕКА</p>
+                    <p>Республики Татарстан</p>
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    <p>Татарстан Республикасының</p>
+                    <p>Милли</p>
+                    <p style="font-size: 22px;">Электрон</p>
+                    <p style="font-size: 22px;">Китапханәсе</p>
+                {% else %}
+                    <p>National</p>
+                    <p style="font-size: 22px;">Electronic</p>
+                    <p style="font-size: 22px;">Library</p>
+                    <p>Republic of Tatarstan</p>
+                {% endif %}
             </div>
             <style>
                 #footer-links .column a {
@@ -121,20 +133,20 @@
             <div class="span9" id="footer-links">
 
                 <div class="column">
-                    <a href="#">Главная</a><br/>
-                    <a href="#">О проекте</a>
+                    <a href="/{{ LANGUAGE_CODE }}">{% if LANGUAGE_CODE == 'ru' %}Главная{% elif LANGUAGE_CODE == 'tt' %}Главная{% else %}Main{% endif %}</a><br/>
+                    <a href="{% url pages:frontend:show 'index' %}">{% if LANGUAGE_CODE == 'ru' %}О проекте{% elif LANGUAGE_CODE == 'tt' %}Проект турында{% else %}About{% endif %}</a>
                 </div>
                 <div class="column">
-                    <a href="#">Спроси библиотекаря</a><br/>
-                    <a href="#">Электронные каталоги</a>
+                    <a href="{% url ask_librarian:frontend:index %}">{% if LANGUAGE_CODE == 'ru' %}Спроси библиотекаря{% elif LANGUAGE_CODE == 'tt' %}Китапханәчедән сора{% else %}Ask librarian{% endif %}</a><br/>
+                    <a href="{% url ssearch:frontend:ecatalog %}">{% if LANGUAGE_CODE == 'ru' %}Электронный каталог{% elif LANGUAGE_CODE == 'tt' %}Электрон каталог{% else %}Electronic catalogue{% endif %}</a>
                 </div>
                 <div class="column">
-                    <a href="#">Электронные коллекции</a><br/>
-                    <a href="#">Отзывы</a>
+                    <a href="{% url ssearch:frontend:ecollection %}">{% if LANGUAGE_CODE == 'ru' %}Электронные коллекции{% elif LANGUAGE_CODE == 'tt' %}Электрон коллекцияләр{% else %}Electronic collections{% endif %}</a><br/>
+                    <a href="{% url guestbook:frontend:index %}">{% if LANGUAGE_CODE == 'ru' %}Отзывы{% elif LANGUAGE_CODE == 'tt' %}Фикерләр{% else %}Feedbacks{% endif %}</a>
                 </div>
                 <div class="column">
-                    <a href="#">Новости</a><br/>
-                    <a href="#">Профессионалам</a>
+                    <a href="{% url news:frontend:index %}">{% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}Яңалыклар{% else %}News{% endif %}</a><br/>
+                    <a href="{% url pages:frontend:show 'for_professional' %}">{% if LANGUAGE_CODE == 'ru' %}Профессионалам {% elif LANGUAGE_CODE == 'tt' %}Профессионалларга{% else %} Professionals {% endif %}</a>
                 </div>
             </div>
         </div>

@@ -1,5 +1,7 @@
 {% extends 'ask_librarian/frontend/index.html' %}
 {% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% block title %}Спроси библиотекаря{% endblock %}
 {% block breadcrumb %}
     <ul class="breadcrumb">
@@ -20,7 +22,7 @@
             {{ question.question }}<br/>
             {% if question.category_id %}
                 <b>Категория:
-                {% cache 30 questions_category question.category_id %}
+                {% cache 30 questions_category question.category_id LANGUAGE_CODE %}
                     {% for ancestor in  question.category.get_t_ancestors %}
                         {{ ancestor }}  →
                     {% endfor %}
