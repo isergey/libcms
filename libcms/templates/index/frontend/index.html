@@ -84,10 +84,10 @@
                 <h3 style="padding-top: 10px;">{% if LANGUAGE_CODE == 'ru' %}Последние поступления{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}From new arrivals{% endif %}</h3>
                 <div class="row">
                     <div class="span6">
-{#                        {% cache 60 newinlib.html LANGUAGE_CODE %}#}
+                        {% cache 60 newinlib.html LANGUAGE_CODE %}
                             {% load newinlib_tags %}
                             {% last_items_feed %}
-{#                        {% endcache %}#}
+                        {% endcache %}
                     </div>
 
                 </div>
