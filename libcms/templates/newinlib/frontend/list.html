@@ -31,7 +31,7 @@
     </style>
     <div class="breadcrumb">
         <a href="{% url index:frontend:index %}">{% if LANGUAGE_CODE == 'ru' %}Начало{% else %}Home{% endif %}</a> <span class="divider">/</span>
-        <span class="active">{% if LANGUAGE_CODE == 'ru' %}Новые поступления{% else %}From new arrivals{% endif %} <a href="{% url newinlib:frontend:rss %}"><img src="{{ STATIC_URL }}images/rss.png" alt="{% if LANGUAGE_CODE == 'ru' %}Подписка{% else %}Subscribe{% endif %}" style="width: 15px;"></a></span>
+        <span class="active">{% if LANGUAGE_CODE == 'ru' %}Новые поступления{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}From new arrivals{% endif %} <a href="{% url newinlib:frontend:rss %}"><img src="{{ STATIC_URL }}images/rss.png" alt="{% if LANGUAGE_CODE == 'ru' %}Подписка{% else %}Subscribe{% endif %}" style="width: 15px;"></a></span>
 
     </div>
     {% for item in items_list %}
