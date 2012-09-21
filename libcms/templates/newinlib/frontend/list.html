@@ -42,7 +42,7 @@
         {% endif %}
 
         <div class="thumbnail">
-        {% if item.avatar_img_name %}<div class="image"><a href="{{ item_url }}#item_title"><img src="{{ MEDIA_URL }}uploads/newinlib/itemavatars/{{ item.avatar_img_name }}" alt="{{ item.item_content.title }}"></a></div>{% endif %}
+        {% if item.avatar_img_name %}<div class="image"><a href="{{ item_url }}"><img src="{{ MEDIA_URL }}uploads/newinlib/itemavatars/{{ item.avatar_img_name }}" alt="{{ item.item_content.title }}"></a></div>{% endif %}
         <div class="info">
             <h4>{{ item.item_content.title }}</h4>
             {{ item.item_content.content|safe }}
