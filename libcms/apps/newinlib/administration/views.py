@@ -14,12 +14,12 @@ from ..models import Item, ItemContent
 from forms import ItemForm, ItemContentForm
 
 
-#LANGUAGES = (
-#    ('ru', gettext('Russian')),
-##    ('en', gettext('English')),
-##    ('tt', gettext('Tatar')),
-#)
-LANGUAGES = settings.LANGUAGES
+LANGUAGES = (
+    ('ru', gettext('Russian')),
+#    ('en', gettext('English')),
+#    ('tt', gettext('Tatar')),
+)
+#LANGUAGES = settings.LANGUAGES
 
 @login_required
 @permission_required_or_403('newinlib.add_item')
