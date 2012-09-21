@@ -162,6 +162,7 @@ INSTALLED_APPS = (
     'zgate',
     'mydocs',
     'guestbook',
+    'newinlib',
 )
 
 

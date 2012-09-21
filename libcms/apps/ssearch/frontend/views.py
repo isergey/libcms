@@ -304,9 +304,11 @@ def search(request, catalog=None):
 
     fqs = request.GET.getlist('fq', [])
     fattrs = request.GET.getlist('fattr', [])
+    if fqs and fattrs and fqs[0]==u'*' and fattrs[0]==u'*':
+        fqs = fqs[1:]
+        fattrs = fattrs[1:]
 
     in_founded = request.GET.get('in_founded', None)
-
 
     terms = []
     try:

@@ -1,0 +1,61 @@
+{% extends 'theme_frontend_base.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% load pagination_tag %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <div class="span12">
+    <style>
+        .thumbnail{
+            margin-bottom: 10px;
+        }
+        .thumbnail .image, .thumbnail .info {
+            float: left;
+        }
+        .thumbnail .info{
+            margin-left: 10px;
+            width: 800px;
+        }
+        .thumbnail:last-child{
+            margin-bottom: 0;
+        }
+        .thumbnail  img {
+            border: 5px solid #E0DCD0;
+            width: 86px;
+        }
+        .thumbnail  a {
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 12px;
+        }
+    </style>
+    <div class="breadcrumb">
+        <a href="{% url index:frontend:index %}">{% if LANGUAGE_CODE == 'ru' %}Начало{% else %}Home{% endif %}</a> <span class="divider">/</span>
+        <span class="active">{% if LANGUAGE_CODE == 'ru' %}Новые поступления{% else %}From new arrivals{% endif %} <a href="{% url newinlib:frontend:rss %}"><img src="{{ STATIC_URL }}images/rss.png" alt="{% if LANGUAGE_CODE == 'ru' %}Подписка{% else %}Subscribe{% endif %}" style="width: 15px;"></a></span>
+
+    </div>
+    {% for item in items_list %}
+        <div class="thumbnail">
+        {% if item.avatar_img_name %}<div class="image"><a href="{{ item_url }}#item_title"><img src="{{ MEDIA_URL }}uploads/newinlib/itemavatars/{{ item.avatar_img_name }}" alt="{{ item.item_content.title }}"></a></div>{% endif %}
+        <div class="info">
+            <h4>{{ item.item_content.title }}</h4>
+            {{ item.item_content.content|safe }}
+            {#            <p>Николай Гоголь</p>#}
+            {% if item.id_in_catalog %}
+                <p><a href="{% url ssearch:frontend:detail  item.id_in_catalog %}">подробнее</a></p>
+            {% else %}
+                <p><a href="{{ item_url }}">подробнее</a></p>
+            {% endif %}
+
+        </div>
+            <div style="clear: both;"></div>
+        </div>
+
+    {% endfor %}
+
+        <div style="clear: both;"></div>
+        {% admin_pagination items_page %}
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'newinlib/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    {% breadcrumb "Новые поступления" newinlib:administration:items_list %}
+    {% breadcrumb "Создание записи" %}
+
+{% endblock %}
+
+{% block action_content %}
+    <style>
+    form input[type=text], textarea{
+        width: 99%;
+    }
+    </style>
+    <form class="form-horizontal" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <legend>Создание записи</legend>
+        <fieldset>
+            <div class="control-group ">
+                <label class="control-label" for="id_item_form_avatar">Аватарка к записи</label>
+                <div class="controls">
+                    <input type="file" name="item_form_avatar" id="id_item_form_avatar">
+                </div>
+            </div>
+            {% include 'administration/base_form_fields.html' with form=item_form %}
+            {% for item_content_form in item_content_forms %}
+                <p>Новостб на языке: <b>{{  item_content_form.lang }}</b>↴</p>
+                {% include 'administration/base_form_fields.html' with form=item_content_form.form %}
+                <hr/>
+            {% endfor %}
+{#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Создать</button>
+                <button type="reset" class="btn">Отмена</button>
+            </div>
+        </fieldset>
+    </form>
+    {% include 'newinlib/administration/editor.html' %}
+
+{% endblock %}

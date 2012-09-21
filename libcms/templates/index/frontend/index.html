@@ -12,7 +12,7 @@
         <div class="actions">
             <div class="row">
                 <div class="span3" style="font-family: Sans Sherif; font-size: 18px;">
-                    {% if LANGUAGE_CODE == 'ru' %}Поиск по электронному каталогу и коллекциям{% elif LANGUAGE_CODE == 'tt' %}Электрон каталог һәм коллекцияләр буенча эзләү{% else %}Search in ecatalog and ecollections{% endif %}
+                    {% if LANGUAGE_CODE == 'ru' %}Поиск по электронному каталогу и коллекциям{% elif LANGUAGE_CODE == 'tt' %}Электрон каталог һәм коллекцияләр буенча эзләү{% else %}Search in e-catalog and e-collections{% endif %}
                 </div>
                 <div class="span8">
                     <form  action="{% url ssearch:frontend:index %}" class="form-search" method="GET" style="margin: 0">
@@ -64,52 +64,34 @@
                 .incomes .thumbnail .info{
                     float: left;
                 }
+
+                .incomes .thumbnail .image img {
+                    border: 5px solid #E0DCD0;
+
+                }
+                .incomes .thumbnail .item a {
+                    font-weight: bold;
+                    text-decoration: none;
+                    font-size: 12px;
+                }
+                .incomes .thumbnail .info{
+                    width: 340px;
+                    margin-left: 10px;
+                }
+
             </style>
             <div class="incomes span6">
                 <h3 style="padding-top: 10px;">{% if LANGUAGE_CODE == 'ru' %}Последние поступления{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}From new arrivals{% endif %}</h3>
                 <div class="row">
                     <div class="span6">
-                        <div class="thumbnail ">
-
-                                <div class="image">
-                                    <img height="120" width="85" src="{{ STATIC_URL }}theme/images/book1.jpg"/>
-                                </div>
-                                <div class="info">
-                                    <h4>Ревизор</h4>
-                                    <p>Николай Гоголь</p>
-                                    <p><a href="{% url ssearch:frontend:index %}?fattr=text&fq=Ревизор+гоголь&attr=title&q=Ревизор+%3A+комедия+в+5-и+действиях">подробнее</a></p>
-                                </div>
-                            <div style="clear: both;"> </div>
-                        </div>
-                        <div class="thumbnail ">
-
-                            <div class="image">
-                                <img height="120" width="85" src="{{ STATIC_URL }}theme/images/book2.jpg"/>
-                            </div>
-                            <div class="info">
-                                <h4>Герой нашего времени</h4>
-                                <p>Михаил Лермонтов</p>
-                                <p><a href="{% url ssearch:frontend:index %}?fattr=text&fq=Герой+Нашего+Времени&attr=title&q=Герой+Нашего+Времени">подробнее</a></p>
-                            </div>
-                            <div style="clear: both;"> </div>
-                        </div>
-                        <div class="thumbnail ">
-
-                            <div class="image">
-                                <img height="120" width="85" src="{{ STATIC_URL }}theme/images/book3.jpg"/>
-                            </div>
-                            <div class="info">
-                                <h4>Антон Чехов</h4>
-                                <p>Человек в футляре</p>
-                                <p><a href="{% url ssearch:frontend:index %}?fattr=text&fq=чехов&attr=title&q=Человек+в+футляре">подробнее</a></p>
-                            </div>
-                            <div style="clear: both;"> </div>
-                        </div>
-
+{#                        {% cache 60 newinlib.html LANGUAGE_CODE %}#}
+                            {% load newinlib_tags %}
+                            {% last_items_feed %}
+{#                        {% endcache %}#}
                     </div>
 
                 </div>
-                <div class="span6" style="text-align: center; font-size: 14px; padding-top: 10px;"><a href="#">{% if LANGUAGE_CODE == 'ru' %}Остальные новинки{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}More new arrivals{% endif %} >></a></div>
+                <div class="span6" style="text-align: center; font-size: 14px; padding-top: 10px;"><a href="{% url newinlib:frontend:index %}">{% if LANGUAGE_CODE == 'ru' %}Остальные новинки{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}More new arrivals{% endif %} >></a></div>
             </div>
 
             <div class="span6">

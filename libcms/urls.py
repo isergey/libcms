@@ -32,10 +32,20 @@ urlpatterns = patterns('',
     (r'^zgate/', include('zgate.urls')),
     (r'^forum/', include('forum.urls', namespace='forum')),
     (r'^guestbook/', include('guestbook.urls', namespace='guestbook')),
-
+    (r'^newinlib/', include('newinlib.urls', namespace='newinlib')),
 #    (r'^mydocs/', include('mydocs.urls',)),
     # Uncomment the next line to enable the admin:
     url(r'^radmin/', include(admin.site.urls)),
     url(r'^jsi18n/$', site.i18n_javascript, name='jsi18n'),
     url(r'^sauth/', include('social_auth.urls')),
 )
+
+
+from django.conf import settings
+
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+            'document_root': settings.MEDIA_ROOT,
+            }),
+    )

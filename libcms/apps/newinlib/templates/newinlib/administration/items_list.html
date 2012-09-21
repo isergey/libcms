@@ -1,0 +1,41 @@
+{% extends 'newinlib/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Новые поступления" newinlib:administration:index %}
+    {% breadcrumb "Список" %}
+{% endblock %}
+
+{% block action_content %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Запись</th>
+            <th class="span2">Дата создания</th>
+            <th class="span2">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items_list %}
+
+            <tr>
+                <td><a href="{% url newinlib:administration:edit_item item.id %}">{{ item.item_content.title }}</a></td>
+                <td>{{ item.create_date }}</td>
+                <td><a class="delete btn btn-danger"  href="{% url newinlib:administration:delete_item item.id %}"><i class="icon-trash icon-white" title="Удалить"></i></a></td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+    {% admin_pagination items_page %}
+    <script type="text/javascript">
+        $("a.delete").click(function () {
+            if (!confirm('Вы уверены, что хотите удалить?')) return false;
+        });
+    </script>
+{% endblock %}
+
+
