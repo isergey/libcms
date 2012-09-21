@@ -8,7 +8,8 @@ register = template.Library()
 @register.inclusion_tag('newinlib/tags/items_feed.html')
 def last_items_feed(count=5):
     items_list = list(Item.objects.filter(publicated=True).order_by('-create_date')[:count])
-    lang=get_language()[:2]
+#    lang=get_language()[:2]
+    lang='ru'
     items_contents = ItemContent.objects.filter(item__in=items_list, lang=lang)
     nd = {}
     for item in items_list:
