@@ -5,6 +5,12 @@
 {% endblock %}
 {% block content %}
     <div class="span12">
+    <div class="alert">
+        Уважаемые пользователи портала!<br/>
+        С 15 сентября 2012 проводится перерегистрация пользователей портала НЭБ РТ. Вам надо заново пройти регистрацию и ввести требуемые сведения.<br/>
+        На новом портале расширен спектр сервисов для зарегистрированных пользователей. В частности, Вы можете связать аккаунт пользователя портала и аккаунт читателя публичной библиотеки Республики Татарстан.
+    </div>
+    <hr/>
     <form method="POST" class="form-horizontal">{% csrf_token %}
         <fieldset>
             {% include 'frontend/base_form_fields.html' %}
@@ -18,7 +24,7 @@
     <div>
         {% include 'accounts/frontend/oauth_buttons.html' %}
     </div>
-    </div>
+
     <hr/>
 {#    <div>#}
 {#        <h3>Login using OpenId from:</h3>#}
