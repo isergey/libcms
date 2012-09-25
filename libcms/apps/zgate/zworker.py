@@ -34,7 +34,7 @@ def request(url, data={}, cookies={}):
 
         else:
             mrequest = mrequest.urlencode()
-        result = opener.open(url, data=mrequest)
+        result = opener.open(url, data=mrequest,timeout=60)
     else:
         result = opener.open(url)
     cookies1 = []
