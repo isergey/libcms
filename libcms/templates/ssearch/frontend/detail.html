@@ -3,7 +3,10 @@
 {% load ssearch_tags %}
 {% load order_tags %}
 {% load mydocs_tags %}
-{% block title %}детальная информация{% endblock %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block title %}{% if LANGUAGE_CODE == 'ru' %}Детальная информация{% elif LANGUAGE_CODE == 'tt' %}Детальная информация{% else %}Detail information{% endif %}{% endblock %}
 {% block content %}
     <style type="text/css">
         .marc_dump span.fieldlabel, span.subfieldlabel {
@@ -25,12 +28,12 @@
     <div class="span12">
         <ul class="breadcrumb">
 
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{% url ssearch:frontend:index %}">Поиск</a> <span class="divider">/</span></li>
+            <li><a href="{% url index:frontend:index %}">{% if LANGUAGE_CODE == 'ru' %}Начало{% elif LANGUAGE_CODE == 'tt' %}Начало{% else %}Home{% endif %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url ssearch:frontend:index %}">{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}</a> <span class="divider">/</span></li>
             {% if request.GET.back %}
-                <li><a href="{{ request.GET.back }}">Результаты поиска</a> <span class="divider">/</span></li>
+                <li><a href="{{ request.GET.back }}">{% if LANGUAGE_CODE == 'ru' %}Результаты поиска{% elif LANGUAGE_CODE == 'tt' %}Эзләү нәтиҗәләре{% else %}Search results{% endif %}</a> <span class="divider">/</span></li>
             {% endif %}
-            <li class="active">Детальная информация</li>
+            <li class="active">{% if LANGUAGE_CODE == 'ru' %}Детальная информация{% elif LANGUAGE_CODE == 'tt' %}Детальная информация{% else %}Detail information{% endif %}</li>
 
         </ul>
         <div class="row">
@@ -38,7 +41,7 @@
                 {% drow_save_doc request.user gen_id %}
                 <hr/>
                 <div>
-                    Количество обращений: {{ access_count }}
+                    {% if LANGUAGE_CODE == 'ru' %}Количество обращений{% elif LANGUAGE_CODE == 'tt' %}Количество обращений{% else %}Views{% endif %}: {{ access_count }}
                 </div>
             </div>
 
@@ -47,7 +50,7 @@
                     <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Просмотр <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#card" data-toggle="tab">Карточка</a></li>
+                            <li><a href="#card" data-toggle="tab">{% if LANGUAGE_CODE == 'ru' %}Карточка{% elif LANGUAGE_CODE == 'tt' %}Карточка{% else %}Card{% endif %}</a></li>
                             <li><a href="#marc" data-toggle="tab">Marc</a></li>
                         </ul>
                     </li>
