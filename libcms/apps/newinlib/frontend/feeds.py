@@ -25,8 +25,9 @@ class LatestEntriesFeed(Feed):
 
 def index():
     items_list =  Item.objects.filter(publicated=True).order_by('-create_date')[:5]
-
-    item_contents = list(ItemContent.objects.filter(item__in=list(items_list), lang=get_language()[:2]))
+#    lang = get_language()[:2]
+    lang = 'ru'
+    item_contents = list(ItemContent.objects.filter(item__in=list(items_list), lang=lang))
 
     t_dict = {}
     for item in items_list:
