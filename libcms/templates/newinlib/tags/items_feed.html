@@ -1,3 +1,5 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <style type="text/css">
     .announce img{
         width: 86px;
@@ -14,7 +16,7 @@
         <div class="info">
             <h4 style="margin-bottom: 10px;;">{{ item.item_content.title }}</h4>
             {{ item.item_content.content|safe }}
-            <p><a href="{{ item_url }}">подробнее</a></p>
+            <p><a href="{{ item_url }}">{% if LANGUAGE_CODE == 'ru' %}подробнее{% elif LANGUAGE_CODE == 'tt' %}подробнее{% else %}details{% endif %}</a></p>
         </div>
         <div style="clear: both;"> </div>
     </div>
