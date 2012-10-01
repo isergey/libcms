@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404, Http404
+from django.contrib.auth.decorators import login_required
 from common.pagination import get_page
 
 from ..models import Question,  Category, Recomendation
@@ -125,3 +126,9 @@ def ask(request):
         'form': form
     })
 
+@login_required
+def my_questions(request):
+    questions_page = get_page(request, Question.objects.filter(user=request.user).order_by('-create_date'), 10)
+    return render(request, 'ask_librarian/frontend/my_questions.html', {
+        'questions_page': questions_page
+    })

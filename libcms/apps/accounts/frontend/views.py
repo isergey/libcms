@@ -76,7 +76,7 @@ def registration(request):
                       (current_site.domain, "http://" + current_site.domain + "/accounts/confirm/" + hash, )
 
 
-            send_mail(u'Активация аккаунта ' + current_site.domain, message, 'system@'+current_site.domain,
+            send_mail(u'Активация учетной записи ' + current_site.domain, message, 'system@'+current_site.domain,
                 [form.cleaned_data['email']])
 
             return render(request, 'accounts/frontend/registration_done.html')

@@ -1,0 +1,39 @@
+{% extends 'theme_frontend_base.html' %}
+{% load cache %}
+{% load pagination_tag %}
+{% block title %}Мои вопросы{% endblock %}
+{% block content %}
+    <div class="span12">
+        <ul class="breadcrumb">
+            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url personal:frontend:index %}">Личный кабинет</a> <span class="divider">/</span></li>
+            <li class="active">Мои вопросы</li>
+        </ul>
+    <div class="alert alert-success">
+        Вопрос можно задать в разделе <a href="{% url ask_librarian:frontend:index %}">"Спроси библиотекаря"</a>.
+    </div>
+    <ul style="list-style: none; padding: 0; margin: 0;">
+        {% for question in questions_page.object_list %}
+            <li>
+                {{ question.question }}<br/>
+                {% if question.category_id %}
+                    <b>
+                        {% cache 30 questions_category question.category_id  LANGUAGE_CODE %}
+                            {% for ancestor in  question.category.get_t_ancestors %}
+                                {{ ancestor }}  →
+                            {% endfor %}
+                            {{ question.category }}
+                        {% endcache %}
+                    </b>
+                    <br/>
+                    <a href="{% url ask_librarian:frontend:detail question.id %}">подробнее</a>
+                {% endif %}
+                <hr/>
+            </li>
+        {% empty %}
+            <li>Вопросов нет</li>
+        {% endfor %}
+    </ul>
+    {% admin_pagination questions_page %}
+    </div>
+{% endblock %}
