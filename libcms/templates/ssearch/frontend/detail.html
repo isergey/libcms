@@ -95,7 +95,7 @@
                     {% for doc in linked_docs %}
 
                         <li class="textBook">
-                            <p class="item1"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a></p>
+                            <p class="item1"><a target="_blank" href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a></p>
                             <p class="item2">
                                 {% for author in doc.record.author %}
                                     {{ author }}{% if not forloop.last %}; {% endif %}
