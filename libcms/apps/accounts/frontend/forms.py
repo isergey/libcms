@@ -9,9 +9,9 @@ class RegistrationForm(forms.ModelForm):
 
 class RegistrationForm(forms.Form):
     username = forms.CharField(max_length=50, label=u"Логин", help_text=u"Разрешены буквы латинского алфавита и цифры")
-    password = forms.CharField( min_length=6, max_length=50,
+    password = forms.CharField( min_length=1, max_length=50,
         label=u"Пароль", widget=forms.PasswordInput)
-    password2 = forms.CharField(min_length=6, max_length=50,
+    password2 = forms.CharField(min_length=1, max_length=50,
         label=u"Повторите пароль", widget=forms.PasswordInput)
     email = forms.EmailField(label=u"Электронная почта")
     first_name = forms.CharField(max_length=50, label=u"Имя")

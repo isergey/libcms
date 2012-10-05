@@ -72,7 +72,8 @@ dtf - фасет даты
         <xsl:call-template name="document_id"/>
         <xsl:call-template name="bib1_rules"/>
         <!--<xsl:call-template name="sorting"/>-->
-      <xsl:call-template name="facets"/>
+        <xsl:call-template name="facets"/>
+        <xsl:call-template name="systems"/>
   </doc>
 
 </xsl:template>

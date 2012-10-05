@@ -53,6 +53,7 @@ class InternalAccessRange(models.Model):
         return pickle.loads(str(self.pickle))
 
 
+
 def in_internal_ip(ip):
     ip = IPAddress(ip)
     addresses = InternalAccessRange.objects.all()
