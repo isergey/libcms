@@ -394,7 +394,7 @@ def _indexing(slug, reset=False):
 
         docs.append(doc)
         i+=1
-        if len(docs) > 20:
+        if len(docs) > 40:
             solr.add(docs)
             print i
             docs = list()
