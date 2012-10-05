@@ -557,8 +557,6 @@ def detail(request, gen_id):
         for linked_doc in linked_results:
             linked_doc_ids.append(linked_doc['id'])
 
-        linked_doc_ids = ['qhtpkjfhlp']
-        records_dict = {}
         records =  list(Ebook.objects.using('records').filter(gen_id__in=linked_doc_ids))
         records +=  list(Record.objects.using('records').filter(gen_id__in=linked_doc_ids))
 
