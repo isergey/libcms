@@ -456,7 +456,8 @@ def search(request, catalog=None):
         return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
 
     json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
-#    print docs
+    print results_page.start_index()
+    print results_page.end_index()
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
         'results_page': results_page,
@@ -518,13 +519,20 @@ def detail(request, gen_id):
         try:
             record = Ebook.objects.using('records').get(gen_id=gen_id)
             catalog = 'ebooks'
-        except Record.DoesNotExist:
+        except Ebook.DoesNotExist:
             raise Http404()
 
 #    DetailAccessLog(catalog=catalog, gen_id=record.gen_id).save()
     DetailAccessLog.objects.create(catalog=catalog, gen_id=gen_id, date_time=datetime.datetime.now())
 
     doc_tree = etree.XML(record.content)
+    leader8 = doc_tree.xpath('/record/leader/leader08')
+
+    analitic_level = u'0'
+    if len(leader8) == 1:
+        analitic_level = leader8[0].text
+
+
 
     bib_tree = xslt_bib_draw_transformer(doc_tree)
     marct_tree = xslt_marc_dump_transformer(doc_tree)
@@ -536,9 +544,15 @@ def detail(request, gen_id):
     if holders:
         # оставляем уникальных держателей
         doc['holders'] = list(set(holders))
-    access_count = DetailAccessLog.objects.filter(catalog=catalog, gen_id=record.gen_id).count()
 
-    print request.META.get('REMOTE_ADDR', None)
+    if analitic_level == '1':
+        doc['holders'] = []
+
+#    if analitic_level == '2':
+#        print doc.get('linked-record-number','')
+#    print record.record_id
+
+    access_count = DetailAccessLog.objects.filter(catalog=catalog, gen_id=record.gen_id).count()
 
     return render(request, 'ssearch/frontend/detail.html', {
         'doc_dump': bib_dump.replace('<b/>',''),
@@ -749,7 +763,8 @@ def dsearch(request, catalog=None):
     attrs = request.GET.getlist('attr', [])
     sort = request.GET.getlist('sort', [])
 
-    if qs and attrs:
+    # статистику считаем только когда инициировали запрос. Если пользователь передвигается по страница, то не учитываем.
+    if qs and attrs and not request.GET.get('page', None):
         log_search_request({'attr': attrs[0], 'value': qs[0]}, catalog)
 
     sort_attrs = []

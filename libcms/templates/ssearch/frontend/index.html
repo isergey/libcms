@@ -90,7 +90,7 @@
                     <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">
                     <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
                 {% endfor %}
-                <select name="attr" style="font-weight: bold; width: 150px; margin-right: 35px;">
+                <select name="attr" style="font-weight: bold; width: 150px; margin-right: 35px; margin-top: -30px;">
                     <option value="text" {% if request.GET.attr == 'text' %}selected="selected"{% endif %}>{% if LANGUAGE_CODE == 'ru' %}Везде{% elif LANGUAGE_CODE == 'tt' %}Һәр урында{% else %}Anywhere{% endif %}</option>
                     <option value="author" {% if request.GET.attr == 'author' %}selected="selected"{% endif %}>{% if LANGUAGE_CODE == 'ru' %}Автор{% elif LANGUAGE_CODE == 'tt' %}Автор{% else %}Author{% endif %}</option>
                     <option value="title" {% if request.GET.attr == 'title' %}selected="selected"{% endif %}>{% if LANGUAGE_CODE == 'ru' %}Заглавие{% elif LANGUAGE_CODE == 'tt' %}Исем{% else %}Title{% endif %}</option>
@@ -104,7 +104,7 @@
                 <div class="input-append">
                     <input  name="q" class="span8" id="appendedInputButton" size="16" type="text"><input type="submit" class="btn btn-success span2" value="Поиск">
                 </div>
-                <br/>
+{#                <br/>#}
                 {% if LANGUAGE_CODE == 'ru' %}Искать в найденном{% elif LANGUAGE_CODE == 'tt' %}Табылганнан эзләү{% else %}search in results{% endif %}: <input type="checkbox" name="in_founded"  {% if request.GET.in_founded %}checked="checked"{% endif %}>
             </form>
 
@@ -214,8 +214,9 @@
 
                 <ul class="list">
                     {% for doc in docs %}
+
                         <li class="textBook">
-                            <p class="item1"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a></p>
+                            <p class="item1">{{ forloop.counter0|add:results_page.start_index }}. <a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a></p>
                             <p class="item2">
                                 {% for author in doc.record.author %}
                                     {{ author }}{% if not forloop.last %}; {% endif %}

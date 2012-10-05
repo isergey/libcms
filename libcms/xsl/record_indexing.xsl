@@ -220,6 +220,10 @@ dtf - фасет даты
 </xsl:template>
 
 
+<xsl:template name="systems">
+    <xsl:call-template name="Linked-record-number"/>
+</xsl:template>
+
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Subject-heading">
@@ -1056,6 +1060,16 @@ dtf - фасет даты
             </field>
     </xsl:for-each>
 </xsl:template>
+
+
+<xsl:template name="Linked-record-number">
+    <xsl:for-each select="field[@id='461']/subfield[@id='1']/field[@id='001']">
+        <field name="linked-record-number_s">
+            <xsl:value-of select="."/>
+        </field>
+    </xsl:for-each>
+</xsl:template>
+
 </xsl:stylesheet>
 
 

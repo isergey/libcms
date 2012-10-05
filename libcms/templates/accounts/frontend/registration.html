@@ -5,22 +5,29 @@
 {% endblock %}
 {% block content %}
     <div class="span12">
-    <ul class="breadcrumb">
+        <ul class="breadcrumb">
 
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-        <li class="active">Регистрация</li>
+            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li class="active">Регистрация</li>
 
-    </ul>
-    <form method="POST" class="form-horizontal">{% csrf_token %}
-        <fieldset>
-            {% include 'frontend/base_form_fields.html' %}
-            <div class="form-actions">
-                <input type="submit" value="Регистрация" class="btn"/>
-            </div>
-        </fieldset>
-    </form>
-    <div>
+        </ul>
+    <div class="row">
+    <div class="span6">
+        <form method="POST" class="form-horizontal">{% csrf_token %}
+            <fieldset>
+                {% include 'frontend/base_form_fields.html' %}
+                <div class="form-actions">
+                    <input type="submit" value="Регистрация" class="btn"/>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="span6">
         {% include 'accounts/frontend/oauth_buttons.html' %}
     </div>
+    </div>
+
+
+
     </div>
 {% endblock %}

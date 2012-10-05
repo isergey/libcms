@@ -64,20 +64,22 @@ def registration(request):
                 email=form.cleaned_data['email'],
                 first_name=form.cleaned_data['first_name'],
                 last_name=form.cleaned_data['last_name'],
-                is_active=False,
+                is_active=True,
             )
             user.set_password(form.cleaned_data['password'])
             user.save()
-            hash = md5_constructor(str(user.id) + form.cleaned_data['username']).hexdigest()
-            confirm = RegConfirm(hash=hash, user_id=user.id)
-            confirm.save()
-            current_site = Site.objects.get(id=1)
-            message = u'Поздравляем! Вы зарегистрировались на %s . Пожалуйста, пройдите по адресу %s для активации учетной записи.' % \
-                      (current_site.domain, "http://" + current_site.domain + "/accounts/confirm/" + hash, )
-
-
-            send_mail(u'Активация учетной записи ' + current_site.domain, message, 'system@'+current_site.domain,
-                [form.cleaned_data['email']])
+            group = Group.objects.get(name='users')
+            user.groups.add(group)
+#            hash = md5_constructor(str(user.id) + form.cleaned_data['username']).hexdigest()
+#            confirm = RegConfirm(hash=hash, user_id=user.id)
+#            confirm.save()
+#            current_site = Site.objects.get(id=1)
+#            message = u'Поздравляем! Вы зарегистрировались на %s . Пожалуйста, пройдите по адресу %s для активации учетной записи.' % \
+#                      (current_site.domain, "http://" + current_site.domain + "/accounts/confirm/" + hash, )
+#
+#
+#            send_mail(u'Активация учетной записи ' + current_site.domain, message, 'system@'+current_site.domain,
+#                [form.cleaned_data['email']])
 
             return render(request, 'accounts/frontend/registration_done.html')
     else:

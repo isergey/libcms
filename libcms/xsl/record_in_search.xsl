@@ -56,6 +56,7 @@
         <xsl:call-template name="Holders"/>
         <xsl:call-template name="Fond"/>
         <xsl:call-template name="Cover"/>
+        <xsl:call-template name="Linked-record-number"/>
     </doc>
 
 </xsl:template>
@@ -509,7 +510,15 @@
     </xsl:for-each>
 </xsl:template>
 
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
+<xsl:template name="Linked-record-number">
+    <xsl:for-each select="field[@id='461']/subfield[@id='1']/field[@id='001']">
+        <field name="linked-record-number">
+            <xsl:value-of select="."/>
+        </field>
+    </xsl:for-each>
+</xsl:template>
 </xsl:stylesheet>
 
 
