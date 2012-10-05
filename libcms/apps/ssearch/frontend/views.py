@@ -544,10 +544,36 @@ def detail(request, gen_id):
     if holders:
         # оставляем уникальных держателей
         doc['holders'] = list(set(holders))
-
+    linked_docs = []
     if analitic_level == '1':
         doc['holders'] = []
 
+        solr = sunburnt.SolrInterface(settings.SOLR['host'])
+        linked_query = solr.query(**{'linked-record-number_s':record.record_id.replace(u"\\",u'\\\\')})
+        linked_query = linked_query.field_limit("id")
+        linked_results = linked_query.execute()
+
+        linked_doc_ids = []
+        for linked_doc in linked_results:
+            linked_doc_ids.append(linked_doc['id'])
+
+        linked_doc_ids = ['qhtpkjfhlp']
+        records_dict = {}
+        records =  list(Ebook.objects.using('records').filter(gen_id__in=linked_doc_ids))
+        records +=  list(Record.objects.using('records').filter(gen_id__in=linked_doc_ids))
+
+        for record in records:
+            record_dict = {}
+            record_dict['record'] = xml_doc_to_dict(record.content)
+            record_dict['id'] = record.gen_id
+            linked_docs.append(record_dict)
+
+
+#        for doc in mlt_docs:
+#            doc['record'] = records_dict.get(doc['id'])
+
+
+    #linked-record-number_s
 #    if analitic_level == '2':
 #        print doc.get('linked-record-number','')
 #    print record.record_id
@@ -559,6 +585,7 @@ def detail(request, gen_id):
         'marc_dump': marc_dump,
         'doc': doc,
         'gen_id': gen_id,
+        'linked_docs': linked_docs,
         'access_count': access_count
     })
 

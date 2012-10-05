@@ -63,6 +63,99 @@
                     <hr/>
                          {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}
                 </div>
+
+            {% if linked_docs %}
+                <style>
+                .results ul {
+                    padding: 0;
+                    margin: 0;
+                    list-style: none;
+                }
+                    .textBook p {
+                        line-height: 20px;
+                        margin: 0;
+                        padding: 0;
+                        color: #7D7D7D;
+                    }
+                    .textBook p.item1 a {
+                        font-size: 16px;
+                        font-weight: bold;
+
+                    }
+                    .textBook p.item2 {
+                        color: #3f3f3f;
+                    }
+                    .textBook .label {
+                        background: #51A351;
+                    }
+                </style>
+            <div class="results">
+            <div class="alert alert-success">Это издание состоит из следующих томов/частей:</div>
+            <ul class="list">
+                    {% for doc in linked_docs %}
+
+                        <li class="textBook">
+                            <p class="item1"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a></p>
+                            <p class="item2">
+                                {% for author in doc.record.author %}
+                                    {{ author }}{% if not forloop.last %}; {% endif %}
+                                {% endfor %}
+                            </p>
+                            <p class="item3">
+                                {% for subject in doc.record|hash:'subject-heading' %}
+                                    <span class="label label-info">{{ subject }}</span>
+                                {% endfor %}
+                            </p>
+                            {% if doc.record|hash:'code-language' %}
+                                <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Язык{% elif LANGUAGE_CODE == 'tt' %}Тел{% else %}Language{% endif %}:
+                                    {% for lang in doc.record|hash:'code-language' %}
+                                        {% if not forloop.last %}
+                                            {{ lang|language_title }},
+                                        {% else %}
+                                            {{ lang|language_title }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                            {% if doc.record|hash:'date-of-publication' %}
+                                <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Год публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып чыгару елы{% else %}Publication year{% endif %}:
+                                    {% for dop in doc.record|hash:'date-of-publication' %}
+                                        {% if not forloop.last %}
+                                            {{ dop }},
+                                        {% else %}
+                                            {{ dop }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                            {% if doc.record|hash:'publisher' %}
+                                <p class="item4">Издатель:
+                                    {% for publisher in doc.record|hash:'publisher' %}
+                                        {% if not forloop.last %}
+                                            {{ publisher }},
+                                        {% else %}
+                                            {{ publisher }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                            {% if doc.record|hash:'content-type' %}
+                                <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Тип содержания{% elif LANGUAGE_CODE == 'tt' %}Эчтәлек тибы{% else %}Content tipe{% endif %}:
+                                    {% for content_type in doc.record|hash:'content-type' %}
+                                        {% if not forloop.last %}
+                                            {{ content_type|content_type_title }},
+                                        {% else %}
+                                            {{ content_type|content_type_title }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                        </li>
+                        <hr/>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
             </div>
         </div>
     </div>
