@@ -30,6 +30,9 @@
             list-style: none;
             margin: 0;
         }
+        .results .highlights em{
+            background-color: #f4f379;
+        }
         .sorting {
             margin-left: 25px;
         }
@@ -271,6 +274,14 @@
                                     {% endfor %}
                                 </p>
                             {% endif %}
+                            {% if doc.solr_highlights %}
+                                <div>
+                                <a  href="#1" class="context">Показать контекст</a>
+                                <div class="highlights" style="display: none;">
+                                    {{ doc.solr_highlights|hash:"full-text"|hash:0|safe }}
+                                </div>
+                                </div>
+                            {% endif %}
                         </li>
                         <hr/>
                     {% endfor %}
@@ -327,6 +338,18 @@
                         }
                     });
                     return false;
+                });
+            </script>
+            <script>
+                $('.context').click(function(){
+                    var hightl =  $(this).parent().children('.highlights');
+                    if(hightl.css('display') == 'none'){
+                        hightl.show();
+                        $(this).html('Скрыть контекст')
+                    }else{
+                        hightl.hide();
+                        $(this).html('Показать контекст')
+                    }
                 });
             </script>
         {% endif %}

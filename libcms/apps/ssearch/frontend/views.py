@@ -361,7 +361,8 @@ def search(request, catalog=None):
         solr_searcher = solr_searcher.exclude(**exclude_kwargs)
     else:
         pass
-
+    print 'edwedwe'
+    print dir(solr_searcher.highlighter)
 #    print search_attrs
 
     for sort_attr in sort_attrs:
@@ -488,29 +489,6 @@ def compare(word1, word2):
 
 
 def detail(request, gen_id):
-#    shards=['http://localhost:8983/solr','http://localhost:8982/solr']
-#    mlt_docs = []
-#    for shard in shards:
-#        solr = sunburnt.SolrInterface(shard)
-#        mlt_query = solr.query(id=gen_id).mlt(['author_t','subject-heading_t','title_t'],mindf='1', mintf='1')
-##        mlt_query = solr.query(id=gen_id).mlt(["text_t"],mindf='1', mintf='1')
-#        mlt_results = mlt_query.execute().more_like_these
-#        if gen_id in mlt_results:
-#            for doc in  mlt_results[gen_id].docs:
-#                mlt_docs.append(doc)
-#
-#    doc_ids = []
-#    for doc in mlt_docs:
-#        doc_ids.append(doc['id'])
-#
-#    records_dict = {}
-#    records =  list(Ebook.objects.using('records').filter(gen_id__in=doc_ids))
-#    records +=  list(Record.objects.using('records').filter(gen_id__in=doc_ids))
-#    for record in records:
-#        records_dict[record.gen_id] = xml_doc_to_dict(record.content)
-#
-#    for doc in mlt_docs:
-#        doc['record'] = records_dict.get(doc['id'])
     catalog = None
     try:
         record = Record.objects.using('records').get(gen_id=gen_id)
