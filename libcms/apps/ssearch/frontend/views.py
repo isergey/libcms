@@ -34,12 +34,8 @@ def rss():
     now = datetime.date.today()
     seven_days_ago = now - datetime.timedelta(4)
     records_dicts = []
-#    print datetime.date.today().isoformat()
-#    print Record.objects.filter(add_date__gte=seven_days_ago, add_date__lte=now)
     records =  list(Ebook.objects.using('records').filter(add_date__gte=seven_days_ago, add_date__lte=now))
     records +=  list(Record.objects.using('records').filter(add_date__gte=seven_days_ago, add_date__lte=now))
-#    records =  list(Ebook.objects.filter(add_date__gte=seven_days_ago, add_date__lte=now))
-#    records +=  list(Record.objects.filter(add_date__gte=seven_days_ago, add_date__lte=now))
     for record in records:
         rd = xml_doc_to_dict(record.content)
         ro = RecordObject()
@@ -205,14 +201,6 @@ def init_dsearch(request, catalog=None):
     })
 
 
-#reverse_attr_map = {}
-#
-#def do_reverse_attr_map():
-#    for key in attr_map:
-#        reverse_attr_map[attr_map[key]['attr']] = {'attr':key}
-#
-#do_reverse_attr_map()
-#print reverse_attr_map
 
 def replace_doc_attrs(doc):
     """
@@ -361,9 +349,6 @@ def search(request, catalog=None):
         solr_searcher = solr_searcher.exclude(**exclude_kwargs)
     else:
         pass
-    print 'edwedwe'
-    print dir(solr_searcher.highlighter)
-#    print search_attrs
 
     for sort_attr in sort_attrs:
         if sort_attr['order'] == 'desc':
@@ -392,7 +377,7 @@ def search(request, catalog=None):
         # If page is out of range (e.g. 9999), deliver last page of results.
         results_page = paginator.page(paginator.num_pages)
 
-#    print dir(results_page.object_list)
+
     search_statisics = {
         'num_found': results_page.object_list.result.numFound,
         'search_time': "%.3f" % (int(results_page.object_list.QTime) / 1000.0)
@@ -457,8 +442,6 @@ def search(request, catalog=None):
         return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
 
     json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
-    print results_page.start_index()
-    print results_page.end_index()
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
         'results_page': results_page,
@@ -549,10 +532,6 @@ def detail(request, gen_id):
 #            doc['record'] = records_dict.get(doc['id'])
 
 
-    #linked-record-number_s
-#    if analitic_level == '2':
-#        print doc.get('linked-record-number','')
-#    print record.record_id
 
     access_count = DetailAccessLog.objects.filter(catalog=catalog, gen_id=record.gen_id).count()
 
@@ -840,8 +819,6 @@ def dsearch(request, catalog=None):
     else:
         pass
 
-    #    print search_attrs
-
     for sort_attr in sort_attrs:
         if sort_attr['order'] == 'desc':
             solr_searcher = solr_searcher.sort_by(u'-' + sort_attr['attr'])
@@ -869,7 +846,6 @@ def dsearch(request, catalog=None):
         # If page is out of range (e.g. 9999), deliver last page of results.
         results_page = paginator.page(paginator.num_pages)
 
-    #    print dir(results_page.object_list)
     search_statisics = {
         'num_found': results_page.object_list.result.numFound,
         'search_time': "%.3f" % (int(results_page.object_list.QTime) / 1000.0)
@@ -934,7 +910,6 @@ def dsearch(request, catalog=None):
         return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
 
     json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
-    #    print docs
     return render(request, 'ssearch/frontend/dindex.html', {
         'docs': docs,
         'results_page': results_page,
