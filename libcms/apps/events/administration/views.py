@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db import transaction
 from django.utils.translation import ugettext as _
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
+from django.http import HttpResponseForbidden
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
 from common.pagination import get_page
@@ -13,7 +14,6 @@ from events.models import Event, EventContent
 from forms import EventForm, EventContentForm
 
 @login_required
-@permission_required_or_403('events.add_event')
 def index(request):
     if not request.user.has_module_perms('events'):
         return HttpResponseForbidden()

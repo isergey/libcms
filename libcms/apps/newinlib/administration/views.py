@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.db import transaction
+from django.http import HttpResponseForbidden
 from django.utils.translation import ugettext as _
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from guardian.decorators import permission_required_or_403
@@ -22,8 +23,9 @@ LANGUAGES = (
 #LANGUAGES = settings.LANGUAGES
 
 @login_required
-@permission_required_or_403('newinlib.add_item')
 def index(request):
+    if not request.user.has_module_perms('newinlib'):
+        return HttpResponseForbidden()
     return redirect('newinlib:administration:items_list')
 
 
