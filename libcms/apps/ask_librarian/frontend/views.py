@@ -45,7 +45,8 @@ def index(request):
 
 
     if not filtered_by_date:
-        if categories:
+#        print categories
+        if category and categories:
             questions_page = get_page(request, Question.objects.filter(category__in=categories, status=1).order_by('-create_date'), 10)
         else:
             questions_page = get_page(request, Question.objects.filter(status=1).order_by('-create_date'), 10)
