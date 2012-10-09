@@ -70,9 +70,9 @@
                         {{ question.category }}
                 {% endcache %}
                 </b>
-                <br/>
-                <a href="{% url ask_librarian:frontend:detail question.id %}">подробнее</a>
             {% endif %}
+            <br/>
+            <a href="{% url ask_librarian:frontend:detail question.id %}">подробнее</a>
         <hr/>
         </li>
     {% empty %}
