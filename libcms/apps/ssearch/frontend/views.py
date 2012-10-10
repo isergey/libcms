@@ -103,7 +103,7 @@ attr_map = {
     'full-text': {
         'order': 10,
         'attr': u'full-text',
-        'title':u'Полный текст',
+        'title':u'Содержимое',
         'display': False,
         },
     'fond': {
@@ -187,7 +187,8 @@ def init_search(request, catalog=None):
         stats = statictics()
     return render(request, 'ssearch/frontend/index.html', {
         'search_attrs': search_attrs,
-        'stats': stats
+        'stats': stats,
+        'catalog':catalog
     })
 
 def init_dsearch(request, catalog=None):
@@ -450,7 +451,8 @@ def search(request, catalog=None):
         'sort':sort,
         'search_statisics':search_statisics,
         'search_request': json_search_breadcumbs,
-        'search_attrs': search_attrs
+        'search_attrs': search_attrs,
+        'catalog':catalog
     })
 
 from levenshtein import levenshtein
