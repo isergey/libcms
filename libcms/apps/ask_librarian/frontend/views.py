@@ -18,15 +18,16 @@ def index(request):
 
     category = request.GET.get('category', None)
     categories = []
+    category_m = None
     if category:
         try:
-            category = Category.objects.get(id=category)
+            category_m = Category.objects.get(id=category)
         except Category.DoesNotExist:
             pass
 
-        if category:
-            categories.append(category)
-            descendants = category.get_descendants()
+        if category_m:
+            categories.append(category_m)
+            descendants = category_m.get_descendants()
             for descendant in descendants:
                 categories.append(descendant)
     else:
