@@ -23,7 +23,7 @@ def index(request):
         try:
             category_m = Category.objects.get(id=category)
         except Category.DoesNotExist:
-            pass
+            raise Http404(u'Категория не найдена')
 
         if category_m:
             categories.append(category_m)
