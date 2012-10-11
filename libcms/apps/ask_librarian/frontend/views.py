@@ -65,7 +65,7 @@ def index(request):
 
     return render(request, 'ask_librarian/frontend/questions_list.html', {
         'questions_page': questions_page,
-        'category': category,
+        'category': category_m,
         'categories': categories,
         'date_filter_form': date_filter_form
     })
