@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.core.mail import send_mail
 from django.db import transaction
-from django.contrib.sites.models import Site
 from django.contrib.auth.models import User, Group
-from django.utils.hashcompat import md5_constructor
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.api import get_messages
@@ -52,6 +51,66 @@ def error(request):
         'version': version,
         'messages': messages
     })
+
+import urlparse
+from django.views.decorators.debug import sensitive_post_parameters
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.sites.models import get_current_site
+@sensitive_post_parameters()
+@csrf_protect
+@never_cache
+def login(request, template_name='registration/login.html',
+          redirect_field_name=REDIRECT_FIELD_NAME,
+          authentication_form=AuthenticationForm,
+          current_app=None, extra_context=None):
+    """
+    Displays the login form and handles the login action.
+    """
+    redirect_to = request.REQUEST.get(redirect_field_name, '')
+
+    if request.method == "POST":
+        form = authentication_form(data=request.POST)
+        if form.is_valid():
+            netloc = urlparse.urlparse(redirect_to)[1]
+
+            # Use default setting if redirect_to is empty
+            if not redirect_to:
+                redirect_to = settings.LOGIN_REDIRECT_URL
+
+            # Heavier security check -- don't allow redirection to a different
+            # host.
+            elif netloc and netloc != request.get_host():
+                redirect_to = settings.LOGIN_REDIRECT_URL
+
+            # Okay, security checks complete. Log the user in.
+            auth_login(request, form.get_user())
+
+            if request.session.test_cookie_worked():
+                request.session.delete_test_cookie()
+            else:
+                return HttpResponse(u'У вас не работают cookies. Пожалуйста, включите их в браузере или очистите кеш.')
+
+            return redirect(redirect_to)
+    else:
+        form = authentication_form(request)
+
+    request.session.set_test_cookie()
+
+    current_site = get_current_site(request)
+
+    context = {
+        'form': form,
+        redirect_field_name: redirect_to,
+        'site': current_site,
+        'site_name': current_site.name,
+        }
+    if extra_context is not None:
+        context.update(extra_context)
+    return render(request, template_name, context,
+        current_app=current_app)
 
 @transaction.commit_on_success
 def registration(request):
