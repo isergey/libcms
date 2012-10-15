@@ -194,7 +194,7 @@ def language_title(code):
 def ssearch_all_count():
     try:
         solr = sunburnt.SolrInterface(settings.SOLR['host'])
-        responce = solr.query(id='*').field_limit("id").execute()
+        responce = solr.query(**{'*':'*'}).field_limit("id").execute()
     except socket.error:
         return {
             'count': 0

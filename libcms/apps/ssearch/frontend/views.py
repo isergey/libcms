@@ -313,6 +313,7 @@ def search(request, catalog=None):
     if len(terms) == 1 and 'text_t' in terms[0] and terms[0]['text_t'].strip() == '*':
         terms = [{u'*': u'*'}]
 
+
     if len(terms) > 1 and u'*' in terms[0][terms[0].keys()[0]].strip() == u'*':
         terms = terms[1:]
 
@@ -338,7 +339,8 @@ def search(request, catalog=None):
 
     facet_fields = ['author_sf', 'content-type_t','date-of-publication_dtf', 'subject-heading_sf', 'code-language_t', 'fond_sf' ]
     solr_searcher = solr.query(query)
-    solr_searcher = solr_searcher.highlight(fields=['full-text'])
+    if 'full-text' in request.GET.getlist('attr'):
+        solr_searcher = solr_searcher.highlight(fields=['full-text'])
 
     exclude_kwargs = {}
 
@@ -395,6 +397,7 @@ def search(request, catalog=None):
 
 
     for row in results_page.object_list:
+        print row
         docs.append(replace_doc_attrs(row))
 
 
@@ -443,6 +446,8 @@ def search(request, catalog=None):
         return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
 
     json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
+    if request.GET.get('print', None):
+        print 'print'
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
         'results_page': results_page,
@@ -454,6 +459,8 @@ def search(request, catalog=None):
         'search_attrs': search_attrs,
         'catalog':catalog
     })
+
+
 
 from levenshtein import levenshtein
 
