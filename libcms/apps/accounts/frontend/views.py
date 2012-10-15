@@ -91,7 +91,7 @@ def login(request, template_name='registration/login.html',
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
             else:
-                return HttpResponse(u'У вас не работают cookies. Пожалуйста, включите их в браузере или очистите кеш.')
+                return HttpResponse(u'У вас не работают cookies. Пожалуйста, включите их в браузере или очистите кеш браузера.')
 
             return redirect(redirect_to)
     else:
