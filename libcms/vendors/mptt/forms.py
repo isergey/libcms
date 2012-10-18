@@ -19,8 +19,6 @@ class TreeNodeChoiceField(forms.ModelChoiceField):
     """A ModelChoiceField for tree nodes."""
     def __init__(self, queryset, *args, **kwargs):
         self.level_indicator = kwargs.pop('level_indicator', u'---')
-        if kwargs.get('required', True) and not 'empty_label' in kwargs:
-            kwargs['empty_label'] = None
 
         # if a queryset is supplied, enforce ordering
         if hasattr(queryset, 'model'):
@@ -39,7 +37,7 @@ class TreeNodeChoiceField(forms.ModelChoiceField):
         generating option labels.
         """
         level_indicator = self._get_level_indicator(obj)
-        return mark_safe(u'%s %s' % (level_indicator, conditional_escape(smart_unicode(obj))))
+        return mark_safe(level_indicator + ' ' + conditional_escape(smart_unicode(obj)))
 
 
 class TreeNodeMultipleChoiceField(TreeNodeChoiceField, forms.ModelMultipleChoiceField):
@@ -47,8 +45,6 @@ class TreeNodeMultipleChoiceField(TreeNodeChoiceField, forms.ModelMultipleChoice
 
     def __init__(self, queryset, *args, **kwargs):
         self.level_indicator = kwargs.pop('level_indicator', u'---')
-        if kwargs.get('required', True) and not 'empty_label' in kwargs:
-            kwargs['empty_label'] = None
 
         # if a queryset is supplied, enforce ordering
         if hasattr(queryset, 'model'):
@@ -132,8 +128,8 @@ class MoveNodeForm(forms.Form):
         if valid_targets is None:
             valid_targets = node._tree_manager.exclude(**{
                 opts.tree_id_attr: getattr(node, opts.tree_id_attr),
-                '%s__gte' % opts.left_attr: getattr(node, opts.left_attr),
-                '%s__lte' % opts.right_attr: getattr(node, opts.right_attr),
+                opts.left_attr + '__gte': getattr(node, opts.left_attr),
+                opts.right_attr + '__lte': getattr(node, opts.right_attr),
             })
         self.fields['target'].queryset = valid_targets
         self.fields['target'].widget.attrs['size'] = target_select_size
@@ -164,7 +160,7 @@ class MoveNodeForm(forms.Form):
 class MPTTAdminForm(forms.ModelForm):
     """
     A form which validates that the chosen parent for a node isn't one of
-    it's descendants.
+    its descendants.
     """
     def clean(self):
         cleaned_data = super(MPTTAdminForm, self).clean()

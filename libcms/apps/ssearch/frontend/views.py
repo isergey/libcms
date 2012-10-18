@@ -296,9 +296,8 @@ def search(request, catalog=None):
     if fqs and fattrs and fqs[0]==u'*' and fattrs[0]==u'*':
         fqs = fqs[1:]
         fattrs = fattrs[1:]
-
     in_founded = request.GET.get('in_founded', None)
-
+    print  fattrs
     terms = []
     try:
         if in_founded or sort:
@@ -333,9 +332,6 @@ def search(request, catalog=None):
                 query = query & solr.Q(solr.Q(**term) | morph_query)
             else:
                 query = query & solr.Q(**term)
-
-
-
 
     facet_fields = ['author_sf', 'content-type_t','date-of-publication_dtf', 'subject-heading_sf', 'code-language_t', 'fond_sf' ]
     solr_searcher = solr.query(query)
@@ -397,7 +393,6 @@ def search(request, catalog=None):
 
 
     for row in results_page.object_list:
-        print row
         docs.append(replace_doc_attrs(row))
 
 

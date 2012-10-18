@@ -1,4 +1,5 @@
 import operator
+import threading
 import warnings
 
 from django.db import models
@@ -8,7 +9,6 @@ from django.utils.translation import ugettext as _
 
 from mptt.fields import TreeForeignKey, TreeOneToOneField, TreeManyToManyField
 from mptt.managers import TreeManager
-from mptt.utils import _exists
 
 
 class MPTTOptions(object):
@@ -28,9 +28,6 @@ class MPTTOptions(object):
     level_attr = 'level'
     parent_attr = 'parent'
 
-    # deprecated, don't use this
-    tree_manager_attr = 'tree'
-
     def __init__(self, opts=None, **kwargs):
         # Override defaults with options provided
         if opts:
@@ -40,12 +37,11 @@ class MPTTOptions(object):
         opts.extend(kwargs.items())
 
         if 'tree_manager_attr' in [opt[0] for opt in opts]:
-            warnings.warn(
-                _("`tree_manager_attr` is deprecated; just instantiate a TreeManager as a normal manager on your model"),
-                DeprecationWarning
-            )
+            raise ValueError("`tree_manager_attr` has been removed; you should instantiate a TreeManager as a normal manager on your model instead.")
 
         for key, value in opts:
+            if key[:2] == '__':
+                continue
             setattr(self, key, value)
 
         # Normalize order_insertion_by to a list
@@ -57,7 +53,7 @@ class MPTTOptions(object):
             self.order_insertion_by = []
 
     def __iter__(self):
-        return iter([(k, v) for (k, v) in self.__dict__.items() if not k.startswith('_')])
+        return ((k, v) for k, v in self.__dict__.iteritems() if k[0] != '_')
 
     # Helper methods for accessing tree attributes on models.
     def get_raw_field_value(self, instance, field_name):
@@ -89,9 +85,13 @@ class MPTTOptions(object):
         so that the MPTT fields need to be updated.
         """
         instance._mptt_cached_fields = {}
-        field_names = [self.parent_attr]
+        field_names = set((self.parent_attr,))
+        field_names__add = field_names.add
         if self.order_insertion_by:
-            field_names += self.order_insertion_by
+            for f in self.order_insertion_by:
+                if f[0] == '-':
+                    f = f[1:]
+                field_names__add(f)
         for field_name in field_names:
             instance._mptt_cached_fields[field_name] = self.get_raw_field_value(instance, field_name)
 
@@ -112,12 +112,22 @@ class MPTTOptions(object):
         """
         fields = []
         filters = []
+        fields__append = fields.append
+        filters__append = filters.append
+        and_ = operator.and_
+        or_ = operator.or_
         for field in order_insertion_by:
+            if field[0] == '-':
+                field = field[1:]
+                filter_suffix = '__lt'
+            else:
+                filter_suffix = '__gt'
             value = getattr(instance, field)
-            filters.append(reduce(operator.and_, [Q(**{f: v}) for f, v in fields] +
-                                                 [Q(**{'%s__gt' % field: value})]))
-            fields.append((field, value))
-        return reduce(operator.or_, filters)
+            q = Q(**{field + filter_suffix: value})
+
+            filters__append(reduce(and_, [Q(**{f: v}) for f, v in fields] + [q]))
+            fields__append((field, value))
+        return reduce(or_, filters)
 
     def get_ordered_insertion_target(self, node, parent):
         """
@@ -141,7 +151,7 @@ class MPTTOptions(object):
                 # the same values.
                 order_by.append(opts.left_attr)
             else:
-                filters = filters & Q(**{'%s__isnull' % opts.parent_attr: True})
+                filters = filters & Q(**{opts.parent_attr: None})
                 # Fall back on tree id ordering if multiple root nodes have
                 # the same values.
                 order_by.append(opts.tree_id_attr)
@@ -172,12 +182,12 @@ class MPTTModelBase(ModelBase):
             class MPTTMeta:
                 pass
 
-        initial_options = set(dir(MPTTMeta))
+        initial_options = frozenset(dir(MPTTMeta))
 
         # extend MPTTMeta from base classes
         for base in bases:
             if hasattr(base, '_mptt_meta'):
-                for (name, value) in base._mptt_meta:
+                for name, value in base._mptt_meta:
                     if name == 'tree_manager_attr':
                         continue
                     if name not in initial_options:
@@ -186,7 +196,71 @@ class MPTTModelBase(ModelBase):
         class_dict['_mptt_meta'] = MPTTOptions(MPTTMeta)
         cls = super(MPTTModelBase, meta).__new__(meta, class_name, bases, class_dict)
 
-        return meta.register(cls)
+        cls = meta.register(cls)
+
+        # see error cases in TreeManager.disable_mptt_updates for the reasoning here.
+        cls._mptt_tracking_base = None
+        for base in cls.mro():
+            if not isinstance(base, MPTTModelBase):
+                continue
+            if not (base._meta.abstract or base._meta.proxy) and base._tree_manager.tree_model is base:
+                cls._mptt_tracking_base = base
+                break
+        if cls is cls._mptt_tracking_base:
+            cls._threadlocal = threading.local()
+            # set on first access (to make threading errors more obvious):
+            #    cls._threadlocal.mptt_delayed_tree_changes = None
+
+        return cls
+
+    def _get_mptt_updates_enabled(cls):
+        if not cls._mptt_tracking_base:
+            return True
+        return getattr(cls._mptt_tracking_base._threadlocal, 'mptt_updates_enabled', True)
+
+    def _set_mptt_updates_enabled(cls, value):
+        assert cls is cls._mptt_tracking_base, "Can't enable or disable mptt updates on a non-tracking class."
+        cls._threadlocal.mptt_updates_enabled = value
+    _mptt_updates_enabled = property(_get_mptt_updates_enabled, _set_mptt_updates_enabled)
+
+    @property
+    def _mptt_is_tracking(cls):
+        if not cls._mptt_tracking_base:
+            return False
+        if not hasattr(cls._threadlocal, 'mptt_delayed_tree_changes'):
+            # happens the first time this is called from each thread
+            cls._threadlocal.mptt_delayed_tree_changes = None
+        return cls._threadlocal.mptt_delayed_tree_changes is not None
+
+    def _mptt_start_tracking(cls):
+        assert cls is cls._mptt_tracking_base, "Can't start or stop mptt tracking on a non-tracking class."
+        assert not cls._mptt_is_tracking, "mptt tracking is already started."
+        cls._threadlocal.mptt_delayed_tree_changes = set()
+
+    def _mptt_stop_tracking(cls):
+        assert cls is cls._mptt_tracking_base, "Can't start or stop mptt tracking on a non-tracking class."
+        assert cls._mptt_is_tracking, "mptt tracking isn't started."
+        results = cls._threadlocal.mptt_delayed_tree_changes
+        cls._threadlocal.mptt_delayed_tree_changes = None
+        return results
+
+    def _mptt_track_tree_modified(cls, tree_id):
+        if not cls._mptt_is_tracking:
+            return
+        cls._threadlocal.mptt_delayed_tree_changes.add(tree_id)
+
+    def _mptt_track_tree_insertions(cls, tree_id, num_inserted):
+        if not cls._mptt_is_tracking:
+            return
+        changes = cls._threadlocal.mptt_delayed_tree_changes
+        if not num_inserted or not changes:
+            return
+
+        if num_inserted < 0:
+            deleted = range(tree_id + num_inserted, -num_inserted)
+            changes.difference_update(deleted)
+        new_changes = set([(t + num_inserted if t >= tree_id else t) for t in changes])
+        cls._threadlocal.mptt_delayed_tree_changes = new_changes
 
     @classmethod
     def register(meta, cls, **kwargs):
@@ -210,8 +284,8 @@ class MPTTModelBase(ModelBase):
         # some discussion is here: https://github.com/divio/django-cms/issues/1079
         # This stuff is still documented as removed, and WILL be removed again in the next release.
         # All new code should use _mptt_meta rather than _meta for tree attributes.
-        attrs = set(['left_attr', 'right_attr', 'tree_id_attr', 'level_attr', 'parent_attr',
-                    'tree_manager_attr', 'order_insertion_by'])
+        attrs = ('left_attr', 'right_attr', 'tree_id_attr', 'level_attr',
+                 'parent_attr', 'tree_manager_attr', 'order_insertion_by')
         warned_attrs = set()
 
         class _MetaSubClass(cls._meta.__class__):
@@ -244,7 +318,7 @@ class MPTTModelBase(ModelBase):
                 # strip out bases that are strict superclasses of MPTTModel.
                 # (i.e. Model, object)
                 # this helps linearize the type hierarchy if possible
-                for i in range(len(bases) - 1, -1, -1):
+                for i in xrange(len(bases) - 1, -1, -1):
                     if issubclass(MPTTModel, bases[i]):
                         del bases[i]
 
@@ -293,38 +367,6 @@ class MPTTModelBase(ModelBase):
 
                 # avoid using ManagerDescriptor, so instances can refer to self._tree_manager
                 setattr(cls, '_tree_manager', tree_manager)
-
-                # for backwards compatibility, add .tree too (or whatever's in tree_manager_attr)
-                tree_manager_attr = cls._mptt_meta.tree_manager_attr
-                if tree_manager_attr != 'objects':
-                    another = getattr(cls, tree_manager_attr, None)
-                    if another is None:
-                        # wrap with a warning on first use
-                        from django.db.models.manager import ManagerDescriptor
-
-                        class _WarningDescriptor(ManagerDescriptor):
-                            def __init__(self, manager):
-                                self.manager = manager
-                                self.used = False
-
-                            def __get__(self, instance, type=None):
-                                if instance != None:
-                                    raise AttributeError("Manager isn't accessible via %s instances" % type.__name__)
-
-                                if not self.used:
-                                    warnings.warn(
-                                        'Implicit manager %s.%s will be removed in django-mptt 0.6. '
-                                        ' Explicitly define a TreeManager() on your model to remove this warning.'
-                                        % (cls.__name__, tree_manager_attr),
-                                        DeprecationWarning
-                                    )
-                                    self.used = True
-                                return self.manager
-
-                        setattr(cls, tree_manager_attr, _WarningDescriptor(tree_manager))
-                    elif hasattr(another, 'init_from_model'):
-                        another.init_from_model(cls)
-
         return cls
 
 
@@ -344,7 +386,7 @@ class MPTTModel(models.Model):
         self._mptt_meta.update_mptt_cached_fields(self)
 
     def _mpttfield(self, fieldname):
-        translated_fieldname = getattr(self._mptt_meta, '%s_attr' % fieldname)
+        translated_fieldname = getattr(self._mptt_meta, fieldname + '_attr')
         return getattr(self, translated_fieldname)
 
     def get_ancestors(self, ascending=False, include_self=False):
@@ -371,7 +413,7 @@ class MPTTModel(models.Model):
 
         order_by = opts.left_attr
         if ascending:
-            order_by = '-%s' % order_by
+            order_by = '-' + order_by
 
         left = getattr(self, opts.left_attr)
         right = getattr(self, opts.right_attr)
@@ -463,45 +505,45 @@ class MPTTModel(models.Model):
             left=(models.F(self._mptt_meta.right_attr) - 1)
         )
 
-    def get_next_sibling(self, **filters):
+    def get_next_sibling(self, *filter_args, **filter_kwargs):
         """
         Returns this model instance's next sibling in the tree, or
         ``None`` if it doesn't have a next sibling.
         """
-        qs = self._tree_manager.filter(**filters)
+        qs = self._tree_manager.filter(*filter_args, **filter_kwargs)
         if self.is_root_node():
             qs = self._tree_manager._mptt_filter(qs,
-                parent__isnull=True,
+                parent=None,
                 tree_id__gt=self._mpttfield('tree_id'),
             )
         else:
             qs = self._tree_manager._mptt_filter(qs,
-                parent__id=getattr(self, '%s_id' % self._mptt_meta.parent_attr),
+                parent__pk=getattr(self, self._mptt_meta.parent_attr + '_id'),
                 left__gt=self._mpttfield('right'),
             )
 
         siblings = qs[:1]
         return siblings and siblings[0] or None
 
-    def get_previous_sibling(self, **filters):
+    def get_previous_sibling(self, *filter_args, **filter_kwargs):
         """
         Returns this model instance's previous sibling in the tree, or
         ``None`` if it doesn't have a previous sibling.
         """
         opts = self._mptt_meta
-        qs = self._tree_manager.filter(**filters)
+        qs = self._tree_manager.filter(*filter_args, **filter_kwargs)
         if self.is_root_node():
             qs = self._tree_manager._mptt_filter(qs,
-                parent__isnull=True,
+                parent=None,
                 tree_id__lt=self._mpttfield('tree_id'),
             )
-            qs = qs.order_by('-%s' % opts.tree_id_attr)
+            qs = qs.order_by('-' + opts.tree_id_attr)
         else:
             qs = self._tree_manager._mptt_filter(qs,
-                parent__id=getattr(self, '%s_id' % opts.parent_attr),
+                parent__pk=getattr(self, opts.parent_attr + '_id'),
                 right__lt=self._mpttfield('left'),
             )
-            qs = qs.order_by('-%s' % opts.right_attr)
+            qs = qs.order_by('-' + opts.right_attr)
 
         siblings = qs[:1]
         return siblings and siblings[0] or None
@@ -515,7 +557,7 @@ class MPTTModel(models.Model):
 
         return self._tree_manager._mptt_filter(
             tree_id=self._mpttfield('tree_id'),
-            parent__isnull=True
+            parent=None,
         ).get()
 
     def get_siblings(self, include_self=False):
@@ -528,10 +570,10 @@ class MPTTModel(models.Model):
         include this model instance.
         """
         if self.is_root_node():
-            queryset = self._tree_manager._mptt_filter(parent__isnull=True)
+            queryset = self._tree_manager._mptt_filter(parent=None)
         else:
-            parent_id = getattr(self, '%s_id' % self._mptt_meta.parent_attr)
-            queryset = self._tree_manager._mptt_filter(parent__id=parent_id)
+            parent_id = getattr(self, self._mptt_meta.parent_attr + '_id')
+            queryset = self._tree_manager._mptt_filter(parent__pk=parent_id)
         if not include_self:
             queryset = queryset.exclude(pk=self.pk)
         return queryset
@@ -568,7 +610,7 @@ class MPTTModel(models.Model):
         Returns ``True`` if this model instance is a root node,
         ``False`` otherwise.
         """
-        return getattr(self, '%s_id' % self._mptt_meta.parent_attr) is None
+        return getattr(self, self._mptt_meta.parent_attr + '_id') is None
 
     def is_descendant_of(self, other, include_self=False):
         """
@@ -618,11 +660,8 @@ class MPTTModel(models.Model):
         else:
             if not hasattr(self, '_mptt_saved'):
                 manager = self.__class__._base_manager
-                # NOTE we don't support django 1.1 anymore, so this is likely to get removed soon
-                if hasattr(manager, 'using'):
-                    # multi db support was added in django 1.2
-                    manager = manager.using(using)
-                self._mptt_saved = _exists(manager.filter(pk=self.pk))
+                manager = manager.using(using)
+                self._mptt_saved = manager.filter(pk=self.pk).exists()
             return self._mptt_saved
 
     def save(self, *args, **kwargs):
@@ -643,21 +682,64 @@ class MPTTModel(models.Model):
         tree option set, the node will be inserted or moved to the
         appropriate position to maintain ordering by the specified field.
         """
+        do_updates = self.__class__._mptt_updates_enabled
+        track_updates = self.__class__._mptt_is_tracking
+
         opts = self._mptt_meta
+
+        if not (do_updates or track_updates):
+            # inside manager.disable_mptt_updates(), don't do any updates.
+            # unless we're also inside TreeManager.delay_mptt_updates()
+            if self._mpttfield('left') is None:
+                # we need to set *some* values, though don't care too much what.
+                parent = getattr(self, '_%s_cache' % opts.parent_attr, None)
+                # if we have a cached parent, have a stab at getting possibly-correct values.
+                # otherwise, meh.
+                if parent:
+                    left = parent._mpttfield('left') + 1
+                    setattr(self, opts.left_attr, left)
+                    setattr(self, opts.right_attr, left + 1)
+                    setattr(self, opts.level_attr, parent._mpttfield('level') + 1)
+                    setattr(self, opts.tree_id_attr, parent._mpttfield('tree_id'))
+                    self._tree_manager._post_insert_update_cached_parent_right(parent, 2)
+                else:
+                    setattr(self, opts.left_attr, 1)
+                    setattr(self, opts.right_attr, 2)
+                    setattr(self, opts.level_attr, 0)
+                    setattr(self, opts.tree_id_attr, 0)
+            return super(MPTTModel, self).save(*args, **kwargs)
+
         parent_id = opts.get_raw_field_value(self, opts.parent_attr)
 
         # determine whether this instance is already in the db
         force_update = kwargs.get('force_update', False)
         force_insert = kwargs.get('force_insert', False)
-        if force_update or (not force_insert and self._is_saved(using=kwargs.get('using', None))):
+        collapse_old_tree = None
+        if force_update or (not force_insert and self._is_saved(using=kwargs.get('using'))):
             # it already exists, so do a move
             old_parent_id = self._mptt_cached_fields[opts.parent_attr]
             same_order = old_parent_id == parent_id
             if same_order and len(self._mptt_cached_fields) > 1:
-                for field_name, old_value in self._mptt_cached_fields.items():
-                    if old_value != opts.get_raw_field_value(self, field_name):
+                get_raw_field_value = opts.get_raw_field_value
+                for field_name, old_value in self._mptt_cached_fields.iteritems():
+                    if old_value != get_raw_field_value(self, field_name):
                         same_order = False
                         break
+                if not do_updates and not same_order:
+                    same_order = True
+                    self.__class__._mptt_track_tree_modified(self._mpttfield('tree_id'))
+            elif (not do_updates) and not same_order and old_parent_id is None:
+                # the old tree no longer exists, so we need to collapse it.
+                collapse_old_tree = self._mpttfield('tree_id')
+                parent = getattr(self, opts.parent_attr)
+                tree_id = parent._mpttfield('tree_id')
+                left = parent._mpttfield('left') + 1
+                self.__class__._mptt_track_tree_modified(tree_id)
+                setattr(self, opts.tree_id_attr, tree_id)
+                setattr(self, opts.left_attr, left)
+                setattr(self, opts.right_attr, left + 1)
+                setattr(self, opts.level_attr, parent._mpttfield('level') + 1)
+                same_order = True
 
             if not same_order:
                 opts.set_raw_field_value(self, opts.parent_attr, old_parent_id)
@@ -666,24 +748,39 @@ class MPTTModel(models.Model):
                     if opts.order_insertion_by:
                         right_sibling = opts.get_ordered_insertion_target(self, getattr(self, opts.parent_attr))
 
+                    if parent_id is not None:
+                        parent = getattr(self, opts.parent_attr)
+                        # If we aren't already a descendant of the new parent, we need to update the parent.rght so
+                        # things like get_children and get_descendant_count work correctly.
+                        update_cached_parent = (
+                            getattr(self, opts.tree_id_attr) != getattr(parent, opts.tree_id_attr) or
+                            getattr(self, opts.left_attr) < getattr(parent, opts.left_attr) or
+                            getattr(self, opts.right_attr) > getattr(parent, opts.right_attr))
+
                     if right_sibling:
-                        self.move_to(right_sibling, 'left')
+                        self._tree_manager._move_node(self, right_sibling, 'left', save=False)
                     else:
                         # Default movement
                         if parent_id is None:
                             root_nodes = self._tree_manager.root_nodes()
                             try:
-                                rightmost_sibling = root_nodes.exclude(pk=self.pk).order_by('-%s' % opts.tree_id_attr)[0]
-                                self.move_to(rightmost_sibling, position='right')
+                                rightmost_sibling = root_nodes.exclude(pk=self.pk).order_by('-' + opts.tree_id_attr)[0]
+                                self._tree_manager._move_node(self, rightmost_sibling, 'right', save=False)
                             except IndexError:
                                 pass
                         else:
-                            parent = getattr(self, opts.parent_attr)
-                            self.move_to(parent, position='last-child')
+                            self._tree_manager._move_node(self, parent, 'last-child', save=False)
+
+                    if parent_id is not None and update_cached_parent:
+                        # Update rght of cached parent
+                        right_shift = 2 * (self.get_descendant_count() + 1)
+                        self._tree_manager._post_insert_update_cached_parent_right(parent, right_shift)
                 finally:
                     # Make sure the new parent is always
                     # restored on the way out in case of errors.
                     opts.set_raw_field_value(self, opts.parent_attr, parent_id)
+            else:
+                opts.set_raw_field_value(self, opts.parent_attr, parent_id)
         else:
             # new node, do an insert
             if (getattr(self, opts.left_attr) and getattr(self, opts.right_attr)):
@@ -693,8 +790,12 @@ class MPTTModel(models.Model):
                 parent = getattr(self, opts.parent_attr)
 
                 right_sibling = None
-                if opts.order_insertion_by:
-                    right_sibling = opts.get_ordered_insertion_target(self, parent)
+                # if we're inside delay_mptt_updates, don't do queries to find sibling position.
+                # instead, do default insertion. correct positions will be found during partial rebuild later.
+                # *unless* this is a root node. (as update tracking doesn't handle re-ordering of trees.)
+                if do_updates or parent is None:
+                    if opts.order_insertion_by:
+                        right_sibling = opts.get_ordered_insertion_target(self, parent)
 
                 if right_sibling:
                     self.insert_at(right_sibling, 'left', allow_existing_pk=True)
@@ -707,7 +808,12 @@ class MPTTModel(models.Model):
                 else:
                     # Default insertion
                     self.insert_at(parent, position='last-child', allow_existing_pk=True)
-        super(MPTTModel, self).save(*args, **kwargs)
+        try:
+            super(MPTTModel, self).save(*args, **kwargs)
+        finally:
+            if collapse_old_tree is not None:
+                self._tree_manager._create_tree_space(collapse_old_tree, -1)
+
         self._mptt_saved = True
         opts.update_mptt_cached_fields(self)
 
@@ -717,4 +823,9 @@ class MPTTModel(models.Model):
         target_right = self._mpttfield('right')
         tree_id = self._mpttfield('tree_id')
         self._tree_manager._close_gap(tree_width, target_right, tree_id)
+        parent = getattr(self, '_%s_cache' % self._mptt_meta.parent_attr, None)
+        if parent:
+            right_shift = -self.get_descendant_count() - 2
+            self._tree_manager._post_insert_update_cached_parent_right(parent, right_shift)
+
         super(MPTTModel, self).delete(*args, **kwargs)

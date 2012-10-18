@@ -2,10 +2,12 @@
 from django.conf import settings
 from django.db import transaction
 from django.utils.translation import ugettext as _
-from django.shortcuts import render, get_object_or_404, redirect, HttpResponse, Http404
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponse, Http404, urlresolvers
 from django.http import HttpResponseForbidden
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.contrib.sites.models import get_current_site
 from common.pagination import get_page
 from django.utils.translation import get_language
 from common.pagination import get_page
@@ -107,6 +109,15 @@ def question_answer(request, id):
             if question.is_new():
                 question.take_to_process(manager, commit=False)
             question.close_process()
+            if question.email:
+                domain = get_current_site(request).domain
+                send_mail(u"Спроси библиотекаря",
+                    u'Ваш вопрос был обработан. Вы можете посмотреть ответ по адресу http://%s%s' %
+                    (domain, urlresolvers.reverse('ask_librarian:frontend:detail', args=(question.id,))),
+                    'system@' + domain,
+                    [question.email],
+                    fail_silently=True
+                )
             return redirect('ask_librarian:administration:question_detail', id=id)
     else:
         form = AnswerQuestionForm(instance=question)
