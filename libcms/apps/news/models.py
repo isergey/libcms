@@ -15,7 +15,7 @@ class News(models.Model):
     create_date = models.DateTimeField(default=datetime.now, verbose_name=u"Дата создания", db_index=True)
     type = models.IntegerField(verbose_name=u'Вид новостей', default=(0, u'Публичные'), choices=NEWS_TYPE_CHOICES, db_index=True)
     publicated = models.BooleanField(verbose_name=u'Опубликовано?', default=True, db_index=True)
-    avatar_img_name = models.CharField(max_length=100, blank=True)
+    #avatar_img_name = models.CharField(max_length=100, blank=True)
     def get_absolute_url(self):
         return urlresolvers.reverse('news:frontend:show', args=[self.id])
 
