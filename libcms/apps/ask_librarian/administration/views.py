@@ -132,13 +132,14 @@ def question_answer(request, id):
                 question.take_to_process(manager, commit=False)
             question.close_process()
             if question.email:
-                domain = get_current_site(request).domain
+                domain = settings.SITE_DOMAIN
+                from_mail = settings.DEFAULT_FROM_EMAIL
                 send_mail(u"Спроси библиотекаря",
                     u'Ваш вопрос был обработан. Вы можете посмотреть ответ по адресу http://%s%s' %
                     (domain, urlresolvers.reverse('ask_librarian:frontend:detail', args=(question.id,))),
-                    'system@' + domain,
+                    from_mail,
                     [question.email],
-                    fail_silently=True
+                    #                    fail_silently=True
                 )
             return redirect('ask_librarian:administration:question_detail', id=id)
     else:
