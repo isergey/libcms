@@ -13,7 +13,7 @@ from django.utils.translation import get_language
 from common.pagination import get_page
 from django.db.models import Q
 from ..models import Category, CategoryTitle,  Question, QuestionManager, Recomendation
-from forms import CategoryForm, CategoryTitleForm,  AnswerQuestionForm
+from forms import CategoryForm, CategoryTitleForm,  AnswerQuestionForm, ToManagerForm
 
 
 
@@ -61,9 +61,12 @@ def questions_list(request, my=None):
             if question.manager_id:
                 question.manager = md[question.manager_id]
 
-
+    to_manager_form = None
+    if not my:
+        to_manager_form = ToManagerForm()
     return render(request, 'ask_librarian/administration/questions_list.html', {
             'questions_page': questions_page,
+            'to_manager_form': to_manager_form
         })
 
 
@@ -79,6 +82,24 @@ def questions_to_process(request, id):
         raise Http404()
     question.take_to_process(manager)
     return redirect('ask_librarian:administration:questions_list')
+
+
+@login_required
+@transaction.commit_on_success
+def assign_to_manager(request, question_id):
+    if request.method == 'POST':
+        to_manager_form = ToManagerForm(request.POST)
+        if to_manager_form.is_valid():
+            try:
+                question = Question.objects.select_for_update().get(Q(id=question_id), ~Q(status=2))
+            except Question.DoesNotExist:
+                raise Http404(u'Вопрос не может быть присвоен менеджеру. Его не существует, либо он уже обрабатывается')
+
+            question.take_to_process(to_manager_form.cleaned_data['manager'])
+            return redirect('ask_librarian:administration:questions_list')
+    else:
+        return HttpResponse(u'Only POST request')
+
 
 @login_required
 def question_detail(request, id):

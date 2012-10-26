@@ -1,13 +1,13 @@
 {% load mptt_tags %}
 {% load ask_librarian_tags %}
-
+{% url ask_librarian:frontend:index as ask_librarian_index %}
 <div class="menu">
-    <span class="title">Категории вопросов</span>
+    <span class="title">Категории вопросов:</span>
     <ul class="items" style="list-style: none; margin: 0">
         {% if nodes %}
             {% recursetree nodes %}
                 <li {% if path == node.item_title.url  %}class="active"{% endif %}>
-                    <a href="?category={{ node.id }}">{{ node.node_title.title }} (<b>{%  get_question_category_count node %}</b>)</a>
+                    <a href="{{ ask_librarian_index }}?category={{ node.id }}">{{ node.node_title.title }} (<b>{%  get_question_category_count node %}</b>)</a>
                 </li>
                 {% if not node.is_leaf_node %}
 

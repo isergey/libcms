@@ -13,15 +13,16 @@
     <hr/>
     <ul style="list-style: none; margin: 0">
         {% for question in questions_page.object_list %}
-            <li>
+            <li class="well" style="padding: 5px">
                 <div>{{ question }}</div>
+                <hr/>
                 {% if question.is_processing or question.is_ready %}
                     <div style="padding-top: 10px">
                         <b>Ответственность:</b> {{ question.manager.user }};<br/>
                         <b>Принят на обработку:</b> {{ question.start_process_date }}; {% if question.end_process_date %}<b>Ответ дан:</b> {{ question.end_process_date }}{% endif %}
                     </div>
                 {% endif %}
-                <div>
+                <div >
                     <a class="btn" href="{% url ask_librarian:administration:question_detail question.id %}">Детальная информация</a>
                     {% if question.is_new %}
                         <a class="btn btn-warning" href="{% url ask_librarian:administration:questions_to_process question.id %}">Забрать на обработку</a>
@@ -33,11 +34,16 @@
                         <a class="btn btn-success" href="{% url ask_librarian:administration:question_answer question.id %}">Дать ответ</a>
                     {% endif %}
                     {% if question.is_ready and question.manager.user_id == request.user.id or request.user.is_superuser %}
-                        <a class="btn btn-success" href="{% url ask_librarian:administration:question_edit question.id %}">Редактировать</a>
+                        <a class="btn" href="{% url ask_librarian:administration:question_edit question.id %}">Редактировать</a>
                     {% endif %}
                     <a style="float: right;" class="btn btn-danger" href="{% url ask_librarian:administration:question_delete question.id %}">Удалить</a>
+                    {% if perms.ask_librarian.assign_to_manager and  to_manager_form %}
+                        <form action="{% url ask_librarian:administration:assign_to_manager question.id %}" method="POST" style="margin-top: 10px" class='form-inline'>{% csrf_token %}
+                            {% include 'frontend/base_form_fields.html' with form=to_manager_form %}
+                        <input type="submit" value="Назначить ответственным" class="btn">
+                        </form>
+                    {% endif %}
                 </div>
-                <hr/>
             </li>
         {% empty %}
             <li>Ничего нет.</li>

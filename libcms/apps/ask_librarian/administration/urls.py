@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^categories/down/(?P<id>\d+)/$', views.category_down, name="category_down"),
 
     url(r'^questions/$', views.questions_list, name="questions_list"),
+    url(r'^processes/assign_to_manager/(?P<question_id>\d+)/$', views.assign_to_manager, name="assign_to_manager"),
     url(r'^processes/my/$', views.questions_list, name="questions_processes", kwargs={'my':True}),
     url(r'^questions/question_answer/(?P<id>\d+)/$', views.question_answer, name="question_answer"),
     url(r'^questions/to_process/(?P<id>\d+)/$', views.questions_to_process, name="questions_to_process"),

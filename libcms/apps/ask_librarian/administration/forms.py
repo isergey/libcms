@@ -3,7 +3,7 @@ from django.conf import settings
 from django import forms
 
 
-from ..models import Category, CategoryTitle, Question
+from ..models import Category, CategoryTitle, Question, QuestionManager
 from mptt.forms import TreeNodeChoiceField
 
 class AnswerQuestionForm(forms.ModelForm):
@@ -27,3 +27,8 @@ class CategoryTitleForm(forms.ModelForm):
 
 
 
+class ToManagerForm(forms.Form):
+    manager = forms.ModelChoiceField(
+        label=u'Укажмите ответственного за вопрос:',
+        queryset=QuestionManager.objects.select_related('user').filter(available=True)
+    )

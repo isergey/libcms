@@ -73,6 +73,12 @@ class QuestionManager(models.Model):
         verbose_name = u"Менеджер вопросов"
         verbose_name_plural = u"Менеджеры вопросов"
 
+    def __unicode__(self):
+        if self.user.last_name != u'':
+            return self.user.last_name + u' ' + self.user.first_name
+        else:
+            return self.user.username
+
 
     @staticmethod
     def get_manager(user):
@@ -81,6 +87,7 @@ class QuestionManager(models.Model):
         except QuestionManager.DoesNotExist:
             return None
         return manager
+
 
 class Question(models.Model):
     user = models.ForeignKey(User, null=True, verbose_name=u'Пользователь')
@@ -133,6 +140,12 @@ class Question(models.Model):
             if commit:
                 self.save()
 
+
+    class Meta:
+        ordering = ['-create_date']
+        permissions = (
+            ("assign_to_manager", "Can assign question to manager"),
+        )
 
 class Recomendation(models.Model):
     user = models.ForeignKey(User, null=True, verbose_name=u'Пользователь')
