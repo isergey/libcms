@@ -86,6 +86,7 @@ def questions_to_process(request, id):
 
 @login_required
 @transaction.commit_on_success
+@permission_required_or_403('ask_librarian.assign_to_manager')
 def assign_to_manager(request, question_id):
     if request.method == 'POST':
         to_manager_form = ToManagerForm(request.POST)
