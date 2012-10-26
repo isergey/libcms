@@ -61,12 +61,9 @@ def questions_list(request, my=None):
             if question.manager_id:
                 question.manager = md[question.manager_id]
 
-    to_manager_form = None
-    if not my:
-        to_manager_form = ToManagerForm()
+
     return render(request, 'ask_librarian/administration/questions_list.html', {
             'questions_page': questions_page,
-            'to_manager_form': to_manager_form
         })
 
 
@@ -109,10 +106,13 @@ def question_detail(request, id):
         return HttpResponse(u'Вы не можете обрабатывать вопросы')
 
     question = get_object_or_404(Question, id=id)
-    recomendations = Recomendation.objects.filter(id=id)
+#    recomendations = Recomendation.objects.filter(id=id)
+
+    to_manager_form = ToManagerForm()
     return render(request, 'ask_librarian/administration/question_detail.html', {
         'question': question,
-        'recomendations': recomendations
+        'to_manager_form': to_manager_form
+#        'recomendations': recomendations
     })
 
 @login_required
