@@ -19,7 +19,11 @@
 
     <div>
             <h3>Вопрос:</h3>
-            {{ question.question }}<br/>
+            {% if question.is_ready %}
+                {{ question.question|safe }}
+            {% else %}
+                {{ question.question }}
+            {% endif %}<br/>
             {% if question.category_id %}
                 <b>Категория:
                 {% cache 30 questions_category question.category_id LANGUAGE_CODE %}

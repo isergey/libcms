@@ -60,7 +60,11 @@
     <ul style="list-style: none; padding: 0; margin: 0;">
     {% for question in questions_page.object_list %}
         <li>
-            {{ question.question }}<br/>
+            {% if question.is_ready %}
+                {{ question.question|safe }}
+            {% else %}
+                {{ question.question }}
+            {% endif %}<br/>
             {% if question.category_id %}
                 <b>
                 {% cache 30 questions_category question.category_id  LANGUAGE_CODE %}

@@ -1,6 +1,10 @@
 <div>
     <h3>Вопрос:</h3>
-    {{ question.question }}<br/>
+    {% if question.is_ready %}
+        {{ question.question|safe }}
+    {% else %}
+        {{ question.question }}
+    {% endif %}<br/>
     <hr/>
 </div>
 <div>
