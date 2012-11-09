@@ -14,7 +14,13 @@
     <ul style="list-style: none; margin: 0">
         {% for question in questions_page.object_list %}
             <li class="well" style="padding: 5px">
-                <div>{{ question }}</div>
+                <div>
+                    {% if question.is_ready %}
+                    {{ question.question|safe }}
+                {% else %}
+                    {{ question.question }}
+                {% endif %}<br/>
+                </div>
                 <hr/>
                 {% if question.is_processing or question.is_ready %}
                     <div style="padding-top: 10px">
