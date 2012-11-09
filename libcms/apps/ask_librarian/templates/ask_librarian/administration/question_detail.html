@@ -10,7 +10,13 @@
     <h3>Детальная информация</h3>
     <hr/>
     <h3>Вопрос:</h3>
-    <div>{{ question }}</div>
+    <div>
+        {% if question.is_ready %}
+        {{ question.question|safe }}
+        {% else %}
+            {{ question.question }}
+        {% endif %}<br/>
+    </div>
     <div>
     {% if question.is_ready %}
         <h3>Ответ:</h3>
