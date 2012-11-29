@@ -178,7 +178,7 @@ def delete(request):
 
         delete_path = '%s' % path.encode(FILE_NAME_ENCODING)
         current_dir = os.path.split(delete_path)[0]
-        
+
         delete_path = base_uplod_path + delete_path
         print delete_path
         if os.path.isfile(delete_path):
