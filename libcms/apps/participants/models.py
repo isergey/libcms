@@ -84,7 +84,7 @@ class Library(MPTTModel):
 
     def __unicode__(self):
         if self.is_root_node():
-            return self.name
+            return self.name + u'#ЦБС'
         return self.name
 
 #    def clean(self):
