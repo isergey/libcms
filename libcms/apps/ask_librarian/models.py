@@ -99,7 +99,7 @@ class Question(models.Model):
     question = models.TextField(max_length=2048, verbose_name=u'Вопрос')
     answer = models.TextField(max_length=10000, verbose_name=u'Ответ')
     status = models.IntegerField(choices=QUESTION_STATUSES, verbose_name=u'Статус', db_index=True, default=0)
-    create_date = models.DateTimeField(verbose_name=u'Дата создания', db_index=True)
+    create_date = models.DateTimeField(auto_now_add=True, verbose_name=u'Дата создания', db_index=True)
 
     manager = models.ForeignKey(QuestionManager, verbose_name=u'Менеджер', null=True, blank=True)
     start_process_date = models.DateTimeField(blank=True, null=True, db_index=True, verbose_name=u'Дата взятия вопроса на обработку')
