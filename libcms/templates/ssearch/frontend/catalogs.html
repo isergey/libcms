@@ -2,10 +2,14 @@
 <div>
     <ul>
         {% for collection in stats.collections %}
-            <li>{{ collection.title }}: <b>{{ collection.value }}</b></li>
+            {% if collection.title == 'Фонд И. А. Второва' %}
+            <li><a href="#1">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
+            {% endif %}
         {% endfor %}
     </ul>
 </div>
 <div>Всего документов в коллекции: {{ stats.count_all }}</div>
 <div>Добавлено за текущий месяц: {{ stats.count_last_month }}</div>
 <div>Добавлено за последние 30 дней: {{ stats.count_last_30 }}</div>
+
+
