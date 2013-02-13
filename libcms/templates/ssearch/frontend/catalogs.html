@@ -3,23 +3,23 @@
     <ul>
         {% for collection in stats.collections %}
             {% if collection.title == 'Фонд И. А. Второва' %}
-            <li><a href="#vtorov">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
+            <li><a href="#vtorov" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {%  elif collection.title == 'Коллекция И. А. Сахарова'%}
-                <li><a href="#saharov">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
+                <li><a href="#saharov" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {%  elif collection.title == 'Татарика'%}
-                <li><a href="#tatarika">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
+                <li><a href="#tatarika" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {%  elif collection.title == 'Прижизненные издания Г.Тукая'%}
                 <li><a href="#tukay" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {%  elif collection.title == 'Коллекция русской старопечатной книги (до 1830 г.)'%}
-                <li><a href="#staropecht">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
+                <li><a href="#staropecht" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {%  elif collection.title == 'Книги подаренные авторами'%}
                 <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Книг+подаренные+авторами&attr=text&attr=fond&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {%  elif collection.title == 'Периодические издания Казанской губернии'%}
-                <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Периодические+издания+Казанской+губернии&attr=text&attr=fond&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
+                <li><a href="#periodkazan"  data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {%  elif collection.title == 'Тестовая коллекция'%}
                 <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Тестовая+коллекция&attr=text&attr=fond&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {% else %}
-                <li><a href="#1">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
+                <li>{{ collection.title }}: <b>{{ collection.value }}</b></li>
             {% endif %}
         {% endfor %}
     </ul>
@@ -116,7 +116,7 @@
     </div>
 </div>
 
-<div id="staropecht" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="periodkazan" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h3 id="myModalLabel">Периодические издания Казанской губернии</h3>
