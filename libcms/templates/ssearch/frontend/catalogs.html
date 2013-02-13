@@ -9,7 +9,7 @@
             {%  elif collection.title == 'Татарика'%}
                 <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Татарика&attr=text&attr=fond&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {%  elif collection.title == 'Прижизненные издания Г.Тукая'%}
-                <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Прижизненные+издания+Г.Тукая&attr=text&attr=fond&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
+                <li><a href="#tukay" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {%  elif collection.title == 'Коллекция русской старопечатной книги (до 1830 г.)'%}
                 <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Коллекция+русской+старопечатной+книги+(до+1830+г.)&attr=text&attr=fond&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {%  elif collection.title == 'Книги подаренные авторами'%}
@@ -28,7 +28,7 @@
 <div>Добавлено за текущий месяц: {{ stats.count_last_month }}</div>
 <div>Добавлено за последние 30 дней: {{ stats.count_last_30 }}</div>
 
-<a href="#tukay" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
+{#<a href="#tukay" role="button" class="btn" data-toggle="modal">Launch demo modal</a>#}
 
 <div id="tukay" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
@@ -45,8 +45,7 @@
         <p class="western"><strong>Фондодержатель</strong>: отдел периодических изданий Национальной библиотеки Республики Татарстан</p>
     </div>
     <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button class="btn btn-primary">Save changes</button>
+        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Прижизненные+издания+Г.Тукая&attr=text&attr=fond&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
     </div>
 </div>
 
