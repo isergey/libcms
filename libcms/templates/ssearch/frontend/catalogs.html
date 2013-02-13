@@ -3,7 +3,7 @@
     <ul>
         {% for collection in stats.collections %}
             {% if collection.title == 'Фонд И. А. Второва' %}
-            <li><a href="{% url ssearch:frontend:ecollection %}">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
+            <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Фонд+И.+А.+Второва&attr=text&attr=fond&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {% else %}
                 <li><a href="#1">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {% endif %}
