@@ -245,7 +245,7 @@
                                 </p>
                             {% endif %}
                             {% if doc.record|hash:'publisher' %}
-                                <p class="item4">Издатель:
+                                <p class="item4">Место издания:
                                     {% for publisher in doc.record|hash:'publisher' %}
                                         {% if not forloop.last %}
                                             {{ publisher }},

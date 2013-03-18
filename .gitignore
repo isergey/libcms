@@ -1,0 +1,9 @@
+*.py[co]
+.idea
+local_settings.py
+*.mo
+*.tmp
+*.log
+*.log.*
+media_data
+orders_data
