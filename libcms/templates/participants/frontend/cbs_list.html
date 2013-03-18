@@ -7,7 +7,7 @@
             <li class="active">Библиотеки</li>
         </ul>
     <div class="row">
-        <div class="span7">
+        <div class="span6">
             <style>
                 #map_canvas{
                     background: white;
@@ -20,13 +20,13 @@
             <div id="map_canvas" style="height: 400px"></div>
             {% include 'participants/frontend/map_cbs_js.html' %}
         </div>
-        <div class="span4">
+        <div class="span5">
 
             <ul class="participants" style="list-style: none; margin: 0">
                 {% for cbs in  cbs_list %}
-                    <li><a href="{% url participants:frontend:branches cbs.code %}">{{ cbs.name }}<br/></a>
+                    <li style="margin-bottom: 10px"><a href="{% url participants:frontend:branches cbs.code %}">{{ cbs.name }}<br/></a>
                         Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
-                        {% else %} не указан {% endif %}
+                        {% else %} <a href="{% url participants:frontend:branches cbs.code %}" target="_blank"> {{ request.META.HTTP_HOST }}{% url participants:frontend:branches cbs.code %}</a> {% endif %}
                     </li>
                 {% empty %}
                     Список еще не сформирован
