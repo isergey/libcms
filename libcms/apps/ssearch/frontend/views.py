@@ -535,7 +535,7 @@ def detail(request, gen_id):
 @login_required
 def saved_search_requests(request):
 
-    saved_requests = SavedRequest.objects.filter(user=request.user).order('-add_time')
+    saved_requests = SavedRequest.objects.filter(user=request.user).order_by('-add_time')
     srequests = []
     for saved_request in saved_requests:
         try:
