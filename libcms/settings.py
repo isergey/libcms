@@ -137,7 +137,6 @@ INSTALLED_APPS = (
     'django_sorting',
 
     # cms apps
-    'robots_txt',
     'core',
     'accounts',
     'profile',
