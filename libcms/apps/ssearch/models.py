@@ -142,7 +142,9 @@ class SavedRequest(models.Model):
     catalog = models.CharField(max_length=64, blank=True, null=True)
     add_time = models.DateTimeField(auto_now_add=True)
 
-
+    def __unicode__(self):
+        return u"%s %s %s" % (self.search_request, self.catalog, unicode(self.add_time))
+    
 DEFAULT_LANG_CHICES = (
     ('rus', u'Русский'),
     ('eng', u'English'),
