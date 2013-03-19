@@ -166,6 +166,8 @@ def _make_search_attrs(catalog):
 def index(request, catalog=None):
     q = request.GET.get('q', None)
     fq = request.GET.get('fq', None)
+    if not catalog:
+        catalog = request.GET.get('catalog', None)
     if not q and not fq:
         return init_search(request, catalog)
     else:
