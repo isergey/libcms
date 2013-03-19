@@ -30,7 +30,7 @@
             <li>
                 <div class="thumbnail">
                     <div class="request_info">
-                        <a href="{% url ssearch:frontend:index %}?{{ srequest.breads|last|hash:"href" }}{% if srequest.catalog %}&{{ srequest.catalog|urlencode }}{% endif %}">{% for search_breadcumb in srequest.breads %}
+                        <a href="{% url ssearch:frontend:index %}?{{ srequest.breads|last|hash:"href" }}{% if srequest.catalog %}&catalog={{ srequest.catalog|urlencode }}{% endif %}">{% for search_breadcumb in srequest.breads %}
                             {% if not forloop.last %}
                                 <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</span> →
                             {% else %}
