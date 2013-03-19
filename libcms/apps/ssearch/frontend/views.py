@@ -540,13 +540,15 @@ def saved_search_requests(request):
     for saved_request in saved_requests:
         try:
             srequests.append({
-                'saved_request':saved_request,
-                'breads':simplejson.loads(saved_request.search_request),
+                'saved_request': saved_request,
+                'breads': simplejson.loads(saved_request.search_request),
+                'catalog':  saved_request.catalog
             })
         except simplejson.JSONDecodeError:
             srequests.append({
                 'saved_request':saved_request,
-                'breads': None
+                'breads': None,
+                'catalog':  saved_request.catalog
                 })
 
     return render(request, 'ssearch/frontend/saved_request.html', {
