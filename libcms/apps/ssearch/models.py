@@ -139,6 +139,7 @@ class DetailAccessLog(models.Model):
 class SavedRequest(models.Model):
     user = models.ForeignKey(User, related_name='saved_request_user')
     search_request = models.CharField(max_length=1024)
+    catalog = models.CharField(max_length=64, blank=True, null=True)
     add_time = models.DateTimeField(auto_now_add=True)
 
 

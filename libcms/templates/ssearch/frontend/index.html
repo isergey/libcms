@@ -132,7 +132,7 @@
                 <div class="actions">
                     <div>
                         {% if request.user.is_authenticated %}
-                            <a href="{% url ssearch:frontend:save_search_request %}?srequest={{ search_request|urlencode }}"  class="btn btn-mini" id="save_request_button">Сохранить запрос</a> →
+                            <a href="{% url ssearch:frontend:save_search_request %}?srequest={{ search_request|urlencode }}&catalog={{ catalog|urlencode }}"  class="btn btn-mini" id="save_request_button">Сохранить запрос</a> →
                         {% endif %}
                         <b>Поиск</b>:
                         {% for search_breadcumb in search_breadcumbs %}

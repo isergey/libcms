@@ -171,13 +171,7 @@ def index(request, catalog=None):
     else:
         return search(request, catalog)
 
-def dindex(request, catalog=None):
-    q = request.GET.get('q', None)
-    fq = request.GET.get('fq', None)
-    if not q and not fq:
-        return init_dsearch(request, catalog)
-    else:
-        return dsearch(request, catalog)
+
 
 
 def init_search(request, catalog=None):
@@ -189,16 +183,6 @@ def init_search(request, catalog=None):
         'search_attrs': search_attrs,
         'stats': stats,
         'catalog':catalog
-    })
-
-def init_dsearch(request, catalog=None):
-    search_attrs = _make_search_attrs(catalog)
-    stats = None
-    if catalog == u'ebooks':
-        stats = statictics()
-    return render(request, 'ssearch/frontend/dindex.html', {
-        'search_attrs': search_attrs,
-        'stats': stats
     })
 
 
@@ -452,7 +436,7 @@ def search(request, catalog=None):
         'search_statisics':search_statisics,
         'search_request': json_search_breadcumbs,
         'search_attrs': search_attrs,
-        'catalog':catalog
+        'catalog': catalog
     })
 
 
@@ -571,13 +555,15 @@ def saved_search_requests(request):
 
 
 def save_search_request(request):
+    catalog= request.GET.get('catalog', None)
     if not request.user.is_authenticated():
         return HttpResponse(u'Вы должны быть войти на портал', status=401)
-    search_request =  request.GET.get('srequest', None)
+
+    search_request = request.GET.get('srequest', None)
     if SavedRequest.objects.filter(user=request.user).count() > 500:
         return HttpResponse(u'{"status": "error", "error": "Вы достигли максимально разрешенного количества запросов"}')
 
-    SavedRequest(user=request.user, search_request=search_request).save()
+    SavedRequest(user=request.user, search_request=search_request, catalog=catalog).save()
     return HttpResponse(u'{"status": "ok"}')
 
 def delete_search_request(request, id):
@@ -738,192 +724,6 @@ def statictics():
 
 
 
-
-def dsearch(request, catalog=None):
-
-    search_attrs = _make_search_attrs(catalog)
-    search_deep_limit = 5 # ограничение вложенных поисков
-    solr = sunburnt.SolrInterface(settings.SOLR['host'])
-
-    qs = request.GET.getlist('q', [])
-    attrs = request.GET.getlist('attr', [])
-    sort = request.GET.getlist('sort', [])
-
-    # статистику считаем только когда инициировали запрос. Если пользователь передвигается по страница, то не учитываем.
-    if qs and attrs and not request.GET.get('page', None):
-        log_search_request({'attr': attrs[0], 'value': qs[0]}, catalog)
-
-    sort_attrs = []
-
-    for sort_attr in sort:
-        sort_attr = sort_attr_map.get(sort_attr, None)
-        if not sort_attr:
-            continue
-
-        sort_attrs.append({
-            'attr':sort_attr['attr'],
-            'order':sort_attr.get('order', 'asc')
-        })
-
-
-    fqs = request.GET.getlist('fq', [])
-    fattrs = request.GET.getlist('fattr', [])
-
-    in_founded = request.GET.get('in_founded', None)
-
-
-    terms = []
-    try:
-        if in_founded or sort:
-            terms += terms_constructor(fattrs, fqs)
-        terms += terms_constructor(attrs, qs)
-    except WrongSearchAttribute:
-        return HttpResponse(u'Задан непрвильный атрибут поиска')
-    except IndexError:
-        return HttpResponse(u'Некорректный набор атрибутов')
-
-    query = None
-    if len(terms) == 1 and 'text_t' in terms[0] and terms[0]['text_t'] == '*':
-        terms = [{u'*': u'*'}]
-
-
-    for term in terms[:search_deep_limit]:
-        # если встретилось поле с текстом, то через OR ищем аналогичное с постфиксом _ru
-        morph_query = None
-        attr = term.keys()[0]
-        if len(attr) > 2 and attr[-2:] == '_t' and term.values()[0] != u'*':
-            morph_query = solr.Q(**{attr + '_ru': term.values()[0]})
-        if not query:
-            if morph_query:
-                query = solr.Q(solr.Q(**term) | morph_query)
-            else:
-                query = solr.Q(**term)
-        else:
-            if morph_query:
-                query = query & solr.Q(solr.Q(**term) | morph_query)
-            else:
-                query = query & solr.Q(**term)
-
-
-
-
-#    facet_fields = ['author_sf', 'content-type_t','date-of-publication_dtf', 'subject-heading_sf', 'code-language_t', 'fond_sf' ]
-    facet_fields = ['dublet_sf' ]
-    solr_searcher = solr.query(query)
-    solr_searcher = solr_searcher.highlight(fields=['full-text'])
-
-    exclude_kwargs = {}
-
-    if catalog == u'sc2':
-        exclude_kwargs = {'system-catalog_s':u"ebooks"}
-        solr_searcher = solr_searcher.exclude(**exclude_kwargs)
-    elif catalog == u'ebooks':
-        exclude_kwargs = {'system-catalog_s':u"sc2"}
-        solr_searcher = solr_searcher.exclude(**exclude_kwargs)
-    else:
-        pass
-
-    for sort_attr in sort_attrs:
-        if sort_attr['order'] == 'desc':
-            solr_searcher = solr_searcher.sort_by(u'-' + sort_attr['attr'])
-        else:
-            solr_searcher = solr_searcher.sort_by( sort_attr['attr'])
-
-    # ключ хеша зависит от языка
-    terms_facet_hash = hashlib.md5(unicode(terms) + u'_facets_' + get_language() + u'#'.join(exclude_kwargs.values())).hexdigest()
-
-
-    facets = cache.get(terms_facet_hash, None)
-    if not facets:
-        solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=20000, mincount=2)
-
-    solr_searcher = solr_searcher.field_limit("id")
-    paginator = Paginator(solr_searcher, 20) # Show 25 contacts per page
-
-    page = request.GET.get('page')
-    try:
-        results_page = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        results_page = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        results_page = paginator.page(paginator.num_pages)
-
-    search_statisics = {
-        'num_found': results_page.object_list.result.numFound,
-        'search_time': "%.3f" % (int(results_page.object_list.QTime) / 1000.0)
-    }
-
-    docs = []
-
-    if not facets:
-        facets = replace_doc_attrs(results_page.object_list.facet_counts.facet_fields)
-        for key in facets.keys():
-            if not facets[key]:
-                del(facets[key])
-        cache.set(terms_facet_hash,facets)
-
-
-    for row in results_page.object_list:
-        docs.append(replace_doc_attrs(row))
-
-
-    doc_ids = []
-    for doc in docs:
-        doc_ids.append(doc['id'])
-
-    records_dict = {}
-    records =  list(Ebook.objects.using('records').filter(gen_id__in=doc_ids))
-    records +=  list(Record.objects.using('records').filter(gen_id__in=doc_ids))
-    for record in records:
-        records_dict[record.gen_id] = xml_doc_to_dict(record.content)
-
-    for doc in docs:
-        doc['record'] = records_dict.get(doc['id'])
-
-    search_breadcumbs = []
-    query_dict = None
-
-    star = False
-    for term in terms[:search_deep_limit]:
-        key = term.keys()[0]
-        value = term[key]
-        if isinstance(value, basestring):
-            if value.strip() == '*':
-                star = True
-
-        if type(value) == datetime.datetime:
-            value = unicode(value.year)
-
-        new_key = key.split('_')[0]
-        if not query_dict:
-            query_dict = QueryDict('q=' + value + '&attr='+new_key).copy()
-        else:
-            query_dict.getlist('q').append(value)
-            query_dict.getlist('attr').append(new_key)
-
-        search_breadcumbs.append({
-            'attr': new_key,
-            'value': value,
-            'href': query_dict.urlencode()
-        })
-
-
-    if catalog == u'ebooks' and len(search_breadcumbs) > 1 and star:
-        return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
-
-    json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
-    return render(request, 'ssearch/frontend/dindex.html', {
-        'docs': docs,
-        'results_page': results_page,
-        'facets': facets,
-        'search_breadcumbs':search_breadcumbs,
-        'sort':sort,
-        'search_statisics':search_statisics,
-        'search_request': json_search_breadcumbs,
-        'search_attrs': search_attrs
-    })
 
 @login_required
 def dublet_on_process(request):
