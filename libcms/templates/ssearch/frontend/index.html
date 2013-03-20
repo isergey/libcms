@@ -245,7 +245,7 @@
                                 </p>
                             {% endif %}
                             {% if doc.record|hash:'publisher' %}
-                                <p class="item4">Издатель:
+                                <p class="item4">Издательство:
                                     {% for publisher in doc.record|hash:'publisher' %}
                                         {% if not forloop.last %}
                                             {{ publisher }},
@@ -285,7 +285,7 @@
                                 </div>
                                 </div>
                             {% endif %}
-                        <input type="checkbox">
+                        <a href="{% url ssearch:frontend:to_print doc.id %}" target="_blank">Версия для печати</a>
                         </li>
                         <hr/>
                     {% endfor %}

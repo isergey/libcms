@@ -534,6 +534,79 @@ def detail(request, gen_id):
         'access_count': access_count
     })
 
+def to_print(request, gen_id):
+    catalog = None
+    try:
+        record = Record.objects.using('records').get(gen_id=gen_id)
+        catalog = 'records'
+    except Record.DoesNotExist:
+        try:
+            record = Ebook.objects.using('records').get(gen_id=gen_id)
+            catalog = 'ebooks'
+        except Ebook.DoesNotExist:
+            raise Http404()
+
+#    DetailAccessLog(catalog=catalog, gen_id=record.gen_id).save()
+    #DetailAccessLog.objects.create(catalog=catalog, gen_id=gen_id, date_time=datetime.datetime.now())
+
+    doc_tree = etree.XML(record.content)
+    # leader8 = doc_tree.xpath('/record/leader/leader08')
+    #
+    # analitic_level = u'0'
+    # if len(leader8) == 1:
+    #     analitic_level = leader8[0].text
+
+
+
+    bib_tree = xslt_bib_draw_transformer(doc_tree)
+    marct_tree = xslt_marc_dump_transformer(doc_tree)
+    bib_dump =  etree.tostring(bib_tree, encoding='utf-8')
+    #marc_dump =  etree.tostring(marct_tree, encoding='utf-8')
+    doc_tree_t = xslt_transformer(doc_tree)
+    doc = doc_tree_to_dict(doc_tree_t)
+    # holders = doc.get('holders', list())
+    # if holders:
+    #     # оставляем уникальных держателей
+    #     doc['holders'] = list(set(holders))
+    # linked_docs = []
+    # if analitic_level == '1':
+    #     doc['holders'] = []
+    #
+    #     solr = sunburnt.SolrInterface(settings.SOLR['host'])
+    #     linked_query = solr.query(**{'linked-record-number_s':record.record_id.replace(u"\\",u'\\\\')})
+    #     linked_query = linked_query.field_limit("id")
+    #     linked_results = linked_query.execute()
+    #
+    #     linked_doc_ids = []
+    #     for linked_doc in linked_results:
+    #         linked_doc_ids.append(linked_doc['id'])
+    #
+    #     records =  list(Ebook.objects.using('records').filter(gen_id__in=linked_doc_ids))
+    #     records +=  list(Record.objects.using('records').filter(gen_id__in=linked_doc_ids))
+    #
+    #     for record in records:
+    #         record_dict = {}
+    #         record_dict['record'] = xml_doc_to_dict(record.content)
+    #         record_dict['id'] = record.gen_id
+    #         linked_docs.append(record_dict)
+
+
+#        for doc in mlt_docs:
+#            doc['record'] = records_dict.get(doc['id'])
+
+
+
+    #access_count = DetailAccessLog.objects.filter(catalog=catalog, gen_id=record.gen_id).count()
+
+    return render(request, 'ssearch/frontend/print.html', {
+        'doc_dump': bib_dump.replace('<b/>',''),
+        #'marc_dump': marc_dump,
+        'doc': doc,
+        'gen_id': gen_id,
+        #'linked_docs': linked_docs,
+        #'access_count': access_count
+    })
+
 @login_required
 def saved_search_requests(request):
 
