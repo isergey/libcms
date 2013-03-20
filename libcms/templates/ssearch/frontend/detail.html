@@ -38,8 +38,8 @@
         </ul>
         <div class="row">
             <div class="span2">
-                {% drow_save_doc request.user gen_id %}
-                <a class="btn" href="{% url ssearch:frontend:to_print gen_id %}" target="_blank"><i class="icon-print"></i>Печать</a>
+                <p>{% drow_save_doc request.user gen_id %}</p>
+                <p><a class="btn" href="{% url ssearch:frontend:to_print gen_id %}" target="_blank"><i class="icon-print"></i>Печать</a></p>
                 <hr/>
                 <div>
                     {% if LANGUAGE_CODE == 'ru' %}Количество обращений{% elif LANGUAGE_CODE == 'tt' %}Количество обращений{% else %}Views{% endif %}: {{ access_count }}
