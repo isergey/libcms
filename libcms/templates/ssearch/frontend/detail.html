@@ -39,6 +39,7 @@
         <div class="row">
             <div class="span2">
                 {% drow_save_doc request.user gen_id %}
+                <a class="btn" href="{% url ssearch:frontend:to_print gen_id %}" target="_blank"><i class="icon-print"></i>Печать</a>
                 <hr/>
                 <div>
                     {% if LANGUAGE_CODE == 'ru' %}Количество обращений{% elif LANGUAGE_CODE == 'tt' %}Количество обращений{% else %}Views{% endif %}: {{ access_count }}
@@ -59,7 +60,7 @@
                     <div class="tab-pane active" id="card">{{ doc_dump|safe }}</div>
                     <div class="tab-pane" id="marc">{{ marc_dump|safe }}</div>
                 </div>
-                <a href="{% url ssearch:frontend:to_print gen_id %}" target="_blank">Версия для печати</a>
+
                 <div class="holders" style="clear: both;">
                     <hr/>
                          {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}
