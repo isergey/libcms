@@ -245,12 +245,23 @@
                                 </p>
                             {% endif %}
                             {% if doc.record|hash:'publisher' %}
-                                <p class="item4">Место издания:
+                                <p class="item4">Издатель:
                                     {% for publisher in doc.record|hash:'publisher' %}
                                         {% if not forloop.last %}
                                             {{ publisher }},
                                         {% else %}
                                             {{ publisher }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                            {% if doc.record|hash:'fond' %}
+                                <p class="item4">Коллекция:
+                                    {% for fond in doc.record|hash:'fond' %}
+                                        {% if not forloop.last %}
+                                            {{ fond }},
+                                        {% else %}
+                                            {{ fond }}
                                         {% endif %}
                                     {% endfor %}
                                 </p>
@@ -274,6 +285,7 @@
                                 </div>
                                 </div>
                             {% endif %}
+                        <input type="checkbox">
                         </li>
                         <hr/>
                     {% endfor %}

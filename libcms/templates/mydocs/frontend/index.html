@@ -33,9 +33,11 @@
                             <div class="doc_info">
                             {{ record.bib.0|safe }}
                             </div>
-                            <div class="alert alert-success">
-                                {{ record.saved_doc.comments }}
-                            </div>
+                            {% if record.saved_doc.comments %}
+                                <div class="alert alert-success">
+                                    {{ record.saved_doc.comments }}
+                                </div>
+                            {% endif %}
                             <div class="actions">
                                 <a href="{% url ssearch:frontend:detail record.saved_doc.gen_id %}">Детальная информация</a>
                                 <a style="float: right;" href="{% url mydocs:frontend:delete record.saved_doc.id %}" class="delete">удалить</a>
