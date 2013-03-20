@@ -59,6 +59,7 @@
                     <div class="tab-pane active" id="card">{{ doc_dump|safe }}</div>
                     <div class="tab-pane" id="marc">{{ marc_dump|safe }}</div>
                 </div>
+                <a href="{% url ssearch:frontend:to_print doc.id %}" target="_blank">Версия для печати</a>
                 <div class="holders" style="clear: both;">
                     <hr/>
                          {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}
