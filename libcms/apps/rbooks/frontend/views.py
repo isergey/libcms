@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import os, sys
+import os
+import json
 import cStringIO
 from zipfile import ZipFile, ZIP_DEFLATED
 from django.conf import settings
@@ -9,7 +10,8 @@ from django.utils import translation
 from django.utils.translation import to_locale, get_language
 from django.shortcuts import HttpResponse, Http404
 from django.views.decorators.cache import never_cache
-from ..models import in_internal_ip
+from ssearch.models import  Record, Ebook
+from ..models import Bookmarc, in_internal_ip
 from forms import BookmarcForm
 class AccessDenied(Exception): pass
 
@@ -97,6 +99,44 @@ def draw(request, book):
 
     return response
 
+
+
+def add_page_bookmarc(request):
+    if not request.user.is_authenticated():
+        return HttpResponse(u'Вы должны быть войти на портал', status=401)
+    if request.method == 'POST':
+        form = BookmarcForm(request.POST)
+        if form.is_valid():
+            if Bookmarc.objects.filter(user=request.user, gen_id=form.cleaned_data['gen_id']):
+                return HttpResponse(u'{"status":"ok"}')
+            doc = None
+            try:
+                doc = Record.objects.using('records').get(gen_id=form.cleaned_data['gen_id'])
+            except Record.DoesNotExist:
+                pass
+            if not doc:
+                try:
+                    doc = Ebook.objects.using('records').get(gen_id=form.cleaned_data['gen_id'])
+                except Ebook.DoesNotExist:
+                    raise Http404(u'Record not founded')
+
+            saved_bookmarc = form.save(commit=False)
+            saved_bookmarc.user = request.user
+            saved_bookmarc.gen_id = doc.gen_id
+            saved_bookmarc.save()
+            if request.is_ajax():
+                return HttpResponse(u'{"status":"ok"}')
+        else:
+            if request.is_ajax():
+                response = {
+                    'status': 'error',
+                    'errors': form.errors
+                }
+                return HttpResponse(json.dumps(response, ensure_ascii=False))
+
+
+
+    return HttpResponse(u'{"status":"ok"}')
 
 
 def get_book_path(book, remote_addr):
