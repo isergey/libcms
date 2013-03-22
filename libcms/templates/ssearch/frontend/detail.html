@@ -169,19 +169,12 @@
        });
 
         function insertParam(href, key, value){
-            var kvp = href.substr(1).split('&');
-            var i=kvp.length; var x; while(i--)
-            {
-                x = kvp[i].split('=');
-                if (x[0]==key)
-                {
-                    x[1] = value;
-                    kvp[i] = x.join('=');
-                    break;
-                }
+            if (href.indexOf('?') > -1){
+                return href + '&key=' + value;
+            }else{
+                return href + '?key=' + value;
             }
-            if(i<0) {kvp[kvp.length] = [key,value].join('=');}
-            return kvp.join('&');
         }
+
     </script>
 {% endblock %}
