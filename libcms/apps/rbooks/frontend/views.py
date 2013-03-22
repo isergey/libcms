@@ -171,7 +171,7 @@ def bookmarcs(request):
     for bookmarc in bookmarcs:
         records.append(gen_ids[bookmarc.gen_id])
 
-    return render(request, 'mydocs/frontend/index.html', {
+    return render(request, 'rbooks/frontend/bookmarcs.html', {
         'records': records
     })
 
