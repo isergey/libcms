@@ -101,7 +101,7 @@
                 "type", "application/x-shockwave-flash",
                 "pluginspage", "http://www.adobe.com/go/getflashplayer",
                 {#                "FlashVars", "documentURL={% url rbooks:frontend:show file_name %}{{/component/doc.php?book=r321}}&amp;documentType=1&amp;settingsURL={{/component/settings.zip}}&amp;localeChain={{ru_RU,}}en_US"#}
-                "FlashVars", "documentURL=http://{{ request.META.HTTP_HOST }}{% url rbooks:frontend:book file_name %}?book={{ file_name }}&amp;documentType=2&amp;settingsURL=http://{{ request.META.HTTP_HOST }}{{STATIC_URL}}rbooks/settings.zip&amp;localeChain={{ locale_chain }},en_US&amp;page=3"
+                "FlashVars", "documentURL=http://{{ request.META.HTTP_HOST }}{% url rbooks:frontend:book file_name %}?book={{ file_name }}&amp;documentType=2&amp;settingsURL=http://{{ request.META.HTTP_HOST }}{{STATIC_URL}}rbooks/settings.zip&amp;localeChain={{ locale_chain }},en_US{% if request.GET.page_number %}&amp;page=3{% endif %}"
 
         );
     } else {  // flash is too old or we can't detect the plugin
