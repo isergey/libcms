@@ -40,7 +40,7 @@
                                 </div>
                             {% endif %}
                             <div class="actions">
-                                <a href="#1">{{ record.bookmarc.page_number }} </a>
+                                Перейти к странице: <a href="{% url rbooks:frontend:show record.bookmarc.book_is %}?page_number={{ record.bookmarc.page_number }}">{{ record.bookmarc.page_number }} </a>
 {#                                <a style="float: right;" href="{% url mydocs:frontend:delete record.saved_doc.id %}" class="delete">удалить</a>#}
                             </div>
                     </div>
