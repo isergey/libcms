@@ -123,6 +123,7 @@ def add_page_bookmarc(request):
             saved_bookmarc = form.save(commit=False)
             saved_bookmarc.user = request.user
             saved_bookmarc.gen_id = doc.gen_id
+
             saved_bookmarc.save()
             if request.is_ajax():
                 return HttpResponse(u'{"status":"ok"}')

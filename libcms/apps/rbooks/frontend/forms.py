@@ -10,4 +10,4 @@ class BookmarcForm(forms.ModelForm):
     position_y = forms.FloatField(widget=forms.HiddenInput())
     class Meta:
         model = Bookmarc
-        exclude = ['user', 'page_number', 'position_x', 'position_y']
+        exclude = ['user']
