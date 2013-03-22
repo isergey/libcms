@@ -120,14 +120,14 @@
 </noscript>
 
 <style>
-            #save_doc_form textarea {
+            #save_bookmarc_form textarea {
                 width: 99%;
             }
         </style>
 
         <div class="modal hide" id="save_doc_modal" style="display: none">
 
-            <form action="#1" method="POST" id="save_doc_form" style="margin: 0">
+            <form action="#1" method="POST" id="save_bookmarc_form" style="margin: 0">
                 <div class="modal-header">
                     <a class="close" data-dismiss="modal">×</a>
 
@@ -140,13 +140,16 @@
                 </div>
                 <div class="modal-footer">
 {#                    <a href="#" class="btn" data-dismiss="modal">Закрыть</a>#}
-                    <input type="submit" value="Добавить" class="btn" id='save_doc_submit'/>
+                    <input type="submit" value="Добавить" class="btn" id='save_bookmarc_submit'/>
                 </div>
             </form>
         </div>
 
         <script type="text/javascript">
-            $('#save_doc_form').submit(function () {
+            $('#save_bookmarc_form').submit(function () {
+                $('#save_bookmarc_form #id_page_number').attr('value', elfViewer.getViewPositionPage());
+                $('#save_bookmarc_form #id_position_x').attr('value', elfViewer.getViewPositionX());
+                $('#save_bookmarc_form #id_position_y').attr('value', elfViewer.getViewPositionY());
                 $.ajax({
                     url:'{% url mydocs:frontend:save %}',
                     type:'POST',
@@ -169,9 +172,9 @@
                             alert("При сохранении возникла ошибка");
                         }
                         if (response.status == 'ok') {
-                            $('#save_doc_submit').addClass('btn-success');
-                            $('#save_doc_submit').attr('disabled','disabled');
-                            $('#save_doc_submit').attr('value','Сохранено');
+                            $('#save_bookmarc_submit').addClass('btn-success');
+                            $('#save_bookmarc_submit').attr('disabled','disabled');
+                            $('#save_bookmarc_submit').attr('value','Сохранено');
                         }
                     }
                 });
