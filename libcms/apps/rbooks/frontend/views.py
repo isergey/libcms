@@ -41,7 +41,8 @@ def show(request, book):
     gen_id = request.GET.get('gen_id', None)
     initial = None
     if gen_id:
-        initial={'gen_id': gen_id}
+        initial = {'gen_id': gen_id, 'book_id': book}
+
     bookmarc_form = BookmarcForm(initial)
     return render(request, 'rbooks/frontend/show.html', {
         'file_name': book,

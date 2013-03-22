@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 class Bookmarc(models.Model):
     user = models.ForeignKey(User)
     gen_id = models.CharField(max_length=32, db_index=True)
+    book_id = models.CharField(max_length=64, db_index=True)
     page_number = models.IntegerField()
     position_x = models.FloatField()
     position_y = models.FloatField()
