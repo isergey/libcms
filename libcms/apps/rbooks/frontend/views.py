@@ -148,7 +148,7 @@ def add_page_bookmarc(request):
 
 @login_required
 def bookmarcs(request):
-    bookmarcs = Bookmarc.objects.filter(user=request.user).order_by('-add_dates')
+    bookmarcs = Bookmarc.objects.filter(user=request.user).order_by('-add_date')
     gen_ids = {}
     for bookmarc in bookmarcs:
         gen_ids[bookmarc.gen_id] = {'bookmarc': bookmarc}
