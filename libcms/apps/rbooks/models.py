@@ -9,6 +9,8 @@ class Bookmarc(models.Model):
     user = models.ForeignKey(User)
     gen_id = models.CharField(max_length=32, db_index=True)
     page_number = models.IntegerField()
+    position_x = models.FloatField()
+    position_y = models.FloatField()
     comments = models.CharField(max_length=2048, blank=True, verbose_name=u"Комментарии к документу")
     add_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=u"Дата добваления документа")
 

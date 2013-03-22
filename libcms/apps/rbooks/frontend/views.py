@@ -10,7 +10,7 @@ from django.utils.translation import to_locale, get_language
 from django.shortcuts import HttpResponse, Http404
 from django.views.decorators.cache import never_cache
 from ..models import in_internal_ip
-
+from forms import BookmarcForm
 class AccessDenied(Exception): pass
 
 # def add_to_bookmarc(request):
@@ -36,9 +36,12 @@ def show(request, book):
     }
 
     locale_chain = locale_titles.get(cur_language, 'en_US')
+
+    bookmarc_form = BookmarcForm()
     return render(request, 'rbooks/frontend/show.html', {
         'file_name': book,
-        'locale_chain': locale_chain
+        'locale_chain': locale_chain,
+        'bookmarc_form': bookmarc_form
     })
 @never_cache
 def book(request, book):

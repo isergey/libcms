@@ -44,7 +44,12 @@
         <h1>
             Национальная библиотека Республики Татарстан
             <!-- <input type="textarea" onMouseOver=alert(elfViewer.getViewPositionPage())> -->
-            <a href="#1" id="add_page_to_favorite">Добавить страницу в закладки</a>
+        {% if request.user.id %}
+            <a class="btn" data-toggle="modal" href="#save_doc_modal" id="save_doc_button" ><i class="icon-star"></i> Добавить страницу в закладки</a>
+        {% else %}
+            <a class="btn disabled" href="#1" id="save_doc_button" onclick="alert('Необходимо войти на портал')" ><i class="icon-star"></i> Добавить страницу в закладки</a>
+        {% endif %}
+            <a href="#1" id="add_page_to_bookmarc"></a>
         </h1>
 
 
@@ -113,8 +118,70 @@
 
 </noscript>
 
+<style>
+            #save_doc_form textarea {
+                width: 99%;
+            }
+        </style>
+
+        <div class="modal hide" id="save_doc_modal" style="display: none">
+
+            <form action="#1" method="POST" id="save_doc_form" style="margin: 0">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">×</a>
+
+                    <h3>Добавление страницы в закладки</h3>
+                </div>
+                <div class="modal-body">
+                    <fieldset>
+                        {% include 'frontend/base_form_fields.html' with form=bookmarc_form %}
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+{#                    <a href="#" class="btn" data-dismiss="modal">Закрыть</a>#}
+                    <input type="submit" value="Добавить" class="btn" id='save_doc_submit'/>
+                </div>
+            </form>
+        </div>
+
+        <script type="text/javascript">
+            $('#save_doc_form').submit(function () {
+                $.ajax({
+                    url:'{% url mydocs:frontend:save %}',
+                    type:'POST',
+                    dataType:"json",
+                    async:false,
+                    data:$(this).serialize(),
+                    statusCode: {
+                        401: function() {
+                            alert("Вы должны войти на портал.");
+                        },
+                        403: function() {
+                            alert("Действие запрещено.");
+                        },
+                        500: function() {
+                            alert("На сервере возникла ошибка. Администраторы оповещены.");
+                        }
+                    },
+                    success:function (response) {
+                        if (response.status == 'error') {
+                            alert("При сохранении возникла ошибка");
+                        }
+                        if (response.status == 'ok') {
+                            $('#save_doc_submit').addClass('btn-success');
+                            $('#save_doc_submit').attr('disabled','disabled');
+                            $('#save_doc_submit').attr('value','Сохранено');
+                        }
+                    }
+                });
+
+                return false;
+            });
+        </script>
+
 <script type="text/javascript">
-    $('#add_page_to_favorite').click(function(){
+    $('#add_page_to_bookmarc').click(function(){
+
         alert(elfViewer.getViewPositionPage() + " " + elfViewer.getViewPositionX()   + " " + elfViewer.getViewPositionY() );
     });
 
