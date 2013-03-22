@@ -170,9 +170,9 @@
 
         function insertParam(href, key, value){
             if (href.indexOf('?') > -1){
-                return href + '&key=' + value;
+                return href + '&'+ key +'=' + value;
             }else{
-                return href + '?key=' + value;
+                return href + '?'+ key +'=' + value;
             }
         }
 
