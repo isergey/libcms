@@ -199,7 +199,7 @@ $(document).ready(function() {
         position_x = {{ request.GET.position_x }};
         position_y = {{ request.GET.position_y }};
     {% endif %}
-    elfViewer.setPosition(page_number, position_x, position_y);
+    elfViewer.setViewPosition(page_number, position_x, position_y);
 });
 </script>
 {% endif %}
