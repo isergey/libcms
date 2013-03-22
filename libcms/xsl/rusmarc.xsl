@@ -1701,7 +1701,7 @@ RUSMARC
         <xsl:value-of select="$dlm"/>
         <xsl:choose>
           <xsl:when test="subfield[@id='z']">
-            <a href="{subfield[@id='u']}"><xsl:value-of select="subfield[@id='z']"/> </a>
+            <a class="elink" href="{subfield[@id='u']}"><xsl:value-of select="subfield[@id='z']"/> </a>
           </xsl:when>
           <xsl:otherwise>
             <xsl:text>&lt;URL:</xsl:text><a href="{subfield[@id='u']}"><xsl:value-of select="subfield[@id='u']"/> </a><xsl:text>&gt;</xsl:text>
