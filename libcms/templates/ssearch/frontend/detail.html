@@ -169,7 +169,7 @@
        });
 
         function insertParam(href, key, value){
-            var kvp = href.search.substr(1).split('&');
+            var kvp = href.substr(1).split('&');
             var i=kvp.length; var x; while(i--)
             {
                 x = kvp[i].split('=');
