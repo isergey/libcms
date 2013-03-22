@@ -192,6 +192,7 @@
 {% if request.GET.page_number %}
     <script type="text/javascript">
     $(document).ready(function() {
+    alert("wefwef");
         var page_number = parseInt({{ request.GET.page_number }});
         var position_x = 0;
         var position_y = 0;
