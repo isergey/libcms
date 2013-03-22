@@ -164,7 +164,6 @@
     <script>
        $('#card .elink').click(function(){
            var elink_href = $(this).attr('href');
-           alert(insertParam(elink_href, 'gen_id', '{{ gen_id|urlencode }}'));
            $(this).attr('href', insertParam(elink_href, 'gen_id', '{{ gen_id|urlencode }}'));
        });
 
