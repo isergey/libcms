@@ -33,6 +33,7 @@
                             <div class="doc_info">
                             {{ record.bib.0|safe }}
                             </div>
+                            <div style="clear: both"></div>
                             {% if record.saved_doc.comments %}
                                 <div class="alert alert-success">
                                     {{ record.saved_doc.comments }}
@@ -43,7 +44,7 @@
 {#                                <a style="float: right;" href="{% url mydocs:frontend:delete record.saved_doc.id %}" class="delete">удалить</a>#}
                             </div>
                     </div>
-                    <div style="clear: both"></div>
+
                     </li>
                 {% empty %}
                     <li><div class="alert">Список документов пуст.</div></li>
