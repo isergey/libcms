@@ -8,6 +8,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import translation
+from django.contrib.auth.decorators import login_required
 from django.utils.translation import to_locale, get_language
 from django.shortcuts import HttpResponse, Http404
 from django.views.decorators.cache import never_cache
