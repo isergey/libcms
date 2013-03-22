@@ -188,6 +188,18 @@
     });
 
 </script>
+
+{% if request.GET.page_number %}
+<script type="text/javascript">
+$(document).ready(function() {
+    var page_number = {{ request.GET.page_number }};
+    var position_x = {{ request.GET.position_x }};
+    var position_y = {{ request.GET.position_y }};
+    elfViewer.setPosition(page_number, position_x, position_y);
+});
+</script>
+{% endif %}
+
 <script type="text/javascript">
     jQuery(document).ajaxSend(function(event, xhr, settings) {
         function getCookie(name) {
