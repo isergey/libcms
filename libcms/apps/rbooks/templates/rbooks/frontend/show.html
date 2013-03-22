@@ -50,7 +50,6 @@
         {% else %}
             <a class="btn disabled" href="#1" id="save_doc_button" onclick="alert('Необходимо войти на портал')" ><i class="icon-star"></i> Добавить страницу в закладки</a>
         {% endif %}
-            <a href="#1" id="add_page_to_bookmarc"></a>
         </h1>
 
 
@@ -131,7 +130,7 @@
                 <div class="modal-header">
                     <a class="close" data-dismiss="modal">×</a>
 
-                    <h3>Добавление страницы в закладки</h3>
+                    <h3>Добавление страницы № <span id="page_number"></span> в закладки</h3>
                 </div>
                 <div class="modal-body">
                     <fieldset>
@@ -184,9 +183,9 @@
         </script>
 
 <script type="text/javascript">
-    $('#add_page_to_bookmarc').click(function(){
-
-        alert(elfViewer.getViewPositionPage() + " " + elfViewer.getViewPositionX()   + " " + elfViewer.getViewPositionY() );
+    $('#save_doc_button').click(function(){
+       $('#page_number').text(elfViewer.getViewPositionPage());
+        //alert(elfViewer.getViewPositionPage() + " " + elfViewer.getViewPositionX()   + " " + elfViewer.getViewPositionY() );
     });
 
 </script>
