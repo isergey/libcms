@@ -36,8 +36,11 @@ def show(request, book):
     }
 
     locale_chain = locale_titles.get(cur_language, 'en_US')
-
-    bookmarc_form = BookmarcForm()
+    gen_id = request.GET.get('gen_id', None)
+    initial = None
+    if gen_id:
+        initial={'gen_id': gen_id}
+    bookmarc_form = BookmarcForm(initial)
     return render(request, 'rbooks/frontend/show.html', {
         'file_name': book,
         'locale_chain': locale_chain,
