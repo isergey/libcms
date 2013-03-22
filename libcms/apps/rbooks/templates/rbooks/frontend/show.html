@@ -189,21 +189,21 @@
 
 </script>
 
-{% if request.GET.page_number %}
-    <script type="text/javascript">
-    $(document).ready(function() {
-    alert("wefwef");
-        var page_number = parseInt({{ request.GET.page_number }});
-        var position_x = 0;
-        var position_y = 0;
-        {% if request.GET.position_x and request.GET.position_y %}
-            position_x = {{ request.GET.position_x }};
-            position_y = {{ request.GET.position_y }};
-        {% endif %}
-        elfViewer.setViewPosition(page_number, position_x, position_y);
-    });
-    </script>
-{% endif %}
+{#{% if request.GET.page_number %}#}
+{#    <script type="text/javascript">#}
+{#    $(document).ready(function() {#}
+{#    alert("wefwef");#}
+{#        var page_number = parseInt({{ request.GET.page_number }});#}
+{#        var position_x = 0;#}
+{#        var position_y = 0;#}
+{#        {% if request.GET.position_x and request.GET.position_y %}#}
+{#            position_x = {{ request.GET.position_x }};#}
+{#            position_y = {{ request.GET.position_y }};#}
+{#        {% endif %}#}
+{#        elfViewer.setViewPosition(page_number, position_x, position_y);#}
+{#    });#}
+{#    </script>#}
+{#{% endif %}#}
 
 <script type="text/javascript">
     jQuery(document).ajaxSend(function(event, xhr, settings) {
