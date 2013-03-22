@@ -3,6 +3,7 @@ import os
 import json
 import cStringIO
 from zipfile import ZipFile, ZIP_DEFLATED
+from lxml import etree
 from django.conf import settings
 from django.core.cache import cache
 from django.shortcuts import render, redirect, get_object_or_404
@@ -13,6 +14,9 @@ from django.views.decorators.cache import never_cache
 from ssearch.models import  Record, Ebook
 from ..models import Bookmarc, in_internal_ip
 from forms import BookmarcForm
+from common.xslt_transformers import xslt_bib_draw_transformer
+
+
 class AccessDenied(Exception): pass
 
 # def add_to_bookmarc(request):
@@ -140,6 +144,35 @@ def add_page_bookmarc(request):
 
     return HttpResponse(u'{"status":"ok"}')
 
+
+@login_required
+def bookmarcs(request):
+    bookmarcs = Bookmarc.objects.filter(user=request.user).order_by('-add_dates')
+    gen_ids = {}
+    for bookmarc in bookmarcs:
+        gen_ids[bookmarc.gen_id] = {'bookmarc': bookmarc}
+
+
+    for record in Record.objects.using('records').filter(gen_id__in=gen_ids.keys()):
+        doc_tree = etree.XML(record.content)
+        doc_tree = xslt_bib_draw_transformer(doc_tree)
+        gen_ids[record.gen_id]['record']= record
+        gen_ids[record.gen_id]['bib'] = etree.tostring(doc_tree).replace(u'<b/>', u' '),
+
+
+    for record in Ebook.objects.using('records').filter(gen_id__in=gen_ids):
+        doc_tree = etree.XML(record.content)
+        doc_tree = xslt_bib_draw_transformer(doc_tree)
+        gen_ids[record.gen_id]['record'] = record
+        gen_ids[record.gen_id]['bib'] = etree.tostring(doc_tree).replace(u'<b/>', u' '),
+
+    records = []
+    for bookmarc in bookmarcs:
+        records.append(gen_ids[bookmarc.gen_id])
+
+    return render(request, 'mydocs/frontend/index.html', {
+        'records': records
+    })
 
 def get_book_path(book, remote_addr):
     internal_ip = cache.get('internal_ip' + remote_addr, None)
