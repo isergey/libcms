@@ -3,6 +3,15 @@ import cPickle as pickle
 from netaddr import IPAddress, IPNetwork, IPRange
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
+
+class Bookmarc(models.Model):
+    user = models.ForeignKey(User)
+    gen_id = models.CharField(max_length=32, db_index=True)
+    page_number = models.IntegerField()
+    comments = models.CharField(max_length=2048, blank=True, verbose_name=u"Комментарии к документу")
+    add_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=u"Дата добваления документа")
+
 
 RANGE_TYPES = (
     (0, u'Сеть'),

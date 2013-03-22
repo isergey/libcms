@@ -13,6 +13,12 @@ from ..models import in_internal_ip
 
 class AccessDenied(Exception): pass
 
+# def add_to_bookmarc(request):
+#     if not request.user.is_authenticated():
+#         return HttpResponse(u'Вы должны быть войти на портал', status=401)
+#     if request.method == 'POST':
+
+
 @never_cache
 def show(request, book):
     try:
