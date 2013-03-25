@@ -91,7 +91,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django_sorting.middleware.SortingMiddleware',
-#    'debug_toolbar.middleware.DebugToolbarMiddleware',
+   'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'libcms.urls'

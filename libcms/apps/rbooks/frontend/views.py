@@ -146,9 +146,13 @@ def add_page_bookmarc(request):
     return HttpResponse(u'{"status":"ok"}')
 
 
+
+
+
 @login_required
 def bookmarcs(request):
-    bookmarcs = Bookmarc.objects.filter(user=request.user).order_by('-add_date')
+    #print list(Bookmarc.objects.raw("SELECT id, gen_id FROM rbooks_bookmarc WHERE user_id=%s GROUP BY gen_id ORDER BY add_date DESC", params=[request.user.id]))
+    bookmarcs = Bookmarc.objects.values('id', 'gen_id').filter(user=request.user).order_by('-add_date')
     gen_ids = {}
     for bookmarc in bookmarcs:
         gen_ids[bookmarc.gen_id] = {'bookmarc': bookmarc}
@@ -159,7 +163,6 @@ def bookmarcs(request):
         doc_tree = xslt_bib_draw_transformer(doc_tree)
         gen_ids[record.gen_id]['record']= record
         gen_ids[record.gen_id]['bib'] = etree.tostring(doc_tree).replace(u'<b/>', u' '),
-
 
     for record in Ebook.objects.using('records').filter(gen_id__in=gen_ids):
         doc_tree = etree.XML(record.content)
