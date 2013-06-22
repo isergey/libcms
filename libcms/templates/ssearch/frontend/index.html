@@ -67,7 +67,9 @@
             background: #51A351;
         }
 
-
+        .subject a{
+            color: #fff;
+        }
     </style>
     <div class="serach_area span12">
 
@@ -219,7 +221,7 @@
                             </p>
                             <p class="item3">
                                 {% for subject in doc.record|hash:'subject-heading' %}
-                                    <span class="label label-info"><a href="{% add_get_append q=subject attr='subject-heading' %}">{{ subject }}</a></span>
+                                    <span class="label label-info subject"><a href="{% add_get_append q=subject attr='subject-heading' %}">{{ subject }}</a></span>
                                 {% endfor %}
                             </p>
                             {% if doc.record|hash:'code-language' %}
