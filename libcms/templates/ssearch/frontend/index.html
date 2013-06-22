@@ -219,7 +219,7 @@
                             </p>
                             <p class="item3">
                                 {% for subject in doc.record|hash:'subject-heading' %}
-                                    <span class="label label-info"><a href="{% add_get_append q=value.0 attr='subject-heading' %}">{{ subject }}</a></span>
+                                    <span class="label label-info"><a href="{% add_get_append q=subject attr='subject-heading' %}">{{ subject }}</a></span>
                                 {% endfor %}
                             </p>
                             {% if doc.record|hash:'code-language' %}
