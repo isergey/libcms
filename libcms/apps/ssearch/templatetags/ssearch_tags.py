@@ -17,7 +17,7 @@ def date_from_isostring(isostring):
 
 
 facet_titles = {
-    'fond': {
+    'fond_sf': {
         'ru':u'Коллекция',
         'en':u'Collection',
         'tt':u'Коллекция'
@@ -27,22 +27,22 @@ facet_titles = {
         'en':u'Title',
         'tt':u'Исем'
     },
-    'author': {
+    'author_sf': {
         'ru':u'Автор',
         'en':u'Author',
         'tt':u'Автор'
     },
-    'content-type':{
+    'content-type_sf':{
         'ru':u'Тип содержания',
         'en':u'Content type',
         'tt':u'Эчтәлек тибы'
     },
-    'date-of-publication': {
+    'date-of-publication_dtf': {
         'ru':u'Год публикации',
         'en':u'Publication year',
         'tt':u'Бастырып чыгару елы'
     },
-    'subject-heading': {
+    'subject-heading_sf': {
         'ru':u'Тематика',
         'en':u'Subject',
         'tt':u'Темасы'
@@ -52,7 +52,7 @@ facet_titles = {
         'en':u'Subject',
         'tt':u'Hәр урында'
     },
-    'code-language': {
+    'code-language_sf': {
         'ru':u'Язык',
         'en':u'Language',
         'tt':u'Тел'
