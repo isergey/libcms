@@ -71,7 +71,7 @@ facet_titles = {
 
 @register.filter
 def facet_title(arg_code):
-    code = arg_code.split('_')[:1]
+    code = u''.join(arg_code.split('_')[:1])
     lang=get_language()[:2]
     title = facet_titles.get(code, arg_code)
     title = title.get(lang, arg_code)
