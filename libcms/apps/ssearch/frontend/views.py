@@ -46,31 +46,31 @@ def rss():
 
 
 attr_map = {
-    'text': {
+    'text_t': {
         'order': 1,
         'attr': u'text_t',
         'title':u'Везде',
         'display': True,
         },
-    'title': {
+    'title_t': {
         'order': 2,
         'attr': u'title_t',
         'title':u'Заглавие',
         'display': True,
         },
-    'author': {
+    'author_t': {
         'order': 3,
         'attr': u'author_t',
         'title':u'Автор',
         'display': True,
         },
-    'subject-heading': {
+    'subject-heading_t': {
         'order': 4,
         'attr': u'subject-heading_t',
         'title':u'Тематика',
         'display': True,
         },
-    'date-of-publication': {
+    'date-of-publication_dt': {
         'order': 5,
         'attr': u'date-of-publication_dt',
         'title':u'Год публикации',
@@ -82,13 +82,13 @@ attr_map = {
         'title':u'Язык',
         'display': False,
         },
-    'isbn': {
+    'isbn_t': {
         'order': 7,
         'attr': u'isbn_t',
         'title':u'ISBN',
         'display': True,
         },
-    'issn': {
+    'issn_t': {
         'order': 8,
         'attr': u'issn_t',
         'title':u'ISSN',
