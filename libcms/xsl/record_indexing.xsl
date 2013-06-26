@@ -490,6 +490,33 @@ dtf - фасет даты
             </xsl:for-each>
         </xsl:if>
     </xsl:for-each>
+    <xsl:for-each select="field[@id='517']">
+        <xsl:if test="subfield[@id='a'] and indicator[@id='1'][1] = '1' or indicator[@id='0'][1]">
+            <!--<field name="title">-->
+            <xsl:value-of select="subfield[@id='a']"/>
+            <xsl:for-each select="subfield[@id='h']">
+                <xsl:text>. </xsl:text>
+                <xsl:value-of select="."/>
+                <xsl:if test="@id='i'">
+                    <xsl:text>, </xsl:text>
+                    <xsl:value-of select="subfield[@id='i']"/>
+                </xsl:if>
+
+            </xsl:for-each>
+            <!--</field>-->
+        </xsl:if>
+        <!--
+        2252#$i
+        -->
+        <xsl:if test="indicator[@id='1'][1] = '2'">
+            <xsl:for-each select="subfield[@id='i']">
+                <!--<field name="title">-->
+                <xsl:value-of select="."/>
+                <xsl:text> </xsl:text>
+                <!--</field>-->
+            </xsl:for-each>
+        </xsl:if>
+    </xsl:for-each>
 </xsl:template>
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -575,14 +602,14 @@ dtf - фасет даты
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Author">
-    <xsl:for-each select="field[@id &gt; '699' and @id &lt; '710']">
+    <xsl:for-each select="field[@id &gt; '699' and @id &lt; '710' or @id='790']">
         <xsl:variable name="sf_a" select="subfield[@id='a'][1]"/>
         <xsl:choose>
             <!--
                 70-#1$a, $g ($c)
                 70-#1$a, $b ($c)
             -->
-            <xsl:when test="$sf_a and indicator[@id='1']=' ' and indicator[@id='2']='1'">
+            <xsl:when test="$sf_a">
                 <xsl:choose>
                     <xsl:when test="subfield[@id='g'][1] and not(subfield[@id='b'][1])">
                         <xsl:for-each select="subfield[@id='g'][1]">
