@@ -311,7 +311,7 @@
                                             <li class="child"><a href="{% add_get_append q=value.0 attr='code-language_sf' %}">{{ value.0|language_title }}</a> (<b>{{ value.1 }}</b>)</li>
                                         {% else %}
                                             <li class="child"><a href="{% add_get_append q=value.0 attr=facet %}">{{ value.0 }}</a> (<b>{{ value.1 }}</b>)</li>
-{#                                        {% endif %}#}
+                                        {% endif %}
                                     {% empty %}
                                         <li style="color: #808080;">сведений нет</li>
                                     {% endfor %}
