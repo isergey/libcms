@@ -96,14 +96,14 @@
                     <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
                 {% endfor %}
                 <select name="attr" style="font-weight: bold; width: 150px; margin-right: 35px; margin-top: -30px;">
-                    <option value="text" {% if request.GET.attr == 'text' %}selected="selected"{% endif %}>{% if LANGUAGE_CODE == 'ru' %}Везде{% elif LANGUAGE_CODE == 'tt' %}Һәр урында{% else %}Anywhere{% endif %}</option>
-                    <option value="author" {% if request.GET.attr == 'author' %}selected="selected"{% endif %}>{% if LANGUAGE_CODE == 'ru' %}Автор{% elif LANGUAGE_CODE == 'tt' %}Автор{% else %}Author{% endif %}</option>
-                    <option value="title" {% if request.GET.attr == 'title' %}selected="selected"{% endif %}>{% if LANGUAGE_CODE == 'ru' %}Заглавие{% elif LANGUAGE_CODE == 'tt' %}Исем{% else %}Title{% endif %}</option>
+                    <option value="text_tru" {% if request.GET.attr == 'text_tru' %}selected="selected"{% endif %}>{% if LANGUAGE_CODE == 'ru' %}Везде{% elif LANGUAGE_CODE == 'tt' %}Һәр урында{% else %}Anywhere{% endif %}</option>
+                    <option value="author_t" {% if request.GET.attr == 'author_t' %}selected="selected"{% endif %}>{% if LANGUAGE_CODE == 'ru' %}Автор{% elif LANGUAGE_CODE == 'tt' %}Автор{% else %}Author{% endif %}</option>
+                    <option value="title_tru" {% if request.GET.attr == 'title_tru' %}selected="selected"{% endif %}>{% if LANGUAGE_CODE == 'ru' %}Заглавие{% elif LANGUAGE_CODE == 'tt' %}Исем{% else %}Title{% endif %}</option>
                     {% if catalog == 'ebooks' %}<option value="full-text" {% if request.GET.attr == 'full-text' %}selected="selected"{% endif %}>Полный текст</option>{% endif %}
-                    <option value="subject-heading" {% if request.GET.attr == 'subject-heading' %}selected="selected"{% endif %}>{% if LANGUAGE_CODE == 'ru' %}Тематика{% elif LANGUAGE_CODE == 'tt' %}Темасы{% else %}Subject{% endif %}</option>
-                    <option value="date-of-publication" {% if request.GET.attr == 'date-of-publication' %}selected="selected"{% endif %}>{% if LANGUAGE_CODE == 'ru' %}Год публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып чыгару елы{% else %}Publication year{% endif %}</option>
-                    <option value="isbn" {% if request.GET.attr == 'isbn' %}selected="selected"{% endif %}>ISBN</option>
-                    <option value="issn" {% if request.GET.attr == 'issn' %}selected="selected"{% endif %}>ISSN</option>
+                    <option value="subject-heading_tru" {% if request.GET.attr == 'subject-heading_tru' %}selected="selected"{% endif %}>{% if LANGUAGE_CODE == 'ru' %}Тематика{% elif LANGUAGE_CODE == 'tt' %}Темасы{% else %}Subject{% endif %}</option>
+                    <option value="date-of-publication_dt" {% if request.GET.attr == 'date-of-publication_dt' %}selected="selected"{% endif %}>{% if LANGUAGE_CODE == 'ru' %}Год публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып чыгару елы{% else %}Publication year{% endif %}</option>
+                    <option value="isbn_t" {% if request.GET.attr == 'isbn_t' %}selected="selected"{% endif %}>ISBN</option>
+                    <option value="issn_t" {% if request.GET.attr == 'issn_t' %}selected="selected"{% endif %}>ISSN</option>
 
                 </select>
                 {#            <input type="text" class="search-query" name="q" style="width: 64%" value="{{ request.GET.q }}"/>#}
