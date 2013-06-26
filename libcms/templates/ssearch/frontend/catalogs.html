@@ -17,7 +17,7 @@
             {%  elif collection.title == 'Периодические издания Казанской губернии'%}
                 <li><a href="#periodkazan"  data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {%  elif collection.title == 'Тестовая коллекция'%}
-{#                <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Тестовая+коллекция&attr=text&attr=fond&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>#}
+{#                <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Тестовая+коллекция&attr=text&attr=fond_sf&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>#}
             {% else %}
                 <li>{{ collection.title }}: <b>{{ collection.value }}</b></li>
             {% endif %}
@@ -46,7 +46,7 @@
         <p class="western"><strong>Фондодержатель:</strong> отдел рукописей и редких книг Национальной библиотеки Республики Татарстан</p>
     </div>
     <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Фонд+И.+А.+Второва&attr=text&attr=fond&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
+        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Фонд+И.+А.+Второва&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
     </div>
 </div>
 
@@ -66,7 +66,7 @@
         <p class="western"><strong>Фондодержатель:</strong> отдел рукописей и редких книг Национальной библиотеки Республики Татарстан</p>
     </div>
     <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Коллекция+И.+А.+Сахарова&attr=text&attr=fond&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
+        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Коллекция+И.+А.+Сахарова&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
     </div>
 </div>
 
@@ -79,7 +79,7 @@
     <div class="modal-body">
     </div>
     <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Татарика&attr=text&attr=fond&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
+        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Татарика&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
     </div>
 </div>
 
@@ -100,7 +100,7 @@
         <p class="western"><strong>Фондодержатель</strong>: отдел периодических изданий Национальной библиотеки Республики Татарстан</p>
     </div>
     <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Прижизненные+издания+Г.Тукая&attr=text&attr=fond&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
+        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Прижизненные+издания+Г.Тукая&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
     </div>
 </div>
 
@@ -112,7 +112,7 @@
     <div class="modal-body">
     </div>
     <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Коллекция+русской+старопечатной+книги+(до+1830+г.)&attr=text&attr=fond&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
+        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Коллекция+русской+старопечатной+книги+(до+1830+г.)&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
     </div>
 </div>
 
@@ -124,7 +124,7 @@
     <div class="modal-body">
     </div>
     <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Книги+подаренные+авторами&attr=text&attr=fond&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
+        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Книги+подаренные+авторами&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
     </div>
 </div>
 
@@ -143,6 +143,6 @@
         <p class="western">&nbsp;<strong>Фондодержатель:</strong> Отдел периодических изданий Национальной библиотеки Республики Татарстан</p>
     </div>
     <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Периодические+издания+Казанской+губернии&attr=text&attr=fond&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
+        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Периодические+издания+Казанской+губернии&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
     </div>
 </div>
