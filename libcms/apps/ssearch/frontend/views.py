@@ -375,9 +375,9 @@ def search(request, catalog=None):
 
     if not facets:
         facets = replace_doc_attrs(results_page.object_list.facet_counts.facet_fields)
-        for key in facets.keys():
-            if not facets[key]:
-                del(facets[key])
+        # for key in facets.keys():
+        #     if not facets[key]:
+        #         del(facets[key])
         cache.set(terms_facet_hash,facets)
 
 
