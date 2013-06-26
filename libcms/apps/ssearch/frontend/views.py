@@ -230,22 +230,22 @@ class WrongSearchAttribute(Exception): pass
 def terms_constructor(attrs, values):
     terms = []
     for i, q in enumerate(values):
-        attr = attr_map.get(attrs[i], None)
-        if not attr:
-            raise WrongSearchAttribute()
-        else:
-            attr = attr['attr']
-
-        split_attr = attr.split('_')
-        if len(split_attr) > 1 and split_attr[-1] in resolvers:
-            try:
-                value = resolvers[split_attr[-1]](q)
-                if type(value) == tuple or type(value) == list:
-                    q = value[0]
-                else:
-                    q = value
-            except ValueError:
-                continue
+        # attr = attr_map.get(attrs[i], None)
+        # if not attr:
+        #     raise WrongSearchAttribute()
+        # else:
+        #     attr = attr['attr']
+        #
+        # split_attr = attr.split('_')
+        # if len(split_attr) > 1 and split_attr[-1] in resolvers:
+        #     try:
+        #         value = resolvers[split_attr[-1]](q)
+        #         if type(value) == tuple or type(value) == list:
+        #             q = value[0]
+        #         else:
+        #             q = value
+        #     except ValueError:
+        #         continue
 
         terms.append({attr: q})
     return terms
