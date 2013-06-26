@@ -74,13 +74,8 @@ def facet_title(arg_code):
     code = arg_code.split('_')[:1]
     lang=get_language()[:2]
     title = facet_titles.get(code, arg_code)
-    if type(title) == str and title == code:
-        return code
-
-    if lang in title:
-        return  title[lang]
-    else:
-        return  code
+    title = title.get(lang, arg_code)
+    return title
 
 
 content_type_titles = {
