@@ -106,7 +106,7 @@ attr_map = {
         'title':u'Содержимое',
         'display': False,
         },
-    'fond': {
+    'fond_sf': {
         'order': 11,
         'attr': u'fond_t',
         'title':u'Фонд',
