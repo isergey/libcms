@@ -122,19 +122,19 @@ attr_map = {
 
 
 sort_attr_map = {
-    u'author': {
+    u'author_ts': {
         'attr': u'author_ts',
         'order': 'asc',
         },
-    u'title': {
+    u'title_ts': {
         'attr': u'title_ts',
         'order': 'asc',
         },
-    u'date-of-publication': {
+    u'date-of-publication_dts': {
         'attr': u'date-of-publication_dts',
         'order': 'desc',
         },
-    u'tom': {
+    u'tom_f': {
         'attr': u'tom_f',
         'order': 'asc',
         },
