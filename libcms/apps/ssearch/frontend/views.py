@@ -230,6 +230,7 @@ class WrongSearchAttribute(Exception): pass
 def terms_constructor(attrs, values):
     terms = []
     for i, q in enumerate(values):
+        attr = attrs[i]
         # attr = attr_map.get(attrs[i], None)
         # if not attr:
         #     raise WrongSearchAttribute()
