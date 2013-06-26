@@ -73,7 +73,10 @@ facet_titles = {
 def facet_title(arg_code):
     code = u''.join(arg_code.split('_')[:1])
     lang=get_language()[:2]
-    title = facet_titles.get(code, code)
+    try:
+        title = facet_titles[code][lang]
+    except KeyError:
+        title = code
     return title
 
 
