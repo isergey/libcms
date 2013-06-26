@@ -70,9 +70,10 @@ facet_titles = {
 }
 
 @register.filter
-def facet_title(code):
+def facet_title(arg_code):
+    code = arg_code.split('_')[:1]
     lang=get_language()[:2]
-    title = facet_titles.get(code, code)
+    title = facet_titles.get(code, arg_code)
     if type(title) == str and title == code:
         return code
 
