@@ -52,7 +52,7 @@ facet_titles = {
         'en':u'Subject',
         'tt':u'Hәр урында'
     },
-    'code-language_t': {
+    'code-language': {
         'ru':u'Язык',
         'en':u'Language',
         'tt':u'Тел'
@@ -74,7 +74,6 @@ def facet_title(arg_code):
     code = u''.join(arg_code.split('_')[:1])
     lang=get_language()[:2]
     title = facet_titles.get(code, code)
-    title = title.get(lang, code)
     return title
 
 
