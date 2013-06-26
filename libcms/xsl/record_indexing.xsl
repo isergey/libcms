@@ -302,19 +302,19 @@ dtf - фасет даты
             <xsl:variable name="sf_a_pos_9_12" select="substring(subfield[@id='a'], 10, 4)"/>
             <xsl:variable name="sf_a_pos_13_16" select="substring(subfield[@id='a'], 14, 4)"/>
             <xsl:if test="($sf_a_pos_9_12 &gt; '0' or $sf_a_pos_9_12 = '0') and $sf_a_pos_9_12 &lt; '10000' ">
-                <field name="date-of-publication_dt">
+                <field name="date-of-publication_s">
                     <xsl:value-of select="$sf_a_pos_9_12"/>
                 </field>
             </xsl:if>
             <xsl:if test="($sf_a_pos_13_16 &gt; '0' or $sf_a_pos_13_16 = '0') and $sf_a_pos_13_16 &lt; '10000' ">
-                <field name="date-of-publication_dt">
+                <field name="date-of-publication_s">
                     <xsl:value-of select="$sf_a_pos_13_16"/>
                 </field>
             </xsl:if>
         </xsl:if>
     </xsl:for-each>
     <xsl:for-each select="field[@id='210']/subfield[@id='d']">
-        <field name="date-of-publication_dt">
+        <field name="date-of-publication_s">
             <xsl:value-of select="."/>
         </field>
     </xsl:for-each>
@@ -1055,7 +1055,7 @@ dtf - фасет даты
     <xsl:choose>
         <xsl:when test="field[@id='463']/subfield[@id='1']/field[@id='210']/subfield[@id='d']">
             <xsl:for-each select="field[@id='463']/subfield[@id='1']/field[@id='210']/subfield[@id='d'][1]">
-                <field name="date-of-publication_dtf">
+                <field name="date-of-publication_s">
                     <xsl:value-of select="."/>
                 </field>
             </xsl:for-each>
@@ -1063,7 +1063,7 @@ dtf - фасет даты
         <!-- Иначе, извлекаем из основного подполя-->
         <xsl:otherwise>
             <xsl:for-each select="field[@id='210']/subfield[@id='d'][1]">
-                <field name="date-of-publication_dtf">
+                <field name="date-of-publication_s">
                     <xsl:value-of select="."/>
                 </field>
             </xsl:for-each>

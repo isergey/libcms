@@ -302,9 +302,9 @@
                                 <ul style="list-style: none">
                                     {% for value in facets|hash:facet %}
                                         {% if facet == 'date-of-publication_dtf' %}
-                                            <li class="child"><a href="{% add_get_append q=value.0|date_from_isostring|date:"Y" attr='date-of-publication_dt' %}">{{ value.0|date_from_isostring|date:"Y" }}</a> (<b>{{ value.1 }}</b>)</li>
+                                            <li class="child"><a href="{% add_get_append q=value.0|date_from_isostring|date:"Y" attr=facet %}">{{ value.0|date_from_isostring|date:"Y" }}</a> (<b>{{ value.1 }}</b>)</li>
                                         {% elif facet == 'content-type_sf' %}
-                                            <li class="child"><a href="{% add_get_append q=value.0 attr='content-type_sf' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>
+                                            <li class="child"><a href="{% add_get_append q=value.0 attr=facet %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>
                                         {% elif facet == 'subject-heading_sf' %}
                                             <li class="child"><a href="{% add_get_append q=value.0 attr=facet %}">{{ value.0|lower|capfirst }}</a> (<b>{{ value.1 }}</b>)</li>
                                         {% elif facet == 'code-language_sf' %}
