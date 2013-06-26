@@ -32,7 +32,7 @@ facet_titles = {
         'en':u'Author',
         'tt':u'Автор'
     },
-    'content-type_sf':{
+    'content-type_t':{
         'ru':u'Тип содержания',
         'en':u'Content type',
         'tt':u'Эчтәлек тибы'
@@ -52,7 +52,7 @@ facet_titles = {
         'en':u'Subject',
         'tt':u'Hәр урында'
     },
-    'code-language_sf': {
+    'code-language_t': {
         'ru':u'Язык',
         'en':u'Language',
         'tt':u'Тел'

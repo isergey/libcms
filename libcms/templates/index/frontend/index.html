@@ -18,7 +18,7 @@
                     <form  action="{% url ssearch:frontend:index %}" class="form-search" method="GET" style="margin: 0">
                         <div class="input-prepend">
                             <input type="hidden" name="attr" value="text">
-                            <input  name="q" class="span7" size="16" type="text"><input type="submit" class="btn btn-success" value="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}" style="width: 80px">
+                            <input  name="q" class="span7" size="16" type="text_t"><input type="submit" class="btn btn-success" value="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}" style="width: 80px">
                         </div>
                     </form>
                 </div>
