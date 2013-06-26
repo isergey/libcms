@@ -283,7 +283,7 @@ def search(request, catalog=None):
         fqs = fqs[1:]
         fattrs = fattrs[1:]
     in_founded = request.GET.get('in_founded', None)
-    print  fattrs
+
     terms = []
     try:
         if in_founded or sort:
@@ -317,6 +317,7 @@ def search(request, catalog=None):
             if morph_query:
                 query = query & solr.Q(solr.Q(**term) | morph_query)
             else:
+                term[attr] = "%s" % term[attr]
                 query = query & solr.Q(**term)
 
     facet_fields = ['author_sf', 'content-type_t','date-of-publication_dtf', 'subject-heading_sf', 'code-language_t', 'fond_sf' ]
