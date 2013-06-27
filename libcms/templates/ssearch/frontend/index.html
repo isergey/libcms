@@ -109,7 +109,7 @@
                 {#            <input type="text" class="search-query" name="q" style="width: 64%" value="{{ request.GET.q }}"/>#}
                 {#            <input type="submit" class="btn btn-success" style="width: 10%" value="Поиск">#}
                 <div class="input-append">
-                    <input  name="q" class="span8" id="appendedInputButton" size="16" type="text"><input type="submit" class="btn btn-success span2" value="Поиск">
+                    <input  name="q" class="span8" id="appendedInputButton" size="16" type="text_t"><input type="submit" class="btn btn-success span2" value="Поиск">
                 </div>
 {#                <br/>#}
                 {% if LANGUAGE_CODE == 'ru' %}Искать в найденном{% elif LANGUAGE_CODE == 'tt' %}Табылганнан эзләү{% else %}search in results{% endif %}: <input type="checkbox" name="in_founded"  {% if request.GET.in_founded %}checked="checked"{% endif %}>
