@@ -414,13 +414,13 @@ def search(request, catalog=None):
 
         new_key = key.split('_')[0]
         if not query_dict:
-            query_dict = QueryDict('q=' + value + '&attr='+new_key).copy()
+            query_dict = QueryDict('q=' + value + '&attr='+key).copy()
         else:
             query_dict.getlist('q').append(value)
-            query_dict.getlist('attr').append(new_key)
+            query_dict.getlist('attr').append(key)
 
         search_breadcumbs.append({
-            'attr': new_key,
+            'attr': key,
             'value': value,
             'href': query_dict.urlencode()
         })
@@ -430,8 +430,7 @@ def search(request, catalog=None):
         return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
 
     json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
-    if request.GET.get('print', None):
-        print 'print'
+
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
         'results_page': results_page,

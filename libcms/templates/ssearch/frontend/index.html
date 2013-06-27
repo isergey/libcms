@@ -142,9 +142,9 @@
                                 <span><a href="?{{ search_breadcumb.href }}">{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</a></span> →
                             {% else %}
                                 {#                <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>#}
-                                {% if search_breadcumb.attr == 'content-type' %}
+                                {% if search_breadcumb.attr == 'content-type_sf' %}
                                     <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|content_type_title }}</span>
-                                {% elif search_breadcumb.attr == 'code-language' %}
+                                {% elif search_breadcumb.attr == 'code-language_t' %}
                                     <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|language_title }}</span>
                                 {% else %}
                                     <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</span>
