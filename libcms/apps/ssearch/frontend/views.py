@@ -184,12 +184,12 @@ def init_search(request, catalog=None):
     collections = get_collections()
     if stats:
         for collection in collections:
-            collection['stats'] = stats[collection['persistant-number'][0]]
+            collection['stats'] = stats['collections'][collection['persistant-number'][0]]
     return render(request, 'ssearch/frontend/index.html', {
         'search_attrs': search_attrs,
         'stats': stats,
         'catalog':catalog,
-        'collections': get_collections()
+        'collections': collections
     })
 
 
