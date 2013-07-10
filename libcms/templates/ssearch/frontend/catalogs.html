@@ -31,6 +31,27 @@
 {#<a href="#tukay" role="button" class="btn" data-toggle="modal">Launch demo modal</a>#}
 
 {{ collections }}
+{% for collection in collections %}
+    <div id="vtorov" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">{{ collection.title.0 }}</h3>
+    </div>
+{#    <div class="modal-body">#}
+{#        <p class="western"><strong>Краткие сведения о коллекции, особенности:</strong></p>#}
+{#        <p class="western">Известный библиофил и краевед Иван Алексеевич Второв собрал коллекцию, которая первоначально насчитывала 903 названия и 1908 томов книг и периодических изданий. Его сын &minus; Николай Иванович Второв, видный ученый и литератор, археолог и  этнограф, после смерти отца в 1844 году подарил данную коллекцию городу Казани с целью организации общественной библиотеки. Коллекция составила основу фонда Национальной библиотеки Республики Татарстан, которая была открыта в 1865 г. как городская публичная библиотека.</p>#}
+{#        <p class="western">Около 75% документов коллекции &ndash; старопечатные книги, изданные до 1830 г.</p>#}
+{#        <p class="western"><strong>Хронологические границы:</strong> XVIII век &ndash; середина XIX века</p>#}
+{#        <p class="western"><strong>Виды изданий:</strong> книги, старопечатные книги</p>#}
+{#        <p class="western"><strong>Языковая характеристика:</strong> документы на русском языке, многие &ndash; в переводах  с разных языков мира</p>#}
+{#        <p class="western"><strong>Объем коллекции:</strong> 1703 документа</p>#}
+{#        <p class="western"><strong>Фондодержатель:</strong> отдел рукописей и редких книг Национальной библиотеки Республики Татарстан</p>#}
+{#    </div>#}
+    <div class="modal-footer">
+        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q={{ collection.persistant-number.0 }}&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
+    </div>
+</div>
+{% endfor %}
 
 <div id="vtorov" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
