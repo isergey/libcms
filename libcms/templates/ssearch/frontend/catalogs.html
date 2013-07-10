@@ -41,7 +41,7 @@
         <p class="western"><strong>Описание коллекции отсутствует</strong></p>
     </div>
     <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q={{ collection|hash:'persistant-number' }}&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
+        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
     </div>
 </div>
 {% endfor %}
