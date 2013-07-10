@@ -5,7 +5,7 @@ import sunburnt
 import datetime
 from django.template import Library
 from django.utils.translation import get_language
-
+from ..models import Collection
 register = Library()
 
 @register.filter
@@ -200,3 +200,7 @@ def ssearch_all_count():
     return {
         'count': responce.result.numFound
     }
+
+# @register.filter
+# def fond_title(code):
+#
