@@ -181,7 +181,10 @@ def init_search(request, catalog=None):
     stats = None
     if catalog == u'ebooks':
         stats = statictics()
-
+    collections = get_collections()
+    if stats:
+        for collection in collections:
+            collection['stats'] = stats[collection['persistant-number'][0]]
     return render(request, 'ssearch/frontend/index.html', {
         'search_attrs': search_attrs,
         'stats': stats,

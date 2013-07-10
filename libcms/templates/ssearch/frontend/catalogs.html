@@ -20,7 +20,7 @@
             {%  elif collection.title == 'Тестовая коллекция'%}
 {#                <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Тестовая+коллекция&attr=text&attr=fond_sf&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>#}
             {% else %}
-                <li><a href="#{{ collection|hash:'persistant-number'|hash:0}}"  data-toggle="modal">{{ collection.title.0 }}</a>: <b>{{ stats.collections|hash:collection|hash:'persistant-number'|hash:0 }}</b></li>
+                <li><a href="#{{ collection|hash:'persistant-number'|hash:0}}"  data-toggle="modal">{{ collection.title.0 }}</a>: <b>{{ collection.stats }}</b></li>
             {% endif %}
         {% endfor %}
     </ul>
