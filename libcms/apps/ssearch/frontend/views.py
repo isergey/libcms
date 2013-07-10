@@ -764,10 +764,10 @@ def statictics():
     solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=30, mincount=1)
     solr_searcher = solr_searcher.field_limit("id")
     response = solr_searcher.execute()
-    collections = []
+    collections = {}
     for key in response.facet_counts.facet_fields.keys():
         for val in response.facet_counts.facet_fields[key]:
-            collections.append({val[0]: val[1]})
+            collections[val[0]] =  val[1]
 
 
     deleted = True
@@ -781,15 +781,10 @@ def statictics():
                     deleted = True
 
     stats = {
-        'collections': [],
+        'collections': collections,
         'count_all': 0,
         'count_last_month': 0,
         }
-    for col in collections:
-        stats['collections'].append({
-            'title': col.keys()[0],
-            'value': col.values()[0]
-        })
     now = datetime.datetime.now()
     before_30_now = now - datetime.timedelta(30)
     count_all = Ebook.objects.using('records').all().exclude(deleted=True).count()
