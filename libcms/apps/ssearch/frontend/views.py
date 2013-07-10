@@ -806,7 +806,7 @@ def get_collections(request):
     collections = Collection.objects.using('records').all()
     col = []
     for collection in collections:
-        doc_tree = etree.XML(collection.content)
+        doc_tree = xml_doc_to_dict(collection.content)
         col.append(unicode(doc_tree))
 
     return HttpResponse(u'<br/>'.join(col))
