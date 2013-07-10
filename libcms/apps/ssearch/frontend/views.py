@@ -803,7 +803,7 @@ def statictics():
 
 def get_collections(request):
 
-    collections = Collection.using('records').objects.all()
+    collections = Collection.objects.using('records').all()
     col = []
     for collection in collections:
         doc_tree = etree.XML(collection.content)
