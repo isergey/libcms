@@ -181,11 +181,12 @@ def init_search(request, catalog=None):
     stats = None
     if catalog == u'ebooks':
         stats = statictics()
-    print search_attrs
+
     return render(request, 'ssearch/frontend/index.html', {
         'search_attrs': search_attrs,
         'stats': stats,
-        'catalog':catalog
+        'catalog':catalog,
+        'collections': get_collections()
     })
 
 
