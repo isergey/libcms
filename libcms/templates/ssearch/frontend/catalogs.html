@@ -20,7 +20,7 @@
             {%  elif collection.title == 'Тестовая коллекция'%}
 {#                <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Тестовая+коллекция&attr=text&attr=fond_sf&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>#}
             {% else %}
-                <li>{{ collection.title.0 }}: <b>{{ collection.value }}</b></li>
+                <li><a href="#{{ collection|hash:'persistant-number'}}"  data-toggle="modal">{{ collection.title.0 }}</a></li>
             {% endif %}
         {% endfor %}
     </ul>
@@ -32,7 +32,7 @@
 {#<a href="#tukay" role="button" class="btn" data-toggle="modal">Launch demo modal</a>#}
 
 {% for collection in collections %}
-    <div id="vtorov" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div id="{{ collection|hash:'persistant-number' }}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h3 id="myModalLabel">{{ collection.title.0 }}</h3>
@@ -52,120 +52,120 @@
     </div>
 </div>
 {% endfor %}
-
-<div id="vtorov" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Коллекция И. А. Второва</h3>
-    </div>
-    <div class="modal-body">
-        <p class="western"><strong>Краткие сведения о коллекции, особенности:</strong></p>
-        <p class="western">Известный библиофил и краевед Иван Алексеевич Второв собрал коллекцию, которая первоначально насчитывала 903 названия и 1908 томов книг и периодических изданий. Его сын &minus; Николай Иванович Второв, видный ученый и литератор, археолог и  этнограф, после смерти отца в 1844 году подарил данную коллекцию городу Казани с целью организации общественной библиотеки. Коллекция составила основу фонда Национальной библиотеки Республики Татарстан, которая была открыта в 1865 г. как городская публичная библиотека.</p>
-        <p class="western">Около 75% документов коллекции &ndash; старопечатные книги, изданные до 1830 г.</p>
-        <p class="western"><strong>Хронологические границы:</strong> XVIII век &ndash; середина XIX века</p>
-        <p class="western"><strong>Виды изданий:</strong> книги, старопечатные книги</p>
-        <p class="western"><strong>Языковая характеристика:</strong> документы на русском языке, многие &ndash; в переводах  с разных языков мира</p>
-        <p class="western"><strong>Объем коллекции:</strong> 1703 документа</p>
-        <p class="western"><strong>Фондодержатель:</strong> отдел рукописей и редких книг Национальной библиотеки Республики Татарстан</p>
-    </div>
-    <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Фонд+И.+А.+Второва&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
-    </div>
-</div>
-
-<div id="saharov" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Коллекция И. А. Сахарова</h3>
-    </div>
-    <div class="modal-body">
-        <p class="western"><strong>Краткие сведения о коллекции, особенности:</strong></p>
-        <p class="western">Известный библиофил и краевед Иван Алексеевич Второв собрал коллекцию, которая первоначально насчитывала 903 названия и 1908 томов книг и периодических изданий. Его сын &minus; Николай Иванович Второв, видный ученый и литератор, археолог и  этнограф, после смерти отца в 1844 году подарил данную коллекцию городу Казани с целью организации общественной библиотеки. Коллекция составила основу фонда Национальной библиотеки Республики Татарстан, которая была открыта в 1865 г. как городская публичная библиотека.</p>
-        <p class="western">Около 75% документов коллекции &ndash; старопечатные книги, изданные до 1830 г.</p>
-        <p class="western"><strong>Хронологические границы:</strong> XVIII век &ndash; середина XIX века</p>
-        <p class="western"><strong>Виды изданий:</strong> книги, старопечатные книги</p>
-        <p class="western"><strong>Языковая характеристика:</strong> документы на русском языке, многие &ndash; в переводах  с разных языков мира</p>
-        <p class="western"><strong>Объем коллекции:</strong> 1703 документа</p>
-        <p class="western"><strong>Фондодержатель:</strong> отдел рукописей и редких книг Национальной библиотеки Республики Татарстан</p>
-    </div>
-    <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Коллекция+И.+А.+Сахарова&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
-    </div>
-</div>
-
-
-<div id="tatarika" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Татарика</h3>
-    </div>
-    <div class="modal-body">
-    </div>
-    <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Татарика&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
-    </div>
-</div>
-
-
-
-<div id="tukay" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Тукай в периодической печати</h3>
-    </div>
-    <div class="modal-body">
-        <p class="western"><strong>Краткие сведения о коллекции, особенности</strong>:</p>
-        <p class="western">В коллекции представлены произведения Г. Тукая, опубликованные в периодических изданиях Татарстана: литературно-художественных, общественно-политических журналах, газетах и детских ежемесячных журналах. Также включены публикации о жизни и творчестве поэта, его отношении к  воспитанию и обучению, искусству.</p>
-        <p class="western"><strong>Хронологические границы:</strong> 1940 г. &ndash; по настоящее время</p>
-        <p class="western"><strong>Виды изданий</strong>: журналы и газеты</p>
-        <p class="western"><strong>Языковая характеристика</strong>: на татарском и русском  языках</p>
-        <p class="western"><strong>Объем коллекции</strong>:  более 100 наименований, постоянно пополняется</p>
-        <p class="western"><strong>Фондодержатель</strong>: отдел периодических изданий Национальной библиотеки Республики Татарстан</p>
-    </div>
-    <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Прижизненные+издания+Г.Тукая&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
-    </div>
-</div>
-
-<div id="staropecht" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Коллекция русской старопечатной книги (до 1830 г.)</h3>
-    </div>
-    <div class="modal-body">
-    </div>
-    <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Коллекция+русской+старопечатной+книги+(до+1830+г.)&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
-    </div>
-</div>
-
-<div id="present" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Книги подаренные авторами</h3>
-    </div>
-    <div class="modal-body">
-    </div>
-    <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Книги+подаренные+авторами&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
-    </div>
-</div>
-
-<div id="periodkazan" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Периодические издания Казанской губернии</h3>
-    </div>
-    <div class="modal-body">
-        <p class="western"><strong>Краткие сведения о коллекции, особенности: </strong></p>
-        <p class="western">В коллекцию включены периодические издания универсальные по содержанию, опубликованные в <span lang="en-US">XIX</span> веке. Это общественно-политические, педагогические журналы, журналы по археологии, истории,  сельскому хозяйству и промышленности.</p>
-        <p class="western">&nbsp;<strong>Хронологические границы:</strong> 1815 &ndash; 1917 гг.</p>
-        <p class="western">&nbsp;<strong>Виды изданий:</strong> журналы и газеты</p>
-        <p class="western">&nbsp;<strong>Языковая характеристика</strong>: на русском языке</p>
-        <p class="western">&nbsp;<strong>Объем коллекции:</strong> 15 названий (3438 экз.)</p>
-        <p class="western">&nbsp;<strong>Фондодержатель:</strong> Отдел периодических изданий Национальной библиотеки Республики Татарстан</p>
-    </div>
-    <div class="modal-footer">
-        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Периодические+издания+Казанской+губернии&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
-    </div>
-</div>
+{##}
+{#<div id="vtorov" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">#}
+{#    <div class="modal-header">#}
+{#        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>#}
+{#        <h3 id="myModalLabel">Коллекция И. А. Второва</h3>#}
+{#    </div>#}
+{#    <div class="modal-body">#}
+{#        <p class="western"><strong>Краткие сведения о коллекции, особенности:</strong></p>#}
+{#        <p class="western">Известный библиофил и краевед Иван Алексеевич Второв собрал коллекцию, которая первоначально насчитывала 903 названия и 1908 томов книг и периодических изданий. Его сын &minus; Николай Иванович Второв, видный ученый и литератор, археолог и  этнограф, после смерти отца в 1844 году подарил данную коллекцию городу Казани с целью организации общественной библиотеки. Коллекция составила основу фонда Национальной библиотеки Республики Татарстан, которая была открыта в 1865 г. как городская публичная библиотека.</p>#}
+{#        <p class="western">Около 75% документов коллекции &ndash; старопечатные книги, изданные до 1830 г.</p>#}
+{#        <p class="western"><strong>Хронологические границы:</strong> XVIII век &ndash; середина XIX века</p>#}
+{#        <p class="western"><strong>Виды изданий:</strong> книги, старопечатные книги</p>#}
+{#        <p class="western"><strong>Языковая характеристика:</strong> документы на русском языке, многие &ndash; в переводах  с разных языков мира</p>#}
+{#        <p class="western"><strong>Объем коллекции:</strong> 1703 документа</p>#}
+{#        <p class="western"><strong>Фондодержатель:</strong> отдел рукописей и редких книг Национальной библиотеки Республики Татарстан</p>#}
+{#    </div>#}
+{#    <div class="modal-footer">#}
+{#        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Фонд+И.+А.+Второва&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>#}
+{#    </div>#}
+{#</div>#}
+{##}
+{#<div id="saharov" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">#}
+{#    <div class="modal-header">#}
+{#        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>#}
+{#        <h3 id="myModalLabel">Коллекция И. А. Сахарова</h3>#}
+{#    </div>#}
+{#    <div class="modal-body">#}
+{#        <p class="western"><strong>Краткие сведения о коллекции, особенности:</strong></p>#}
+{#        <p class="western">Известный библиофил и краевед Иван Алексеевич Второв собрал коллекцию, которая первоначально насчитывала 903 названия и 1908 томов книг и периодических изданий. Его сын &minus; Николай Иванович Второв, видный ученый и литератор, археолог и  этнограф, после смерти отца в 1844 году подарил данную коллекцию городу Казани с целью организации общественной библиотеки. Коллекция составила основу фонда Национальной библиотеки Республики Татарстан, которая была открыта в 1865 г. как городская публичная библиотека.</p>#}
+{#        <p class="western">Около 75% документов коллекции &ndash; старопечатные книги, изданные до 1830 г.</p>#}
+{#        <p class="western"><strong>Хронологические границы:</strong> XVIII век &ndash; середина XIX века</p>#}
+{#        <p class="western"><strong>Виды изданий:</strong> книги, старопечатные книги</p>#}
+{#        <p class="western"><strong>Языковая характеристика:</strong> документы на русском языке, многие &ndash; в переводах  с разных языков мира</p>#}
+{#        <p class="western"><strong>Объем коллекции:</strong> 1703 документа</p>#}
+{#        <p class="western"><strong>Фондодержатель:</strong> отдел рукописей и редких книг Национальной библиотеки Республики Татарстан</p>#}
+{#    </div>#}
+{#    <div class="modal-footer">#}
+{#        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Коллекция+И.+А.+Сахарова&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>#}
+{#    </div>#}
+{#</div>#}
+{##}
+{##}
+{#<div id="tatarika" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">#}
+{#    <div class="modal-header">#}
+{#        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>#}
+{#        <h3 id="myModalLabel">Татарика</h3>#}
+{#    </div>#}
+{#    <div class="modal-body">#}
+{#    </div>#}
+{#    <div class="modal-footer">#}
+{#        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Татарика&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>#}
+{#    </div>#}
+{#</div>#}
+{##}
+{##}
+{##}
+{#<div id="tukay" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">#}
+{#    <div class="modal-header">#}
+{#        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>#}
+{#        <h3 id="myModalLabel">Тукай в периодической печати</h3>#}
+{#    </div>#}
+{#    <div class="modal-body">#}
+{#        <p class="western"><strong>Краткие сведения о коллекции, особенности</strong>:</p>#}
+{#        <p class="western">В коллекции представлены произведения Г. Тукая, опубликованные в периодических изданиях Татарстана: литературно-художественных, общественно-политических журналах, газетах и детских ежемесячных журналах. Также включены публикации о жизни и творчестве поэта, его отношении к  воспитанию и обучению, искусству.</p>#}
+{#        <p class="western"><strong>Хронологические границы:</strong> 1940 г. &ndash; по настоящее время</p>#}
+{#        <p class="western"><strong>Виды изданий</strong>: журналы и газеты</p>#}
+{#        <p class="western"><strong>Языковая характеристика</strong>: на татарском и русском  языках</p>#}
+{#        <p class="western"><strong>Объем коллекции</strong>:  более 100 наименований, постоянно пополняется</p>#}
+{#        <p class="western"><strong>Фондодержатель</strong>: отдел периодических изданий Национальной библиотеки Республики Татарстан</p>#}
+{#    </div>#}
+{#    <div class="modal-footer">#}
+{#        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Прижизненные+издания+Г.Тукая&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>#}
+{#    </div>#}
+{#</div>#}
+{##}
+{#<div id="staropecht" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">#}
+{#    <div class="modal-header">#}
+{#        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>#}
+{#        <h3 id="myModalLabel">Коллекция русской старопечатной книги (до 1830 г.)</h3>#}
+{#    </div>#}
+{#    <div class="modal-body">#}
+{#    </div>#}
+{#    <div class="modal-footer">#}
+{#        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Коллекция+русской+старопечатной+книги+(до+1830+г.)&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>#}
+{#    </div>#}
+{#</div>#}
+{##}
+{#<div id="present" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">#}
+{#    <div class="modal-header">#}
+{#        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>#}
+{#        <h3 id="myModalLabel">Книги подаренные авторами</h3>#}
+{#    </div>#}
+{#    <div class="modal-body">#}
+{#    </div>#}
+{#    <div class="modal-footer">#}
+{#        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Книги+подаренные+авторами&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>#}
+{#    </div>#}
+{#</div>#}
+{##}
+{#<div id="periodkazan" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">#}
+{#    <div class="modal-header">#}
+{#        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>#}
+{#        <h3 id="myModalLabel">Периодические издания Казанской губернии</h3>#}
+{#    </div>#}
+{#    <div class="modal-body">#}
+{#        <p class="western"><strong>Краткие сведения о коллекции, особенности: </strong></p>#}
+{#        <p class="western">В коллекцию включены периодические издания универсальные по содержанию, опубликованные в <span lang="en-US">XIX</span> веке. Это общественно-политические, педагогические журналы, журналы по археологии, истории,  сельскому хозяйству и промышленности.</p>#}
+{#        <p class="western">&nbsp;<strong>Хронологические границы:</strong> 1815 &ndash; 1917 гг.</p>#}
+{#        <p class="western">&nbsp;<strong>Виды изданий:</strong> журналы и газеты</p>#}
+{#        <p class="western">&nbsp;<strong>Языковая характеристика</strong>: на русском языке</p>#}
+{#        <p class="western">&nbsp;<strong>Объем коллекции:</strong> 15 названий (3438 экз.)</p>#}
+{#        <p class="western">&nbsp;<strong>Фондодержатель:</strong> Отдел периодических изданий Национальной библиотеки Республики Татарстан</p>#}
+{#    </div>#}
+{#    <div class="modal-footer">#}
+{#        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Периодические+издания+Казанской+губернии&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>#}
+{#    </div>#}
+{#</div>#}
