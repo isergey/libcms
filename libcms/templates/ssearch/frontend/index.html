@@ -261,9 +261,9 @@
                                 <p class="item4">Коллекция:
                                     {% for fond in doc.record|hash:'fond' %}
                                         {% if not forloop.last %}
-                                            {{ fond }},
+                                            {{ fond|fond_title }},
                                         {% else %}
-                                            {{ fond }}
+                                            {{ fond|fond_title }}
                                         {% endif %}
                                     {% endfor %}
                                 </p>
