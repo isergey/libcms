@@ -2,11 +2,11 @@
 <div>Статистика по коллекциям:</div>
 <div>
     <ul>
-        {% for collection in stats.collections %}
+        {% for collection in collections %}
             {% if collection.title == 'Фонд И. А. Второва' %}
-            <li><a href="#vtorov" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
+            <li><a href="#vtorov" data-toggle="modal">{{ collection.title.0 }}</a>: <b>{{ collection.value }}</b></li>
             {%  elif collection.title == 'Коллекция И. А. Сахарова'%}
-                <li><a href="#saharov" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
+                <li><a href="#saharov" data-toggle="modal">{{ collection.title.0 }}</a>: <b>{{ collection.value }}</b></li>
             {%  elif collection.title == 'Татарика'%}
                 <li><a href="#tatarika" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
             {%  elif collection.title == 'Прижизненные издания Г.Тукая'%}
@@ -20,7 +20,7 @@
             {%  elif collection.title == 'Тестовая коллекция'%}
 {#                <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Тестовая+коллекция&attr=text&attr=fond_sf&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>#}
             {% else %}
-                <li>{{ collection.title }}: <b>{{ collection.value }}</b></li>
+                <li>{{ collection.title.0 }}: <b>{{ collection.value }}</b></li>
             {% endif %}
         {% endfor %}
     </ul>
@@ -31,7 +31,6 @@
 
 {#<a href="#tukay" role="button" class="btn" data-toggle="modal">Launch demo modal</a>#}
 
-{{ collections }}
 {% for collection in collections %}
     <div id="vtorov" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
