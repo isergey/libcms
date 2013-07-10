@@ -770,16 +770,6 @@ def statictics():
             collections[val[0]] =  val[1]
 
 
-    deleted = True
-    while deleted:
-        deleted = False
-        for i, col in enumerate(collections):
-            for col2 in collections[i+1:]:
-                if compare(col.keys()[0], col2.keys()[0]) > 0.95:
-                    col[col.keys()[0]] += col2[col2.keys()[0]]
-                    collections.remove(col2)
-                    deleted = True
-
     stats = {
         'collections': collections,
         'count_all': 0,
