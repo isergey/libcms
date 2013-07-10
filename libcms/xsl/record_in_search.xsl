@@ -45,6 +45,7 @@
 <xsl:template match="record">
     <doc>
         <xsl:call-template name="Local-number"/>
+        <xsl:call-template name="Persistant-number"/>
         <xsl:call-template name="Title"/>
         <xsl:call-template name="Author"/>
         <xsl:call-template name="Subject-heading"/>
@@ -64,6 +65,15 @@
 <xsl:template name="Local-number">
     <xsl:for-each select="field[@id='001']">
         <field name="local-number">
+            <xsl:value-of select="."/>
+        </field>
+    </xsl:for-each>
+</xsl:template>
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<xsl:template name="Persistant-number">
+    <xsl:for-each select="field[@id='003']">
+        <field name="persistant-number">
             <xsl:value-of select="."/>
         </field>
     </xsl:for-each>
@@ -491,12 +501,10 @@
 </xsl:template>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Fond">
-    <xsl:for-each select="field[@id='313']/subfield[@id='a']">
-        <xsl:if test="starts-with(., 'Коллекция: ')">
-            <field name="fond">
-                <xsl:value-of select="substring(.,12)"/>
-            </field>
-        </xsl:if>
+    <xsl:for-each select="field[@id='852']/subfield[@id='b']">
+        <field name="fond">
+            <xsl:value-of select="."/>
+        </field>
     </xsl:for-each>
 </xsl:template>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->

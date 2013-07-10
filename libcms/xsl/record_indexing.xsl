@@ -89,6 +89,7 @@ dtf - фасет даты
 <xsl:template name="bib1_rules">
     <!-- att 12              Local-number -->
     <xsl:call-template name="Local-number"/>
+    <xsl:call-template name="Persistant-number"/>
     <!-- att 1               Personal-name -->
     <!-- att 2               Corporate-name -->
     <!-- att 3               Conference-name -->
@@ -598,7 +599,14 @@ dtf - фасет даты
         </field>
     </xsl:for-each>
 </xsl:template>
-
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<xsl:template name="Persistant-number">
+    <xsl:for-each select="field[@id='003']">
+        <field name="persistant-number_s">
+            <xsl:value-of select="."/>
+        </field>
+    </xsl:for-each>
+</xsl:template>
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Author">
@@ -1072,12 +1080,10 @@ dtf - фасет даты
 </xsl:template>
 
 <xsl:template name="Fond-facet">
-    <xsl:for-each select="field[@id='313']/subfield[@id='a']">
-        <xsl:if test="starts-with(., 'Коллекция: ')">
-            <field name="fond_sf">
-                <xsl:value-of select="substring(.,12)"/>
-            </field>
-        </xsl:if>
+    <xsl:for-each select="field[@id='852']/subfield[@id='b']">
+        <field name="fond_sf">
+            <xsl:value-of select="."/>
+        </field>
     </xsl:for-each>
 </xsl:template>
 
