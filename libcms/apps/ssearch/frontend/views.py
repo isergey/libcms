@@ -801,12 +801,12 @@ def statictics():
 
 
 
-def get_collections(request):
+def get_collections():
 
     collections = Collection.objects.using('records').all()
-    col = []
+    colls = []
     for collection in collections:
-        doc_tree = xml_doc_to_dict(collection.content)
-        col.append(unicode(doc_tree))
+        collections_dict = xml_doc_to_dict(collection.content)
+        colls.append(collections_dict)
 
-    return HttpResponse(u'<br/>'.join(col))
+    return colls

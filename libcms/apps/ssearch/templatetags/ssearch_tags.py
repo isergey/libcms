@@ -5,7 +5,9 @@ import sunburnt
 import datetime
 from django.template import Library
 from django.utils.translation import get_language
+from django.core.cache import cache
 from ..models import Collection
+from ..frontend.views import get_collections
 register = Library()
 
 @register.filter
@@ -201,6 +203,15 @@ def ssearch_all_count():
         'count': responce.result.numFound
     }
 
-# @register.filter
-# def fond_title(code):
-#
+
+@register.filter
+def fond_title(code):
+    collections_dicts = cache.get('ssearch.collections')
+    if not collections_dicts:
+        collections_dicts  = get_collections()
+        cache.set('ssearch.collections', collections_dicts, 120)
+
+    for collection_dict in collections_dicts:
+        if code == collection_dict['persistant-number'][0]:
+            return collection_dict['title'][0]
+    return code

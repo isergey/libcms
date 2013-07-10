@@ -13,5 +13,5 @@ urlpatterns = patterns('',
     url(r'^requests/save/$', views.save_search_request, name='save_search_request'),
     url(r'^requests/delete/(?P<id>\d+)/$', views.delete_search_request, name='delete_search_request'),
     url(r'^print/(?P<gen_id>[A-Za-z]+)/$', views.to_print, name='to_print'),
-    url(r'^collections/$', views.get_collections, name='collections'),
+    # url(r'^collections/$', views.get_collections, name='collections'),
 )
