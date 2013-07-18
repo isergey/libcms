@@ -112,7 +112,7 @@ class Record(models.Model):
     def __unicode__(self):
         return self.record_id
     class Meta:
-        db_table = 'sc2'
+        db_table = 'records'
 
 
 class Ebook(models.Model):
