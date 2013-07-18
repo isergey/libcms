@@ -11,7 +11,7 @@ from django.core.cache import cache
 from django.shortcuts import render, HttpResponse, get_object_or_404, Http404, urlresolvers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import  QueryDict
-from ..models import Record, Ebook, SavedRequest, DetailAccessLog, Collection
+from ..models import Record, SavedRequest, DetailAccessLog, Collection
 
 from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
 ## на эти трансформаторы ссылаются из других модулей
@@ -34,8 +34,7 @@ def rss():
     now = datetime.date.today()
     seven_days_ago = now - datetime.timedelta(4)
     records_dicts = []
-    records =  list(Ebook.objects.using('records').filter(add_date__gte=seven_days_ago, add_date__lte=now))
-    records +=  list(Record.objects.using('records').filter(add_date__gte=seven_days_ago, add_date__lte=now))
+    records =  list(Record.objects.using('records').filter(add_date__gte=seven_days_ago, add_date__lte=now))
     for record in records:
         rd = xml_doc_to_dict(record.content)
         ro = RecordObject()
@@ -334,10 +333,10 @@ def search(request, catalog=None):
     exclude_kwargs = {}
 
     if catalog == u'sc2':
-        exclude_kwargs = {'system-catalog_s':u"ebooks"}
+        exclude_kwargs = {'system-catalog_s':u"2"}
         solr_searcher = solr_searcher.exclude(**exclude_kwargs)
     elif catalog == u'ebooks':
-        exclude_kwargs = {'system-catalog_s':u"sc2"}
+        exclude_kwargs = {'system-catalog_s':u"1"}
         solr_searcher = solr_searcher.exclude(**exclude_kwargs)
     else:
         pass
@@ -394,8 +393,7 @@ def search(request, catalog=None):
         doc_ids.append(doc['id'])
 
     records_dict = {}
-    records =  list(Ebook.objects.using('records').filter(gen_id__in=doc_ids))
-    records +=  list(Record.objects.using('records').filter(gen_id__in=doc_ids))
+    records =  list(Record.objects.using('records').filter(gen_id__in=doc_ids))
     for record in records:
         records_dict[record.gen_id] = xml_doc_to_dict(record.content)
 
@@ -473,10 +471,6 @@ def detail(request, gen_id):
         record = Record.objects.using('records').get(gen_id=gen_id)
         catalog = 'records'
     except Record.DoesNotExist:
-        try:
-            record = Ebook.objects.using('records').get(gen_id=gen_id)
-            catalog = 'ebooks'
-        except Ebook.DoesNotExist:
             raise Http404()
 
 #    DetailAccessLog(catalog=catalog, gen_id=record.gen_id).save()
@@ -514,8 +508,7 @@ def detail(request, gen_id):
         for linked_doc in linked_results:
             linked_doc_ids.append(linked_doc['id'])
 
-        records =  list(Ebook.objects.using('records').filter(gen_id__in=linked_doc_ids))
-        records +=  list(Record.objects.using('records').filter(gen_id__in=linked_doc_ids))
+        records =  list(Record.objects.using('records').filter(gen_id__in=linked_doc_ids))
 
         for record in records:
             record_dict = {}
@@ -546,10 +539,6 @@ def to_print(request, gen_id):
         record = Record.objects.using('records').get(gen_id=gen_id)
         catalog = 'records'
     except Record.DoesNotExist:
-        try:
-            record = Ebook.objects.using('records').get(gen_id=gen_id)
-            catalog = 'ebooks'
-        except Ebook.DoesNotExist:
             raise Http404()
 
 #    DetailAccessLog(catalog=catalog, gen_id=record.gen_id).save()
@@ -762,7 +751,7 @@ def statictics():
     facet_fields = ['fond_sf' ]
     qkwargs = {'*':'*'}
     solr_searcher = solr.query(**qkwargs).paginate(start=0, rows=0)
-    exclude_kwargs = {'system-catalog_s':u"sc2"}
+    exclude_kwargs = {'system-catalog_s':u"1"}
     solr_searcher = solr_searcher.exclude(**exclude_kwargs)
     solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=30, mincount=1)
     solr_searcher = solr_searcher.field_limit("id")
@@ -780,9 +769,9 @@ def statictics():
         }
     now = datetime.datetime.now()
     before_30_now = now - datetime.timedelta(30)
-    count_all = Ebook.objects.using('records').all().exclude(deleted=True).count()
-    count_last_month = Ebook.objects.using('records').filter(add_date__year=now.year, add_date__month=now.month).exclude(deleted=True).count()
-    count_last_30 = Ebook.objects.using('records').filter(add_date__gte=before_30_now, add_date__lte=now).exclude(deleted=True).count()
+    count_all = Record.objects.using('records').filter(source_id='2').exclude(deleted=True).count()
+    count_last_month = Record.objects.using('records').filter(add_date__year=now.year, add_date__month=now.month, source_id='2').exclude(deleted=True).count()
+    count_last_30 = Record.objects.using('records').filter(add_date__gte=before_30_now, add_date__lte=now, source_id='2').exclude(deleted=True).count()
     stats['count_all'] = count_all
     stats['count_last_month'] = count_last_month
     stats['count_last_30'] = count_last_30
