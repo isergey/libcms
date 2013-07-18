@@ -781,7 +781,7 @@ def statictics():
 
 def get_collections():
 
-    collections = Record.objects.using('records').filter(cource_id='1')
+    collections = Record.objects.using('records').filter(source_id='1')
     colls = []
     for collection in collections:
         collections_dict = xml_doc_to_dict(collection.content)
