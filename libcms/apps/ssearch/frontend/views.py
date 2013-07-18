@@ -336,7 +336,7 @@ def search(request, catalog=None):
         exclude_kwargs = {'system-catalog_s':u"2"}
         solr_searcher = solr_searcher.exclude(**exclude_kwargs)
     elif catalog == u'ebooks':
-        exclude_kwargs = {'system-catalog_s':u"1"}
+        exclude_kwargs = {'system-catalog_s':u"4"}
         solr_searcher = solr_searcher.exclude(**exclude_kwargs)
     else:
         pass
@@ -781,7 +781,7 @@ def statictics():
 
 def get_collections():
 
-    collections = Collection.objects.using('records').all()
+    collections = Record.objects.using('records').filter(cource_id='1')
     colls = []
     for collection in collections:
         collections_dict = xml_doc_to_dict(collection.content)
