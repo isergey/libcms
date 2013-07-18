@@ -11,7 +11,7 @@ from lxml import etree
 from django.conf import settings
 from django.core.files.storage import default_storage
 from forms import UploadForm
-from ssearch.models import Upload, Record, Ebook, IndexStatus
+from ssearch.models import Upload, Record, IndexStatus
 from django.contrib.auth.decorators import login_required
 from guardian.decorators import permission_required_or_403
 from django.shortcuts import render, redirect, HttpResponse, Http404
@@ -272,6 +272,7 @@ def indexing(request):
     else:
         reset = False
 
+
     for slug in settings.SOLR['catalogs'].keys():
         _indexing(slug, reset)
 
@@ -326,13 +327,9 @@ def _indexing(slug, reset=False):
         index_status = IndexStatus(catalog=slug)
 
     if not getattr(index_status, 'last_index_date', None):
-        select_query = "SELECT * FROM %s where deleted = 0" % (settings.SOLR['catalogs'][slug]['table'],)
+        select_query = "SELECT * FROM records where deleted = 0"
     else:
-        select_query = "SELECT * FROM %s where update_date >= '%s' and deleted = 0" % \
-                       (
-                           settings.SOLR['catalogs'][slug]['table'],
-                           str(index_status.last_index_date),
-                           )
+        select_query = "SELECT * FROM records where update_date >= '%s' and deleted = 0"
 
 
     solr = sunburnt.SolrInterface(solr_address)
@@ -344,7 +341,7 @@ def _indexing(slug, reset=False):
     rows=conn.use_result()
     res = rows.fetch_row(how=1)
 
-    i=0
+    i = 0
     while res:
         content = zlib.decompress(res[0]['content'],-15).decode('utf-8')
         doc_tree = etree.XML(content)
@@ -371,12 +368,12 @@ def _indexing(slug, reset=False):
 
         doc['system-add-date_dt'] = res[0]['add_date']
         doc['system-update-date_dt'] = res[0]['update_date']
-        doc['system-catalog_s'] = slug
+        doc['system-catalog_s'] = res[0]['source_id']
 
 
 
 
-        if slug == 'ebooks':
+        if doc['system-catalog_s'] == '2':
             full_text_file =None
 #            doc['system-update-date_dt'] = res[0]['doc-id_s']
             urls = doc.get('doc-id_s', None)
@@ -409,17 +406,11 @@ def _indexing(slug, reset=False):
 
     # удаление
     records = []
-    if slug == 'sc2':
-        if getattr(index_status, 'last_index_date', None):
-            records = Record.objects.using('records').filter(deleted=True, update_date__gte=index_status.last_index_date).values('gen_id')
-        else:
-            records = Record.objects.using('records').filter(deleted=True).values('gen_id', 'update_date')
-    if slug == 'ebooks':
-        if getattr(index_status, 'last_index_date', None):
-            records = Ebook.objects.using('records').filter(deleted=True, update_date__gte=index_status.last_index_date).values('gen_id')
-        else:
-            records = Ebook.objects.using('records').filter(deleted=True).values('gen_id', 'update_date')
 
+    if getattr(index_status, 'last_index_date', None):
+        records = Record.objects.using('records').filter(deleted=True, update_date__gte=index_status.last_index_date).values('gen_id')
+    else:
+        records = Record.objects.using('records').filter(deleted=True).values('gen_id', 'update_date')
 
     record_gen_ids = []
     for record in list(records):
