@@ -327,9 +327,9 @@ def _indexing(slug, reset=False):
         index_status = IndexStatus(catalog=slug)
 
     if not getattr(index_status, 'last_index_date', None):
-        select_query = "SELECT * FROM records where deleted = 0"
+        select_query = "SELECT * FROM records where deleted = 0 and source_id='2'"
     else:
-        select_query = "SELECT * FROM records where update_date >= '%s' and deleted = 0"
+        select_query = "SELECT * FROM records where update_date >= '%s' and deleted = 0 and source_id='2'"
 
 
     solr = sunburnt.SolrInterface(solr_address)
@@ -377,6 +377,7 @@ def _indexing(slug, reset=False):
             full_text_file =None
 #            doc['system-update-date_dt'] = res[0]['doc-id_s']
             urls = doc.get('doc-id_s', None)
+            print 'load', urls
             if urls and type(urls) == list:
                 for url in doc.get('doc-id_s', None):
                     if url:
