@@ -372,7 +372,7 @@ def _indexing(slug, reset=False):
 
 
 
-
+        print doc['system-catalog_s']
         if doc['system-catalog_s'] == '2':
             full_text_file =None
 #            doc['system-update-date_dt'] = res[0]['doc-id_s']
