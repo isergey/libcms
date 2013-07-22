@@ -9,7 +9,7 @@ def get_page(request, objects_qs, per_page=20):
     """
     paginator = Paginator(objects_qs, per_page)
     try:
-        page = request.GET.get('page', 1)
+        page = int(request.GET.get('page', 1))
     except ValueError:
         page = 1
 
