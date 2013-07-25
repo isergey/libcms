@@ -329,7 +329,7 @@ def _indexing(slug, reset=False):
     if not getattr(index_status, 'last_index_date', None):
         select_query = "SELECT * FROM records where deleted = 0"
     else:
-        select_query = "SELECT * FROM records where update_date >= '%s' and deleted = 0"
+        select_query = "SELECT * FROM records where update_date >= '%s' and deleted = 0" % (str(index_status.last_index_date))
 
 
     solr = sunburnt.SolrInterface(solr_address)
