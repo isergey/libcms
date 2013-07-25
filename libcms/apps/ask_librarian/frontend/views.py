@@ -113,9 +113,7 @@ def ask(request):
             question.save()
 
             ask_librarian_settings = getattr(settings, 'ASK_LIBRARIAN', {})
-            print ask_librarian_settings
             main_dispatcher = ask_librarian_settings.get('MAIN_DISPATCHER', None)
-            print main_dispatcher
             if main_dispatcher:
                 fail_silently = True
                 if settings.DEBUG:
