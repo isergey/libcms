@@ -56,6 +56,7 @@
         <xsl:call-template name="Bib-level"/>
         <xsl:call-template name="Holders"/>
         <xsl:call-template name="Fond"/>
+        <xsl:call-template name="Comments"/>
         <xsl:call-template name="Cover"/>
         <xsl:call-template name="Linked-record-number"/>
     </doc>
@@ -507,6 +508,16 @@
         </field>
     </xsl:for-each>
 </xsl:template>
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<xsl:template name="Comments">
+    <xsl:for-each select="field[@id='330']/subfield[@id='a']">
+        <field name="comments">
+            <xsl:value-of select="."/>
+        </field>
+    </xsl:for-each>
+</xsl:template>
+
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 <xsl:template name="Cover">

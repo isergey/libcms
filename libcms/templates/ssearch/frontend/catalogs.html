@@ -38,7 +38,9 @@
         <h3 id="myModalLabel">{{ collection.title.0 }}</h3>
     </div>
     <div class="modal-body">
-        <p class="western"><strong>Описание коллекции отсутствует</strong></p>
+        {% for comments in collection.comments %}
+            <p class="western">{{ comments }}</p>
+        {% endfor %}
     </div>
     <div class="modal-footer">
         <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
