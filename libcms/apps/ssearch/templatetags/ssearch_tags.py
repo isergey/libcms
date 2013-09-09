@@ -206,12 +206,13 @@ def ssearch_all_count():
 
 @register.filter
 def fond_title(code):
-    collections_dicts = cache.get('ssearch.collections')
+    #collections_dicts = cache.get('ssearch.collections')
+    collections_dicts = None
     if not collections_dicts:
         collections_dicts  = get_collections()
-        cache.set('ssearch.collections', collections_dicts, 120)
+        #cache.set('ssearch.collections', collections_dicts, 120)
 
     for collection_dict in collections_dicts:
         if code == collection_dict['persistant-number'][0]:
             return collection_dict['title'][0]
-    return code  + '1'
+    return code
