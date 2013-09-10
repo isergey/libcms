@@ -221,7 +221,7 @@
                             </p>
                             <p class="item3">
                                 {% for subject in doc.record|hash:'subject-heading' %}
-                                    <span class="label label-info subject"><a href="q={{ subject|urlencode }}&attr=subject-heading_t">{{ subject }}</a></span>
+                                    <span class="label label-info subject"><a href="?q={{ subject|urlencode }}&attr=subject-heading_t">{{ subject }}</a></span>
                                 {% endfor %}
                             </p>
                             {% if doc.record|hash:'code-language' %}
