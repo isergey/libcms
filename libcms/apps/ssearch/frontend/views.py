@@ -258,7 +258,7 @@ def terms_constructor(attrs, values):
 
 
 def search(request, catalog=None):
-    facet_fields = ['author_sf', 'content-type_t','date-of-publication_s', 'subject-heading_sf', 'code-language_t', 'fond_sf' ]
+    facet_fields = ['fond_sf', 'author_sf', 'subject-heading_sf', 'date-of-publication_s', 'content-type_t', 'code-language_t']
     search_attrs = _make_search_attrs(catalog)
     search_deep_limit = 5 # ограничение вложенных поисков
     solr = sunburnt.SolrInterface(settings.SOLR['host'])
