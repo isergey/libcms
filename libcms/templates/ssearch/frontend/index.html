@@ -300,6 +300,7 @@
                         {% for facet in facets %}
                                <li><span class="facet_title">{{ facet|facet_title }}</span>
                                 <ul style="list-style: none">
+                                {% if facets|hash:facet %}
                                     {% for value in facets|hash:facet %}
                                         {% if facet == 'date-of-publication_dtf' %}
                                             <li class="child"><a href="{% add_get_append q=value.0|date_from_isostring|date:"Y" attr=facet %}">{{ value.0|date_from_isostring|date:"Y" }}</a> (<b>{{ value.1 }}</b>)</li>
@@ -317,6 +318,7 @@
                                     {% empty %}
                                         <li style="color: #808080;">сведений нет</li>
                                     {% endfor %}
+                                {% endif %}
                                 </ul>
                             </li>
                         {% endfor %}
