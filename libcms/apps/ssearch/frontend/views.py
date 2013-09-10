@@ -438,7 +438,7 @@ def search(request, catalog=None):
 
     for facet_field in facet_fields:
         if facet_field in facets:
-            ordered_facets[ordered_facets] = facets[facet_field]
+            ordered_facets[facet_field] = facets[facet_field]
 
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
