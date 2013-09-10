@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from collections import OrderedDict
 import hashlib
 import datetime
 from lxml import etree
@@ -257,7 +258,7 @@ def terms_constructor(attrs, values):
 
 
 def search(request, catalog=None):
-
+    facet_fields = ['author_sf', 'content-type_t','date-of-publication_s', 'subject-heading_sf', 'code-language_t', 'fond_sf' ]
     search_attrs = _make_search_attrs(catalog)
     search_deep_limit = 5 # ограничение вложенных поисков
     solr = sunburnt.SolrInterface(settings.SOLR['host'])
@@ -325,7 +326,7 @@ def search(request, catalog=None):
                 term[attr] = "%s" % term[attr]
                 query = query & solr.Q(**term)
 
-    facet_fields = ['author_sf', 'content-type_t','date-of-publication_s', 'subject-heading_sf', 'code-language_t', 'fond_sf' ]
+
     solr_searcher = solr.query(query)
     if 'full-text' in request.GET.getlist('attr'):
         solr_searcher = solr_searcher.highlight(fields=['full-text'])
@@ -433,11 +434,16 @@ def search(request, catalog=None):
 
     json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
 
-    print facets
+    ordered_facets = OrderedDict()
+
+    for facet_field in facet_fields:
+        if facet_field in facets:
+            ordered_facets[ordered_facets] = facets[facet_field]
+
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
         'results_page': results_page,
-        'facets': facets,
+        'facets': ordered_facets,
         'search_breadcumbs':search_breadcumbs,
         'sort':sort,
         'search_statisics':search_statisics,
