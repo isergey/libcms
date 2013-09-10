@@ -71,7 +71,7 @@ attr_map = {
         },
     'date-of-publication_dt': {
         'order': 5,
-        'attr': u'date-of-publication_dt',
+        'attr': u'date-of-publication_s',
         'title':u'Год публикации',
         'display': True,
         },
