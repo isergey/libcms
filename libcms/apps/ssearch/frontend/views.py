@@ -433,6 +433,7 @@ def search(request, catalog=None):
 
     json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
 
+    print facets
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
         'results_page': results_page,
