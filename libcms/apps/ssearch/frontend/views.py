@@ -325,7 +325,7 @@ def search(request, catalog=None):
                 term[attr] = "%s" % term[attr]
                 query = query & solr.Q(**term)
 
-    facet_fields = ['author_sf', 'content-type_t','date-of-publication_dtf', 'subject-heading_sf', 'code-language_t', 'fond_sf' ]
+    facet_fields = ['author_sf', 'content-type_t','date-of-publication_s', 'subject-heading_sf', 'code-language_t', 'fond_sf' ]
     solr_searcher = solr.query(query)
     if 'full-text' in request.GET.getlist('attr'):
         solr_searcher = solr_searcher.highlight(fields=['full-text'])
