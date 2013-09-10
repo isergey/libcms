@@ -434,11 +434,16 @@ def search(request, catalog=None):
 
     json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
 
-    ordered_facets = OrderedDict()
+    ordered_facets = []
 
     for facet_field in facet_fields:
         if facet_field in facets:
-            ordered_facets[facet_field] = facets[facet_field]
+            ordered_facets.append(
+                {
+                    'title':  facet_field,
+                    'values': facets[facet_field]
+                }
+            )
     print ordered_facets
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
