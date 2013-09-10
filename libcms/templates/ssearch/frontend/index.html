@@ -297,7 +297,7 @@
             <div class="facets span2">
                 <div class="row">
                     <ul style="list-style: none; padding: 0; margin: 0;" class="group">
-                        {% for facet in facets %}
+                        {% for facet in facets.keys %}
                             {% if facets|hash:facet %}
                                <li><span class="facet_title">{{ facet|facet_title }}</span>
                                 <ul style="list-style: none">
