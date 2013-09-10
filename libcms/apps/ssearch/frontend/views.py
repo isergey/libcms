@@ -443,7 +443,7 @@ def search(request, catalog=None):
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
         'results_page': results_page,
-        'facets': ordered_facets,
+        'facets': dict(ordered_facets),
         'search_breadcumbs':search_breadcumbs,
         'sort':sort,
         'search_statisics':search_statisics,
