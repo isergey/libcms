@@ -39,15 +39,15 @@
     </div>
 
     <div class="modal-body">
-        <div style="float: left; width: 135px">
-            <img src="{{ collection.collection_cover.0 }}" alt="">
-        </div>
-        <div style="float: right; width: 370px">
+{#        <div style="float: left; width: 135px">#}
+            <img src="{{ collection.collection_cover.0 }}" alt="" style="float: left">
+{#        </div>#}
+{#        <div style="float: right; width: 370px">#}
             {% for comments in collection.comments %}
                 <p class="western">{{ comments }}</p>
             {% endfor %}
-        </div>
-        <div style="clear: both"></div>
+{#        </div>#}
+{#        <div style="clear: both"></div>#}
     </div>
     <div class="modal-footer">
         <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
