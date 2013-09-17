@@ -37,7 +37,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h3 id="myModalLabel">{{ collection.title.0 }}</h3>
     </div>
-    <img src="{{ collection.cover.0 }}" alt="">
+    <img src="{{ collection.collection_cover.0 }}" alt="">
     <div class="modal-body">
         {% for comments in collection.comments %}
             <p class="western">{{ comments }}</p>
