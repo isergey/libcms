@@ -39,10 +39,10 @@
     </div>
 
     <div class="modal-body">
-        <div style="float: left; width: 20%">
+        <div style="float: left; width: 135px">
             <img src="{{ collection.collection_cover.0 }}" alt="">
         </div>
-        <div style="float: right; width: 80%">
+        <div style="float: right">
             {% for comments in collection.comments %}
                 <p class="western">{{ comments }}</p>
             {% endfor %}
