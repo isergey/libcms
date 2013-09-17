@@ -133,11 +133,6 @@
                         </xsl:when>-->
                     </xsl:choose>
                 </xsl:for-each>
-                <xsl:if test="not(subfield[@id='v'])">
-                    <xsl:text>. </xsl:text>
-                </xsl:if>
-
-
         </xsl:if>
     </xsl:for-each>
     <xsl:for-each select="field[@id='225']">
