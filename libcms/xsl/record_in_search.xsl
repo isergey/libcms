@@ -58,6 +58,7 @@
         <xsl:call-template name="Fond"/>
         <xsl:call-template name="Comments"/>
         <xsl:call-template name="Cover"/>
+        <xsl:call-template name="CollectionCover"/>
         <xsl:call-template name="Linked-record-number"/>
     </doc>
 
@@ -519,12 +520,21 @@
 </xsl:template>
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<xsl:template name="CollectionCover">
+    <xsl:for-each select="field[@id='856']/subfield[@id='u']">
+        <field name="collection_cover">
+            <xsl:value-of select="."/>
+        </field>
+    </xsl:for-each>
+</xsl:template>
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 <xsl:template name="Cover">
 
     <xsl:for-each select="field[@id='856']">
         <xsl:if test="subfield[@id='x']='Обложка'">
-            <field name="cover"><xsl:value-of select="subfield[@id='u']"/></field>
+            <field name="cover"><xsl:value-of select="subfield[@id='x']"/></field>
         </xsl:if>
     </xsl:for-each>
 </xsl:template>
