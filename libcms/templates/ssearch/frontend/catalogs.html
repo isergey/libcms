@@ -37,11 +37,17 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h3 id="myModalLabel">{{ collection.title.0 }}</h3>
     </div>
-    <img src="{{ collection.collection_cover.0 }}" alt="">
+
     <div class="modal-body">
-        {% for comments in collection.comments %}
-            <p class="western">{{ comments }}</p>
-        {% endfor %}
+        <div style="float: left">
+            <img src="{{ collection.collection_cover.0 }}" alt="">
+        </div>
+        <div style="float: right">
+            {% for comments in collection.comments %}
+                <p class="western">{{ comments }}</p>
+            {% endfor %}
+        </div>
+        <div style="clear: both"></div>
     </div>
     <div class="modal-footer">
         <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
