@@ -23,12 +23,6 @@ def index(request):
         gen_ids[record.gen_id]['bib']=etree.tostring(doc_tree).replace(u'<b/>', u' '),
 
 
-    for record in Ebook.objects.using('records').filter(gen_id__in=gen_ids):
-        doc_tree = etree.XML(record.content)
-        doc_tree = xslt_bib_draw_transformer(doc_tree)
-        gen_ids[record.gen_id]['record']=record
-        gen_ids[record.gen_id]['bib']=etree.tostring(doc_tree).replace(u'<b/>', u' '),
-
     records = []
     for saved_doc in saved_docs:
         records.append(gen_ids[saved_doc.gen_id])
@@ -52,12 +46,7 @@ def save(request):
             try:
                 doc = Record.objects.using('records').get(gen_id=form.cleaned_data['gen_id'])
             except Record.DoesNotExist:
-                pass
-            if not doc:
-                try:
-                    doc = Ebook.objects.using('records').get(gen_id=form.cleaned_data['gen_id'])
-                except Ebook.DoesNotExist:
-                    raise Http404(u'Record not founded')
+                raise Http404(u'Record not founded')
 
             saved_document = form.save(commit=False)
             saved_document.user = request.user
