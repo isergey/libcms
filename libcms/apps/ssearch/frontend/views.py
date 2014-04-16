@@ -324,7 +324,10 @@ def search(request, catalog=None):
                 query = query & solr.Q(solr.Q(**term) | morph_query)
             else:
                 term[attr] = "%s" % term[attr]
-                query = query & solr.Q(**term)
+                try:
+                    query = query & solr.Q(**term)
+                except ValueError:
+                    return HttpResponse(u'Неверные параметры')
 
 
     solr_searcher = solr.query(query)
@@ -444,7 +447,7 @@ def search(request, catalog=None):
                     'values': facets[facet_field]
                 }
             )
-    print ordered_facets
+
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
         'results_page': results_page,
