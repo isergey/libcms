@@ -267,8 +267,7 @@ def search(request, catalog=None):
     attrs = request.GET.getlist('attr', [])
     sort = request.GET.getlist('sort', [])
 
-    if qs and attrs:
-        log_search_request({'attr': attrs[0], 'value': qs[0]}, catalog)
+
 
     sort_attrs = []
 
@@ -307,28 +306,30 @@ def search(request, catalog=None):
 
     if len(terms) > 1 and u'*' in terms[0][terms[0].keys()[0]].strip() == u'*':
         terms = terms[1:]
+    try:
+        for term in terms[:search_deep_limit]:
+            # если встретилось поле с текстом, то через OR ищем аналогичное с постфиксом _ru
+            morph_query = None
+            attr = term.keys()[0]
+            if len(attr) > 2 and attr[-2:] == '_t' and term.values()[0] != u'*':
+                morph_query = solr.Q(**{attr + '_ru': term.values()[0]})
+            if not query:
+                if morph_query:
+                    query = solr.Q(solr.Q(**term) | morph_query)
+                else:
+                    query = solr.Q(**term)
+            else:
+                if morph_query:
+                    query = query & solr.Q(solr.Q(**term) | morph_query)
+                else:
+                    term[attr] = "%s" % term[attr]
 
-    for term in terms[:search_deep_limit]:
-        # если встретилось поле с текстом, то через OR ищем аналогичное с постфиксом _ru
-        morph_query = None
-        attr = term.keys()[0]
-        if len(attr) > 2 and attr[-2:] == '_t' and term.values()[0] != u'*':
-            morph_query = solr.Q(**{attr + '_ru': term.values()[0]})
-        if not query:
-            if morph_query:
-                query = solr.Q(solr.Q(**term) | morph_query)
-            else:
-                query = solr.Q(**term)
-        else:
-            if morph_query:
-                query = query & solr.Q(solr.Q(**term) | morph_query)
-            else:
-                term[attr] = "%s" % term[attr]
-                try:
                     query = query & solr.Q(**term)
-                except ValueError:
-                    return HttpResponse(u'Неверные параметры')
+    except ValueError:
+        return HttpResponse(u'Неверные параметры')
 
+    if qs and attrs:
+        log_search_request({'attr': attrs[0], 'value': qs[0]}, catalog)
 
     solr_searcher = solr.query(query)
     if 'full-text' in request.GET.getlist('attr'):
