@@ -22,9 +22,9 @@
         {% for news in news_list %}
 
             <tr>
-                <td><a href="{% url professionals_news:administration:edit_news news.id %}">{{ news.news_content.title }}</a></td>
+                <td><a href="{% url 'professionals_news:administration:edit_news' news.id %}">{{ news.news_content.title }}</a></td>
                 <td>{{ news.create_date }}</td>
-                <td><a class="delete btn btn-danger"  href="{% url professionals_news:administration:delete_news news.id %}"><i class="icon-trash icon-white" title="Удалить"></i></a></td>
+                <td><a class="delete btn btn-danger"  href="{% url 'professionals_news:administration:delete_news' news.id %}"><i class="icon-trash icon-white" title="Удалить"></i></a></td>
             </tr>
 
         {% endfor %}

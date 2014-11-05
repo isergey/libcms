@@ -4,13 +4,13 @@
 {% block content %}
     <ul class="breadcrumb">
 
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
         <li class="active">Афиша событий</li>
 
     </ul>
     <ul class="news">
     {% for event in events_list %}
-        <li><a href="{% url events:frontend:show event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a></li>
+        <li><a href="{% url 'events:frontend:show' event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a></li>
     {% endfor %}
     </ul>
     {% admin_pagination events_page %}

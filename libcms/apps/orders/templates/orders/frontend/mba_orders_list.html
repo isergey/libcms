@@ -26,12 +26,12 @@
         }
     </style>
     <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
         <li class="active">Мои заказы</li>
     </ul>
     <div class="span10">
         <ul class="nav nav-tabs">
-            <li><a href="{% url orders:frontend:index %}">Бронирование</a></li>
+            <li><a href="{% url 'orders:frontend:index' %}">Бронирование</a></li>
             <li class="active"><a href="#1" >Заказы доставки</a></li>
         </ul>
         <div class="tab-content">
@@ -47,7 +47,7 @@
                                     <p><b>Получатель заказа: </b> {{ order.org_info.name }} (информация не найдена)</p>
                                 {% endif %}
                                 {% if  order.org_info.type == 'library_system' %}
-                                    <p><b>Получатель заказа: </b> <a href="{% url participants_detail order.org_info.code %}"  target="_blank">{{ order.org_info.name }}</a></p>
+                                    <p><b>Получатель заказа: </b> <a href="{% url 'participants_detail' order.org_info.code %}"  target="_blank">{{ order.org_info.name }}</a></p>
                                 {% endif %}
                                 {% if  order.org_info.type == 'library' %}
                                     {#                    <p><b>Получатель заказа: </b> <a href="{% url participants_detail order.org_info.code %}"  target="_blank">{{ order.org_info.name }}</a></p>#}
@@ -78,7 +78,7 @@
 {#                                    <img src="/media/images/icons/delete_16.png" alt="удалить заказ"/>#}
 {#                                    Удалить заказ#}
 {#                                </a>#}
-                                <a class="btn btn-danger" href="{% url orders:frontend:mba_delete_order order.order_id %}"><i class="icon-trash icon-white" alt="удалить заказ"></i></a>
+                                <a class="btn btn-danger" href="{% url 'orders:frontend:mba_delete_order' order.order_id %}"><i class="icon-trash icon-white" alt="удалить заказ"></i></a>
                             {% endif %}
 
                             {% if not forloop.last %}<hr/>{% endif %}

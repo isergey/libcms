@@ -4,13 +4,13 @@
 {% block content %}
     <ul class="breadcrumb">
 
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-        <li class="active">Новости <a href="{% url news:frontend:rss %}"><img src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Новости <a href="{% url 'news:frontend:rss' %}"><img src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a></li>
 
     </ul>
     <ul class="news">
     {% for news in news_list %}
-        <li><a href="{% url news:frontend:show news.id %}?back={{ request.get_full_path }}">{{ news.news_content.title }}</a></li>
+        <li><a href="{% url 'news:frontend:show' news.id %}?back={{ request.get_full_path }}">{{ news.news_content.title }}</a></li>
     {% endfor %}
     </ul>
     {% admin_pagination news_page %}

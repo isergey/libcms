@@ -22,9 +22,9 @@
         <tbody>
         {% for group in groups_page.object_list %}
         <tr>
-            <td><a href="{% url accounts:administration:edit_group group.id %}">{{ group.name }}</a></td>
+            <td><a href="{% url 'accounts:administration:edit_group' group.id %}">{{ group.name }}</a></td>
             <td>
-                <a class="btn btn-danger" href="{% url accounts:administration:delete_group group.id %}" title="{% trans 'Delete' %}"><i class="icon-trash icon-white"></i></a>
+                <a class="btn btn-danger" href="{% url 'accounts:administration:delete_group' group.id %}" title="{% trans 'Delete' %}"><i class="icon-trash icon-white"></i></a>
             </td>
         </tr>
         {% endfor %}

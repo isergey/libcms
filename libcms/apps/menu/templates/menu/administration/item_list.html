@@ -17,7 +17,7 @@
     </style>
     <h3>{{ menu.title }}</h3>
     <hr/>
-    <a class="btn" href="{% url menu:administration:item_create menu.id %}">Создать пункт меню</a>
+    <a class="btn" href="{% url 'menu:administration:item_create' menu.id %}">Создать пункт меню</a>
     <hr/>
     <ul class="root">
         {% recursetree nodes %}
@@ -25,11 +25,11 @@
                 {% if not node.show %}
                     <i class="icon-eye-close" title="Скрыто"></i>
                 {% endif %}
-                <a href="{% url menu:administration:item_edit menu.id node.id %}">{{ node.t_title }}</a>
-                <a class="btn" href="{% url menu:administration:item_create menu.id node.id %}"><i class="icon-plus" title="Добавить подпункт"></i></a>
-                <a class="btn" href="{% url menu:administration:item_up menu.id node.id %}" title="передвинуть вверх">↑</a>
-                <a class="btn" href="{% url menu:administration:item_down menu.id node.id %}" title="передвинуть вниз">↓</a>
-                <a style="margin-left: 20px" class="delete btn btn-danger" href="{% url menu:administration:item_delete menu.id node.id %}"><i class="icon-trash icon-white" title="Удалить пункт"></i></a>
+                <a href="{% url 'menu:administration:item_edit' menu.id node.id %}">{{ node.t_title }}</a>
+                <a class="btn" href="{% url 'menu:administration:item_create' menu.id node.id %}"><i class="icon-plus" title="Добавить подпункт"></i></a>
+                <a class="btn" href="{% url 'menu:administration:item_up' menu.id node.id %}" title="передвинуть вверх">↑</a>
+                <a class="btn" href="{% url 'menu:administration:item_down' menu.id node.id %}" title="передвинуть вниз">↓</a>
+                <a style="margin-left: 20px" class="delete btn btn-danger" href="{% url 'menu:administration:item_delete' menu.id node.id %}"><i class="icon-trash icon-white" title="Удалить пункт"></i></a>
                 {% if not node.is_leaf_node %}
                     <ul class="children">
                         {{ children }}

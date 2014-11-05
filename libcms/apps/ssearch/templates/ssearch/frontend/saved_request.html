@@ -8,14 +8,14 @@
     <div class="span10">
         <ul class="breadcrumb">
 
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
             <li class="active">Сохраненные поисковые запросы</li>
 
         </ul>
         <ul style="list-style: none">
         {% for srequest in srequests %}
             <li>
-                <a href="{% url ssearch:frontend:index %}?{{ srequest.breads|last|hash:"href" }}">{% for search_breadcumb in srequest.breads %}
+                <a href="{% url 'ssearch:frontend:index' %}?{{ srequest.breads|last|hash:"href" }}">{% for search_breadcumb in srequest.breads %}
                     {% if not forloop.last %}
                         <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</span> →
                     {% else %}
@@ -31,7 +31,7 @@
                 {% endfor %}
                 </a>
             <br/>
-            <a class="delete" href="{% url ssearch:frontend:delete_search_request srequest.saved_request.id %}">Удалить</a> <span style="float: right;">{{ srequest.saved_request.add_time }}</span>
+            <a class="delete" href="{% url 'ssearch:frontend:delete_search_request' srequest.saved_request.id %}">Удалить</a> <span style="float: right;">{{ srequest.saved_request.add_time }}</span>
             {% if not forloop.last %}<hr/>{% endif %}
             </li>
         {% endfor %}

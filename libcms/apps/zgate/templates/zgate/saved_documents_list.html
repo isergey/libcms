@@ -24,7 +24,7 @@
                 <a href="?format=full" class="blue awesome">Показать полные записи</a>
             {% endif %}
             <hr/>
-            <form  method="POST" action="{% url zgate_load_saved_documents %}">
+            <form  method="POST" action="{% url 'zgate_load_saved_documents' %}">
                 <div class="news">
                     {% for saved_document in saved_documents %}
                         <div class="documnet">
@@ -45,7 +45,7 @@
                             </div>
 
                             <div class="detail">
-                                <a href="{% url zgate_delete_saved_document saved_document.id %}">
+                                <a href="{% url 'zgate_delete_saved_document' saved_document.id %}">
                                     <img src="/media/images/icons/delete_16.png" alt="удалить документ"/> Удалить документ
                                 </a>
                             </div>

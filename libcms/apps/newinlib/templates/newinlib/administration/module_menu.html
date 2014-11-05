@@ -1,6 +1,6 @@
 {% load active_link %}
 <ul class="nav nav-list">
     <li class="nav-header">Новые поступления</li>
-    <li class="{% active 'newinlib:administration:items_list' %}"><a href="{% url newinlib:administration:items_list %}">Список</a></li>
-    <li class="{% active_path 'newinlib:administration:create_item' %}"><a href="{% url newinlib:administration:create_item %}">Создать запись</a></li>
+    <li class="{% active 'newinlib:administration:items_list' %}"><a href="{% url 'newinlib:administration:items_list' %}">Список</a></li>
+    <li class="{% active_path 'newinlib:administration:create_item' %}"><a href="{% url 'newinlib:administration:create_item' %}">Создать запись</a></li>
 </ul>

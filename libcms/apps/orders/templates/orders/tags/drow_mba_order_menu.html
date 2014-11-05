@@ -90,7 +90,7 @@
 <script type="text/javascript">
     function load_cbs_list(result_select_id){
         $.ajax({
-            url:'{% url participants:frontend:branches %}',
+            url:'{% url 'participants:frontend:branches' %}',
             type:'POST',
             dataType:"json",
             async:true,
@@ -101,7 +101,7 @@
     }
     function load_lib_list(result_select_id, cbs_id){
         $.ajax({
-            url:'{% url participants:frontend:branches %}',
+            url:'{% url 'participants:frontend:branches' %}',
             type:'POST',
             dataType:"json",
             async:true,
@@ -154,7 +154,7 @@
 <script type="text/javascript">
     $('#copy_doc_form').submit(function () {
         $.ajax({
-            url:'{% url orders:frontend:mba_order_copy %}',
+            url:'{% url 'orders:frontend:mba_order_copy' %}',
             type:'POST',
             dataType:"json",
             async:false,
@@ -184,7 +184,7 @@
 
     $('#delivery_doc_form').submit(function () {
         $.ajax({
-            url:'{% url orders:frontend:mba_order_delivery %}',
+            url:'{% url 'orders:frontend:mba_order_delivery' %}',
             type:'POST',
             dataType:"json",
             async:false,

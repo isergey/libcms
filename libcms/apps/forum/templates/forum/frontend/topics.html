@@ -11,7 +11,7 @@
     </style>
     {% get_obj_perms request.user for forum as "forum_perms" %}
 
-    <h3><a href="{% url forum:frontend:forums %}">{% trans 'Forums' %}</a> → {{ forum.title }}</h3>
+    <h3><a href="{% url 'forum:frontend:forums' %}">{% trans 'Forums' %}</a> → {{ forum.title }}</h3>
     <hr/>
     <div class="forums span12">
         {% for topic in page.object_list %}
@@ -19,21 +19,21 @@
                 <div class="span2"><span class="created">{{ topic.created|date:"d.m.Y" }}</span></div>
                 <div class="span10 {% if topic.closed %}close{% endif %}">
                     <span class="subject">
-                        <a href="{% url forum:frontend:articles forum.slug topic.id %}">{{ topic.subject }}</a>
+                        <a href="{% url 'forum:frontend:articles' forum.slug topic.id %}">{{ topic.subject }}</a>
                     </span>
                     <span style="float: right;">
                         {% if "can_close_topics" in forum_perms or "can_close_own_topics" in forum_perms %}
                             {% if not topic.closed %}
-                                <a class="topic_close btn btn-small" href="{% url forum:frontend:topic_close topic.id %}" title="{% trans 'Close topic' %}"><i class="icon-ban-circle"></i></a>
+                                <a class="topic_close btn btn-small" href="{% url 'forum:frontend:topic_close' topic.id %}" title="{% trans 'Close topic' %}"><i class="icon-ban-circle"></i></a>
                             {% else %}
-                                <a class="topic_open btn btn-small" href="{% url forum:frontend:topic_open topic.id %}" title="{% trans 'Open topic' %}"><i class="icon-ok-circle"></i></a>
+                                <a class="topic_open btn btn-small" href="{% url 'forum:frontend:topic_open' topic.id %}" title="{% trans 'Open topic' %}"><i class="icon-ok-circle"></i></a>
                             {% endif %}
                         {% endif %}
                         {% if request.user.is_superuser %}
-                            <a class="btn btn-small btn-warning" href="{% url forum:frontend:topic_permissions topic.id %}" title="{% trans 'Edit permissions' %}"><i class="icon-lock"></i></a>
+                            <a class="btn btn-small btn-warning" href="{% url 'forum:frontend:topic_permissions' topic.id %}" title="{% trans 'Edit permissions' %}"><i class="icon-lock"></i></a>
                         {% endif %}
                         {% if "can_delete_topics" in forum_perms %}
-                            <a class="topic_delete btn btn-small btn-danger" href="{% url forum:frontend:topic_delete topic.id %}" title="{% trans 'Delete topic' %}"><i class="icon-trash icon-white"></i></a>
+                            <a class="topic_delete btn btn-small btn-danger" href="{% url 'forum:frontend:topic_delete' topic.id %}" title="{% trans 'Delete topic' %}"><i class="icon-trash icon-white"></i></a>
                         {% endif %}
                     </span>
                 </div>

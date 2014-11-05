@@ -17,10 +17,10 @@
 {#        {{ parent }}#}
 {#    {% endif %}#}
     <h3>
-        <a href="{% url participants_pages:administration:index library.id %}">Страницы</a> →
+        <a href="{% url 'participants_pages:administration:index' library.id %}">Страницы</a> →
         {% if parent %}
             {% for ancestor in parent.get_ancestors %}
-                <a href="{% url participants_pages:administration:pages_list library.id ancestor.id %}">
+                <a href="{% url 'participants_pages:administration:pages_list' library.id ancestor.id %}">
                     {% if not ancestor.get_cur_lang_content %}
                         {{ ancestor }}
                     {% else %}

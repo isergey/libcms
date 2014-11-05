@@ -14,9 +14,9 @@
 
     {% if parent %}
         <h3>
-            <a href="{% url participants_pages:administration:index library.id %}">Страницы</a> →
+            <a href="{% url 'participants_pages:administration:index' library.id %}">Страницы</a> →
             {% for ancestor in parent.get_ancestors %}
-                <a href="{% url participants_pages:administration:pages_list library.id ancestor.id %}">
+                <a href="{% url 'participants_pages:administration:pages_list' library.id ancestor.id %}">
                     {% if not ancestor.get_cur_lang_content %}
                         {{ ancestor }}
                     {% else %}
@@ -51,21 +51,21 @@
                 <span class="title">
             {% endif %}
                 {% if not page.content.title %}
-                    <a href="{% url participants_pages:administration:edit_page library.id page.id %}">{{ page.slug }}</a>
+                    <a href="{% url 'participants_pages:administration:edit_page' library.id page.id %}">{{ page.slug }}</a>
                 {% else %}
-                    <a href="{% url participants_pages:administration:edit_page library.id page.id %}">{{ page.content.title }} ({{ page.slug }})</a>
+                    <a href="{% url 'participants_pages:administration:edit_page' library.id page.id %}">{{ page.content.title }} ({{ page.slug }})</a>
                 {% endif %}
 
             </span>
             {% if not page.is_leaf_node %}
-            <a class="btn" href="{% url participants_pages:administration:pages_list library.id page.id %}">Подстраницы</a>
+            <a class="btn" href="{% url 'participants_pages:administration:pages_list' library.id page.id %}">Подстраницы</a>
             {% endif %}
 {#            <a href="{% url pages:administration:create_page page.id %}">{% trans 'Add subpage' %}</a>#}
             <span class="buttons">
-                <a class="btn" href="{% url participants_pages:administration:create_page library.id page.id %}"><i class="icon-plus"></i>Создать подстраницу</a>
-                <a class="btn" href="{% url participants_pages:administration:page_up library.id page.id %}" title="передвинуть вверх">↑</a>
-                <a class="btn" href="{% url participants_pages:administration:page_down library.id page.id %}" title="передвинуть вниз">↓</a>
-                <a  style="margin-left: 20px" class="btn btn-danger {% if not perms.participants_page.delete_cbs %} disabled {% endif %}" href="{% url participants_pages:administration:delete_page library.id page.id %}"><i class="icon-trash icon-white"></i></a>
+                <a class="btn" href="{% url 'participants_pages:administration:create_page' library.id page.id %}"><i class="icon-plus"></i>Создать подстраницу</a>
+                <a class="btn" href="{% url 'participants_pages:administration:page_up' library.id page.id %}" title="передвинуть вверх">↑</a>
+                <a class="btn" href="{% url 'participants_pages:administration:page_down' library.id page.id %}" title="передвинуть вниз">↓</a>
+                <a  style="margin-left: 20px" class="btn btn-danger {% if not perms.participants_page.delete_cbs %} disabled {% endif %}" href="{% url 'participants_pages:administration:delete_page' library.id page.id %}"><i class="icon-trash icon-white"></i></a>
             </span>
         </li>
     {% endfor %}

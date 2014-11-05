@@ -3,8 +3,8 @@
 {% block title %}Спроси библиотекаря{% endblock %}
 {% block breadcrumb %}
     <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url ask_librarian:frontend:index %}">Спроси библиотекаря</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'ask_librarian:frontend:index' %}">Спроси библиотекаря</a> <span class="divider">/</span></li>
         <li>Вопрос № {{ question.id }}</li>
     </ul>
 {% endblock %}
@@ -21,5 +21,5 @@
             Ответ на вопрос будет выслан  на указанный Вами email.
         </div>
     {% endif %}
-    <a href="{% url ask_librarian:frontend:detail question.id %}">Перейти к вопросу</a>
+    <a href="{% url 'ask_librarian:frontend:detail' question.id %}">Перейти к вопросу</a>
 {% endblock %}

@@ -11,13 +11,13 @@
     <div class="forums span12">
         {% for forum in forums %}
             <div class="row" style="margin-bottom: 10px">
-                <span class="subject"><a href="{% url forum:frontend:topics forum.slug %}">{{ forum.title }}</a></span>
+                <span class="subject"><a href="{% url 'forum:frontend:topics' forum.slug %}">{{ forum.title }}</a></span>
                 <span style="float: right;">
                     {% if request.user.is_superuser %}
-                        <a class="btn btn-small btn-warning" href="{% url forum:frontend:forum_permissions forum.id %}" title="{% trans 'Edit permissions' %}"><i class="icon-lock"></i></a>
+                        <a class="btn btn-small btn-warning" href="{% url 'forum:frontend:forum_permissions' forum.id %}" title="{% trans 'Edit permissions' %}"><i class="icon-lock"></i></a>
                     {% endif %}
                     {% if perms.forum.delete_forum %}
-                        <a class="delete btn btn-small btn-danger" href="{% url forum:frontend:forum_delete forum.id %}" title="{% trans 'Delete forum' %}"><i class="icon-trash icon-white"></i></a>
+                        <a class="delete btn btn-small btn-danger" href="{% url 'forum:frontend:forum_delete' forum.id %}" title="{% trans 'Delete forum' %}"><i class="icon-trash icon-white"></i></a>
                     {% endif %}
                 </span>
                 <p class="help-block">{{ forum.description|safe }}</p>
@@ -28,7 +28,7 @@
             <h3> Последние сообщения</h3>
             <ul style="margin: 0; padding: 0; list-style: none">
                 {% for last_article in last_articles %}
-                    <li><span style="font-weight: bold; padding-right: 20px">{{ last_article.article.created|date:"d.m.Y H:i T" }}</span> {% if not last_article.article.public %}<span style="color: red">Не опубликовано</span>{% endif %} <a href="{% url forum:frontend:articles last_article.forum.slug last_article.topic.id %}?page=last" title="{{ last_article.forum.title }} → {{ last_article.topic.subject}}">{{ last_article.forum.title|truncatechars:20 }} → {{ last_article.topic.subject|truncatewords:3|truncatechars:43 }} → {{ last_article.article.text|truncatewords:5|truncatechars:43 }}</a>  </li>
+                    <li><span style="font-weight: bold; padding-right: 20px">{{ last_article.article.created|date:"d.m.Y H:i T" }}</span> {% if not last_article.article.public %}<span style="color: red">Не опубликовано</span>{% endif %} <a href="{% url 'forum:frontend:articles' last_article.forum.slug last_article.topic.id %}?page=last" title="{{ last_article.forum.title }} → {{ last_article.topic.subject}}">{{ last_article.forum.title|truncatechars:20 }} → {{ last_article.topic.subject|truncatewords:3|truncatechars:43 }} → {{ last_article.article.text|truncatewords:5|truncatechars:43 }}</a>  </li>
                 {% endfor %}
             </ul>
             <hr/>

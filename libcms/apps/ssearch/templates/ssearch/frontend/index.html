@@ -9,10 +9,10 @@
     <div class="serach_form span10">
         <ul class="breadcrumb">
 
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
 
             {% if request.GET.q %}
-                <li><a href="{% url ssearch:frontend:index %}">Поиск</a> <span class="divider">/</span></li>
+                <li><a href="{% url 'ssearch:frontend:index' %}">Поиск</a> <span class="divider">/</span></li>
                 <li class="active">Результаты поиска:  найдено документов: <b>{{ search_statisics.num_found }}</b>, время выполнения запрос: <b>{{ search_statisics.search_time }}</b> сек.</li>
             {% else %}
                 <li class="active">Поиск</li>
@@ -61,7 +61,7 @@
                 {% endif %}
             {% endfor %}
             {% if request.user.is_authenticated %}
-            <br/><a href="{% url ssearch:frontend:save_search_request %}?srequest={{ search_request|urlencode }}" class="btn btn-info" id="save_request_button">Сохранить запрос</a>
+            <br/><a href="{% url 'ssearch:frontend:save_search_request' %}?srequest={{ search_request|urlencode }}" class="btn btn-info" id="save_request_button">Сохранить запрос</a>
             {% endif %}
             <hr/>
 
@@ -126,7 +126,7 @@
                 <ul class="list">
                     {% for doc in docs %}
                     <li>
-                        <div class="title"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">
+                        <div class="title"><a href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">
                             {{ doc.record.title.0 }}</a></div>
                         <div class="author">
                             {% for author in doc.record.author %}

@@ -12,12 +12,12 @@
 {% block action_content %}
     {% if parent %}
         {% for ancestor in parent.get_ancestors %}
-            <a href="{% url participants:administration:list ancestor.id %}">{{ ancestor }}</a> →
+            <a href="{% url 'participants:administration:list' ancestor.id %}">{{ ancestor }}</a> →
         {% endfor %}
         {% if parent.parent_id %}
-            <a href="{% url participants:administration:list parent.id %}">{{ parent }}</a>
+            <a href="{% url 'participants:administration:list' parent.id %}">{{ parent }}</a>
         {% else %}
-            <a href="{% url participants:administration:list %}">{{ parent }}</a>
+            <a href="{% url 'participants:administration:list' %}">{{ parent }}</a>
         {% endif %}
     {% endif %}
     <style type="text/css">

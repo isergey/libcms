@@ -101,7 +101,7 @@
                 "type", "application/x-shockwave-flash",
                 "pluginspage", "http://www.adobe.com/go/getflashplayer",
                 {#                "FlashVars", "documentURL={% url rbooks:frontend:show file_name %}{{/component/doc.php?book=r321}}&amp;documentType=1&amp;settingsURL={{/component/settings.zip}}&amp;localeChain={{ru_RU,}}en_US"#}
-                "FlashVars", "documentURL=http://{{ request.META.HTTP_HOST }}{% url rbooks:frontend:book file_name %}?book={{ file_name }}&amp;documentType=2&amp;settingsURL=http://{{ request.META.HTTP_HOST }}{{STATIC_URL}}rbooks/settings.zip&amp;localeChain={{ locale_chain }},en_US{% if request.GET.page_number %}&amp;page={{ request.GET.page_number }}{% endif %}"
+                "FlashVars", "documentURL=http://{{ request.META.HTTP_HOST }}{% url 'rbooks:frontend:book' file_name %}?book={{ file_name }}&amp;documentType=2&amp;settingsURL=http://{{ request.META.HTTP_HOST }}{{STATIC_URL}}rbooks/settings.zip&amp;localeChain={{ locale_chain }},en_US{% if request.GET.page_number %}&amp;page={{ request.GET.page_number }}{% endif %}"
 
         );
     } else {  // flash is too old or we can't detect the plugin
@@ -125,7 +125,7 @@
         </style>
 
         <div class="modal hide" id="save_doc_modal" style="display: none">
-            <form action="{% url rbooks:frontend:add_page_bookmarc %}" method="POST" id="save_bookmarc_form" style="margin: 0">
+            <form action="{% url 'rbooks:frontend:add_page'_bookmarc %}" method="POST" id="save_bookmarc_form" style="margin: 0">
                 <div class="modal-header">
                     <a class="close" data-dismiss="modal">×</a>
 
@@ -149,7 +149,7 @@
                 $('#save_bookmarc_form #id_position_x').attr('value', elfViewer.getViewPositionX());
                 $('#save_bookmarc_form #id_position_y').attr('value', elfViewer.getViewPositionY());
                 $.ajax({
-                    url:'{% url rbooks:frontend:add_page_bookmarc %}',
+                    url:'{% url 'rbooks:frontend:add_page_bookmarc' %}',
                     type:'POST',
                     dataType:"json",
                     async:false,

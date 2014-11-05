@@ -319,7 +319,7 @@
 
             //alert(order.type + ' ' + order.record_id + ' ' + order.zsession + ' '+order.comments + ' '+order.copy_info + ' '+order.catalog_id + ' ');
             $.ajax({
-                url:'{% url zgate_save_document %}',
+                url:'{% url 'zgate_save_document' %}',
                 type:'POST',
                 dataType:"json",
                 async:false,

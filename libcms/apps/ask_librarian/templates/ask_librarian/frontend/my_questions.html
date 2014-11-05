@@ -5,12 +5,12 @@
 {% block content %}
     <div class="span12">
         <ul class="breadcrumb">
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{% url personal:frontend:index %}">Личный кабинет</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>
             <li class="active">Мои вопросы</li>
         </ul>
     <div class="alert alert-success">
-        Вопрос можно задать в разделе <a href="{% url ask_librarian:frontend:index %}">"Спроси библиотекаря"</a>.
+        Вопрос можно задать в разделе <a href="{% url 'ask_librarian:frontend:index' %}">"Спроси библиотекаря"</a>.
     </div>
     <ul style="list-style: none; padding: 0; margin: 0;">
         {% for question in questions_page.object_list %}
@@ -26,7 +26,7 @@
                         {% endcache %}
                     </b>
                     <br/>
-                    <a href="{% url ask_librarian:frontend:detail question.id %}">подробнее</a>
+                    <a href="{% url 'ask_librarian:frontend:detail' question.id %}">подробнее</a>
                 {% endif %}
                 <hr/>
             </li>

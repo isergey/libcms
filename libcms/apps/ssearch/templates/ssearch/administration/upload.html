@@ -1,6 +1,6 @@
 {% extends "backend_base.html" %}
 {% block module_content %}
-    <form id="upload_form" action="{% url ssearch:administration:upload %}" method="post" enctype="multipart/form-data" accept-charset="utf-8" class="steps">
+    <form id="upload_form" action="{% url 'ssearch:administration:upload' %}" method="post" enctype="multipart/form-data" accept-charset="utf-8" class="steps">
         {% csrf_token %}
         <fieldset>
         <legend>Upload a new file</legend>

@@ -2,8 +2,8 @@
 {% block title %}Мои заказы{% endblock %}
 {% block content %}
     <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url orders:frontend:index %}">Мои заказы</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'orders:frontend:index' %}">Мои заказы</a> <span class="divider">/</span></li>
         <li class="active">Бронирование: {{ library.name }}</li>
     </ul>
     <div class="span10">

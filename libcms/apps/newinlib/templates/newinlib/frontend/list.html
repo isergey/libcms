@@ -4,13 +4,13 @@
 {% block content %}
     <ul class="breadcrumb">
 
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-        <li class="active">Новые поступления <a href="{% url newinlib:frontend:rss %}"><img src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Новые поступления <a href="{% url 'newinlib:frontend:rss' %}"><img src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a></li>
 
     </ul>
     <ul class="news">
     {% for item in items_list %}
-        <li><a href="{% url newinlib:frontend:show item.id %}?back={{ request.get_full_path }}">{{ item.item_content.title }}</a></li>
+        <li><a href="{% url 'newinlib:frontend:show' item.id %}?back={{ request.get_full_path }}">{{ item.item_content.title }}</a></li>
     {% endfor %}
     </ul>
     {% admin_pagination items_page %}

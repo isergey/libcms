@@ -1,6 +1,6 @@
 {% extends "administration_base.html" %}
 {% block module_content %}
-    <h2 class="alt module_title prepend-1"><a href="{% url administration_zgate_index %}">Каталоги АРМ Читателя:</a>
+    <h2 class="alt module_title prepend-1"><a href="{% url 'administration_zgate_index' %}">Каталоги АРМ Читателя:</a>
         <span class="alt module_action">{% block module_action %}{% endblock %} </span></h2>
     <div class="module_content column last">
         {% block module_page %}{% endblock %}

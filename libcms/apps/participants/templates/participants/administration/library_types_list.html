@@ -13,9 +13,9 @@
     <ul class="list">
         {% for library_type in library_types_page.object_list %}
             <li>
-                <span class="title"><a href="{% url participants:administration:library_type_edit library_type.id %}">{{ library_type }}</a></span>
+                <span class="title"><a href="{% url 'participants:administration:library_type_edit' library_type.id %}">{{ library_type }}</a></span>
             <span style="float: right;">
-                <a class="btn btn-danger {% if not perms.participants.delete_library_type %} disabled {% endif %}" href="{% url participants:administration:library_type_delete library_type.id %}">
+                <a class="btn btn-danger {% if not perms.participants.delete_library_type %} disabled {% endif %}" href="{% url 'participants:administration:library_type_delete' library_type.id %}">
                     <i class="icon-trash icon-white"></i>
                 </a>
             </span>

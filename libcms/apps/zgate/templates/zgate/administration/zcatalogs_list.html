@@ -2,8 +2,8 @@
 {% block module_action %}список каталогов{% endblock %}
 {% block module_page %}
     <div class="module_actions column prepend-1 last">
-        <a href="{% url administration_zgate_create %}" class="button positive"><img src="/media/images/icons/plus_16.png"/>создать каталог</a>
-        <a  title="Статистика"  class="button" href="{% url administration_zgate_statistics %}" >
+        <a href="{% url 'administration_zgate_create' %}" class="button positive"><img src="/media/images/icons/plus_16.png"/>создать каталог</a>
+        <a  title="Статистика"  class="button" href="{% url 'administration_zgate_statistics' %}" >
             статистика
         </a>
     </div>
@@ -23,13 +23,13 @@
                 <td>{{ zcatalog.id }}</td>
                 <td>{{ zcatalog.title }}</td>
                 <td>
-                    <a  title="Перейти к каталогу"  class="button" href="{% url zgate_index zcatalog.id %}" target="_blank">
+                    <a  title="Перейти к каталогу"  class="button" href="{% url 'zgate_index' zcatalog.id %}" target="_blank">
                         <img src="/media/images/icons/search_16.png" alt=""/>
                     </a>
-                    <a title="Редактировать каталог" class="button" href="{% url administration_zgate_edit zcatalog.id %}">
+                    <a title="Редактировать каталог" class="button" href="{% url 'administration_zgate_edit' zcatalog.id %}">
                         <img src="/media/images/icons/pencil_16.png" alt=""/>
                     </a>
-                    <a class="button negative delete" title="Удалить каталог" href="{% url administration_zgate_delete  zcatalog.id%}">
+                    <a class="button negative delete" title="Удалить каталог" href="{% url 'administration_zgate_delete'  zcatalog.id%}">
                         <img src="/media/images/icons/delete_16.png" alt=""/>
                     </a>
                 </td>

@@ -9,10 +9,10 @@
 
 {% block action_content %}
     <h3>
-        <a href="{% url participants_pages:administration:index library.id %}">Страницы</a> →
+        <a href="{% url 'participants_pages:administration:index' library.id %}">Страницы</a> →
         {% if page.parent_id %}
             {% for ancestor in page.parent.get_ancestors %}
-                <a href="{% url participants_pages:administration:pages_list library.id ancestor.id %}">
+                <a href="{% url 'participants_pages:administration:pages_list' library.id ancestor.id %}">
                     {% if not ancestor.get_cur_lang_content %}
                         {{ ancestor }}
                     {% else %}
@@ -21,9 +21,9 @@
                 </a> →
             {% endfor %}
             {% if not page.parent.get_cur_lang_content %}
-                <a href="{% url participants_pages:administration:pages_list library.id page.parent.id %}">{{ page.parent }}</a> →
+                <a href="{% url 'participants_pages:administration:pages_list' library.id page.parent.id %}">{{ page.parent }}</a> →
             {% else %}
-                <a href="{% url participants_pages:administration:pages_list library.id page.parent.id %}">{{ page.parent.get_cur_lang_content }}</a> →
+                <a href="{% url 'participants_pages:administration:pages_list' library.id page.parent.id %}">{{ page.parent.get_cur_lang_content }}</a> →
             {% endif %}
         {% endif %}
         {% if not page.get_cur_lang_content %}
@@ -47,7 +47,7 @@
     <h3>Редактирование контента страницы на следующих языках:</h3>
     <ul>
         {% for lang in langs %}
-            <li><a href="{% url participants_pages:administration:edit_page_content library.id page.id lang.code %}">{{ lang.title }}</a></li>
+            <li><a href="{% url 'participants_pages:administration:edit_page_content' library.id page.id lang.code %}">{{ lang.title }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}

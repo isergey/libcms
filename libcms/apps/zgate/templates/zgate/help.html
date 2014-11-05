@@ -19,7 +19,7 @@
             font-size: 12px;
         }
     </style>
-    <h3><a href="{% url zgate_index catalog.id %}">{{ catalog.title }}</a>: справка</h3>
+    <h3><a href="{% url 'zgate_index' catalog.id %}">{{ catalog.title }}</a>: справка</h3>
     <div class="page">
         <div class="content">
             {{ catalog.help|safe }}

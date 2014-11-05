@@ -2,12 +2,12 @@
 {% block title %}{{ content.title }}{% endblock %}
 {% block  breadcrumbs %}
     <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url professionals:frontend:index %}">Проф. страница</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'professionals:frontend:index' %}">Проф. страница</a> <span class="divider">/</span></li>
         {% if request.GET.back %}
             <li><a href="{{ request.GET.back }}">Проф. Новости</a> <span class="divider">/</span></li>
         {% else %}
-            <li><a href="{% url professionals_news:frontend:index %}">Новости</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'professionals_news:frontend:index' %}">Новости</a> <span class="divider">/</span></li>
         {% endif %}
         <li class="active">{{ content.title }}</li>
     </ul>
