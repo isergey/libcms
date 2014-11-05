@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from lxml import etree
-import simplejson
+import json
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, HttpResponse, Http404, redirect, get_object_or_404
 from ssearch.models import  Record, Ebook
@@ -60,7 +60,7 @@ def save(request):
                     'status': 'error',
                     'errors': form.errors
                 }
-                return HttpResponse(simplejson.dumps(response, ensure_ascii=False))
+                return HttpResponse(json.dumps(response, ensure_ascii=False))
 
     else:
         form = SavedDocumentForm()

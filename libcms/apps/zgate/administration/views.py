@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import simplejson
+import json
 import datetime
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -183,7 +183,7 @@ def statistics(request):
         return HttpResponse(u'Неправильный тип статистики')
 
 
-    data_rows =  simplejson.dumps(rows, ensure_ascii=False)
+    data_rows =  json.dumps(rows, ensure_ascii=False)
 
 
     return render(request, 'zgate/administration/zcatalog_statistics.html', {

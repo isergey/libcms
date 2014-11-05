@@ -4,7 +4,7 @@ import hashlib
 import datetime
 from lxml import etree
 import sunburnt
-import simplejson
+import json
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import get_language
@@ -436,7 +436,7 @@ def search(request, catalog=None):
     if catalog == u'ebooks' and len(search_breadcumbs) > 1 and star:
         return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
 
-    json_search_breadcumbs = simplejson.dumps(search_breadcumbs, ensure_ascii=False)
+    json_search_breadcumbs = json.dumps(search_breadcumbs, ensure_ascii=False)
 
     ordered_facets = []
 
@@ -627,10 +627,10 @@ def saved_search_requests(request):
         try:
             srequests.append({
                 'saved_request': saved_request,
-                'breads': simplejson.loads(saved_request.search_request),
+                'breads': json.loads(saved_request.search_request),
                 'catalog':  saved_request.catalog
             })
-        except simplejson.JSONDecodeError:
+        except json.JSONDecoder:
             srequests.append({
                 'saved_request':saved_request,
                 'breads': None,

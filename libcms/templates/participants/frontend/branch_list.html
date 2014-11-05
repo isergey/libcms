@@ -4,8 +4,8 @@
 {% block content %}
     <div class="span12">
         <ul class="breadcrumb">
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{%  url participants:frontend:index %}">Библиотеки</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{%  url 'participants:frontend:index' %}">Библиотеки</a> <span class="divider">/</span></li>
             <li class="active">{{ library.name }}</li>
         </ul>
         <div class="row">
@@ -26,9 +26,9 @@
             <div class="span5" >
                 <ul class="participants">
                     {% for library in  libraries %}
-                        <li style="margin-bottom: 10px"><a href="{% url participants:frontend:detail library.code %}">{{ library.name }}<br/></a>
+                        <li style="margin-bottom: 10px"><a href="{% url 'participants:frontend:detail' library.code %}">{{ library.name }}<br/></a>
                             Сайт: {% if library.http_service  %}<a href="{{ library.http_service }}" target="_blank"> {{ library.http_service }}</a>
-                            {% else %} <a href="{% url participants:frontend:detail library.code %}" target="_blank"> {{ request.META.HTTP_HOST }}{% url participants:frontend:detail library.code %}</a>{% endif %}
+                            {% else %} <a href="{% url 'participants:frontend:detail' library.code %}" target="_blank"> {{ request.META.HTTP_HOST }}{% url 'participants:frontend:detail' library.code %}</a>{% endif %}
                         </li>
                     {% empty %}
                         Список еще не сформирован

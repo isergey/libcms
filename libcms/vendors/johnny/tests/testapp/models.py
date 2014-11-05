@@ -55,7 +55,7 @@ class Person(models.Model):
     mugshot_credit = models.CharField(_('mugshot credit'), blank=True, max_length=200)
     birth_date = models.DateField(_('birth date'), blank=True, null=True)
     person_types = models.ManyToManyField(PersonType, blank=True)
-    website = models.URLField(_('website'), blank=True, verify_exists=True)
+    website = models.URLField(_('website'), blank=True)
 
     class Meta:
         verbose_name = _('person')
@@ -95,7 +95,7 @@ class Publisher(models.Model):
     title = models.CharField(max_length=100)
     prefix = models.CharField(max_length=20, blank=True)
     slug = models.SlugField(unique=True)
-    website = models.URLField(blank=True, verify_exists=False)
+    website = models.URLField(blank=True)
 
     class Meta:
         ordering = ('title',)

@@ -3,9 +3,9 @@
 {% block content %}
     <div>
         <ul class="breadcrumb">
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{%  url participants:frontend:index %}">Библиотеки</a> <span class="divider">/</span></li>
-            {% if library.parent_id %}<li><a href="{%  url participants:frontend:branches library.parent.id %}">{{ library.parent.name }}</a> <span class="divider">/</span></li>{% endif %}
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{%  url 'participants:frontend:index' %}">Библиотеки</a> <span class="divider">/</span></li>
+            {% if library.parent_id %}<li><a href="{%  url 'participants:frontend:branches' library.parent.id %}">{{ library.parent.name }}</a> <span class="divider">/</span></li>{% endif %}
             <li class="active">{{ library.name }}</li>
         </ul>
     </div>
@@ -27,7 +27,7 @@
 {#                    <span>{{ forloop.counter }}</span>#}
 {#                </div>#}
                 <div class="adText">
-                    <h4><a href="{% url participants:frontend:detail library.id %}">{{ library.name }}</a></h4>
+                    <h4><a href="{% url 'participants:frontend:detail' library.id %}">{{ library.name }}</a></h4>
                     {#                Кремлевская ул., 33, г. Казань, Республика#}
                     {#                Татарстан, 420111#}
                     {#                8 (843) 292-73-62#}

@@ -15,11 +15,11 @@
     </style>
     <div class="breadcrumb">
 
-        <a href="{% url index:frontend:index %}">{% if LANGUAGE_CODE == 'ru' %}Начало{% else %}Home{% endif %}</a> <span class="divider">/</span>
+        <a href="{% url 'index:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Начало{% else %}Home{% endif %}</a> <span class="divider">/</span>
         {% if request.GET.back %}
             <a href="{{ request.GET.back }}">{% if LANGUAGE_CODE == 'ru' %}Новые поступления{% else %}From new arrivals{% endif %}</a> <span class="divider">/</span>
         {% else %}
-            <a href="{% url newinlib:frontend:index %}">{% if LANGUAGE_CODE == 'ru' %}Новые поступления{% else %}From new arrivals{% endif %}</a> <span class="divider">/</span>
+            <a href="{% url 'newinlib:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Новые поступления{% else %}From new arrivals{% endif %}</a> <span class="divider">/</span>
         {% endif %}
         {% if LANGUAGE_CODE == 'ru' %}Просмотр{% else %}View{% endif %}
     </div>

@@ -15,7 +15,7 @@
                     {% if LANGUAGE_CODE == 'ru' %}Поиск по электронному каталогу и коллекциям{% elif LANGUAGE_CODE == 'tt' %}Электрон каталог һәм коллекцияләр буенча эзләү{% else %}Search in e-catalog and e-collections{% endif %}
                 </div>
                 <div class="span8">
-                    <form  action="{% url ssearch:frontend:index %}" class="form-search" method="GET" style="margin: 0">
+                    <form  action="{% url 'ssearch:frontend:index' %}" class="form-search" method="GET" style="margin: 0">
                         <div class="input-prepend">
                             <input type="hidden" name="attr" value="text_t">
                             <input  name="q" class="span7" size="16" type="text_t"><input type="submit" class="btn btn-success" value="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}" style="width: 80px">
@@ -36,7 +36,7 @@
                             <div class="banner-node" style="position: relative; top: 192px; color: #ffffff; padding-left: 10px">
                                 <div style="background: #34832B; padding: 10px;">
 {#                                    Всего <b>{% ssearch_all_count %}</b> записей в электронном каталоге. Вы можете <a style="color: #ffffff; font-weight: bold;" href="{% url ssearch:frontend:index %}">найти</a> и забронировать книги в библиотеках Республики Татарстан.#}
-                                      В электронном каталоге Вы сможете <a style="color: #ffffff; font-weight: bold;" href="{% url ssearch:frontend:index %}">найти</a> и забронировать книги в библиотеках Республики Татарстан.
+                                      В электронном каталоге Вы сможете <a style="color: #ffffff; font-weight: bold;" href="{% url 'ssearch:frontend:index' %}">найти</a> и забронировать книги в библиотеках Республики Татарстан.
 
                                     {#                        <a  style=" color: #ffffff; text-decoration: none " href="{% url ssearch:frontend:index %}">Забронируй свою книгу заранее</a>#}
                                 </div>
@@ -46,9 +46,9 @@
                     </div>
                 </div>
                 <div class="span6">
-                    <h3 style="margin-top: -5px;">{% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}Яңалыклар{% else %}News{% endif %}<a href="{% url news:frontend:rss %}"> <img width="24" src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a></h3>
+                    <h3 style="margin-top: -5px;">{% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}Яңалыклар{% else %}News{% endif %}<a href="{% url 'news:frontend:rss' %}"> <img width="24" src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a></h3>
                     {% news_feed %}
-                    <a href="{% url news:frontend:index %}" class="last">{% if LANGUAGE_CODE == 'ru' %}Архив новостей{% elif LANGUAGE_CODE == 'tt' %}Архив новостей{% else %}News archive{% endif %}</a>
+                    <a href="{% url 'news:frontend:index' %}" class="last">{% if LANGUAGE_CODE == 'ru' %}Архив новостей{% elif LANGUAGE_CODE == 'tt' %}Архив новостей{% else %}News archive{% endif %}</a>
                 </div>
         </div>
         <div class="row">
@@ -93,7 +93,7 @@
                     </div>
 
                 </div>
-                <div class="span6" style="text-align: center; font-size: 14px; padding-top: 10px;"><a href="{% url newinlib:frontend:index %}">{% if LANGUAGE_CODE == 'ru' %}Остальные новинки{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}More new arrivals{% endif %} >></a></div>
+                <div class="span6" style="text-align: center; font-size: 14px; padding-top: 10px;"><a href="{% url 'newinlib:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Остальные новинки{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}More new arrivals{% endif %} >></a></div>
             </div>
 
             <div class="span6">

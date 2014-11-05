@@ -91,28 +91,28 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django_sorting.middleware.SortingMiddleware',
-   'debug_toolbar.middleware.DebugToolbarMiddleware',
+   # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'libcms.urls'
 WSGI_APPLICATION = 'libcms.wsgi.application'
 AUTHENTICATION_BACKENDS = (
-    'social_auth.backends.twitter.TwitterBackend',
-    'social_auth.backends.contrib.vkontakte.VKontakteOAuth2Backend',
+    # 'social_auth.backends.twitter.TwitterBackend',
+    'social_auth.backends.contrib.vkontakte.VKOAuth2Backend',
     'social_auth.backends.facebook.FacebookBackend',
-    'social_auth.backends.contrib.mailru.MailruBackend',
+    # 'social_auth.backends.contrib.mailru.MailruBackend',
 #    'social_auth.backends.contrib.odnoklassniki.OdnoklassnikiBackend',
-    'social_auth.backends.google.GoogleOAuth2Backend',
-    'social_auth.backends.contrib.yandex.YandexOAuth2Backend',
+#     'social_auth.backends.google.GoogleOAuth2Backend',
+    # 'social_auth.backends.contrib.yandex.YandexOAuth2Backend',
 #    'social_auth.backends.google.GoogleOAuthBackend',
-    'social_auth.backends.google.GoogleBackend',
+#     'social_auth.backends.google.GoogleBackend',
 #    'social_auth.backends.yahoo.YahooBackend',
 #    'social_auth.backends.contrib.linkedin.LinkedinBackend',
 #    'social_auth.backends.contrib.flickr.FlickrBackend',
-    'social_auth.backends.OpenIDBackend',
-    'social_auth.backends.contrib.livejournal.LiveJournalBackend',
+#     'social_auth.backends.OpenIDBackend',
+    # 'social_auth.backends.contrib.livejournal.LiveJournalBackend',
 #    'social_auth.backends.contrib.vkontakte.VKontakteBackend',
-    'social_auth.backends.contrib.yandex.YandexBackend',
+#     'social_auth.backends.contrib.yandex.YandexBackend',
 
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
@@ -133,7 +133,7 @@ INSTALLED_APPS = (
     'localeurl',
     'mptt',
     'guardian',
-    'debug_toolbar',
+    # 'debug_toolbar',
     'django_sorting',
 
     # cms apps

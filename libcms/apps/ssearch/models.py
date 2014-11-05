@@ -107,7 +107,7 @@ class Record(models.Model):
     content = ZippedTextField(verbose_name=u'Xml content')
     add_date = models.DateTimeField(auto_now_add=True, db_index=True)
     update_date = models.DateTimeField(auto_now_add=True, db_index=True)
-    deleted= models.BooleanField()
+    deleted= models.BooleanField(default=False)
     hash = models.TextField(max_length=16)
     def __unicode__(self):
         return self.record_id
@@ -123,7 +123,7 @@ class Ebook(models.Model):
     content = ZippedTextField(verbose_name=u'Xml content')
     add_date = models.DateTimeField(auto_now_add=True, db_index=True)
     update_date = models.DateTimeField(auto_now_add=True, db_index=True)
-    deleted= models.BooleanField()
+    deleted= models.BooleanField(default=False)
     hash = models.TextField(max_length=16)
     def __unicode__(self):
         return self.record_id
@@ -138,7 +138,7 @@ class Collection(models.Model):
     content = ZippedTextField(verbose_name=u'Xml content')
     add_date = models.DateTimeField(auto_now_add=True, db_index=True)
     update_date = models.DateTimeField(auto_now_add=True, db_index=True)
-    deleted= models.BooleanField()
+    deleted= models.BooleanField(default=False)
     hash = models.TextField(max_length=16)
     def __unicode__(self):
         return self.record_id

@@ -2,7 +2,7 @@
 import socket
 import copy
 import datetime
-import simplejson
+import json
 from lxml import etree
 import urllib2
 from django.conf import settings
@@ -503,7 +503,7 @@ def mba_order_copy(request):
                 'status': 'error',
                 'errors': form.errors
             }
-            return HttpResponse(simplejson.dumps(response, ensure_ascii=False))
+            return HttpResponse(json.dumps(response, ensure_ascii=False))
     else:
         return HttpResponse(u'{"status":"error", "error":"Only POST requests"}')
 
@@ -533,7 +533,7 @@ def mba_order_delivery(request):
                 'status': 'error',
                 'errors': form.errors
             }
-            return HttpResponse(simplejson.dumps(response, ensure_ascii=False))
+            return HttpResponse(json.dumps(response, ensure_ascii=False))
     else:
         return HttpResponse(u'{"status":"error", "error":"Only POST requests"}')
 

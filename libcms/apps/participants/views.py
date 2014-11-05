@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, get_list_or_404, Http404, HttpResponse
-import simplejson
+import json
 from districts import districts_list, find_district
 from models import Library, District
 from django.contrib.auth.decorators import login_required
@@ -36,7 +36,7 @@ def detail(request, code):
         for org in libraries:
             orgs.append(make_library_dict(org))
 
-        js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
+        js_orgs = json.dumps(orgs, encoding='utf-8', ensure_ascii=False)
         return render(request, 'participants/participants_list_by_cbs.html', {
             'cbs_name': library.name,
             'cbs_code': library.code,
@@ -48,7 +48,7 @@ def detail(request, code):
 
         orgs.append(make_library_dict(library))
 
-        js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
+        js_orgs = json.dumps(orgs, encoding='utf-8', ensure_ascii=False)
         return render(request, 'participants/participants_detail_by_cbs.html', {
             'cbs_name': getattr(library.parent, 'name', None),
             'cbs_code': getattr(library.parent, 'code', None),
@@ -64,7 +64,7 @@ def detail_by_district(request, code):
 
     orgs = [make_library_dict(library)]
 
-    js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
+    js_orgs = json.dumps(orgs, encoding='utf-8', ensure_ascii=False)
     return render(request, 'participants/participants_detail_by_district.html', {
         'library': library,
         'js_orgs': js_orgs
@@ -84,7 +84,7 @@ def by_district(request, id):
     for org in libraries:
         orgs.append(make_library_dict(org))
 
-    js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
+    js_orgs = json.dumps(orgs, encoding='utf-8', ensure_ascii=False)
     return render(request, 'participants/participants_list_by_districts.html', {
         'ldap_orgs': libraries,
         'district': district,
@@ -102,8 +102,8 @@ def by_district_json(request):
         for org in libraries:
             orgs.append({'id': org.id, 'title': org.name})
 
-        json = simplejson.dumps(orgs, ensure_ascii=False)
-        return HttpResponse(json)
+        json_orgs = json.dumps(orgs, ensure_ascii=False)
+        return HttpResponse(json_orgs)
     else:
         return HttpResponse('Only post requests')
 

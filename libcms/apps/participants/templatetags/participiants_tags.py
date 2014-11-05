@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import simplejson
+import json
 from django import template
 from ..models import Library
 register = template.Library()
@@ -25,7 +25,7 @@ def cbs_map():
     for org in cbs_list:
         js_orgs.append(make_library_dict(org))
 
-    js_orgs = simplejson.dumps(js_orgs, encoding='utf-8', ensure_ascii=False)
+    js_orgs = json.dumps(js_orgs, encoding='utf-8', ensure_ascii=False)
     return {
         'cbs_list': cbs_list,
         'js_orgs': js_orgs

@@ -11,11 +11,11 @@
     </style>
     <div class="span12">
     <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url personal:frontend:index %}">Личный кабинет</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>
         <li class="active">Мои библиотеки</li>
     </ul>
-    <p><a href="{% url urt:frontend:link %}" class="btn">Добавить связь</a></p>
+    <p><a href="{% url 'urt:frontend:link' %}" class="btn">Добавить связь</a></p>
     <hr/>
     {% if links %}
     <h3>Установлена связь со следующими библиотеками:</h3>
@@ -27,7 +27,7 @@
                         <b>{{ link.library.name }}</b> (идентификатор: <b>{{ link.lib_login }}</b>)
                     </div>
                     <div class="actions">
-                        <a href="{% url urt:frontend:edit_link link.id %}">редактировать</a>
+                        <a href="{% url 'urt:frontend:edit_link' link.id %}">редактировать</a>
                     </div>
                 </div>
             </li>

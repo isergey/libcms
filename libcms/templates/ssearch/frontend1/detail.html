@@ -20,8 +20,8 @@
         }
     </style>
     <div  class="info">
-        <a href="{% url index:frontend:index %}">Главная</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="{% url ssearch:frontend:index %}">Поиск</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="{% url 'index:frontend:index' %}">Главная</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="{% url 'ssearch:frontend:index' %}">Поиск</a>&nbsp;&nbsp;|&nbsp;&nbsp;
         {% if request.GET.back %}
             <a href="{{ request.GET.back }}">Результаты поиска</a>&nbsp;&nbsp;|&nbsp;&nbsp;
         {% endif %}

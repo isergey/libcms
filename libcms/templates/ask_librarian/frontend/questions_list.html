@@ -7,16 +7,16 @@
 {% block breadcrumb %}
     <ul class="breadcrumb">
 
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
         {% if category %}
             {% cache 30 questions_breadcrumb category.id LANGUAGE_CODE %}
-            <li><a href="{% url ask_librarian:frontend:index %}">Спроси библиотекаря</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'ask_librarian:frontend:index' %}">Спроси библиотекаря</a> <span class="divider">/</span></li>
 
                 {% if category.is_root_node %}
                     <li>{{ category }}</li>
                 {% else %}
                     {% for ancestor in  category.get_t_ancestors %}
-                        <li><a href="{% url ask_librarian:frontend:index %}?category={{ ancestor.category_id }}">{{ ancestor }}</a> <span class="divider">/</span></li>
+                        <li><a href="{% url 'ask_librarian:frontend:index' %}?category={{ ancestor.category_id }}">{{ ancestor }}</a> <span class="divider">/</span></li>
                     {% endfor %}
                     <li>{{ category }}</li>
                 {% endif %}
@@ -76,7 +76,7 @@
                 </b>
             {% endif %}
             <br/>
-            <a href="{% url ask_librarian:frontend:detail question.id %}">подробнее</a>
+            <a href="{% url 'ask_librarian:frontend:detail' question.id %}">подробнее</a>
         <hr/>
         </li>
     {% empty %}

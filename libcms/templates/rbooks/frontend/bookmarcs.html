@@ -20,8 +20,8 @@
 
     <div class="span12" style="margin-bottom: 10px;">
         <ul class="breadcrumb">
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{% url personal:frontend:index %}">Личный кабинет</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>
             <li class="active">Мои закладки</li>
         </ul>
 
@@ -40,7 +40,7 @@
                                 </div>
                             {% endif %}
                             <div class="actions">
-                                Перейти к странице: <a href="{% url rbooks:frontend:show record.bookmarc.book_id %}?page_number={{ record.bookmarc.page_number }}">{{ record.bookmarc.page_number }} </a>
+                                Перейти к странице: <a href="{% url 'rbooks:frontend:show' record.bookmarc.book_id %}?page_number={{ record.bookmarc.page_number }}">{{ record.bookmarc.page_number }} </a>
 {#                                <a style="float: right;" href="{% url mydocs:frontend:delete record.saved_doc.id %}" class="delete">удалить</a>#}
                             </div>
                     </div>

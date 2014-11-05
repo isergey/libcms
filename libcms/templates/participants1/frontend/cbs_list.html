@@ -3,7 +3,7 @@
 {% block content %}
     <div>
     <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
         <li class="active">Библиотеки</li>
     </ul>
 {#    <ul class="participants">#}
@@ -35,7 +35,7 @@
                     <span>{{ forloop.counter }}</span>
                 </div>
                 <div class="adText">
-                    <h4><a href="{% url participants:frontend:branches library.id %}">{{ library.name }}</a></h4>
+                    <h4><a href="{% url 'participants:frontend:branches' library.id %}">{{ library.name }}</a></h4>
                     {#                Кремлевская ул., 33, г. Казань, Республика#}
                     {#                Татарстан, 420111#}
                     {#                8 (843) 292-73-62#}

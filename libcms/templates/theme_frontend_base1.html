@@ -26,10 +26,10 @@
 <body>
 <div id="header">
 
-    <a id="logo" href="{% url index:frontend:index %}"><img src="{{ STATIC_URL }}theme/images/logo.png" /></a>
+    <a id="logo" href="{% url 'index:frontend:index' %}"><img src="{{ STATIC_URL }}theme/images/logo.png" /></a>
     {% if not request.user.is_authenticated %}
-        <a id="auth" href="{% url accounts:frontend:registration %}"><span>Регистрация</span></a>
-        <a id="auth" href="{% url accounts:frontend:login %}"><span>Вход</span></a>
+        <a id="auth" href="{% url 'accounts:frontend:registration' %}"><span>Регистрация</span></a>
+        <a id="auth" href="{% url 'accounts:frontend:login' %}"><span>Вход</span></a>
     {% else %}
         <div style="position: absolute; right: 1px">{% include 'cabinet.html' %}</div>
 {#        <a id="auth" href="{% url accounts:frontend:logout %}"><span>Выход</span></a>#}
@@ -67,7 +67,7 @@
     {% if not request.user.is_authenticated %}
         <ol id="offers">
             <li>Найдите интересующую книгу</li>
-            <li><a href="{% url accounts:frontend:registration %}">Зарегистрируйте</a> бесплатный аккаунт</li>
+            <li><a href="{% url 'accounts:frontend:registration' %}">Зарегистрируйте</a> бесплатный аккаунт</li>
             <li>Закажите книгу в библиотеке</li>
         </ol>
     {% endif %}

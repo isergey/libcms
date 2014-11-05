@@ -3,7 +3,7 @@
 {% block content %}
     <div class="span12">
         <ul class="breadcrumb">
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
             <li class="active">Библиотеки</li>
         </ul>
     <div class="row">
@@ -24,9 +24,9 @@
 
             <ul class="participants" style="list-style: none; margin: 0">
                 {% for cbs in  cbs_list %}
-                    <li style="margin-bottom: 10px"><a href="{% url participants:frontend:branches cbs.code %}">{{ cbs.name }}<br/></a>
+                    <li style="margin-bottom: 10px"><a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}<br/></a>
                         Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
-                        {% else %} <a href="{% url participants:frontend:branches cbs.code %}" target="_blank"> {{ request.META.HTTP_HOST }}{% url participants:frontend:branches cbs.code %}</a> {% endif %}
+                        {% else %} <a href="{% url 'participants:frontend:branches' cbs.code %}" target="_blank"> {{ request.META.HTTP_HOST }}{% url 'participants:frontend:branches' cbs.code %}</a> {% endif %}
                     </li>
                 {% empty %}
                     Список еще не сформирован

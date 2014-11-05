@@ -2,13 +2,13 @@
 {% block title %}Мои заказы{% endblock %}
 {% block content %}
     <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
         <li class="active">Мои заказы</li>
     </ul>
     <div class="span10">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#elorders" data-toggle="tab">Бронирование</a></li>
-            <li><a href="{% url orders:frontend:mba_orders %}">Заказы доставки</a></li>
+            <li><a href="{% url 'orders:frontend:mba_orders' %}">Заказы доставки</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="orders">
@@ -16,13 +16,13 @@
                     <h3>Вы можете посмотреть заказы в следующих ЦБС:</h3>
                     <ul>
                         {% for link in links %}
-                            <li><a href="{% url orders:frontend:lib_orders link.library.id %}">{{ link.library.name }} </a></li>
+                            <li><a href="{% url 'orders:frontend:lib_orders' link.library.id %}">{{ link.library.name }} </a></li>
                         {% endfor %}
                     </ul>
                 {% else %}
                     <p>
                         В настоящий момент Вы не связали свой аккаунт на портале с какой-либо ЦБС.
-                        Чтобы воспользоваться сервисами заказа и бронирования необходимо <a href="{% url urt:frontend:link %}">связать</a> совой аккаунт с идентификатором читателя выданного в ЦБС.
+                        Чтобы воспользоваться сервисами заказа и бронирования необходимо <a href="{% url 'urt:frontend:link' %}">связать</a> совой аккаунт с идентификатором читателя выданного в ЦБС.
                     </p>
                 {% endif %}
             </div>

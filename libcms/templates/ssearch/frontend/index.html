@@ -77,9 +77,9 @@
         <div class="span12">
             <ul class="breadcrumb">
 
-                <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+                <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
                 {% if request.GET.q %}
-                    <li><a href="{% url ssearch:frontend:index %}">{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}</a> <span class="divider">/</span></li>
+                    <li><a href="{% url 'ssearch:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}</a> <span class="divider">/</span></li>
                     <li class="active">{% if LANGUAGE_CODE == 'ru' %}Результаты поиска:  найдено документов{% elif LANGUAGE_CODE == 'tt' %}Эзләү нәтиҗәләре: документлар табылды{% else %}Search results: finded records{% endif %}:  <b>{{ search_statisics.num_found }}</b>, {% if LANGUAGE_CODE == 'ru' %}время выполнения запроса{% elif LANGUAGE_CODE == 'tt' %}сорау үтәлү вакыты{% else %}request time{% endif %}: <b>{{ search_statisics.search_time }}</b> с.</li>
                 {% else %}
                     <li class="active">{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}</li>
@@ -134,7 +134,7 @@
                 <div class="actions">
                     <div>
                         {% if request.user.is_authenticated %}
-                            <a href="{% url ssearch:frontend:save_search_request %}?srequest={{ search_request|urlencode }}&catalog={{ catalog|urlencode }}"  class="btn btn-mini" id="save_request_button">Сохранить запрос</a> →
+                            <a href="{% url 'ssearch:frontend:save_search_request' %}?srequest={{ search_request|urlencode }}&catalog={{ catalog|urlencode }}"  class="btn btn-mini" id="save_request_button">Сохранить запрос</a> →
                         {% endif %}
                         <b>Поиск</b>:
                         {% for search_breadcumb in search_breadcumbs %}
@@ -213,7 +213,7 @@
                     {% for doc in docs %}
 
                         <li class="textBook">
-                            <p class="item1">{{ forloop.counter0|add:results_page.start_index }}. <a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a></p>
+                            <p class="item1">{{ forloop.counter0|add:results_page.start_index }}. <a href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a></p>
                             <p class="item2">
                                 {% for author in doc.record.author %}
                                     {{ author }}{% if not forloop.last %}; {% endif %}
@@ -287,7 +287,7 @@
                                 </div>
                                 </div>
                             {% endif %}
-                            <a href="{% url ssearch:frontend:to_print doc.id %}" target="_blank">Версия для печати</a>
+                            <a href="{% url 'ssearch:frontend:to_print' doc.id %}" target="_blank">Версия для печати</a>
                         </li>
                         <hr/>
                     {% endfor %}

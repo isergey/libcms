@@ -21,7 +21,7 @@ class MenuItemTitleForm(forms.ModelForm):
 class MenuItemForm(forms.ModelForm):
     class Meta:
         model=MenuItem
-        exclude = ('parent')
+        exclude = ('parent',)
 
 
 class MenuTitleForm(forms.Form):

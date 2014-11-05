@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import postmarkup
-import simplejson
+import json
 from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse, Http404
 from django.http import HttpResponseForbidden
@@ -395,7 +395,7 @@ def article_preview(request):
     if request.method == 'POST':
         text = request.POST.get('text', u' ')
         result = {'text':postmarkup_render(text)}
-        return HttpResponse(simplejson.dumps(result, ensure_ascii=False))
+        return HttpResponse(json.dumps(result, ensure_ascii=False))
 
     return HttpResponse(u'{}')
 

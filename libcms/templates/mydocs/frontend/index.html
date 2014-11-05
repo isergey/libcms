@@ -20,8 +20,8 @@
 
     <div class="span12" style="margin-bottom: 10px;">
         <ul class="breadcrumb">
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{% url personal:frontend:index %}">Личный кабинет</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>
             <li class="active">Мои документы</li>
         </ul>
 
@@ -39,8 +39,8 @@
                                 </div>
                             {% endif %}
                             <div class="actions">
-                                <a href="{% url ssearch:frontend:detail record.saved_doc.gen_id %}">Детальная информация</a>
-                                <a style="float: right;" href="{% url mydocs:frontend:delete record.saved_doc.id %}" class="delete">удалить</a>
+                                <a href="{% url 'ssearch:frontend:detail' record.saved_doc.gen_id %}">Детальная информация</a>
+                                <a style="float: right;" href="{% url 'mydocs:frontend:delete' record.saved_doc.id %}" class="delete">удалить</a>
                             </div>
                     </div>
                     </li>

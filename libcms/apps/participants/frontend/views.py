@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import simplejson
+import json
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse, Http404
 from django.utils import translation
 from django.utils.translation import get_language
@@ -26,7 +26,7 @@ def index(request):
     for org in cbs_list:
         js_orgs.append(make_library_dict(org))
 
-    js_orgs = simplejson.dumps(js_orgs, encoding='utf-8', ensure_ascii=False)
+    js_orgs = json.dumps(js_orgs, encoding='utf-8', ensure_ascii=False)
     return render(request, 'participants/frontend/cbs_list.html',{
         'cbs_list': cbs_list,
         'js_orgs': js_orgs
@@ -45,7 +45,7 @@ def branches(request, code=None):
     for org in libraries:
         js_orgs.append(make_library_dict(org))
 
-    js_orgs = simplejson.dumps(js_orgs, encoding='utf-8', ensure_ascii=False)
+    js_orgs = json.dumps(js_orgs, encoding='utf-8', ensure_ascii=False)
 
     if request.is_ajax():
         return HttpResponse(js_orgs)
@@ -62,7 +62,7 @@ def detail(request, code):
     js_orgs = []
     js_orgs.append(make_library_dict(library))
 
-    js_orgs = simplejson.dumps(js_orgs, encoding='utf-8', ensure_ascii=False)
+    js_orgs = json.dumps(js_orgs, encoding='utf-8', ensure_ascii=False)
 
     return render(request, 'participants/frontend/detail.html',{
         'library': library,

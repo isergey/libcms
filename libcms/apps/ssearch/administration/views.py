@@ -1,6 +1,6 @@
 # coding: utf-8
 import os
-import simplejson
+import json
 import MySQLdb
 import zlib
 import re
@@ -125,7 +125,7 @@ def statistics(request, catalog=None):
         return HttpResponse(u'Неправильный тип статистики')
 
 
-    data_rows =  simplejson.dumps(rows, ensure_ascii=False)
+    data_rows =  json.dumps(rows, ensure_ascii=False)
 
 
     return render(request, 'ssearch/administration/statistics.html', {

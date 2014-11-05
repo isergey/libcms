@@ -22,20 +22,20 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Модули<b class="caret"></b></a>
                         <ul class="dropdown-menu">
 
-                            <li><a href="{% url news:administration:index %}">Новости</a></li>
-                            <li><a href="{% url newinlib:administration:index %}">Новые поступления</a></li>
-                            <li><a href="{% url participants:administration:index %}">Библиотеки</a></li>
-                            <li><a href="{% url ask_librarian:administration:index %}">Спроси библиотекаря</a></li>
-                            <li><a href="{% url guestbook:administration:index %}">Гостевая книга</a></li>
+                            <li><a href="{% url 'news:administration:index' %}">Новости</a></li>
+                            <li><a href="{% url 'newinlib:administration:index' %}">Новые поступления</a></li>
+                            <li><a href="{% url 'participants:administration:index' %}">Библиотеки</a></li>
+                            <li><a href="{% url 'ask_librarian:administration:index' %}">Спроси библиотекаря</a></li>
+                            <li><a href="{% url 'guestbook:administration:index' %}">Гостевая книга</a></li>
                             <li class="divider"></li>
-                            <li><a href="{% url professionals_news:administration:index %}">Проф. новости</a>
-                            <li><a href="{% url professionals_pages:administration:index %}">Проф. страницы</a></li>
+                            <li><a href="{% url 'professionals_news:administration:index' %}">Проф. новости</a>
+                            <li><a href="{% url 'professionals_pages:administration:index' %}">Проф. страницы</a></li>
                             <li class="divider"></li>
-                            <li><a href="{% url menu:administration:index %}">Меню</a></li>
-                            <li><a href="{% url pages:administration:index %}">Страницы</a></li>
-                            <li><a href="{% url ssearch:administration:index %}">Smart search</a></li>
-                            <li><a href="{% url filebrowser:administration:index %}">Файлы</a></li>
-                            <li><a href="{% url accounts:administration:index %}">Аккаунты</a></li>
+                            <li><a href="{% url 'menu:administration:index' %}">Меню</a></li>
+                            <li><a href="{% url 'pages:administration:index' %}">Страницы</a></li>
+                            <li><a href="{% url 'ssearch:administration:index' %}">Smart search</a></li>
+                            <li><a href="{% url 'filebrowser:administration:index' %}">Файлы</a></li>
+                            <li><a href="{% url 'accounts:administration:index' %}">Аккаунты</a></li>
 {#                            <li><a href="#">{% trans 'Settings' %}</a></li>#}
                         </ul>
                     </li>

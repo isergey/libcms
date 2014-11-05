@@ -3,8 +3,8 @@
 {% block content %}
     <div class="span12">
     <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url personal:frontend:index %}">Личный кабинет</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>
         <li class="active">Выданные книги</li>
     </ul>
 
@@ -14,7 +14,7 @@
                 <li>
                     <div class="thumbnail" style="margin-bottom: 10px;">
                         <h3>{{ link.library.name }}</h3>
-                        <div class="on_hand" id="{% url orders:frontend:on_hand_in_lib link.library.id %}">
+                        <div class="on_hand" id="{% url 'orders:frontend:on_hand_in_lib' link.library.id %}">
                             <ul style="list-style: none;">
                                 {% for book in link.books %}
                                     <li>{{ book.record|safe }}
@@ -35,7 +35,7 @@
     {% else %}
         <p>
             В настоящий момент Вы не связали свой аккаунт на портале с какой-либо ЦБС.
-            Чтобы воспользоваться сервисами предоставляемыми библиотеками необходимо <a href="{% url urt:frontend:link %}">связать</a> совой аккаунт с идентификатором читателя выданного в библиотеке.
+            Чтобы воспользоваться сервисами предоставляемыми библиотеками необходимо <a href="{% url 'urt:frontend:link' %}">связать</a> совой аккаунт с идентификатором читателя выданного в библиотеке.
         </p>
     {% endif %}
     </div>

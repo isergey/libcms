@@ -85,8 +85,8 @@
     </div>
     {% if search_breadcumbs %}
     <div  class="info">
-        <a href="{% url index:frontend:index %}">Главная</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="{% url ssearch:frontend:index %}">Поиск</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="{% url 'index:frontend:index' %}">Главная</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="{% url 'ssearch:frontend:index' %}">Поиск</a>&nbsp;&nbsp;|&nbsp;&nbsp;
         <a class="active">Результат поиска:  найдено документов: {{ search_statisics.num_found }}, время выполнения запрос: {{ search_statisics.search_time }} сек.</a>
 
         </br></br>
@@ -122,7 +122,7 @@
 {#                <a href="#">Очистить</a>#}
 {#            </div>#}
             {% if request.user.is_authenticated %}
-                <a href="{% url ssearch:frontend:save_search_request %}?srequest={{ search_request|urlencode }}" class="saveIzbBut" id="save_request_button">Сохранить запрос</a>
+                <a href="{% url 'ssearch:frontend:save_search_request' %}?srequest={{ search_request|urlencode }}" class="saveIzbBut" id="save_request_button">Сохранить запрос</a>
             {% endif %}
             <div class="sort">
                 <div class="sorting">
@@ -241,7 +241,7 @@
 {#                    <img src="images/book4.jpg" />#}
 {#                </div>#}
                 <div class="textBook">
-                    <p class="item1"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a></p>
+                    <p class="item1"><a href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a></p>
                     <p class="item2">
                         {% for author in doc.record.author %}
                             {{ author }}{% if not forloop.last %}; {% endif %}
@@ -301,7 +301,7 @@
                     {{ doc.solr_highlights|hash:"full-text"|hash:0|safe }}
                 </div>
                 {% endif %}
-                    <p class="item5"><a href="{% url ssearch:frontend:detail doc.id %}?back={{ request.get_full_path|urlencode }}">Подробная информация</a></p>
+                    <p class="item5"><a href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">Подробная информация</a></p>
                 </div>
             </div>
         {% endfor %}

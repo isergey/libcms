@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-import simplejson
+import json
 from lxml import etree
 from lxml import etree as ET
 #import xml.etree.cElementTree as ET
@@ -24,7 +24,7 @@ import zworker
 from common import humanquery
 
 def json_error(error):
-    return simplejson.dumps({'status': 'error',
+    return json.dumps({'status': 'error',
                              'error': error},
         ensure_ascii=False)
 
@@ -228,7 +228,7 @@ def save_document(request):
 
     saved_document.save()
 
-    response =  HttpResponse(simplejson.dumps({'status': 'ok'}, ensure_ascii=False))
+    response =  HttpResponse(json.dumps({'status': 'ok'}, ensure_ascii=False))
     return response
 
 

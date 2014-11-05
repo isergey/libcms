@@ -5,12 +5,12 @@
     <div class="span12">
         <ul class="breadcrumb">
 
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
             <li class="active">Гостевая книга</li>
 
         </ul>
         <p>
-        <a href="{% url guestbook:frontend:send_feedback %}" class="btn btn-success">Написать отзыв</a>
+        <a href="{% url 'guestbook:frontend:send_feedback' %}" class="btn btn-success">Написать отзыв</a>
         </p>
         <hr/>
         <ul class="feedbacks" style="list-style: none; margin: 0">

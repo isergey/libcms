@@ -3,9 +3,9 @@
 {% block content %}
     <div class="span12">
         <ul class="breadcrumb">
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
             {% for ancestor in content.page.get_ancestors_titles %}
-                <li><a href="{% url pages:frontend:show ancestor.url_path %}">
+                <li><a href="{% url 'pages:frontend:show' ancestor.url_path %}">
                     {% if not ancestor.title %}
                         {{ ancestor }}
                     {% else %}

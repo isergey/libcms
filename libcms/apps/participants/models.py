@@ -70,7 +70,7 @@ class Library(MPTTModel):
     postal_address = models.TextField(verbose_name=u'Адрес', max_length=512, blank=True)
 
 
-    http_service = models.URLField(max_length=255, verify_exists=False, verbose_name=u'Адрес сайта', blank=True)
+    http_service = models.URLField(max_length=255, verbose_name=u'Адрес сайта', blank=True)
     z_service = models.CharField(max_length=255, verbose_name=u'Адрес Z сервера', blank=True, help_text=u'Укажите адрес Z сревера в формате host:port (например localhost:210)')
     ill_service = models.EmailField(max_length=255, verbose_name=u'Адрес ILL сервиса', blank=True)
     edd_service = models.EmailField(max_length=255, verbose_name=u'Адрес ЭДД сервиса', blank=True)

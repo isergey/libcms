@@ -30,7 +30,7 @@
     <div class="span12">
     {% block  breadcrumbs %}
         <ul class="breadcrumb">
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
             <li class="active">Проф. страница</li>
         </ul>
     {% endblock %}
@@ -50,7 +50,7 @@
                 {% professionals_news_feed %}
                 </div>
                 <div>
-                    <a href="{% url professionals_news:frontend:index %}" class="btn" style="margin-top: 10px;">Остальные новости</a>
+                    <a href="{% url 'professionals_news:frontend:index' %}" class="btn" style="margin-top: 10px;">Остальные новости</a>
                 </div>
             {% endblock %}
         </div>

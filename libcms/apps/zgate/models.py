@@ -317,15 +317,15 @@ class ZCatalog(models.Model):
     )
 
     can_order_copy = models.BooleanField(
-        verbose_name=u"Возможность заказа копии документа", blank=False,
+        verbose_name=u"Возможность заказа копии документа", blank=False, default=False
     )
 
     can_order_document = models.BooleanField(
-        verbose_name=u"Возможность заказа документа во временное пользование", blank=False,
+        verbose_name=u"Возможность заказа документа во временное пользование", blank=False, default=False
     )
 
     can_reserve = models.BooleanField(
-        verbose_name=u"Возможность  бронирования документа", blank=False,
+        verbose_name=u"Возможность  бронирования документа", blank=False, default=False
     )
 
 

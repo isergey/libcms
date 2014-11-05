@@ -20,8 +20,8 @@
     <div class="span12">
         <ul class="breadcrumb">
 
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{% url personal:frontend:index %}">Личный кабинет</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>
             <li class="active">Сохраненные поисковые запросы</li>
 
         </ul>
@@ -30,7 +30,7 @@
             <li>
                 <div class="thumbnail">
                     <div class="request_info">
-                        <a href="{% url ssearch:frontend:index %}?{{ srequest.breads|last|hash:"href" }}{% if srequest.catalog %}&catalog={{ srequest.catalog|urlencode }}{% endif %}">{% for search_breadcumb in srequest.breads %}
+                        <a href="{% url 'ssearch:frontend:index' %}?{{ srequest.breads|last|hash:"href" }}{% if srequest.catalog %}&catalog={{ srequest.catalog|urlencode }}{% endif %}">{% for search_breadcumb in srequest.breads %}
                             {% if not forloop.last %}
                                 <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</span> →
                             {% else %}
@@ -48,7 +48,7 @@
 {#                        {% if not forloop.last %}<hr/>{% endif %}#}
                     </div>
                     <div class="actions">
-                        <a class="delete" href="{% url ssearch:frontend:delete_search_request srequest.saved_request.id %}">Удалить</a> <span style="float: right;">{{ srequest.saved_request.add_time }}</span>
+                        <a class="delete" href="{% url 'ssearch:frontend:delete_search_request' srequest.saved_request.id %}">Удалить</a> <span style="float: right;">{{ srequest.saved_request.add_time }}</span>
                     </div>
                 </div>
             </li>
