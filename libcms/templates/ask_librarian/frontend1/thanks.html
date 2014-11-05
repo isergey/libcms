@@ -3,8 +3,8 @@
 {% block title %}Спроси библиотекаря{% endblock %}
 {% block breadcrumb %}
     <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url ask_librarian:frontend:index %}">Спроси библиотекаря</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'ask_librarian:frontend:index' %}">Спроси библиотекаря</a> <span class="divider">/</span></li>
         <li>Вопрос № {{ question.id }}</li>
     </ul>
 {% endblock %}
@@ -19,5 +19,5 @@
             Спасибо за вопрос.Вы можете отслеживать его статус по номеру. Номер Вашего вопроса: <b>{{ question.id }}</b>
         </div>
     {% endif %}
-    <a href="{% url ask_librarian:frontend:detail question.id %}">Перейти к вопросу</a>
+    <a href="{% url 'ask_librarian:frontend:detail' question.id %}">Перейти к вопросу</a>
 {% endblock %}
