@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+Disallow:/ru/ssearch
+Disallow:/en/ssearch
+Disallow:/tt/ssearch
