@@ -5,6 +5,7 @@
         width: 86px;
     }
 </style>
+
 {% for item in items_list %}
     {% if item.id_in_catalog %}
         {% url 'ssearch:frontend:detail'  item.id_in_catalog  as item_url %}
