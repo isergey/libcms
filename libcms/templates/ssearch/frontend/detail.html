@@ -28,8 +28,8 @@
     <div class="span12">
         <ul class="breadcrumb">
 
-            <li><a href="{% url index:frontend:index %}">{% if LANGUAGE_CODE == 'ru' %}Начало{% elif LANGUAGE_CODE == 'tt' %}Начало{% else %}Home{% endif %}</a> <span class="divider">/</span></li>
-            <li><a href="{% url ssearch:frontend:index %}">{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Начало{% elif LANGUAGE_CODE == 'tt' %}Начало{% else %}Home{% endif %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'ssearch:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}</a> <span class="divider">/</span></li>
             {% if request.GET.back %}
                 <li><a href="{{ request.GET.back }}">{% if LANGUAGE_CODE == 'ru' %}Результаты поиска{% elif LANGUAGE_CODE == 'tt' %}Эзләү нәтиҗәләре{% else %}Search results{% endif %}</a> <span class="divider">/</span></li>
             {% endif %}
@@ -39,7 +39,7 @@
         <div class="row">
             <div class="span2">
                 <p>{% drow_save_doc request.user gen_id %}</p>
-                <p><a class="btn" href="{% url ssearch:frontend:to_print gen_id %}" target="_blank"><i class="icon-print"></i>Печать</a></p>
+                <p><a class="btn" href="{% url 'ssearch:frontend:to_print' gen_id %}" target="_blank"><i class="icon-print"></i>Печать</a></p>
                 <hr/>
                 <div>
                     {% if LANGUAGE_CODE == 'ru' %}Количество обращений{% elif LANGUAGE_CODE == 'tt' %}Количество обращений{% else %}Views{% endif %}: {{ access_count }}
@@ -97,7 +97,7 @@
                     {% for doc in linked_docs %}
 
                         <li class="textBook">
-                            <p class="item1"><a target="_blank" href="{% url ssearch:frontend:detail doc.id %}">{{ doc.record.title.0 }}</a></p>
+                            <p class="item1"><a target="_blank" href="{% url 'ssearch:frontend:detail' doc.id %}">{{ doc.record.title.0 }}</a></p>
                             <p class="item2">
                                 {% for author in doc.record.author %}
                                     {{ author }}{% if not forloop.last %}; {% endif %}
