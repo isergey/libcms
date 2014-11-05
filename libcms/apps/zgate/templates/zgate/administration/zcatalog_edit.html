@@ -2,7 +2,7 @@
 {% block module_action %}редактирование ( {{ form.title.data }} ){% endblock %}
 {% block module_page %}
 <div class="module_actions column prepend-1 last">
-    <a class="button negative delete" title="Удалить каталог" href="{% url administration_zgate_delete zcatalog.id%}"><img src="/media/images/icons/delete_16.png" alt=""/>Удалить каталог</a>
+    <a class="button negative delete" title="Удалить каталог" href="{% url 'administration_zgate_delete' zcatalog.id%}"><img src="/media/images/icons/delete_16.png" alt=""/>Удалить каталог</a>
 </div>
 <hr/>
 <div class="column span-19 prepend-1 last">
@@ -147,7 +147,7 @@
                 <button type="submit" class="button positive" title="Применить изменения каталога">
                     <img src="/media/css/bp/buttons/icons/tick.png" alt=""/> Применить
                 </button>
-                <a class="button negative" title="Отменить редактирование каталога" href="{% url administration_zgate_index %}">
+                <a class="button negative" title="Отменить редактирование каталога" href="{% url 'administration_zgate_index' %}">
                     <img src="/media/images/icons/stop_16.png" alt=""/>Отменить
                 </a>
 

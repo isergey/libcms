@@ -37,9 +37,9 @@
         }
     </style>
 <h3>
-    <a href="{% url professionals_pages:administration:index %}">Страницы</a> →
+    <a href="{% url 'professionals_pages:administration:index' %}">Страницы</a> →
     {% if page.parent_id %}
-        <a href="{% url professionals_pages:administration:pages_list page.parent_id %}">
+        <a href="{% url 'professionals_pages:administration:pages_list' page.parent_id %}">
             {% if not page.parent.get_cur_lang_content %}
                 {{ page.parent }}
             {% else %}
@@ -47,7 +47,7 @@
             {% endif %}
         </a> →
         {% for ancestor in page.parent.get_ancestors %}
-            <a href="{% url professionals_pages:administration:pages_list ancestor.id %}">
+            <a href="{% url 'professionals_pages:administration:pages_list' ancestor.id %}">
                 {% if not ancestor.get_cur_lang_content %}
                     {{ ancestor }}
                 {% else %}
@@ -94,7 +94,7 @@
     <script type="text/javascript">
     $('#groups_form').submit(function(){
         $.ajax({
-            url: '{% url professionals_pages:administration:assign_page_permissions page.id %}',
+            url: '{% url 'professionals_pages:administration:assign_page_permissions' page.id %}',
             type: 'POST',
             data: $(this).serialize(),
             success: function(data) {

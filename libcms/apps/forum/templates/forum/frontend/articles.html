@@ -5,7 +5,7 @@
 {% block title %} {{ topic.subject }} {% endblock %}
 {% block content %}
     {% get_obj_perms request.user for topic as "topic_perms" %}
-    <h3><a href="{% url forum:frontend:forums %}">{% trans 'Forums' %}</a> → <a href="{% url forum:frontend:topics topic.forum.slug %}">{{ topic.forum.title }}</a> → {{ topic.subject }} {% if topic.closed %}({% trans 'Topic is closed' %}) {% endif %}
+    <h3><a href="{% url 'forum:frontend:forums' %}">{% trans 'Forums' %}</a> → <a href="{% url 'forum:frontend:topics' topic.forum.slug %}">{{ topic.forum.title }}</a> → {{ topic.subject }} {% if topic.closed %}({% trans 'Topic is closed' %}) {% endif %}
     </h3>
     <hr/>
     <div class="span12">
@@ -25,21 +25,21 @@
                     <div class="toolbar span1">
 
                         {% if "can_change_articles" in topic_perms %}
-                            <a class="btn btn-small btn-warning" href="{% url forum:frontend:edit_article topic.forum.slug topic.id article.id %}#form" title="{% trans 'Edit message' %}"><i class="icon-edit"></i></a>
+                            <a class="btn btn-small btn-warning" href="{% url 'forum:frontend:edit_article' topic.forum.slug topic.id article.id %}#form" title="{% trans 'Edit message' %}"><i class="icon-edit"></i></a>
                         {% endif %}
 
-                        <a class="btn btn-small" href="{% url forum:frontend:replay_article topic.forum.slug topic.id article.id %}#form" title="{% trans 'Quote' %}">« »</a>
+                        <a class="btn btn-small" href="{% url 'forum:frontend:replay_article' topic.forum.slug topic.id article.id %}#form" title="{% trans 'Quote' %}">« »</a>
 
                         {% if "can_hide_articles" in topic_perms %}
                             {% if article.public %}
-                                <a class="article_hide btn btn-small btn-info" href="{% url forum:frontend:article_hide article.id %}" title="{% trans 'Hide message' %}"><i class="icon-eye-open icon-white"></i> </a>
+                                <a class="article_hide btn btn-small btn-info" href="{% url 'forum:frontend:article_hide' article.id %}" title="{% trans 'Hide message' %}"><i class="icon-eye-open icon-white"></i> </a>
                             {% else %}
-                                <a class="article_show btn btn-small btn-info " href="{% url forum:frontend:article_show article.id %}" title="{% trans 'Publish message' %}"><i class="icon-eye-close icon-white"></i> </a>
+                                <a class="article_show btn btn-small btn-info " href="{% url 'forum:frontend:article_show' article.id %}" title="{% trans 'Publish message' %}"><i class="icon-eye-close icon-white"></i> </a>
                             {% endif %}
                         {% endif %}
 
                         {% if "can_delete_articles"  in topic_perms %}
-                            <a class="btn btn-small btn-danger article_delete" href="{% url forum:frontend:article_delete article.id %}" title="{% trans 'Delete' %}"><i class="icon-trash icon-white"></i> </a>
+                            <a class="btn btn-small btn-danger article_delete" href="{% url 'forum:frontend:article_delete' article.id %}" title="{% trans 'Delete' %}"><i class="icon-trash icon-white"></i> </a>
                         {% endif %}
 
                     </div>
@@ -100,7 +100,7 @@
     <script type="text/javascript">
         $('#preview_button').click(function(){
             $.ajax({
-                url:'{% url forum:frontend:article_preview %}',
+                url:'{% url 'forum:frontend:article_preview' %}',
                 type:'POST',
                 dataType:"json",
                 data: { text: $('#id_text').val()},

@@ -30,7 +30,7 @@
             {% endif %}
 
             {% if  day.events %}
-                <a class='awesome blue' href="{% url events:frontend:events_by_date year month day.day %}"
+                <a class='awesome blue' href="{% url 'events:frontend:events_by_date' year month day.day %}"
                    title="Показать события дня"> {{ day.day }}</a>
 
             {% else %}

@@ -20,38 +20,38 @@
     </style>
     <div class="span12">
         <ul class="breadcrumb">
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
             <li class="active">Личный кабинет</li>
         </ul>
         <div class="row personal">
             <div class="span6">
                 <div class="thumbnail">
-                    <a href="{% url orders:frontend:on_hand %}">Выданные книги</a>
+                    <a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a>
                 </div>
             </div>
             <div class="span6">
                 <div class="thumbnail">
-                    <a href="{% url orders:frontend:reservations %}">Заказы на бронирование</a>
+                    <a href="{% url 'orders:frontend:reservations' %}">Заказы на бронирование</a>
                 </div>
             </div>
             <div class="span6">
                 <div class="thumbnail">
-                    <a href="{% url mydocs:frontend:index %}">Мои документы</a>
+                    <a href="{% url 'mydocs:frontend:index' %}">Мои документы</a>
                 </div>
             </div>
             <div class="span6">
                 <div class="thumbnail">
-                    <a href="{% url ssearch:frontend:saved_search_requests %}">Поисковые запросы</a>
+                    <a href="{% url 'ssearch:frontend:saved_search_requests' %}">Поисковые запросы</a>
                 </div>
             </div>
             <div class="span6">
                 <div class="thumbnail">
-                    <a href="{% url urt:frontend:index %}">Мои библиотеки</a>
+                    <a href="{% url 'urt:frontend:index' %}">Мои библиотеки</a>
                 </div>
             </div>
             <div class="span6">
                 <div class="thumbnail">
-                    <a href="{% url ask_librarian:frontend:my_questions %}">Мои вопросы</a>
+                    <a href="{% url 'ask_librarian:frontend:my_questions' %}">Мои вопросы</a>
                 </div>
             </div>
         </div>

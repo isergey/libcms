@@ -8,7 +8,7 @@
         <p>{% trans 'Select group for edit permissions' %}</p>
         <ul>
             {% for group in groups %}
-                <li><a href="{% url forum:frontend:assign_topic_permissions topic.id group.id %}">{{ group.name }}</a></li>
+                <li><a href="{% url 'forum:frontend:assign_topic_permissions' topic.id group.id %}">{{ group.name }}</a></li>
             {% endfor %}
         </ul>
     </div>

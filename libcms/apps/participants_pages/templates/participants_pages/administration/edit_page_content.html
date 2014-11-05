@@ -18,9 +18,9 @@
     </style>
 
     <h3>
-        <a href="{% url participants_pages:administration:index library.id %}">Страницы</a> →
+        <a href="{% url 'participants_pages:administration:index' library.id %}">Страницы</a> →
         {% for ancestor in content.page.get_ancestors %}
-            <a href="{% url participants_pages:administration:pages_list library.id ancestor.id %}">
+            <a href="{% url 'participants_pages:administration:pages_list' library.id ancestor.id %}">
                 {% if not ancestor.get_cur_lang_content %}
                     {{ ancestor }}
                 {% else %}
@@ -35,7 +35,7 @@
         {% endif %}
 
     </h3>
-    <div class="well">URL этой страницы: {% url participants_pages:frontend:show library.id page.url_path  as page_url %} <a href="/{{ content.lang }}{{ page_url|rmlocale }}">/{{ content.lang }}{{ page_url|rmlocale }}</a></div>
+    <div class="well">URL этой страницы: {% url 'participants_pages:frontend:show' library.id page.url_path  as page_url %} <a href="/{{ content.lang }}{{ page_url|rmlocale }}">/{{ content.lang }}{{ page_url|rmlocale }}</a></div>
     <form class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Редактирование контента для языка: <b>{{ content.lang }}</b></legend>
         <fieldset>

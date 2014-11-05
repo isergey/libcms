@@ -1,6 +1,6 @@
 {% load active_link %}
 <ul class="nav nav-list">
     <li class="nav-header">События</li>
-    <li class="{% active 'events:administration:events_list' %}"><a href="{% url events:administration:events_list %}">Список</a></li>
-    <li class="{% active_path 'events:administration:create_event' %}"><a href="{% url events:administration:create_event %}">Создать событие</a></li>
+    <li class="{% active 'events:administration:events_list' %}"><a href="{% url 'events:administration:events_list' %}">Список</a></li>
+    <li class="{% active_path 'events:administration:create_event' %}"><a href="{% url 'events:administration:create_event' %}">Создать событие</a></li>
 </ul>

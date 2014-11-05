@@ -12,12 +12,12 @@
     {% if parent %}
         <h3>
         {% for ancestor in parent.get_ancestors %}
-            <a href="{% url participants:administration:list ancestor.id %}">{{ ancestor }}</a> →
+            <a href="{% url 'participants:administration:list' ancestor.id %}">{{ ancestor }}</a> →
         {% endfor %}
         {% if parent.parent_id %}
-            <a href="{% url participants:administration:list parent.id %}">{{ parent }}</a>
+            <a href="{% url 'participants:administration:list' parent.id %}">{{ parent }}</a>
         {% else %}
-            <a href="{% url participants:administration:list %}">{{ parent }}</a>
+            <a href="{% url 'participants:administration:list' %}">{{ parent }}</a>
         {% endif %}
         </h3>
     {% endif %}
@@ -29,19 +29,19 @@
     <ul class="list">
         {% for library in libraries_page.object_list %}
             <li class="title">
-                <a style="font-size: 14px" href="{% url participants:administration:edit library.id %}" title="{{ library }}">{{ library }}</a>
+                <a style="font-size: 14px" href="{% url 'participants:administration:edit' library.id %}" title="{{ library }}">{{ library }}</a>
 
             {% if not library.is_leaf_node %}
-                <a class="btn" href="{% url participants:administration:list library.id %}">Филиалы</a>
+                <a class="btn" href="{% url 'participants:administration:list' library.id %}">Филиалы</a>
             {% endif %}
             <span class="buttons">
 
-                {% if not parent  %}<a class="btn btn-mini {% if not perms.participants.add_library %} disabled {% endif %}" href="{% url participants:administration:create library.id %}"><i class="icon-plus"></i>Добавить филиал</a>{% endif %}
+                {% if not parent  %}<a class="btn btn-mini {% if not perms.participants.add_library %} disabled {% endif %}" href="{% url 'participants:administration:create' library.id %}"><i class="icon-plus"></i>Добавить филиал</a>{% endif %}
                 {% if parent %}
-                    <a class="btn btn-danger {% if not perms.participants.delete_library %} disabled {% endif %}" href="{% url participants:administration:delete library.id %}"><i class="icon-trash icon-white"></i></a>
+                    <a class="btn btn-danger {% if not perms.participants.delete_library %} disabled {% endif %}" href="{% url 'participants:administration:delete' library.id %}"><i class="icon-trash icon-white"></i></a>
                 {% else %}
-                    <a class="btn btn-success {% if not perms.participants_pages %} disabled {% endif %}" href="{% url participants_pages:administration:index library.id %}">Страницы</a>
-                    <a class="btn btn-danger {% if not perms.participants.delete_cbs %} disabled {% endif %}" href="{% url participants:administration:delete library.id %}"><i class="icon-trash icon-white"></i></a>
+                    <a class="btn btn-success {% if not perms.participants_pages %} disabled {% endif %}" href="{% url 'participants_pages:administration:index' library.id %}">Страницы</a>
+                    <a class="btn btn-danger {% if not perms.participants.delete_cbs %} disabled {% endif %}" href="{% url 'participants:administration:delete' library.id %}"><i class="icon-trash icon-white"></i></a>
                 {% endif %}
 
             </span>

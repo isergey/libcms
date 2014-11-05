@@ -25,8 +25,8 @@
     <div class="span10">
         <ul class="breadcrumb">
 
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{% url ssearch:frontend:index %}">Поиск</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'ssearch:frontend:index' %}">Поиск</a> <span class="divider">/</span></li>
             {% if request.GET.back %}
                 <li><a href="{{ request.GET.back }}">Результаты поиска</a> <span class="divider">/</span></li>
             {% endif %}

@@ -23,10 +23,10 @@
         {% for event in events_list %}
 
             <tr>
-                <td><a href="{% url events:administration:edit_event event.id %}">{{ event.event_content.title }}</a></td>
+                <td><a href="{% url 'events:administration:edit_event' event.id %}">{{ event.event_content.title }}</a></td>
                 <td>{{ event.start_date }}</td>
                 <td>{{ event.end_date }}</td>
-                <td><a class="delete btn btn-danger"  href="{% url events:administration:delete_event event.id %}"><i class="icon-trash icon-white" title="Удалить"></i></a></td>
+                <td><a class="delete btn btn-danger"  href="{% url 'events:administration:delete_event' event.id %}"><i class="icon-trash icon-white" title="Удалить"></i></a></td>
             </tr>
 
         {% endfor %}

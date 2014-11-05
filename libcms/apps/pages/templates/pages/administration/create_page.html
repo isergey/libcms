@@ -11,10 +11,10 @@
 
 {% block action_content %}
     <h3>
-    <a href="{% url pages:administration:index %}">Страницы</a> →
+    <a href="{% url 'pages:administration:index' %}">Страницы</a> →
     {% if parent %}
             {% for ancestor in parent.get_ancestors %}
-                <a href="{% url pages:administration:pages_list ancestor.id %}">
+                <a href="{% url 'pages:administration:pages_list' ancestor.id %}">
                     {% if not ancestor.get_cur_lang_content %}
                         {{ ancestor }}
                     {% else %}

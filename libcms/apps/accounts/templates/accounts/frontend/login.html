@@ -16,8 +16,8 @@
     <hr/>
     <h3>Login using:</h3>
     <div>
-            <a rel="nofollow" href="{% url socialauth_begin 'vkontakte-oauth2' %}" title="Вконтакте"><img src="/static/images/icons/48x48/vkontakte-oauth2.png" alt="Вконтакте"></a>
-            <a rel="nofollow" href="{% url socialauth_begin 'facebook' %}" title="Facebook"><img src="/static/images/icons/48x48/facebook.png" alt="Facebook"></a>
+            <a rel="nofollow" href="{% url 'socialauth_begin' 'vkontakte-oauth2' %}" title="Вконтакте"><img src="/static/images/icons/48x48/vkontakte-oauth2.png" alt="Вконтакте"></a>
+            <a rel="nofollow" href="{% url 'socialauth_begin' 'facebook' %}" title="Facebook"><img src="/static/images/icons/48x48/facebook.png" alt="Facebook"></a>
 {#            <a rel="nofollow" href="{% url socialauth_begin 'mailru-oauth2' %}" title="Mail.ru"><img src="/static/images/icons/48x48/mailru-oauth2.png" alt="Mail.ru"></a>#}
 {#            <a rel="nofollow" href="{% url socialauth_begin 'yandex-oauth2' %}" title="Yandex"><img src="/static/images/icons/48x48/yandex-oauth2.png" alt="Yandex"></a>#}
 {#            <a rel="nofollow" href="{% url socialauth_begin 'google-oauth2' %}" title="Google"><img src="/static/images/icons/48x48/google-oauth2.png" alt="Google"></a>#}
@@ -37,10 +37,10 @@
             {% for name in social_auth.backends.openid %}
                 <li>
                     {% if name != "livejournal" and name != "openid" %}
-                        <a rel="nofollow" href="{% url socialauth_begin name %}">{{ name|title }}</a>
+                        <a rel="nofollow" href="{% url 'socialauth_begin' name %}">{{ name|title }}</a>
                     {% else %}
                         {% if name == "livejournal" %}
-                            <form action="{% url socialauth_begin "livejournal" %}" method="post">{% csrf_token %}
+                            <form action="{% url 'socialauth_begin' "livejournal" %}" method="post">{% csrf_token %}
                                 <div>
                                     <label for="openid_lj_user">LiveJournal user:</label>
                                     <input id="openid_lj_user" type="text" value="" name="openid_lj_user" />
@@ -49,7 +49,7 @@
                             </form>
                         {% else %}
                             {% if name == "openid" %}
-                                <form action="{% url socialauth_begin "openid" %}" method="post">{% csrf_token %}
+                                <form action="{% url 'socialauth_begin' "openid" %}" method="post">{% csrf_token %}
                                     <div>
                                         <label for="openid_identifier">Other provider</label>
                                         <input id="openid_identifier" type="text" value="" name="openid_identifier" />

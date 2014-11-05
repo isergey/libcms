@@ -2,29 +2,29 @@
 <ul class="nav nav-list">
     <li class="nav-header">Библиотеки</li>
     <li class="{% active 'participants:administration:list' %}">
-        <a href="{% url participants:administration:list %}">Список</a>
+        <a href="{% url 'participants:administration:list' %}">Список</a>
     </li>
     <li class="{% active_path 'participants:administration:create' %}">
-        <a href="{% url participants:administration:create %}">Создать ЦБС</a>
+        <a href="{% url 'participants:administration:create' %}">Создать ЦБС</a>
     </li>
 </ul>
 <hr/>
 <ul class="nav nav-list">
     <li class="nav-header">Районы</li>
     <li class="{% active 'participants:administration:district_list' %}">
-        <a class="disabled" href="{% url participants:administration:district_list %}">Список</a>
+        <a class="disabled" href="{% url 'participants:administration:district_list' %}">Список</a>
     </li>
     <li class="{% active_path 'participants:administration:district_create' %}">
-        <a href="{% url participants:administration:district_create %}">Создать</a>
+        <a href="{% url 'participants:administration:district_create' %}">Создать</a>
     </li>
 </ul>
 <hr/>
 <ul class="nav nav-list">
     <li class="nav-header">Типы библиотек</li>
     <li class="{% active 'participants:administration:library_types_list' %}">
-        <a href="{% url participants:administration:library_types_list %}">Список</a>
+        <a href="{% url 'participants:administration:library_types_list' %}">Список</a>
     </li>
     <li class="{% active_path 'participants:administration:library_type_create' %}">
-        <a href="{% url participants:administration:library_type_create %}">Создать</a>
+        <a href="{% url 'participants:administration:library_type_create' %}">Создать</a>
     </li>
 </ul>

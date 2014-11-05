@@ -5,7 +5,7 @@
     <div class="row">
 
         <div class="span5">
-            <form class="well" action="{% url filebrowser:administration:upload %}" method="post"
+            <form class="well" action="{% url 'filebrowser:administration:upload' %}" method="post"
                   enctype="multipart/form-data">{% csrf_token %}
                 <legend>Загрузка файла</legend>
                 <fieldset>
@@ -16,7 +16,7 @@
             </form>
         </div>
         <div class="span5">
-            <form class="well" action="{% url filebrowser:administration:create_directory %}" method="post">{% csrf_token %}
+            <form class="well" action="{% url 'filebrowser:administration:create_directory' %}" method="post">{% csrf_token %}
                 <legend>Создать директорию</legend>
                 <fieldset>
                     {% include 'administration/base_form_fields.html' with form=dir_form %}
@@ -64,12 +64,12 @@
                 <td>
                     {% if dir_item.type == 'file' %}
                         <a class="delete btn  btn-mini btn-danger" title="Удалить"
-                           href="{% url filebrowser:administration:delete %}?path={{ dir_item.work_url|urlencode }}">
+                           href="{% url 'filebrowser:administration:delete' %}?path={{ dir_item.work_url|urlencode }}">
                             <i class="icon-trash icon-white"></i>
                         </a>
                     {% else %}
                         <a class="delete btn btn-danger " title="Удалить"
-                           href="{% url filebrowser:administration:delete %}?path={{ dir_item.url|urlencode }}">
+                           href="{% url 'filebrowser:administration:delete' %}?path={{ dir_item.url|urlencode }}">
                             <i class="icon-trash icon-white"></i>
                         </a>
                     {% endif %}

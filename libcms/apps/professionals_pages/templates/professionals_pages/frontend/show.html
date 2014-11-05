@@ -3,11 +3,11 @@
 {% block title %}{{ content.title }}{% endblock %}
 {% block  breadcrumbs %}
     <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url professionals:frontend:index %}">Проф. страница</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'professionals:frontend:index' %}">Проф. страница</a> <span class="divider">/</span></li>
 
         {% for ancestor in content.page.get_ancestors_titles %}
-            <li><a href="{% url professionals_pages:frontend:show ancestor.url_path %}">
+            <li><a href="{% url 'professionals_pages:frontend:show' ancestor.url_path %}">
                 {% if not ancestor.title %}
                     {{ ancestor }}
                 {% else %}

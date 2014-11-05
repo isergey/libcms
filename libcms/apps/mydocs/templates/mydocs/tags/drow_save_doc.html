@@ -1,6 +1,6 @@
 <div>
     {% if already_saved %}
-        <a class="btn btn-success" href="{% url mydocs:frontend:index %}#{{ gen_id }}">Сохранен в документах</a>
+        <a class="btn btn-success" href="{% url 'mydocs:frontend:index' %}#{{ gen_id }}">Сохранен в документах</a>
 
     {% else %}
         <style>
@@ -11,7 +11,7 @@
 
         <div class="modal hide" id="save_doc_modal">
 
-            <form action="{% url mydocs:frontend:save %}" method="POST" id="save_doc_form" style="margin: 0">
+            <form action="{% url 'mydocs:frontend:save' %}" method="POST" id="save_doc_form" style="margin: 0">
                 <div class="modal-header">
                     <a class="close" data-dismiss="modal">×</a>
 
@@ -36,7 +36,7 @@
         <script type="text/javascript">
             $('#save_doc_form').submit(function () {
                 $.ajax({
-                    url:'{% url mydocs:frontend:save %}',
+                    url:'{% url 'mydocs:frontend:save' %}',
                     type:'POST',
                     dataType:"json",
                     async:false,

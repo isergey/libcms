@@ -2,7 +2,7 @@
 {% block title %}Мои документы{% endblock %}
 {% block content %}
     <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
         <li class="active">Мои документы</li>
     </ul>
     <style type="text/css">
@@ -19,8 +19,8 @@
                     <div class="alert alert-info">
                         {{ record.saved_doc.comments }}
                     </div>
-                    <a href="{% url ssearch:frontend:delete record.saved_doc.id %}" class="delete">Заказать</a>
-                    <a href="{% url mydocs:frontend:delete record.saved_doc.id %}" class="delete">удалить</a>
+                    <a href="{% url 'ssearch:frontend:delete' record.saved_doc.id %}" class="delete">Заказать</a>
+                    <a href="{% url 'mydocs:frontend:delete' record.saved_doc.id %}" class="delete">удалить</a>
                     {% if not forloop.last %}<hr/>{% endif %}
                 </li>
             {% endfor %}

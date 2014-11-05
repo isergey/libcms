@@ -17,10 +17,10 @@
 {#        {% endfor %}#}
 {#        {{ page }}#}
     <h3>
-    <a href="{% url pages:administration:index %}">Страницы</a> →
+    <a href="{% url 'pages:administration:index' %}">Страницы</a> →
     {% if page.parent_id %}
             {% for ancestor in page.parent.get_ancestors %}
-                <a href="{% url pages:administration:pages_list ancestor.id %}">
+                <a href="{% url 'pages:administration:pages_list' ancestor.id %}">
                     {% if not ancestor.get_cur_lang_content %}
                         {{ ancestor }}
                     {% else %}
@@ -29,14 +29,14 @@
                 </a> →
             {% endfor %}
             {% if not page.parent.get_cur_lang_content %}
-                <a href="{% url pages:administration:pages_list page.parent.id %}">{{ page.parent }}</a> →
+                <a href="{% url 'pages:administration:pages_list' page.parent.id %}">{{ page.parent }}</a> →
             {% else %}
-                <a href="{% url pages:administration:pages_list page.parent.id %}">{{ page.parent.get_cur_lang_content }}</a> →
+                <a href="{% url 'pages:administration:pages_list' page.parent.id %}">{{ page.parent.get_cur_lang_content }}</a> →
             {% endif %}
     {% endif %}
         {{ page }}
     </h3>
-    <div class="well">URL этой страницы: {% url pages:frontend:show page.url_path  as page_url %} <a id="content_url_link" href="{{ page_url|rmlocale }}">/<span id="content_lang">{{ content.lang }}</span>{{ page_url|rmlocale }}</a></div>
+    <div class="well">URL этой страницы: {% url 'pages:frontend:show' page.url_path  as page_url %} <a id="content_url_link" href="{{ page_url|rmlocale }}">/<span id="content_lang">{{ content.lang }}</span>{{ page_url|rmlocale }}</a></div>
 
     <form class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Создание контента страницы:</legend>

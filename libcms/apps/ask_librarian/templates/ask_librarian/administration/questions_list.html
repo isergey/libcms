@@ -29,20 +29,20 @@
                     </div>
                 {% endif %}
                 <div >
-                    <a class="btn" href="{% url ask_librarian:administration:question_detail question.id %}">Детальная информация</a>
+                    <a class="btn" href="{% url 'ask_librarian:administration:question_detail' question.id %}">Детальная информация</a>
                     {% if question.is_new %}
-                        <a class="btn btn-warning" href="{% url ask_librarian:administration:questions_to_process question.id %}">Забрать на обработку</a>
+                        <a class="btn btn-warning" href="{% url 'ask_librarian:administration:questions_to_process' question.id %}">Забрать на обработку</a>
                     {% endif %}
                     {% if question.is_new %}
-                        <a class="btn btn-success" href="{% url ask_librarian:administration:question_answer question.id %}">Дать ответ</a>
+                        <a class="btn btn-success" href="{% url 'ask_librarian:administration:question_answer' question.id %}">Дать ответ</a>
                     {% endif %}
                     {% if question.is_processing and question.manager.user_id == request.user.id %}
-                        <a class="btn btn-success" href="{% url ask_librarian:administration:question_answer question.id %}">Дать ответ</a>
+                        <a class="btn btn-success" href="{% url 'ask_librarian:administration:question_answer' question.id %}">Дать ответ</a>
                     {% endif %}
                     {% if question.is_ready and question.manager.user_id == request.user.id or request.user.is_superuser %}
-                        <a class="btn" href="{% url ask_librarian:administration:question_edit question.id %}">Редактировать</a>
+                        <a class="btn" href="{% url 'ask_librarian:administration:question_edit' question.id %}">Редактировать</a>
                     {% endif %}
-                    <a style="float: right;" class="btn btn-danger" href="{% url ask_librarian:administration:question_delete question.id %}">Удалить</a>
+                    <a style="float: right;" class="btn btn-danger" href="{% url 'ask_librarian:administration:question_delete' question.id %}">Удалить</a>
 
                 </div>
             </li>

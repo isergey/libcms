@@ -31,7 +31,7 @@
     {{ catalog.description|safe }}
 
 </div>
-<div><a href="{% url zgate_help  catalog.id %}">Справка по работе с каталогом</a></div>
+<div><a href="{% url 'zgate_help'  catalog.id %}">Справка по работе с каталогом</a></div>
 {{ search_form|safe}}
 </div>
 <script type="text/javascript" src="/media/js/zgate.js"></script>

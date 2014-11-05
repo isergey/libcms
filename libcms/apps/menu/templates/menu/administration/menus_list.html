@@ -15,12 +15,12 @@
     {% for menu in menus %}
         <li><span class="title">
             {% if not menu.menu_title.title %}
-                <a href="{% url menu:administration:edit_menu menu.id %}">{{ menu.slug }}</a>
+                <a href="{% url 'menu:administration:edit_menu' menu.id %}">{{ menu.slug }}</a>
             {% else %}
-                <a href="{% url menu:administration:edit_menu menu.id %}">{{ menu.menu_title.title }} ({{ menu.slug }})</a>
+                <a href="{% url 'menu:administration:edit_menu' menu.id %}">{{ menu.menu_title.title }} ({{ menu.slug }})</a>
             {% endif %}
         </span>
-            <a href="{% url menu:administration:item_list menu.id  %}">Пункты</a>
+            <a href="{% url 'menu:administration:item_list' menu.id  %}">Пункты</a>
         </li>
     {% endfor %}
     </ul>

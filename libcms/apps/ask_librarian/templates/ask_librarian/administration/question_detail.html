@@ -46,17 +46,17 @@
     <div>
     <hr/>
         {% if question.is_new %}
-            <a class="btn btn-warning" href="{% url ask_librarian:administration:questions_to_process question.id %}">Забрать на обработку</a>
+            <a class="btn btn-warning" href="{% url 'ask_librarian:administration:questions_to_process' question.id %}">Забрать на обработку</a>
         {% endif %}
         {% if question.is_new or question.is_processing %}
-            <a class="btn btn-success" href="{% url ask_librarian:administration:question_answer question.id %}">Дать ответ</a>
+            <a class="btn btn-success" href="{% url 'ask_librarian:administration:question_answer' question.id %}">Дать ответ</a>
         {% endif %}
         {% if question.is_ready and question.manager.user_id == request.user.id or request.user.is_superuser %}
-            <a class="btn btn-success" href="{% url ask_librarian:administration:question_edit question.id %}">Редактировать</a>
+            <a class="btn btn-success" href="{% url 'ask_librarian:administration:question_edit' question.id %}">Редактировать</a>
         {% endif %}
-        <a style="float: right;" class="btn btn-danger" href="{% url ask_librarian:administration:question_delete question.id %}">Удалить</a>
+        <a style="float: right;" class="btn btn-danger" href="{% url 'ask_librarian:administration:question_delete' question.id %}">Удалить</a>
         {% if perms.ask_librarian.assign_to_manager and  to_manager_form and question.is_new %}
-            <form action="{% url ask_librarian:administration:assign_to_manager question.id %}" method="POST" style="margin-top: 10px" class='form-inline'>{% csrf_token %}
+            <form action="{% url 'ask_librarian:administration:assign_to_manager' question.id %}" method="POST" style="margin-top: 10px" class='form-inline'>{% csrf_token %}
                 {% include 'frontend/base_form_fields.html' with form=to_manager_form %}
                 <input type="submit" value="Назначить ответственным" class="btn">
             </form>

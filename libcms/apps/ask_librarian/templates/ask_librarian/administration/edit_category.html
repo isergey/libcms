@@ -11,7 +11,7 @@
 
 {% block action_content %}
     <h3>
-        <a href="{% url ask_librarian:administration:categories_list %}">Категории</a> →
+        <a href="{% url 'ask_librarian:administration:categories_list' %}">Категории</a> →
         {% for ancestor in category.get_t_ancestors %}
 
                 {% if not ancestor %}

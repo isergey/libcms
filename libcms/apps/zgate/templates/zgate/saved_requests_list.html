@@ -18,12 +18,12 @@
                         Дата: {{ saved_request.add_date|date:"d M Y H:i" }}
                     </div>
                     <div class="detail">
-                        <a href="{% url zgate_make_saved_request saved_request.id %}">
+                        <a href="{% url 'zgate_make_saved_request' saved_request.id %}">
                             <img src="/media/images/icons/gear_16.png" alt="выполнить запрос"/> выполнить запрос
                         </a>
                     </div>
                     <div class="detail">
-                        <a href="{% url zgate_delete_saved_request saved_request.id %}">
+                        <a href="{% url 'zgate_delete_saved_request' saved_request.id %}">
                             <img src="/media/images/icons/delete_16.png" alt="удалить запрос"/> удалить запрос
                         </a>
                     </div>

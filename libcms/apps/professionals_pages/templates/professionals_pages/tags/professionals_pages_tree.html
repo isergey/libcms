@@ -6,7 +6,7 @@
         {% if nodes %}
             {% recursetree nodes %}
 {#                <li {% if path == node.item_title.url  %}class="active"{% endif %}>#}
-                {% url professionals_pages:frontend:show node.url_path as node_url %}
+                {% url 'professionals_pages:frontend:show' node.url_path as node_url %}
                 <li class="{% if request.path == node_url %} active {% endif %}">
 {#                    <a href="{{ node.item_title.url }}" {% if node.open_in_new %} target="_blank" {% endif %}>{{ node.item_title.title }}</a>#}
                     <a href="{{ node_url }}">{{ node.title }}</a>
