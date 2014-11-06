@@ -11,7 +11,6 @@ from django.contrib.auth import login, REDIRECT_FIELD_NAME
 
 #@permission_required_or_403('accounts.view_users')
 def index(request):
-    print REDIRECT_FIELD_NAME
     return render(request, 'accounts/administration/index.html')
 
 

@@ -261,9 +261,7 @@ xslt_root = etree.parse('libcms/xsl/record_indexing.xsl')
 xslt_transformer = etree.XSLT(xslt_root)
 
 
-def xml_to_dict(doc_tree):
-    for el in doc_tree.get_root():
-        print el
+
 
 def indexing(request):
     reset = request.GET.get('reset', u'0')

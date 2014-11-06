@@ -119,7 +119,6 @@ def books_on_hand_in_lib(request, id):
 
     if not library.z_service:
         return HttpResponse(u'Отсутвуют параметры связи с базой заказаов библиотеки. Если Вы видите это сообщение, пожалуйста, сообщите администратору портала.')
-    print ruslan_order_urls['orders'] % (lib_reader.lib_login, lib_reader.lib_password, library.z_service, lib_reader.lib_login)
     books = _get_content('http://www.unilib.neva.ru/cgi-bin/zurlcirc?z39.50r://8007756:a6Tka0l1@ruslan.ru/circ?8007756')
     books = _get_books(books)
     return render(request, 'orders/frontend/on_hand_in_lib.html',{
@@ -574,7 +573,6 @@ def _save_order_time(user):
 
 
 def _make_mba_order(gen_id, user_id, order_type, order_manager_id, copy_info=u'', comments=u''):
-    print 'eded', order_manager_id
     user_id = str(user_id)
     order_types = ('delivery', 'copy')
     if order_type not in order_types:

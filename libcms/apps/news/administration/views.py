@@ -68,7 +68,6 @@ def create_news(request):
             valid = False
             for news_content_form in news_content_forms:
                 valid = news_content_form['form'].is_valid()
-                print valid
                 if not valid:
                     break
 

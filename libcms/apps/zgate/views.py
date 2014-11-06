@@ -314,7 +314,6 @@ def draw_order(request, catalog_id='', slug=''):
     id = request.GET.get('id', None)
     if not id:
         raise Http404()
-    print id
 
 
     (zgate_form, cookies) = zworker.get_zgate_form(

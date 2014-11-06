@@ -180,7 +180,6 @@ def delete(request):
         current_dir = os.path.split(delete_path)[0]
 
         delete_path = base_uplod_path + delete_path
-        print delete_path
         if os.path.isfile(delete_path):
             os.remove(delete_path)
         if os.path.isdir(delete_path):
