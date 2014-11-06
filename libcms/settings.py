@@ -98,7 +98,7 @@ ROOT_URLCONF = 'libcms.urls'
 WSGI_APPLICATION = 'libcms.wsgi.application'
 AUTHENTICATION_BACKENDS = (
     # 'social_auth.backends.twitter.TwitterBackend',
-    'social_auth.backends.contrib.vk.VKOAuth2',
+    'social_auth.backends.contrib.vk.VKOAuth2Backend',
     'social_auth.backends.facebook.FacebookBackend',
     # 'social_auth.backends.contrib.mailru.MailruBackend',
 #    'social_auth.backends.contrib.odnoklassniki.OdnoklassnikiBackend',
