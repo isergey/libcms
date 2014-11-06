@@ -11,11 +11,11 @@ from django.utils.translation import get_language
 from django.core.cache import cache
 from django.shortcuts import render, HttpResponse, get_object_or_404, Http404, urlresolvers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import  QueryDict
+from django.http import QueryDict
 from ..models import Record, SavedRequest, DetailAccessLog, Collection
 
 from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
-## на эти трансформаторы ссылаются из других модулей
+# # на эти трансформаторы ссылаются из других модулей
 #xslt_root = etree.parse('libcms/xsl/record_in_search.xsl')
 #xslt_transformer = etree.XSLT(xslt_root)
 #
@@ -28,18 +28,20 @@ from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transforme
 class RecordObject(object):
     id = None
     title = u''
+
     def get_absolute_url(self):
         return urlresolvers.reverse('ssearch:frontend:detail', args=[self.id])
+
 
 def rss():
     now = datetime.date.today()
     seven_days_ago = now - datetime.timedelta(4)
     records_dicts = []
-    records =  list(Record.objects.using('records').filter(add_date__gte=seven_days_ago, add_date__lte=now))
+    records = list(Record.objects.using('records').filter(add_date__gte=seven_days_ago, add_date__lte=now))
     for record in records:
         rd = xml_doc_to_dict(record.content)
         ro = RecordObject()
-        ro.id =  record.gen_id
+        ro.id = record.gen_id
         ro.title = rd['title'][0]
         records_dicts.append(ro)
     return records_dicts
@@ -49,96 +51,96 @@ attr_map = {
     'text_t': {
         'order': 1,
         'attr': u'text_t',
-        'title':u'Везде',
+        'title': u'Везде',
         'display': True,
-        },
+    },
     'title_t': {
         'order': 2,
         'attr': u'title_t',
-        'title':u'Заглавие',
+        'title': u'Заглавие',
         'display': True,
-        },
+    },
     'author_t': {
         'order': 3,
         'attr': u'author_t',
-        'title':u'Автор',
+        'title': u'Автор',
         'display': True,
-        },
+    },
     'subject-heading_t': {
         'order': 4,
         'attr': u'subject-heading_t',
-        'title':u'Тематика',
+        'title': u'Тематика',
         'display': True,
-        },
+    },
     'date-of-publication_dt': {
         'order': 5,
         'attr': u'date-of-publication_s',
-        'title':u'Год публикации',
+        'title': u'Год публикации',
         'display': True,
-        },
-    'code-language':{
+    },
+    'code-language': {
         'order': 6,
         'attr': u'code-language_t',
-        'title':u'Язык',
+        'title': u'Язык',
         'display': False,
-        },
+    },
     'isbn_t': {
         'order': 7,
         'attr': u'isbn_t',
-        'title':u'ISBN',
+        'title': u'ISBN',
         'display': True,
-        },
+    },
     'issn_t': {
         'order': 8,
         'attr': u'issn_t',
-        'title':u'ISSN',
+        'title': u'ISSN',
         'display': True,
-        },
+    },
     'content-type': {
         'order': 9,
         'attr': u'content-type_t',
-        'title':u'Тип содержания',
+        'title': u'Тип содержания',
         'display': False,
-        },
+    },
     'full-text': {
         'order': 10,
         'attr': u'full-text',
-        'title':u'Содержимое',
+        'title': u'Содержимое',
         'display': False,
-        },
+    },
     'fond_sf': {
         'order': 11,
         'attr': u'fond_t',
-        'title':u'Фонд',
+        'title': u'Фонд',
         'display': False,
-        },
+    },
     'dublet': {
         'order': 12,
         'attr': u'dublet_sf',
-        'title':u'Ключ дублетности',
+        'title': u'Ключ дублетности',
         'display': False,
-        },
-    }
-
+    },
+}
 
 sort_attr_map = {
     u'author_ts': {
         'attr': u'author_ts',
         'order': 'asc',
-        },
+    },
     u'title_ts': {
         'attr': u'title_ts',
         'order': 'asc',
-        },
+    },
     u'date-of-publication_dts': {
         'attr': u'date-of-publication_dts',
         'order': 'desc',
-        },
+    },
     u'tom_f': {
         'attr': u'tom_f',
         'order': 'asc',
-        },
-    }
+    },
+}
+
 
 def _make_search_attrs(catalog):
     search_attrs = []
@@ -150,14 +152,14 @@ def _make_search_attrs(catalog):
             'title': attr_map[attr].get('title', attr),
             'value': attr,
             'order': attr_map[attr].get('order', 1000),
-            })
+        })
 
     if catalog == u'ebooks':
         search_attrs.append({
-            'title':attr_map['full-text']['title'],
-            'value':attr_map['full-text']['attr'],
-            'order':attr_map['full-text']['order'],
-            })
+            'title': attr_map['full-text']['title'],
+            'value': attr_map['full-text']['attr'],
+            'order': attr_map['full-text']['order'],
+        })
 
     search_attrs.sort(key=lambda x: x['order'])
     return search_attrs
@@ -174,8 +176,6 @@ def index(request, catalog=None):
         return search(request, catalog)
 
 
-
-
 def init_search(request, catalog=None):
     search_attrs = _make_search_attrs(catalog)
     stats = None
@@ -188,35 +188,35 @@ def init_search(request, catalog=None):
     return render(request, 'ssearch/frontend/index.html', {
         'search_attrs': search_attrs,
         'stats': stats,
-        'catalog':catalog,
+        'catalog': catalog,
         'collections': collections
     })
-
 
 
 def replace_doc_attrs(doc):
     """
     Вырезает из названия атрибута указатель на тип. Список типов в переменной reserved_types
     """
-#     reserved_types = [
-#         't', # текст
-#         's', # фраза
-#         'dt', # дата время
-# #        'ts', # сортировка текста
-# #        'ss', # --//--
-# #        'dts', # --//--
-#         'tf', # фасет текста
-#         'sf', # --//--
-#         'dtf', # --//--
-#     ]
-#     new_doc = {}
-#     for key in doc.keys():
-#         split_key = key.split('_')
-#         if len(split_key) > 1 and split_key[-1] in reserved_types:
-#             new_doc[split_key[0]] = doc[key]
-#         else:
-#             new_doc[key] = doc[key]
+    #     reserved_types = [
+    #         't', # текст
+    #         's', # фраза
+    #         'dt', # дата время
+    # #        'ts', # сортировка текста
+    # #        'ss', # --//--
+    # #        'dts', # --//--
+    #         'tf', # фасет текста
+    #         'sf', # --//--
+    #         'dtf', # --//--
+    #     ]
+    #     new_doc = {}
+    #     for key in doc.keys():
+    #         split_key = key.split('_')
+    #         if len(split_key) > 1 and split_key[-1] in reserved_types:
+    #             new_doc[split_key[0]] = doc[key]
+    #         else:
+    #             new_doc[key] = doc[key]
     return doc
+
 
 from ..common import resolve_date
 # распознование типа
@@ -224,13 +224,15 @@ resolvers = {
     'dt': resolve_date,
     'dts': resolve_date,
     'dtf': resolve_date,
-    }
+}
 
 
 # тип поля, которое может быть только одно в документе
 origin_types = ['ts', 'ss', 'dts', 'f']
 
+
 class WrongSearchAttribute(Exception): pass
+
 
 def terms_constructor(attrs, values):
     terms = []
@@ -258,16 +260,15 @@ def terms_constructor(attrs, values):
 
 
 def search(request, catalog=None):
-    facet_fields = ['fond_sf', 'author_sf', 'subject-heading_sf', 'date-of-publication_s', 'content-type_t', 'code-language_t']
+    facet_fields = ['fond_sf', 'author_sf', 'subject-heading_sf', 'date-of-publication_s', 'content-type_t',
+                    'code-language_t']
     search_attrs = _make_search_attrs(catalog)
-    search_deep_limit = 5 # ограничение вложенных поисков
+    search_deep_limit = 5  # ограничение вложенных поисков
     solr = sunburnt.SolrInterface(settings.SOLR['host'])
 
     qs = request.GET.getlist('q', [])
     attrs = request.GET.getlist('attr', [])
     sort = request.GET.getlist('sort', [])
-
-
 
     sort_attrs = []
 
@@ -277,14 +278,13 @@ def search(request, catalog=None):
             continue
 
         sort_attrs.append({
-            'attr':sort_attr['attr'],
-            'order':sort_attr.get('order', 'asc')
+            'attr': sort_attr['attr'],
+            'order': sort_attr.get('order', 'asc')
         })
-
 
     fqs = request.GET.getlist('fq', [])
     fattrs = request.GET.getlist('fattr', [])
-    if fqs and fattrs and fqs[0]==u'*' and fattrs[0]==u'*':
+    if fqs and fattrs and fqs[0] == u'*' and fattrs[0] == u'*':
         fqs = fqs[1:]
         fattrs = fattrs[1:]
     in_founded = request.GET.get('in_founded', None)
@@ -302,7 +302,6 @@ def search(request, catalog=None):
     query = None
     if len(terms) == 1 and 'text_t' in terms[0] and terms[0]['text_t'].strip() == '*':
         terms = [{u'*': u'*'}]
-
 
     if len(terms) > 1 and u'*' in terms[0][terms[0].keys()[0]].strip() == u'*':
         terms = terms[1:]
@@ -338,10 +337,10 @@ def search(request, catalog=None):
     exclude_kwargs = {}
 
     if catalog == u'sc2':
-        exclude_kwargs = {'system-catalog_s':u"2"}
+        exclude_kwargs = {'system-catalog_s': u"2"}
         solr_searcher = solr_searcher.exclude(**exclude_kwargs)
     elif catalog == u'ebooks':
-        exclude_kwargs = {'system-catalog_s':u"4"}
+        exclude_kwargs = {'system-catalog_s': u"4"}
         solr_searcher = solr_searcher.exclude(**exclude_kwargs)
     else:
         pass
@@ -350,18 +349,18 @@ def search(request, catalog=None):
         if sort_attr['order'] == 'desc':
             solr_searcher = solr_searcher.sort_by(u'-' + sort_attr['attr'])
         else:
-            solr_searcher = solr_searcher.sort_by( sort_attr['attr'])
+            solr_searcher = solr_searcher.sort_by(sort_attr['attr'])
 
     # ключ хеша зависит от языка
-    terms_facet_hash = hashlib.md5(unicode(terms) + u'_facets_' + get_language() + u'#'.join(exclude_kwargs.values())).hexdigest()
-
+    terms_facet_hash = hashlib.md5(
+        unicode(terms) + u'_facets_' + get_language() + u'#'.join(exclude_kwargs.values())).hexdigest()
 
     facets = cache.get(terms_facet_hash, None)
     if not facets:
         solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=20, mincount=1)
 
     solr_searcher = solr_searcher.field_limit("id")
-    paginator = Paginator(solr_searcher, 20) # Show 25 contacts per page
+    paginator = Paginator(solr_searcher, 20)  # Show 25 contacts per page
 
     page = request.GET.get('page')
     try:
@@ -372,7 +371,6 @@ def search(request, catalog=None):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         results_page = paginator.page(paginator.num_pages)
-
 
     search_statisics = {
         'num_found': results_page.object_list.result.numFound,
@@ -386,19 +384,17 @@ def search(request, catalog=None):
         # for key in facets.keys():
         #     if not facets[key]:
         #         del(facets[key])
-        cache.set(terms_facet_hash,facets)
-
+        cache.set(terms_facet_hash, facets)
 
     for row in results_page.object_list:
         docs.append(replace_doc_attrs(row))
-
 
     doc_ids = []
     for doc in docs:
         doc_ids.append(doc['id'])
 
     records_dict = {}
-    records =  list(Record.objects.using('records').filter(gen_id__in=doc_ids))
+    records = list(Record.objects.using('records').filter(gen_id__in=doc_ids))
     for record in records:
         records_dict[record.gen_id] = xml_doc_to_dict(record.content)
 
@@ -412,7 +408,8 @@ def search(request, catalog=None):
     for term in terms[:search_deep_limit]:
         key = term.keys()[0]
         value = term[key]
-        if isinstance(value, basestring):
+        if isinstance(value, str):
+            value = value.decode('utf-8')
             if value.strip() == '*':
                 star = True
 
@@ -421,7 +418,8 @@ def search(request, catalog=None):
 
         new_key = key.split('_')[0]
         if not query_dict:
-            query_dict = QueryDict('q=' + value + '&attr='+key).copy()
+
+            query_dict = QueryDict(u'q=' + value + '&attr=' + key).copy()
         else:
             query_dict.getlist('q').append(value)
             query_dict.getlist('attr').append(key)
@@ -431,7 +429,6 @@ def search(request, catalog=None):
             'value': value,
             'href': query_dict.urlencode()
         })
-
 
     if catalog == u'ebooks' and len(search_breadcumbs) > 1 and star:
         return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
@@ -444,7 +441,7 @@ def search(request, catalog=None):
         if facet_field in facets:
             ordered_facets.append(
                 {
-                    'title':  facet_field,
+                    'title': facet_field,
                     'values': facets[facet_field]
                 }
             )
@@ -453,24 +450,24 @@ def search(request, catalog=None):
         'docs': docs,
         'results_page': results_page,
         'facets': ordered_facets,
-        'search_breadcumbs':search_breadcumbs,
-        'sort':sort,
-        'search_statisics':search_statisics,
+        'search_breadcumbs': search_breadcumbs,
+        'sort': sort,
+        'search_statisics': search_statisics,
         'search_request': json_search_breadcumbs,
         'search_attrs': search_attrs,
         'catalog': catalog
     })
 
 
-
 from levenshtein import levenshtein
+
 
 def compare(word1, word2):
     word1 = word1.strip().lower().replace(u' ', u'')
     word2 = word2.strip().lower().replace(u' ', u'')
     word1_len = len(word1)
     word2_len = len(word2)
-    lev =  levenshtein(word1, word2)
+    lev = levenshtein(word1, word2)
     if lev == 0:
         return 1.0
     else:
@@ -480,16 +477,15 @@ def compare(word1, word2):
             return (float(lev) / word2_len) * 1 / (float(lev) / word1_len)
 
 
-
 def detail(request, gen_id):
     catalog = None
     try:
         record = Record.objects.using('records').get(gen_id=gen_id)
         catalog = 'records'
     except Record.DoesNotExist:
-            raise Http404()
+        raise Http404()
 
-#    DetailAccessLog(catalog=catalog, gen_id=record.gen_id).save()
+    #    DetailAccessLog(catalog=catalog, gen_id=record.gen_id).save()
     DetailAccessLog.objects.create(catalog=catalog, gen_id=gen_id, date_time=datetime.datetime.now())
 
     doc_tree = etree.XML(record.content)
@@ -499,12 +495,10 @@ def detail(request, gen_id):
     if len(leader8) == 1:
         analitic_level = leader8[0].text
 
-
-
     bib_tree = xslt_bib_draw_transformer(doc_tree)
     marct_tree = xslt_marc_dump_transformer(doc_tree)
-    bib_dump =  etree.tostring(bib_tree, encoding='utf-8')
-    marc_dump =  etree.tostring(marct_tree, encoding='utf-8')
+    bib_dump = etree.tostring(bib_tree, encoding='utf-8')
+    marc_dump = etree.tostring(marct_tree, encoding='utf-8')
     doc_tree_t = xslt_transformer(doc_tree)
     doc = doc_tree_to_dict(doc_tree_t)
     holders = doc.get('holders', list())
@@ -516,7 +510,7 @@ def detail(request, gen_id):
         doc['holders'] = []
 
         solr = sunburnt.SolrInterface(settings.SOLR['host'])
-        linked_query = solr.query(**{'linked-record-number_s':record.record_id.replace(u"\\",u'\\\\')})
+        linked_query = solr.query(**{'linked-record-number_s': record.record_id.replace(u"\\", u'\\\\')})
         linked_query = linked_query.field_limit("id")
         linked_results = linked_query.execute()
 
@@ -524,7 +518,7 @@ def detail(request, gen_id):
         for linked_doc in linked_results:
             linked_doc_ids.append(linked_doc['id'])
 
-        records =  list(Record.objects.using('records').filter(gen_id__in=linked_doc_ids))
+        records = list(Record.objects.using('records').filter(gen_id__in=linked_doc_ids))
 
         for record in records:
             record_dict = {}
@@ -533,15 +527,13 @@ def detail(request, gen_id):
             linked_docs.append(record_dict)
 
 
-#        for doc in mlt_docs:
-#            doc['record'] = records_dict.get(doc['id'])
-
-
+        #        for doc in mlt_docs:
+        #            doc['record'] = records_dict.get(doc['id'])
 
     access_count = DetailAccessLog.objects.filter(catalog=catalog, gen_id=record.gen_id).count()
 
     return render(request, 'ssearch/frontend/detail.html', {
-        'doc_dump': bib_dump.replace('<b/>',''),
+        'doc_dump': bib_dump.replace('<b/>', ''),
         'marc_dump': marc_dump,
         'doc': doc,
         'gen_id': gen_id,
@@ -549,15 +541,16 @@ def detail(request, gen_id):
         'access_count': access_count
     })
 
+
 def to_print(request, gen_id):
     catalog = None
     try:
         record = Record.objects.using('records').get(gen_id=gen_id)
         catalog = 'records'
     except Record.DoesNotExist:
-            raise Http404()
+        raise Http404()
 
-#    DetailAccessLog(catalog=catalog, gen_id=record.gen_id).save()
+    #    DetailAccessLog(catalog=catalog, gen_id=record.gen_id).save()
     #DetailAccessLog.objects.create(catalog=catalog, gen_id=gen_id, date_time=datetime.datetime.now())
 
     doc_tree = etree.XML(record.content)
@@ -571,7 +564,7 @@ def to_print(request, gen_id):
 
     bib_tree = xslt_bib_draw_transformer(doc_tree)
     marct_tree = xslt_marc_dump_transformer(doc_tree)
-    bib_dump =  etree.tostring(bib_tree, encoding='utf-8')
+    bib_dump = etree.tostring(bib_tree, encoding='utf-8')
     #marc_dump =  etree.tostring(marct_tree, encoding='utf-8')
     doc_tree_t = xslt_transformer(doc_tree)
     doc = doc_tree_to_dict(doc_tree_t)
@@ -602,15 +595,15 @@ def to_print(request, gen_id):
     #         linked_docs.append(record_dict)
 
 
-#        for doc in mlt_docs:
-#            doc['record'] = records_dict.get(doc['id'])
+    #        for doc in mlt_docs:
+    #            doc['record'] = records_dict.get(doc['id'])
 
 
 
     #access_count = DetailAccessLog.objects.filter(catalog=catalog, gen_id=record.gen_id).count()
 
     return render(request, 'ssearch/frontend/print.html', {
-        'doc_dump': bib_dump.replace('<b/>',''),
+        'doc_dump': bib_dump.replace('<b/>', ''),
         #'marc_dump': marc_dump,
         'doc': doc,
         'gen_id': gen_id,
@@ -618,9 +611,9 @@ def to_print(request, gen_id):
         #'access_count': access_count
     })
 
+
 @login_required
 def saved_search_requests(request):
-
     saved_requests = SavedRequest.objects.filter(user=request.user).order_by('-add_time')
     srequests = []
     for saved_request in saved_requests:
@@ -628,14 +621,14 @@ def saved_search_requests(request):
             srequests.append({
                 'saved_request': saved_request,
                 'breads': json.loads(saved_request.search_request),
-                'catalog':  saved_request.catalog
+                'catalog': saved_request.catalog
             })
         except json.JSONDecoder:
             srequests.append({
-                'saved_request':saved_request,
+                'saved_request': saved_request,
                 'breads': None,
-                'catalog':  saved_request.catalog
-                })
+                'catalog': saved_request.catalog
+            })
 
     return render(request, 'ssearch/frontend/saved_request.html', {
         'srequests': srequests,
@@ -643,7 +636,7 @@ def saved_search_requests(request):
 
 
 def save_search_request(request):
-    catalog= request.GET.get('catalog', None)
+    catalog = request.GET.get('catalog', None)
     if not request.user.is_authenticated():
         return HttpResponse(u'Вы должны быть войти на портал', status=401)
 
@@ -654,6 +647,7 @@ def save_search_request(request):
     SavedRequest(user=request.user, search_request=search_request, catalog=catalog).save()
     return HttpResponse(u'{"status": "ok"}')
 
+
 def delete_search_request(request, id):
     if not request.user.is_authenticated():
         return HttpResponse(u'Вы должны быть войти на портал', status=401)
@@ -662,12 +656,11 @@ def delete_search_request(request, id):
     return HttpResponse(u'{"status": "ok"}')
 
 
-
-
 def xml_doc_to_dict(xmlstring_doc):
     doc_tree = etree.XML(xmlstring_doc)
     doc_tree_t = xslt_transformer(doc_tree)
     return doc_tree_to_dict(doc_tree_t)
+
 
 def doc_tree_to_dict(doc_tree):
     doc_dict = {}
@@ -676,7 +669,7 @@ def doc_tree_to_dict(doc_tree):
         value = element.text
         #если поле пустое, пропускаем
         if not value: continue
-#        value = beautify(value)
+        #        value = beautify(value)
         values = doc_dict.get(attrib, None)
         if not values:
             doc_dict[attrib] = [value]
@@ -684,31 +677,27 @@ def doc_tree_to_dict(doc_tree):
             values.append(value)
     return doc_dict
 
+
 def beautify(value):
-    value = unicode(value).replace(u'..', u"%#dot#dot#")\
-    .replace(u'.:', u"%#dot#colon#")\
-    .replace(u'.;', u"%#dot#semicolon#")\
-    .replace(u'.!', u"%#dot#screamer#")\
-    .replace(u'.?', u"%#dot#question#")
+    value = unicode(value).replace(u'..', u"%#dot#dot#") \
+        .replace(u'.:', u"%#dot#colon#") \
+        .replace(u'.;', u"%#dot#semicolon#") \
+        .replace(u'.!', u"%#dot#screamer#") \
+        .replace(u'.?', u"%#dot#question#")
 
-    value = value.replace(u':', u": ")\
-    .replace(u'.', u". ")\
-    .replace(u',', u", ")\
-    .replace(u';', u"; ")\
-    .replace(u')', u") ")
+    value = value.replace(u':', u": ") \
+        .replace(u'.', u". ") \
+        .replace(u',', u", ") \
+        .replace(u';', u"; ") \
+        .replace(u')', u") ")
 
-    value = value.replace(u"%#dot#dot#",'. ' )\
-    .replace(u"%#dot#colon#",u'.: ' )\
-    .replace(u"%#dot#semicolon#", u'.; ')\
-    .replace(u"%#dot#screamer#",u'.! ' )\
-    .replace(u"%#dot#question#" , u'.? ')
+    value = value.replace(u"%#dot#dot#", '. ') \
+        .replace(u"%#dot#colon#", u'.: ') \
+        .replace(u"%#dot#semicolon#", u'.; ') \
+        .replace(u"%#dot#screamer#", u'.! ') \
+        .replace(u"%#dot#question#", u'.? ')
 
     return value
-
-
-
-
-
 
 
 #import pymorphy
@@ -726,7 +715,7 @@ def log_search_request(last_search_value, catalog):
         n_terms = []
         #нормализация
         for t in terms:
-            n_term = t #morph.normalize(t.upper())
+            n_term = t  #morph.normalize(t.upper())
             if isinstance(n_term, set):
                 n_terms.append(n_term.pop().lower())
             elif isinstance(n_term, unicode):
@@ -736,20 +725,18 @@ def log_search_request(last_search_value, catalog):
         return (nn_term, n_term)
 
 
-    search_request_id =  uuid.uuid4().hex
+    search_request_id = uuid.uuid4().hex
     term_groups = []
-
 
     term = last_search_value.get('value', None)
     if term:
         forms = clean_term(term)
         term_groups.append({
             'nn': forms[0],
-            'n':  forms[1],
-            'use': last_search_value.get('attr',u'not defined'),
+            'n': forms[1],
+            'use': last_search_value.get('attr', u'not defined'),
 
-            })
-
+        })
 
     for group in term_groups:
         SearchRequestLog(
@@ -761,13 +748,12 @@ def log_search_request(last_search_value, catalog):
         ).save()
 
 
-
 def statictics():
     solr = sunburnt.SolrInterface(settings.SOLR['host'])
-    facet_fields = ['fond_sf' ]
-    qkwargs = {'*':'*'}
+    facet_fields = ['fond_sf']
+    qkwargs = {'*': '*'}
     solr_searcher = solr.query(**qkwargs).paginate(start=0, rows=0)
-    exclude_kwargs = {'system-catalog_s':u"1"}
+    exclude_kwargs = {'system-catalog_s': u"1"}
     solr_searcher = solr_searcher.exclude(**exclude_kwargs)
     solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=30, mincount=1)
     solr_searcher = solr_searcher.field_limit("id")
@@ -775,28 +761,27 @@ def statictics():
     collections = {}
     for key in response.facet_counts.facet_fields.keys():
         for val in response.facet_counts.facet_fields[key]:
-            collections[val[0]] =  val[1]
-
+            collections[val[0]] = val[1]
 
     stats = {
         'collections': collections,
         'count_all': 0,
         'count_last_month': 0,
-        }
+    }
     now = datetime.datetime.now()
     before_30_now = now - datetime.timedelta(30)
     count_all = Record.objects.using('records').filter(source_id='2').exclude(deleted=True).count()
-    count_last_month = Record.objects.using('records').filter(add_date__year=now.year, add_date__month=now.month, source_id='2').exclude(deleted=True).count()
-    count_last_30 = Record.objects.using('records').filter(add_date__gte=before_30_now, add_date__lte=now, source_id='2').exclude(deleted=True).count()
+    count_last_month = Record.objects.using('records').filter(add_date__year=now.year, add_date__month=now.month,
+                                                              source_id='2').exclude(deleted=True).count()
+    count_last_30 = Record.objects.using('records').filter(add_date__gte=before_30_now, add_date__lte=now,
+                                                           source_id='2').exclude(deleted=True).count()
     stats['count_all'] = count_all
     stats['count_last_month'] = count_last_month
     stats['count_last_30'] = count_last_30
     return stats
 
 
-
 def get_collections():
-
     collections = Record.objects.using('records').filter(source_id='1')
     colls = []
     for collection in collections:
