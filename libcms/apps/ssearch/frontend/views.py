@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
 from collections import OrderedDict
 import hashlib
 import datetime
@@ -418,7 +418,7 @@ def search(request, catalog=None):
 
         new_key = key.split('_')[0]
         if not query_dict:
-            query_dict = QueryDict(u'q=' + value + u'&attr=' + key.decode('utf-8')).copy()
+            query_dict = QueryDict(u'q=' + value + u'&attr=' + key).copy()
         else:
             query_dict.getlist('q').append(value)
             query_dict.getlist('attr').append(key)
