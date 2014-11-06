@@ -410,16 +410,15 @@ def search(request, catalog=None):
         value = term[key]
         if isinstance(value, str):
             value = value.decode('utf-8')
-            if value.strip() == '*':
-                star = True
+        if value.strip() == '*':
+            star = True
 
         if type(value) == datetime.datetime:
             value = unicode(value.year)
 
         new_key = key.split('_')[0]
         if not query_dict:
-
-            query_dict = QueryDict(u'q=' + value + '&attr=' + key).copy()
+            query_dict = QueryDict(u'q=' + value + u'&attr=' + key.decode('utf-8')).copy()
         else:
             query_dict.getlist('q').append(value)
             query_dict.getlist('attr').append(key)
