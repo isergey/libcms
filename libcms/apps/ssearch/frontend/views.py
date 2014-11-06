@@ -418,7 +418,7 @@ def search(request, catalog=None):
 
         new_key = key.split('_')[0]
         if not query_dict:
-            query_dict = QueryDict(u'q=' + value + u'&attr=' + key).copy()
+            query_dict = QueryDict((u'q=' + value + u'&attr=' + key).encode('utf-8')).copy()
         else:
             query_dict.getlist('q').append(value)
             query_dict.getlist('attr').append(key)
