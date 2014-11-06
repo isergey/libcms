@@ -12,7 +12,7 @@
 
         </ul>
     <div class="row">
-    <div class="span6">
+    <div class="span12">
         <form method="POST" class="form-horizontal">{% csrf_token %}
             <fieldset>
                 {% include 'frontend/base_form_fields.html' %}
@@ -22,9 +22,9 @@
             </fieldset>
         </form>
     </div>
-    <div class="span6">
-        {% include 'accounts/frontend/oauth_buttons.html' %}
-    </div>
+{#    <div class="span6">#}
+{#        {% include 'accounts/frontend/oauth_buttons.html' %}#}
+{#    </div>#}
     </div>
 
 
