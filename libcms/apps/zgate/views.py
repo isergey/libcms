@@ -435,14 +435,14 @@ def saved_document_list(request):
 
 
 def load_documents(request):
-    response = HttpResponse(mimetype='application/txt')
+    response = HttpResponse(content_type='application/txt')
     response['Content-Disposition'] = 'attachment; filename=documents.txt'
     if request.method == 'POST':
         owner_id = ''
         if request.user.is_authenticated():
             owner_id = request.user.username
         elif request.session.session_key:
-            owner_id = session_key
+            owner_id = request.session.session_key
 
         documents = []
 
@@ -467,7 +467,7 @@ def delete_saved_document(request, document_id=''):
     if request.user.is_authenticated():
         owner_id = request.user.username
     elif request.session.session_key:
-        owner_id = session_key
+        owner_id = request.session.session_key
 
     saved_document = get_object_or_404(SavedDocument,id=document_id, owner_id=owner_id)
     saved_document.delete()

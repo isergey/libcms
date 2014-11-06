@@ -77,7 +77,7 @@ def book(request, book):
     zip_file.writestr('doc.xml', xml)
     zip_file.close()
 
-    response = HttpResponse(mimetype="application/zip")
+    response = HttpResponse(content_type="application/zip")
     response["Content-Disposition"] = "attachment; filename=%s.zip" % book
     zip_file_content.seek(0)
     response.write(zip_file_content.read())
@@ -99,7 +99,7 @@ def draw(request, book):
         raise Http404(u'Книга не найдена')
     zf = ZipFile(book_path)
 
-    response = HttpResponse(mimetype="application/zip")
+    response = HttpResponse(content_type="application/zip")
     response["Content-Disposition"] = "attachment; filename=%s" % part
     response.write(zf.read(part))
 
