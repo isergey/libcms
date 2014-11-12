@@ -8,15 +8,17 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% block content %}
     <style>
-    .news-block {
-        margin-bottom: 10px;
-    }
-    .news-block__title {
-        font-weight: bold;
-    }
-    .news-block__teaser {
-        text-align: justify;
-    }
+        .news-block {
+            margin-bottom: 10px;
+        }
+
+        .news-block__title {
+            font-weight: bold;
+        }
+
+        .news-block__teaser {
+            text-align: justify;
+        }
     </style>
     <div class="span12">
         <div class="breadcrumb">
@@ -30,10 +32,30 @@
     </div>
     <div class="span9">
         <div class="row">
-            <div class="span5">
+            <div class="span9">
+                <div class="row">
+                    <div class="span5 org-info">
+                        <p><b>ГБУК РТ «Республиканская юношеская библиотека»</b></p>
+
+                        <p>Сайт: http://ryltat.ru/ </p>
+
+                        <p>Адрес: 420044, РТ, г.Казань, пр.Ибрагимова, 53Б</p>
+                    </div>
+                    <div class="span4">
+                        <img src="http://www.ryltat.ru/images/rub.jpg" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="span9">
+                <hr/>
                 <h3 style="margin-top: -5px;">Новости библиотеки<a href="/ru/site/news/rss/"> <img width="24"
-                                                                                   src="/static/images/rss.png"
-                                                                                   alt="Подписаться"></a></h3>
+                                                                                                   src="/static/images/rss.png"
+                                                                                                   alt="Подписаться"></a>
+                </h3>
+
                 <div class="news-block">
                     <div class="news-block__title"><span>11.11.2014</span> <a href="/ru/site/news/56/">
                         «Урок культуры» в Республиканской юношеской библиотеке</a>
@@ -46,7 +68,7 @@
                 <div class="news-block">
                     <div class="news-block__title"><span>11.11.2014</span>
                         <a href="/ru/site/news/56/">
-                        Белые ночи. Солнечные дни
+                            Белые ночи. Солнечные дни
                         </a>
                     </div>
                     <div class="news-block__teaser">
@@ -61,13 +83,14 @@
                     </div>
                     <div class="news-block__teaser">
                         26 сентября 2014 года в юношеской библиотеке состоялась презентация документального фильма
-                        «Литературная Казань» из серии «Прогулки по Казани». Фильм посвящен 2015 году, который объявлен в Российской Федерации Годом литературы.
+                        «Литературная Казань» из серии «Прогулки по Казани». Фильм посвящен 2015 году, который объявлен
+                        в Российской Федерации Годом литературы.
                     </div>
                 </div>
                 <div class="news-block">
                     <div class="news-block__title"><span>11.11.2014</span>
                         <a href="/ru/site/news/56/">
-                        Объявление!
+                            Объявление!
                         </a>
                     </div>
                     <div class="news-block__teaser">
@@ -76,40 +99,31 @@
                 </div>
                 <a href="/ru/site/news/" class="last">Архив новостей</a>
             </div>
-            <div class="span4">
-                <div class="org-info">
-                    <p><b>ГБУК РТ «Республиканская юношеская библиотека»</b></p>
 
-                    <p>Сайт: http://ryltat.ru/ </p>
-
-                    <p>Адрес: 420044, РТ, г.Казань, пр.Ибрагимова, 53Б</p>
-                </div>
-                <div class="map" style="height: 400px"></div>
-            </div>
 
         </div>
 
     </div>
 
-    <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-    <script type="text/javascript">
-        ymaps.ready(init);
-        var myMap;
-
-        function init() {
-            orgMap = new ymaps.Map($('.map')[0], {
-                center: [55.829047, 49.097042],
-                zoom: 12
-            });
-            orgPlacemark = new ymaps.Placemark(
-                    [55.829047, 49.097042],
-                    {
-                        content: 'ГБУК РТ «Республиканская юношеская библиотека!',
-                        balloonContent: '<p>Адрес: 420044, РТ, г.Казань, пр.Ибрагимова, 53Б</p>'
-                    }
-            );
-            orgMap.geoObjects.add(orgPlacemark);
-        }
-    </script>
+{#    <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>#}
+{#    <script type="text/javascript">#}
+{#        ymaps.ready(init);#}
+{#        var myMap;#}
+{##}
+{#        function init() {#}
+{#            orgMap = new ymaps.Map($('.map')[0], {#}
+{#                center: [55.829047, 49.097042],#}
+{#                zoom: 12#}
+{#            });#}
+{#            orgPlacemark = new ymaps.Placemark(#}
+{#                    [55.829047, 49.097042],#}
+{#                    {#}
+{#                        content: 'ГБУК РТ «Республиканская юношеская библиотека!',#}
+{#                        balloonContent: '<p>Адрес: 420044, РТ, г.Казань, пр.Ибрагимова, 53Б</p>'#}
+{#                    }#}
+{#            );#}
+{#            orgMap.geoObjects.add(orgPlacemark);#}
+{#        }#}
+{#    </script>#}
 
 {% endblock %}
