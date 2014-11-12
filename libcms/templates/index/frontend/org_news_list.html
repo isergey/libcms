@@ -1,0 +1,120 @@
+{% extends 'index/frontend/index.html' %}
+{% load i18n %}
+{#{% load news_tags %}#}
+{#{% load events_tags %}#}
+{#{% load ssearch_tags %}#}
+{#{% load participiants_tags %}#}
+{#{% load cache %}#}
+{% get_current_language as LANGUAGE_CODE %}
+{% block content %}
+    <style>
+        ul.news {
+            list-style: none;
+            margin: 0;
+        }
+
+        .news .title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .news .teaser {
+            padding: 5px 0;
+        }
+
+        .news .create_date {
+            color: #8c8c8c;
+        }
+    </style>
+    <div class="span12">
+        <div class="breadcrumb">
+            <span><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></span>
+            <span><a href="{% url 'index:frontend:site' %}">ГБУК РТ «Республиканская юношеская библиотека»</a> <span
+                    class="divider">/</span></span>
+            <span class="active">Новости библиотеки</span>
+        </div>
+    </div>
+
+    <div class="span3">
+                {% include 'index/frontend/site_menu.html' %}
+    </div>
+    <div class="span9">
+        <ul class="news">
+
+            <div class="title"><a href="/ru/site/news/1/">Деятельность Казанской губернской земской управы представлена на
+                странице «Электронные коллекции»</a></div>
+            <div class="teaser">Деятельность Казанской губернской земской управы представлена на странице «Электронные
+                коллекции»
+            </div>
+            <div class="create_date">11 ноября 2014 г. 14:40:01</div>
+            <hr>
+
+            <div class="title"><a href="/ru/site/news/1/">Международная научно-практическая конференция «Модернизация
+                российского общества и подготовка кадров в сфере культуры и искусства»</a></div>
+            <div class="teaser">Международная научно-практическая конференция «Модернизация российского общества и
+                подготовка кадров в сфере культуры и искусства», Казань
+            </div>
+            <div class="create_date">30 октября 2014 г. 10:43:45</div>
+            <hr>
+
+            <div class="title"><a href="/ru/site/news/1/">Проведено обучение по образовательной программе профессионального
+                развития «Автоматизированная библиотечная информационная система «Руслан»: технологии комплектования,
+                обработки, обслуживания»</a></div>
+            <div class="teaser">Проведено обучение по образовательной программе профессионального развития
+                «Автоматизированная библиотечная информационная система «Руслан»: технологии комплектования, обработки,
+                обслуживания»
+            </div>
+            <div class="create_date">20 октября 2014 г. 9:19:33</div>
+            <hr>
+
+            <div class="title"><a href="/ru/site/news/1/">Региональная научно-практическая конференция «Библиотека и
+                гуманизм в ХХI веке: традиции и инновации»</a></div>
+            <div class="teaser">Региональная научно-практическая конференция «Библиотека и гуманизм в ХХI веке: традиции
+                и инновации»
+            </div>
+            <div class="create_date">30 сентября 2014 г. 10:29:51</div>
+            <hr>
+
+            <div class="title"><a href="/ru/site/news/1/">Электронные копии документов о Казанской губернии размещены на
+                портале</a></div>
+            <div class="teaser">Электронные копии документов о Казанской губернии размещены на портале</div>
+            <div class="create_date">29 сентября 2014 г. 11:27:49</div>
+            <hr>
+
+            <div class="title"><a href="/ru/site/news/1/">30 августа – День Республики Татарстан!</a></div>
+            <div class="teaser">30 августа – День Республики Татарстан!</div>
+            <div class="create_date">25 августа 2014 г. 13:16:18</div>
+            <hr>
+
+            <div class="title"><a href="/ru/site/news/1/">Новинки, пополнившие электронные коллекции портала в июле 2014
+                года</a></div>
+            <div class="teaser">Новинки, пополнившие электронные коллекции портала в июле 2014 года</div>
+            <div class="create_date">22 августа 2014 г. 15:52:03</div>
+            <hr>
+
+            <div class="title"><a href="/ru/site/news/1/">На портале размещены электронные копии уникальных краеведческих
+                документов</a></div>
+            <div class="teaser">На портале размещены электронные копии уникальных краеведческих документов</div>
+            <div class="create_date">5 августа 2014 г. 15:09:13</div>
+
+
+        </ul>
+        <div class="pagination">
+            <ul>
+                <li class="disabled"><a href="#">←</a></li>
+                <li class="active">
+                    <a href="#">1</a>
+                </li>
+                <li>
+                    <a href="#">2</a>
+                </li>
+                <li>
+                    <a href="#">3</a>
+                </li>
+                <li><a href="#">→</a></li>
+            </ul>
+        </div>
+    </div>
+
+
+{% endblock %}
