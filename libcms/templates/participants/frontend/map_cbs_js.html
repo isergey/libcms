@@ -1,95 +1,63 @@
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+{% load i18n %}
+{% get_current_language as lang %}
+{#<style>#}
+{#    #map_canvas{#}
+{#        background: white;#}
+{##}
+{#        box-shadow: 0 0 10px #999;#}
+{#        border: #ffffff solid 10px;#}
+{#    }#}
+{#</style>#}
+{#<div id="map_canvas" style="height: 400px"></div>#}
 <script type="text/javascript">
-    function wrap(method) {
-        var args = Array.prototype.slice.apply(arguments, 1);
-        return function () {
-            return method.apply(this, args);
-        }
+    var lang = '{{ lang }}';
+    if (lang.length === 0) {
+        lang = 'ru'
     }
-
-    var latlng = new google.maps.LatLng(61.403567, 55.159146);
-    var myOptions = {
-        zoom:8,
-        center:latlng,
-        mapTypeId:google.maps.MapTypeId.ROADMAP
-    };
-    var map = new google.maps.Map(document.getElementById("map_canvas"),
-            myOptions);
+    var jsOrgs = {{ js_orgs|safe }};
+    ymaps.ready(init);
+    var orgsMap;
 
 
-    function bindInfoWindow(marker, map, infoWindow) {
-        google.maps.event.addListener(marker, 'click', function () {
-
-            infoWindow.open(map, marker);
-            $('.infowindow').parent().parent().css('height', '130px');
-            $('.infowindow').parent().parent().css('width', '320px');
-            $('.infowindow').parent().parent().parent().css(' overflow-y', 'none');
+    function init() {
+        var orgBalloonTpl = _.template(document.getElementById('org_balloon_tpl').textContent);
+        var orgsCollection = new ymaps.GeoObjectCollection();
+        orgsMap = new ymaps.Map("map_canvas", {
+            center: [62.371126, 93.702104],
+            zoom: 3
         });
-//              google.maps.event.addListener(marker, 'mouseout', function() {
-//
-//                infoWindow.close(map, marker);
-//              });
-    }
 
-    function showMarkers(markers) {
-        for (i in markers) {
-            bindInfoWindow(markers[i].marker, map, markers[i].infowindow);
-            markers[i].marker.setMap(map);
-        }
-    }
-    function notExistText(val) {
-        if (!val) return "Не указано";
-        else return val;
-    }
-    var points = new Array();
-    var bounds = null;
-    var image = 'http://ksob.spb.ru/media/images/theme/library.png';
-    function showOrgs(orgs) {
-
-        var markers = Array();
-
-        for (i in orgs) {
-            markers[i] = {
-                marker:new google.maps.Marker({
-                    position:new google.maps.LatLng(orgs[i].latitude, orgs[i].longitude),
-                    title:orgs[i].name,
-                    map:map,
-                    icon:image
-                }),
-                infowindow:new google.maps.InfoWindow({
-                    content:'<div  style="display:block" class="infowindow"><b>' + orgs[i].name + '</b>' +
-//                            '<br/><b>Адрес:</b> ' + orgs[i].address +
-//                            '<br/><b>Тел.:</b> ' + orgs[i].phone +
-//                            '<br/><b>Сайт:</b> ' + orgs[i].http_service +
-//                            '</br><b>Расписание работы:</b> ' + orgs[i].plans +
-                            '</div>'
+        _.each(jsOrgs, function (jsOrg) {
+            var fields = jsOrg;
+            orgPlacemark = new ymaps.Placemark([fields.latitude, fields.longitude], {
+                hintContent: fields.title,
+                balloonContent: orgBalloonTpl({
+                    name: fields.title || '',
+                    address: fields.postal_address || 'не указан',
+                    phone: fields.phone || 'не указан',
+                    plans: fields.plans || 'не указан',
+                    code: fields.code || '#',
+                    lang: lang
                 })
-            }
+            });
 
-        }
-        showMarkers(markers);
-    }
-
-    //var js_org = {"latitude": "59.8707013", "code": "19817029F2", "longitude": "30.2697892", "address": "ул. Краснопутиловская, 26", "title": "Библиотека-филиал №2"};
-
-
-    var js_orgs = {{ js_orgs|safe }};
-
-    showOrgs(js_orgs);
-    var bounds = new google.maps.LatLngBounds();
-    for (i in js_orgs) {
-        bounds.extend(new google.maps.LatLng(js_orgs[i].latitude, js_orgs[i].longitude));
-    }
-
-    map.fitBounds(bounds);
-
-    google.maps.event.addListener(map, 'bounds_changed', function () {
-        zoomChangeBoundsListener = google.maps.event.addListener(map, 'bounds_changed', function (event) {
-            if (this.getZoom() > 15) // Change max/min zoom here
-                this.setZoom(15);
-            google.maps.event.clearListeners(map, 'bounds_changed');
+            orgsCollection.add(orgPlacemark);
         });
-    });
-    //alert(map.getZoom());
-    //map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds));
+        orgsMap.geoObjects.add(orgsCollection);
+        if (jsOrgs.length) {
+
+            orgsMap.setBounds(orgsCollection.getBounds());
+            if (orgsMap.getZoom() > 15) {
+                orgsMap.setZoom(15);
+            }
+        }
+    }
+</script>
+
+<script type="text/html" id="org_balloon_tpl">
+    <p><b><%= name %></b></p>
+    <p>Адрес: <%= address %></p>
+    <p>Тел.: <%= phone %></p>
+    <p>Режим работы: <%= plans %></p>
+    <p><a href="/<%= lang %>/participants/detail/<%= code %>/">подробнее</a></p>
 </script>
