@@ -566,10 +566,6 @@ def _check_order_times(user, order_manager_id, order_type):
 
     return True
 
-def _save_order_time(user):
-    user_order_times = UserOrderTimes(user=user, order_type=order_type, order_manager_id=order_manager_id)
-    user_order_times.save()
-
 
 
 def _make_mba_order(gen_id, user_id, order_type, order_manager_id, copy_info=u'', comments=u''):

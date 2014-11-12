@@ -3,3 +3,6 @@ from django.shortcuts import render
 
 def index(request):
     return render(request, 'index/frontend/index.html')
+
+def site(request):
+    return render(request, 'index/frontend/org_site.html')

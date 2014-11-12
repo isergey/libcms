@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import *
-
-urlpatterns = patterns('index.frontend.views',
-    url(r'^$', 'index', name="index"),
+import views
+urlpatterns = patterns('',
+    url(r'^$', views.index, name="index"),
+    url(r'^site/$', views.site, name="site"),
 )
