@@ -141,8 +141,9 @@
 
             orgsCollection.add(orgPlacemark);
         });
-        if (orgsCollection.length) {
-            orgsMap.geoObjects.add(orgsCollection);
+        orgsMap.geoObjects.add(orgsCollection);
+        if (jsOrgs.length) {
+
             orgsMap.setBounds(orgsCollection.getBounds());
             if (orgsMap.getZoom() > 15) {
                 orgsMap.setZoom(15);
