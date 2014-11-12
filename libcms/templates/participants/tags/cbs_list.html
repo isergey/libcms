@@ -1,3 +1,5 @@
+{% load i18n %}
+{% get_current_language as lang %}
 <style>
     #map_canvas{
         background: white;
@@ -102,3 +104,57 @@
 {#    //alert(map.getZoom());#}
 {#    //map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds));#}
 {#</script>#}
+
+
+<script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<script type="text/javascript">
+    var lang = '{{ lang }}';
+    if (lang.length === 0) {
+        lang = 'ru'
+    }
+    var jsOrgs = {{ js_orgs|safe }};
+    ymaps.ready(init);
+    var orgsMap;
+
+
+    function init() {
+        var orgBalloonTpl = _.template(document.getElementById('org_balloon_tpl').textContent);
+        var orgsCollection = new ymaps.GeoObjectCollection();
+        orgsMap = new ymaps.Map("map_canvas", {
+            center: [62.371126, 93.702104],
+            zoom: 3
+        });
+
+        _.each(jsOrgs, function (jsOrg) {
+            var fields = jsOrg;
+            orgPlacemark = new ymaps.Placemark([fields.latitude, fields.longitude], {
+                hintContent: fields.title,
+                balloonContent: orgBalloonTpl({
+                    name: fields.title || '',
+                    address: fields.postal_address || 'не указан',
+                    phone: fields.phone || 'не указан',
+                    plans: fields.plans || 'не указан',
+                    code: fields.code || '#',
+                    lang: lang
+                })
+            });
+
+            orgsCollection.add(orgPlacemark);
+        });
+        if (orgsCollection.length) {
+            orgsMap.geoObjects.add(orgsCollection);
+            orgsMap.setBounds(orgsCollection.getBounds());
+            if (orgsMap.getZoom() > 15) {
+                orgsMap.setZoom(15);
+            }
+        }
+    }
+</script>
+
+<script type="text/html" id="org_balloon_tpl">
+    <p><b><%= name %></b></p>
+    <p>Адрес: <%= address %></p>
+    <p>Тел.: <%= phone %></p>
+    <p>Режим работы: <%= plans %></p>
+    <p><a href="/<%= lang %>/participants/detail/<%= code %>/">подробнее</a></p>
+</script>
