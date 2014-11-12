@@ -42,7 +42,7 @@
                         <p>Адрес: 420044, РТ, г.Казань, пр.Ибрагимова, 53Б</p>
                     </div>
                     <div class="span4">
-                        <img src="http://www.ryltat.ru/images/rub.jpg" />
+                        <div class="map" style="height: 145px"></div>
                     </div>
                 </div>
             </div>
@@ -105,25 +105,25 @@
 
     </div>
 
-{#    <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>#}
-{#    <script type="text/javascript">#}
-{#        ymaps.ready(init);#}
-{#        var myMap;#}
-{##}
-{#        function init() {#}
-{#            orgMap = new ymaps.Map($('.map')[0], {#}
-{#                center: [55.829047, 49.097042],#}
-{#                zoom: 12#}
-{#            });#}
-{#            orgPlacemark = new ymaps.Placemark(#}
-{#                    [55.829047, 49.097042],#}
-{#                    {#}
-{#                        content: 'ГБУК РТ «Республиканская юношеская библиотека!',#}
-{#                        balloonContent: '<p>Адрес: 420044, РТ, г.Казань, пр.Ибрагимова, 53Б</p>'#}
-{#                    }#}
-{#            );#}
-{#            orgMap.geoObjects.add(orgPlacemark);#}
-{#        }#}
-{#    </script>#}
+    <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <script type="text/javascript">
+        ymaps.ready(init);
+        var myMap;
+
+        function init() {
+            orgMap = new ymaps.Map($('.map')[0], {
+                center: [55.829047, 49.097042],
+                zoom: 12
+            });
+            orgPlacemark = new ymaps.Placemark(
+                    [55.829047, 49.097042],
+                    {
+                        content: 'ГБУК РТ «Республиканская юношеская библиотека!',
+                        balloonContent: '<p>Адрес: 420044, РТ, г.Казань, пр.Ибрагимова, 53Б</p>'
+                    }
+            );
+            orgMap.geoObjects.add(orgPlacemark);
+        }
+    </script>
 
 {% endblock %}
