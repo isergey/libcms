@@ -19,9 +19,9 @@
     <div class="span12">
         <div class="breadcrumb">
             <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
-            <span><a href="{% url 'index:frontend:site' %}">ГБУК РТ «Республиканская юношеская библиотека»</a> <span
-                    class="divider">/</span></span>
-            <span class="active">О библиотеке</span>
+            <span><a href="{% url 'index:frontend:site' %}">ГБУК РТ «Республиканская юношеская библиотека»</a>
+            </span>
+{#            <span class="active">О библиотеке</span>#}
         </div>
     </div>
 
@@ -32,6 +32,7 @@
     <div>
         {% include 'index/frontend/inline_org_info.html' %}
     </div>
+    <h3>О библиотеке</h3>
     <div style="text-align: justify">
         <p><img style="float: left; margin: 0 5px 5px 0; width: 200px" src="http://ryltat.ru/images/otdeli/ab.jpg" />Республиканская юношеская библиотека Татарстана была создана как центр информации, духовного общения и досуга
         молодежи, методический центр для библиотек всех систем и ведомств, работающих с молодежью и средствами массовой

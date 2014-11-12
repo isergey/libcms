@@ -32,16 +32,18 @@
             <span>
                 <a href="{% url 'index:frontend:site' %}">ГБУК РТ «Республиканская юношеская библиотека»</a>
                 <span class="divider">/</span></span>
-            <span><a href="{% url 'index:frontend:site_news_list' %}">Новости</a> <span class="divider">/</span></span>
-            <span class="active">Деятельность Казанской губернской земской управы представлена на странице «Электронные коллекции»</span>
+            <span><a href="{% url 'index:frontend:site_news_list' %}">Новости</a></span>
+{#            <span class="active">Деятельность Казанской губернской земской управы представлена на странице «Электронные коллекции»</span>#}
         </div>
     </div>
 
     <div class="span3">
         {% include 'index/frontend/site_menu.html' %}
     </div>
+
     <div class="span9">
         {% include 'index/frontend/inline_org_info.html' %}
+        <h3>Деятельность Казанской губернской земской управы представлена на странице «Электронные коллекции»</h3>
         <p>
             В течение октября 2014 года страница «Электронные коллекции» портала «Национальная электронная библиотека
             Республики Татарстан» пополнилась копиями документов Казанской губернской земской управы. Размещен сборник
