@@ -32,7 +32,7 @@
             orgPlacemark = new ymaps.Placemark([fields.latitude, fields.longitude], {
                 hintContent: fields.title,
                 balloonContent: orgBalloonTpl({
-                    name: fields.title || '',
+                    name: fields.name || '',
                     address: fields.postal_address || 'не указан',
                     phone: fields.phone || 'не указан',
                     plans: fields.plans || 'не указан',
