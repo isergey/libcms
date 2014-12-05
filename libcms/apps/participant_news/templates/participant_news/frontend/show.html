@@ -1,0 +1,29 @@
+{% extends 'index/frontend/index.html' %}
+{% load i18n %}
+
+{% get_current_language as LANGUAGE_CODE %}
+{% block content %}
+    <div class="span12">
+        <div class="breadcrumb">
+            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
+            <span>
+                <a href="{% url 'participant_site:frontend:index' news.library.code %}">{{ news.library.name }}</a>
+                <span class="divider">/</span></span>
+            <span><a href="{% url 'participant_news:frontend:index' news.library.code %}">Новости</a></span>
+        </div>
+    </div>
+
+    <div class="span3">
+        {% include 'participant_site/frontend/site_menu.html' %}
+    </div>
+
+    <div class="span9">
+        {% include 'participant_site/frontend/inline_org_info.html' %}
+        <h3>{{ news.title }}</h3>
+        <p>
+            {{ news.content|safe }}
+        </p>
+    </div>
+
+
+{% endblock %}

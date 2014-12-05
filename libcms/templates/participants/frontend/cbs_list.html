@@ -7,19 +7,8 @@
             <li class="active">Библиотеки</li>
         </ul>
     <div class="row">
-        <div class="span6">
-            <style>
-                #map_canvas{
-                    background: white;
 
-                    box-shadow: 0 0 10px #999;
-                    border-radius: 2px;
-                }
-            </style>
-            <div id="map_canvas" style="height: 400px"></div>
-            {% include 'participants/frontend/map_cbs_js.html' %}
-        </div>
-        <div class="span5">
+        <div class="span6">
 
             <ul class="participants" style="list-style: none; margin: 0">
                 {% for cbs in  cbs_list %}
@@ -32,7 +21,18 @@
                 {% endfor %}
             </ul>
         </div>
+        <div class="span6">
+            <style>
+                #map_canvas{
+                    background: white;
 
+                    box-shadow: 0 0 10px #999;
+                    border-radius: 2px;
+                }
+            </style>
+            <div id="map_canvas" style="height: 400px"></div>
+            {% include 'participants/frontend/map_cbs_js.html' %}
+        </div>
     </div>
 
     </div>

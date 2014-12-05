@@ -1,0 +1,101 @@
+{% load i18n %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Администрирование {{ library.name }}</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/administration/styles.css">
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand" href="{% url 'participant_site:administration:index' library.code %}">{% block module_title %}Администрирование сайта библиотеки{% endblock %}</a>
+
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                    <li id="fat-menu" class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Модули<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'participant_news:administration:index' library.code %}">Новости</a></li>
+                            <li><a href="{% url 'participant_events:administration:index' library.code %}">Афиша</a></li>
+                            <li><a href="{% url 'participant_pages:administration:index' library.code %}">Страницы</a></li>
+                            <li><a href="{% url 'participant_menu:administration:index' library.code %}">Меню сайта</a></li>
+                            <hr class="divider"/>
+                            <li><a href="#">Карточка библиотеки</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+</div>
+
+<div class="container" style="margin-top: 39px;">
+    <div class="row">
+        <div class="span12"><div class="alert alert-info">{{ library.name }}</div></div>
+    </div>
+    <div class="row">
+        <div class="span2">
+            {% block module_menu %}
+
+            {% endblock %}
+        </div>
+        <div class="span10">
+            {% block module_content %}
+                Выберите модуль для администрирования
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script type="text/javascript">
+//    $('#topbar').dropdown();
+</script>
+
+<script type="text/javascript">
+    jQuery(document).ajaxSend(function(event, xhr, settings) {
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        function sameOrigin(url) {
+            // url could be relative or scheme relative or absolute
+            var host = document.location.host; // host + port
+            var protocol = document.location.protocol;
+            var sr_origin = '//' + host;
+            var origin = protocol + sr_origin;
+            // Allow absolute or scheme relative URLs to same origin
+            return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                    (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                // or any other URL that isn't scheme relative or absolute i.e relative.
+                    !(/^(\/\/|http:|https:).*/.test(url));
+        }
+        function safeMethod(method) {
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    });
+</script>
+</html>

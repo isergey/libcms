@@ -1,0 +1,77 @@
+<script src="{{ STATIC_URL }}uploader/js/vendor/jquery.ui.widget.js"></script>
+<script src="{{ STATIC_URL }}uploader/js/jquery.iframe-transport.js"></script>
+<script src="{{ STATIC_URL }}uploader/js/jquery.fileupload.js"></script>
+<script src="{{ STATIC_URL }}uploader/js/jquery.fileupload-process.js"></script>
+<style>
+    table#files .file{
+        width: 80%;
+    }
+    table#files .actions{
+        width: 20%;
+    }
+    table#files .insert_link_addr{
+        width: 100%;
+    }
+</style>
+
+
+<div class="alert alert-info">Для загрузки воложений укажите нужные файлы. Файлы загружаеются в фоновом режиме - презагрузка страницы не требуется</div>
+<input id="fileupload" type="file" name="files[]" multiple class="btn" data-url="{% url 'attacher:frontend:index' %}?content_type={{ content_type|urlencode }}&content_id={{ content_id|urlencode }}" >
+
+<div class="progress_panel" style="display: none">
+Загрузка файла: <span id="file_name_progress"></span>
+<div class="progress progress-striped" >
+    <div class="bar" style="width: 0%;"></div>
+</div>
+</div>
+<table id="files"  class="table">
+    {% for file in files %}
+        <tr>
+            <td class="file">
+                <a href="{{ file.url }}">{{ file.title }}</a><div>Адрес файла для формирования ссылки в контенте:<br/>
+                <input style="cursor: text" onclick="this.select()" class="insert_link_addr" type="text" readonly value="{{ file.url }}"/>
+            </div>
+            </td>
+            <td class="actions"><a class="delete btn btn-danger btn-small" href="{% url 'attacher:frontend:delete' %}?path={{ file.path }}&content_type={{ content_type|urlencode }}&content_id={{ content_id|urlencode }}&sign={{ file.sign_delete_path }}">удалить</a></td>
+        </tr>
+    {% endfor %}
+</table>
+
+
+<script>
+$(function () {
+
+    $('#fileupload').fileupload({
+        dataType: 'json',
+        sequentialUploads: true,
+        url: '{% url 'attacher:frontend:index' %}',
+        done: function (e, data) {
+
+            $('#files').append('<tr><td class="file"><a href="'+data.result.url+'">' + data.result.title +'</a> <div>Адрес файла для формирования ссылки в контенте:<br/> <input class="insert_link_addr" type="text" readonly value="'+data.result.url+'"/></div> </td> <td class="actions"> <a class="delete btn btn-danger btn-small" href="{% url 'attacher:frontend:delete' %}?path='+data.result.delete_path+'&sign='+data.result.sign_delete_path+'&content_type={{ content_type|urlencode }}&content_id={{ content_id|urlencode }}">удалить</a></td></tr>');
+        },
+        start: function(e, data){
+
+            $('.bar').css('width', 0 + '%');
+            $('.progress_panel').show();
+        },
+        stop: function(){
+            $('.progress_panel').hide();
+        },
+        progress: function (e, data) {
+            $('#file_name_progress').text(data.files[0].name);
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('.bar').css('width', progress + '%');
+        }
+    });
+
+    $(document).on("click", '.delete', function(){
+        var button = $(this);
+        $.ajax({
+          url: $(this).attr('href')
+        }).done(function( msg ) {
+         button.closest('tr').remove();
+        });
+        return false;
+    });
+});
+</script>

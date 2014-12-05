@@ -1,0 +1,60 @@
+{% extends 'participant_events/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% block breadcrumb %}
+    {#    {% breadcrumb "События" events:administration:events_list %}#}
+    {#    {% breadcrumb "Редактирование события" %}#}
+
+{% endblock %}
+
+{% block action_content %}
+
+    <script type="text/javascript" src="{% url 'jsi18n' %}"></script>
+{#    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>#}
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/calendar.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/DateTimeShortcuts.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css"/>
+
+    <script type="text/javascript">
+        window.__admin_media_prefix__ = "{{ STATIC_URL }}admin/";
+    </script>
+    <style>
+        form input[type=text], textarea {
+            width: 95%;
+        }
+    </style>
+    <div class="tabbable">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#s1" data-toggle="tab">Редактирование содержимого</a></li>
+            <li><a href="#s2" data-toggle="tab">Управление вложениями</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="s1">
+                <form enctype="multipart/form-data"  class="" method="POST">{% csrf_token %}
+                    <legend>Редактирование события</legend>
+                    {% if event.avatar %}
+                        <img src="{{ MEDIA_URL }}{{ event.avatar }}" alt="">
+                    {% endif %}
+                    <fieldset>
+                        {% include 'administration/base_form_fields.html' with form=event_form %}
+                        {% for event_content_form in event_content_forms %}
+                            <p>Описание события на языке: <b>{{ event_content_form.lang }}</b>↴</p>
+                            {% include 'administration/base_form_fields.html' with form=event_content_form.form %}
+                            <hr/>
+                        {% endfor %}
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Редактировать</button>
+                            <button type="reset" class="btn">Отмена{{ ADMIN_MEDIA }}</button>
+                        </div>
+                    </fieldset>
+                </form>
+                {% include 'participant_events/administration/editor.html' %}
+            </div>
+            <div class="tab-pane" id="s2">
+                {% include 'participant_pages/administration/attacher.html' %}
+            </div>
+        </div>
+        <div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'participant_menu/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+
+{% block breadcrumb %}
+
+  <li><a href="{% url 'participant_menu:administration:index' library.code %}">Меню</a> <span class="divider">/</span></li>
+  <li class="active">Список меню</li>
+
+{% endblock %}
+
+{% block action_content %}
+
+    <ul class="list" style="list-style: none; padding: 0; margin: 0">
+    {% for menu in menus %}
+        <li><span class="title">
+            {% if not menu.menu_title.title %}
+                <a href="{% url 'participant_menu:administration:edit_menu' library.code menu.id %}">{{ menu.slug }}</a>
+            {% else %}
+                <a href="{% url 'participant_menu:administration:edit_menu' library.code menu.id %}">{{ menu.menu_title.title }} ({{ menu.slug }})</a>
+            {% endif %}
+        </span>
+            <a href="{% url 'participant_menu:administration:item_list' library.code menu.id  %}">Пункты</a>
+        </li>
+    {% endfor %}
+    </ul>
+    {% admin_pagination menus_page %}
+{% endblock %}
+
+

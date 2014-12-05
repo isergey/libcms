@@ -1,0 +1,34 @@
+{% extends 'index/frontend/index.html' %}
+{% load localeurl_tags %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        {% for ancestor in content.page.get_ancestors_titles %}
+            <li><a href="{% url 'pages:frontend:show' ancestor.url_path %}">
+                {% if not ancestor.title %}
+                    {{ ancestor }}
+                {% else %}
+                    {{ ancestor.title }}
+                {% endif %}
+            </a> <span class="divider">/</span></li>
+        {% endfor %}
+        <li>
+            {% if not content.title %}
+                заглавие страницы для этого языка не указано.
+            {% else %}
+                {{ content.title }}
+            {% endif %}
+        </li>
+    </ul>
+{#    {% if not children %}#}
+        {{ content.content|safe }}
+{#    {% else %}#}
+{#        <ul>#}
+{#        {% for child in children %}#}
+{#            {% url pages:frontend:show child.url_path  as page_url %}#}
+{#            <li><a href="/{{ content.lang }}{{ page_url|rmlocale }}">{{ child.content.title }}</a></li>#}
+{#        {% endfor %}#}
+{#        </ul>#}
+{#    {% endif %}#}
+{% endblock %}

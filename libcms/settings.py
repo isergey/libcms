@@ -147,7 +147,11 @@ INSTALLED_APPS = (
     'news',
     'events',
     'participants',
-    'participants_pages',
+    'participant_news',
+    'participant_events',
+    'participant_pages',
+    'participant_site',
+    'participant_menu',
     'professionals_pages',
     'professionals_news',
     'professionals',
@@ -162,6 +166,7 @@ INSTALLED_APPS = (
     'mydocs',
     'guestbook',
     'newinlib',
+    'attacher'
 )
 
 

@@ -1,0 +1,63 @@
+{% extends 'participant_pages/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load pages_tags %}
+{% load localeurl_tags %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'participant_pages:administration:pages_list' library.code %}">Страницы</a> <span class="divider">/</span></li>
+    <li class="active">Редактирование контента страницы</li>
+{% endblock %}
+
+{% block action_content %}
+
+    <h3>
+        <a href="{% url 'participant_pages:administration:index' library.code %}">Страницы</a> →
+        {% for ancestor in content.page.get_ancestors %}
+            <a href="{% url 'participant_pages:administration:pages_list' library.code ancestor.id %}">
+                {% if not ancestor.get_cur_lang_content %}
+                    {{ ancestor }}
+                {% else %}
+                    {{ ancestor.get_cur_lang_content }}
+                {% endif %}
+            </a> →
+        {% endfor %}
+        {% if not content.title %}
+            заглавие страницы для этого языка не указано.
+        {% else %}
+            {{ content.title }}
+        {% endif %}
+
+    </h3>
+{#    <div class="well">URL этой страницы: {% url participants_pages:frontend:show library.id page.url_path  as page_url %} <a href="/{{ content.lang }}{{ page_url|rmlocale }}">/{{ content.lang }}{{ page_url|rmlocale }}</a></div>#}
+
+    <div class="well">URL этой страницы: {% url 'participant_pages:frontend:show' library.code page.url_path  as page_url %} <a href="/{{ content.lang }}{{ page_url|rmlocale }}" target="_blank">/{{ content.lang }}{{ page_url|rmlocale }}</a></div>
+
+    <hr/>
+    <div class="tabbable">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#s1" data-toggle="tab">Редактирование содержимого</a></li>
+        <li><a href="#s2" data-toggle="tab">Управление вложениями</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="s1">
+         <form class="" method="POST">{% csrf_token %}
+            <legend>Редактирование контента для языка: <b>{{ content.lang }}</b></legend>
+            <fieldset>
+                {% include 'administration/base_form_fields.html' with form=content_form %}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" name="save" value="save_edit">Сохранить и продолжить редактирование</button>
+                    <button type="submit" class="btn btn-primary" name="save" value="save">Сохранить</button>
+                    <button type="reset" class="btn">Отмена</button>
+                </div>
+            </fieldset>
+        </form>
+        {% include 'participant_pages/administration/editor.html' %}
+        </div>
+        <div class="tab-pane" id="s2">
+           {% include 'participant_pages/administration/attacher.html' %}
+        </div>
+      </div>
+    </div>
+{% endblock %}

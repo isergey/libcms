@@ -1,0 +1,76 @@
+{% extends 'participant_news/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    <li><a href="{% url 'participant_news:administration:news_list' library.code %}">Новости</a> <span class="divider">/</span></li>
+    <li class="active">Список новостей</li>
+{% endblock %}
+
+{% block action_content %}
+    <style>
+    .bolder{
+        font-weight: bolder;
+    }
+    li.current {
+        font-weight: bold;
+    }
+    </style>
+    <div class="row">
+    <div class="span10">
+        <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Заголовок</th>
+            <th class="span1">Язык</th>
+            <th class="span1" title="Опубликована">Опубл.</th>
+            <th class="span2">Дата создания</th>
+            <th class="span1">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for news in news_list %}
+
+            <tr>
+                <td><a href="{% url 'participant_news:administration:edit_news' library.code news.id %}">{{ news.title }}</a></td>
+                <td>{{ news.lang }}</td>
+                <td>
+                    {% if news.publicated %}<span class="label label-success">да</span>{% else %}<span class="label label-warning">нет</span>{% endif %}
+                {% if news.order != 0 %}<span class="label label-important">важно!</span>{% endif %}
+                </td>
+                <td>{{ news.create_date }}</td>
+                <td><a class="delete btn btn-danger"  href="{% url 'participant_news:administration:delete_news' library.code news.id %}"><i class="icon-trash icon-white" title="Удалить"></i></a></td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+    {% admin_pagination news_page %}
+    <script type="text/javascript">
+        $("a.delete").click(function () {
+            if (!confirm('Вы уверены, что хотите удалить?')) return false;
+        });
+    </script>
+    </div>
+    </div>
+{#    <ul class="nav nav-tabs">#}
+{#    {% for type in types %}#}
+{#        {% if forloop.first and not request.GET.type %}#}
+{#            <li class="active">#}
+{#                <a href="?type={{ type.0 }}">{{ type.1 }}</a>#}
+{#            </li>#}
+{#        {% else %}#}
+{#            <li {% if request.GET.type == type.0 %}class="active"{% endif %} >#}
+{#                <a href="?type={{ type.0 }}">{{ type.1 }}</a>#}
+{#            </li>#}
+{#        {% endif %}#}
+{#    {% endfor %}#}
+{#    </ul>#}
+
+    <hr/>
+
+{% endblock %}
+
+

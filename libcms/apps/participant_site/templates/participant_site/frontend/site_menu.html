@@ -1,0 +1,13 @@
+{% load participant_site_tags %}
+{% load participant_menu_tags %}
+{% get_library_avatar_src library.id  as avatar_src %}
+{% if  avatar_src %}
+    <div class="well well-small" style="margin-bottom: 10px">
+    <a href="{% url 'participant_site:frontend:index' library.code %}">
+        <img src="{{ MEDIA_URL }}{{ avatar_src }}" />
+    </a>
+    </div>
+{% endif %}
+<div class="well well-small">
+{% drow_library_menu_default library.id 'main_menu' %}
+</div>

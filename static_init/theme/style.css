@@ -229,3 +229,15 @@ ul.group ul {
     /*position: relative;*/
     /*top: 5px;*/
 }
+
+
+
+.library_menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.library_menu .active {
+    font-weight: bold;
+}

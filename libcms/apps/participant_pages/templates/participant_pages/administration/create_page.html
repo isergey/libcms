@@ -1,0 +1,53 @@
+{% extends 'participant_pages/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'participant_pages:administration:pages_list' library.code %}">Страницы</a> <span class="divider">/</span></li>
+    <li class="active">Создание страницы</li>
+{% endblock %}
+
+{% block action_content %}
+    <h3>
+    {% if parent %}
+            {% for ancestor in parent.get_ancestors %}
+                <a href="{% url 'participant_pages:administration:pages_list' library.code ancestor.id %}">
+                    {% if not ancestor.get_cur_lang_content %}
+                        {{ ancestor }}
+                    {% else %}
+                        {{ ancestor.get_cur_lang_content }}
+                    {% endif %}
+                </a> →
+            {% endfor %}
+            {% if not parent.get_cur_lang_content %}
+                {{ parent }} →
+            {% else %}
+                {{ parent.get_cur_lang_content }} →
+            {% endif %}
+
+    {% endif %}
+    </h3>
+    <hr/>
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+        <legend>Создание страницы</legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=page_form %}
+{#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Перейти к редактированию контента</button>
+                <button type="reset" class="btn">Отменить</button>
+            </div>
+        </fieldset>
+    </form>
+{#    <script type="text/javascript">#}
+{#        $('a').click(function(){#}
+{#            if (confirm("Вы не сохранили страницу. Всё равно покинуть?")) {#}
+{#                return True;#}
+{#            } else {#}
+{#                return false;#}
+{#            }#}
+{#        });#}
+{#    </script>#}
+
+{% endblock %}

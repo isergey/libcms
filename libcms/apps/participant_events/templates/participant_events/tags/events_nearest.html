@@ -1,0 +1,8 @@
+<ul>
+    {% for event in events %}
+        <li><b>{{ event.start_date|date:"d.m.Y H:i" }}</b><br/> <a href="{% url 'events:frontend:show' event.id %}">{{ event.event_content.title }}</a></li>
+        {% if not forloop.last %}<hr/>{% endif %}
+    {% empty %}
+        Ближайших событий нет
+    {% endfor %}
+</ul>

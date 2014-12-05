@@ -1,0 +1,59 @@
+{% extends 'participant_news/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load localeurl_tags %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'participant_news:administration:news_list' library.code %}">Новости</a> <span class="divider">/</span></li>
+    <li class="active">Редактирование новости</li>
+{% endblock %}
+
+{% block action_content %}
+    <div class="well">URL этой новости: {% url 'participant_news:frontend:show' library.code news_form.instance.id as news_show_url %} <a href="/{{ news_form.instance.lang }}{{ news_show_url|rmlocale }}" target="_blank">/{{ news_form.instance.lang }}{{ news_show_url|rmlocale }}</a></div>
+
+
+        <div class="tabbable">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#s1" data-toggle="tab">Редактирование содержимого</a></li>
+        <li><a href="#s2" data-toggle="tab">Управление вложениями</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="s1">
+<form class="" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <legend>Редактирование новости</legend>
+        <fieldset>
+            <div class="control-group ">
+                <label class="control-label" for="id_news_form_avatar">Аватарка к новости</label>
+                <div class="controls">
+                    <input type="file" name="news_form_avatar" id="id_news_form_avatar">
+                    {% if news_form.instance.avatar_img_name %}
+                        <br/>
+                        <img src="{{ MEDIA_URL }}uploads/participant_news/newsavatars/{{ news_form.instance.avatar_img_name }}" alt="">
+                    {% endif %}
+                </div>
+
+            </div>
+            {% include 'administration/base_form_fields.html' with form=news_form %}
+            {% for news_content_form in news_content_forms %}
+                <p>Новостбь на языке: <b>{{  news_content_form.lang }}</b>↴</p>
+                {% include 'administration/base_form_fields.html' with form=news_content_form.form %}
+                <hr/>
+            {% endfor %}
+{#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" name="save_edit">Сохранить и продолжить редактирование</button>
+                <button type="submit" class="btn btn-success">Сохранить</button>
+                <button type="reset" class="btn">Отмена</button>
+            </div>
+        </fieldset>
+    </form>
+{% include 'participant_news/administration/editor.html' %}
+        </div>
+        <div class="tab-pane" id="s2">
+           {% include 'participant_pages/administration/attacher.html' %}
+        </div>
+      </div>
+    </div>
+
+{% endblock %}

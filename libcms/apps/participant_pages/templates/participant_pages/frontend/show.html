@@ -1,0 +1,62 @@
+{% extends 'participant_site/frontend/index.html' %}
+{% load i18n %}
+{% load localeurl_tags %}
+{#{% load news_tags %}#}
+{#{% load events_tags %}#}
+{#{% load ssearch_tags %}#}
+{#{% load participiants_tags %}#}
+{#{% load cache %}#}
+{% block title %}{{ content.title }}{% endblock %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block content %}
+    <style>
+        .news-block {
+            margin-bottom: 10px;
+        }
+
+        .news-block__title {
+            font-weight: bold;
+        }
+    </style>
+    <div class="span12">
+    <ul class="breadcrumb">
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        {% for ancestor in library.get_ancestors %}
+            <li><a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a> <span class="divider">/</span></li>
+        {% endfor %}
+        <li><a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a> <span class="divider">/</span></li>
+        {% for ancestor in content.page.get_ancestors_titles %}
+            <li><a href="{% url 'participant_pages:frontend:show' library.code ancestor.url_path %}">
+                {% if not ancestor.title %}
+                    {{ ancestor }}
+                {% else %}
+                    {{ ancestor.title }}
+                {% endif %}
+            </a> <span class="divider">/</span></li>
+        {% endfor %}
+        <li>
+            {% if not content.title %}
+                заглавие страницы для этого языка не указано.
+            {% else %}
+                {{ content.title }}
+            {% endif %}
+        </li>
+    </ul>
+    </div>
+
+    <div class="span3">
+                {% include 'participant_site/frontend/site_menu.html' %}
+    </div>
+    <div class="span9">
+    <div>
+        {% include 'participant_site/frontend/inline_org_info.html' %}
+    </div>
+{#    <h3>{{ content.title }}</h3>#}
+    <div>
+        {{ content.content|safe }}
+
+      </div>
+    </div>
+
+
+{% endblock %}

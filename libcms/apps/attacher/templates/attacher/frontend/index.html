@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jQuery File Upload Example</title>
+    <link rel="stylesheet" href="http://blueimp.github.io/cdn/css/bootstrap.min.css">
+</head>
+<body>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="{{ STATIC_URL }}uploader/js/vendor/jquery.ui.widget.js"></script>
+<script src="{{ STATIC_URL }}uploader/js/jquery.iframe-transport.js"></script>
+<script src="{{ STATIC_URL }}uploader/js/jquery.fileupload.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}uploader/css/jquery.fileupload-ui.css">
+
+
+<input id="fileupload" type="file" name="files[]" data-url="" multiple class="btn">
+<ul id="files">
+
+</ul>
+<div id="progress">
+    <div class="bar" style="width: 0;"></div>
+</div>
+
+<script>
+$(function () {
+
+    $('#fileupload').fileupload({
+        dataType: 'json',
+        sequentialUploads: true,
+        done: function (e, data) {
+            console.log(data.result);
+            $('#files').append('<li><a href="'+data.result.url+'">' + data.result.title +'</a> <a class="delete btn btn-danger btn-small" href="{% url 'attacher:frontend:delete' %}?path='+data.result.delete_path+'&sign='+data.result.sign_delete_path+'">удалить</a></li>');
+            {#            $.each(data.result.files, function (index, file) {#}
+{#                $('<p/>').text(file.name).anppendTo(document.body);#}
+{#            });#}
+        }
+    });
+
+    $(document).on("click", '.delete', function(){
+        var button = $(this);
+        $.ajax({
+          url: $(this).attr('href')
+        }).done(function( msg ) {
+         button.closest('li').remove();
+        });
+        return false;
+    });
+});
+</script>
+
+</body>
+
+</html>

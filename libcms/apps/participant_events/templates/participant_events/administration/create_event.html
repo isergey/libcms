@@ -1,0 +1,52 @@
+{% extends 'participant_events/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% block breadcrumb %}
+{#    {% breadcrumb "События" events:administration:events_list %}#}
+{#    {% breadcrumb "Создание события" %}#}
+
+{% endblock %}
+
+{% block action_content %}
+
+    <script type="text/javascript" src="{% url 'jsi18n' %}"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/calendar.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/DateTimeShortcuts.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css"/>
+
+    <script type="text/javascript">
+        window.__admin_media_prefix__ = "{{ STATIC_URL }}admin/";
+    </script>
+    <style>
+    form input[type=text], textarea{
+        width: 95%;
+    }
+    </style>
+    <div class="alert alert-info">
+        Для прикрепления файлов необходимо сохранить событие и продолжить редактирование.
+    </div>
+    <form class="" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <legend>Создание события</legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=event_form %}
+            {% for event_content_form in event_content_forms %}
+                <p>Описание события на языке: <b>{{  event_content_form.lang }}</b>↴</p>
+                {% include 'administration/base_form_fields.html' with form=event_content_form.form %}
+                <hr/>
+            {% endfor %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Создать</button>
+                <button type="reset" class="btn">Отмена</button>
+            </div>
+        </fieldset>
+    </form>
+    <script type="text/javascript">
+        (function($) {
+            var field;
+        })(django.jQuery);
+    </script>
+    {% include 'participant_events/administration/editor.html' %}
+{% endblock %}

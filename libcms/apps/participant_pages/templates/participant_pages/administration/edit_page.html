@@ -1,0 +1,53 @@
+{% extends 'participant_pages/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load pages_tags %}
+{% block breadcrumb %}
+    <li><a href="{% url 'participant_pages:administration:pages_list' library.code %}">Страницы</a> <span class="divider">/</span></li>
+    <li class="active">Редактирование страницы</li>
+{% endblock %}
+
+{% block action_content %}
+    <h3>
+        {% if page.parent_id %}
+            {% for ancestor in page.parent.get_ancestors %}
+                <a href="{% url 'participant_pages:administration:pages_list' library.code ancestor.id %}">
+                    {% if not ancestor.get_cur_lang_content %}
+                        {{ ancestor }}
+                    {% else %}
+                        {{ ancestor.get_cur_lang_content }}
+                    {% endif %}
+                </a> →
+            {% endfor %}
+            {% if not page.parent.get_cur_lang_content %}
+                <a href="{% url 'participant_pages:administration:pages_list' library.code page.parent.id %}">{{ page.parent }}</a> →
+            {% else %}
+                <a href="{% url 'participant_pages:administration:pages_list' library.code page.parent.id %}">{{ page.parent.get_cur_lang_content }}</a> →
+            {% endif %}
+        {% endif %}
+        {% if not page.get_cur_lang_content %}
+            {{ page }} (нет заглавия для текущего языка)
+        {% else %}
+            {{ page.get_cur_lang_content }}
+        {% endif %}
+    </h3>
+    <hr/>
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+        <legend>Редактирование страницы</legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=page_form %}
+            {#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <button type="reset" class="btn">Отменить</button>
+            </div>
+        </fieldset>
+    </form>
+    <h3>Редактирование контента страницы на следующих языках:</h3>
+    <ul>
+        {% for lang in langs %}
+            <li><a href="{% url 'participant_pages:administration:edit_page_content' library.code page.id lang.code %}">{{ lang.title }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

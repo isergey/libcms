@@ -1,9 +1,0 @@
-{% load active_link %}
-{% url 'participants_pages:administration:pages_list' library.id as  pages_list_url %}
-{% url 'participants_pages:administration:create_page' library.id  as create_page_url %}
-{#{% url participants_pages:administration:pages_list library.id %}#}
-<ul class="nav nav-list">
-    <li class="nav-header">Страницы</li>
-    <li class="{% active pages_list_url %}"><a href="{{ pages_list_url }}">Список</a></li>
-    <li class="{% active_path create_page_url %}"><a href="{{ create_page_url }}">Добавить</a></li>
-</ul>

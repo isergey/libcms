@@ -190,7 +190,7 @@ def delete_item(request, id):
 
 
 import os
-import Image
+from PIL import Image
 import uuid
 from datetime import datetime
 

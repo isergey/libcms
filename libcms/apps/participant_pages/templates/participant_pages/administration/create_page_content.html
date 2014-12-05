@@ -1,0 +1,76 @@
+{% extends 'participant_pages/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load localeurl_tags %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'participant_pages:administration:pages_list' library.code %}">Страницы</a> <span class="divider">/</span></li>
+    <li class="active">Создание контента страницы</li>
+{% endblock %}
+
+{% block action_content %}
+
+{#        {% for ancestor in page.get_ancestors %}#}
+{#            <a href="{% url pages:administration:pages_list ancestor.id %}">{{ ancestor }}</a> →#}
+{#        {% endfor %}#}
+{#        {{ page }}#}
+    <h3>
+    <a href="{% url 'participant_pages:administration:index' library.code %}">Страницы</a> →
+    {% if page.parent_id %}
+            {% for ancestor in page.parent.get_ancestors %}
+                <a href="{% url 'participant_pages:administration:pages_list' ibrary.code ancestor.id %}">
+                    {% if not ancestor.get_cur_lang_content %}
+                        {{ ancestor }}
+                    {% else %}
+                        {{ ancestor.get_cur_lang_content }}
+                    {% endif %}
+                </a> →
+            {% endfor %}
+            {% if not page.parent.get_cur_lang_content %}
+                <a href="{% url 'participant_pages:administration:pages_list' library.code page.parent.id %}">{{ page.parent }}</a> →
+            {% else %}
+                <a href="{% url 'participant_pages:administration:pages_list' library.code page.parent.id %}">{{ page.parent.get_cur_lang_content }}</a> →
+            {% endif %}
+    {% endif %}
+        {{ page }}
+    </h3>
+    <div class="well">URL этой страницы: {% url 'participant_pages:frontend:show' library.code page.url_path  as page_url %} <a id="content_url_link" href="{{ page_url|rmlocale }}" target="_blank"><span id="content_lang">{{ content.lang }}</span>{{ page_url|rmlocale }}</a></div>
+
+
+
+    <div class="tabbable">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#s1" data-toggle="tab">Редактирование содержимого</a></li>
+        <li><a href="#s2" data-toggle="tab">Управление вложениями</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="s1">
+            <form class="" method="POST">{% csrf_token %}
+                    <legend>Создание контента страницы:</legend>
+                    <fieldset>
+                        {% include 'administration/base_form_fields.html' with form=content_form %}
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" name="save" value="save_edit">Сохранить и продолжить редактирование</button>
+                            <button type="submit" class="btn btn-primary" name="save" value="save">Сохранить</button>
+                            <button type="reset" class="btn">Отменить</button>
+                        </div>
+                    </fieldset>
+                </form>
+                <script type="text/javascript">
+                    var content_url_link = $('#content_url_link').attr('href');
+                    $('#content_lang').text('Для начала укажите язык страницы');
+                    $('#id_content_form-lang').change(function(){
+                        $('#content_lang').text($(this).val());
+                        $('#content_url_link').attr('href', '/' + $(this).val() + content_url_link);
+                    });
+
+                </script>
+                {% include 'participant_pages/administration/editor.html' %}
+        </div>
+        <div class="tab-pane" id="s2">
+           {% include 'participant_pages/administration/attacher.html' %}
+        </div>
+      </div>
+    </div>
+{% endblock %}

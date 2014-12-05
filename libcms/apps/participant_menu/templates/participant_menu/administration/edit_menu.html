@@ -1,0 +1,40 @@
+{% extends 'participant_menu/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'participant_menu:administration:menu_list' library.code %}">Меню</a> <span class="divider">/</span></li>
+    <li class="active">Редактирование</li>
+{% endblock %}
+
+{% block action_content %}
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+        <legend>Редактирование</legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=menu_form %}
+            {% for menu_title_form in menu_title_forms %}
+                <p>Название меню на языке: <b>{{  menu_title_form.lang }}</b>↴</p>
+                {% include 'administration/base_form_fields.html' with form=menu_title_form.form %}
+            {% endfor %}
+{#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Редактировать</button>
+                <button type="reset" class="btn">Отмена</button>
+            </div>
+        </fieldset>
+    </form>
+
+
+{#    <script type="text/javascript">#}
+{#        $('a').click(function(){#}
+{#            if (confirm("Вы не сохранили страницу. Всё равно покинуть?")) {#}
+{#                return True;#}
+{#            } else {#}
+{#                return false;#}
+{#            }#}
+{#        });#}
+{#    </script>#}
+
+{% endblock %}

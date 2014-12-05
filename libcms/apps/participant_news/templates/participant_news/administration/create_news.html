@@ -1,0 +1,39 @@
+{% extends 'participant_news/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'participant_news:administration:news_list' library.code %}">Новости</a> <span class="divider">/</span></li>
+    <li class="active">Создание новости</li>
+{% endblock %}
+
+{% block action_content %}
+    <div class="alert alert-info">
+        Для прикрепления файлов необходимо сохранить новость и продолжить редактирование.
+    </div>
+    <form class="" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <legend>Создание новости</legend>
+        <fieldset>
+            <div class="control-group ">
+                <label class="control-label" for="id_news_form_avatar">Аватарка к новости</label>
+                <div class="controls">
+                    <input type="file" name="news_form_avatar" id="id_news_form_avatar">
+                </div>
+            </div>
+            {% include 'administration/base_form_fields.html' with form=news_form %}
+            {% for news_content_form in news_content_forms %}
+                <p>Новостб на языке: <b>{{  news_content_form.lang }}</b>↴</p>
+                {% include 'administration/base_form_fields.html' with form=news_content_form.form %}
+                <hr/>
+            {% endfor %}
+{#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" name="save_edit">Создать и продолжить редактирование</button>
+                <button type="submit" class="btn btn-success">Создать</button>
+                <button type="reset" class="btn">Отмена</button>
+            </div>
+        </fieldset>
+    </form>
+    {% include 'participant_news/administration/editor.html' %}
+{% endblock %}
