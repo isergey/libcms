@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+from datetime import datetime, timedelta
 import os
 import binascii
 from PIL import Image
@@ -16,15 +17,42 @@ MEDIA_ROOT = settings.MEDIA_ROOT
 AVATAR_MEDIA_SUFFIX = 'participant_events/event_avatars/'
 AVATAR_THUMBNAIL_SIZE = (320, 240)
 
+class AgeCategory(models.Model):
+    name = models.CharField(max_length=255, verbose_name=u'Назавание', unique=True)
+
+    class Meta:
+        verbose_name = u'Возрастная категория'
+        verbose_name_plural = u'Возрастные категории'
+        ordering = ['name']
+
+
+    def __unicode__(self):
+        return self.name
+
+
+class EventType(models.Model):
+    name = models.CharField(max_length=255, verbose_name=u'Назавание', unique=True)
+    class Meta:
+        verbose_name = u'Направление'
+        verbose_name_plural = u'Направления'
+        ordering = ['name']
+
+    def __unicode__(self):
+        return self.name
+
 def get_avatar_file_name(instance, arg_filename):
     filename= arg_filename.lower()
     filename_hash = str(binascii.crc32(filename.encode('utf-8')) & 0xffffffff)
     return  os.path.join(AVATAR_MEDIA_SUFFIX, filename_hash[0:2], filename_hash + '.jpg')
 
 class Event(models.Model):
+    library = models.ForeignKey(Library)
     avatar = models.ImageField(max_length=255, upload_to=get_avatar_file_name, verbose_name=u'Изображение события')
     show_avatar = models.BooleanField(verbose_name=u"Показывать изображение события", default=False)
-    library = models.ForeignKey(Library)
+
+    age_category = models.ManyToManyField(AgeCategory, verbose_name=u'Возрастная категория')
+    event_type = models.ManyToManyField(EventType, verbose_name=u'Направление события')
+
     start_date = models.DateTimeField(verbose_name=u"Дата начала",
         null=False, blank=False, db_index=True)
     end_date = models.DateTimeField(verbose_name=u"Дата окончания",
@@ -64,11 +92,35 @@ class FavoriteEvent(models.Model):
         verbose_name = u"отмеченное мероприятие"
         verbose_name_plural = u"отмеченные мероприятия"
 
+TIME_ITEMS = (
+    ('min', u'мин.'),
+    ('hour', u'ч.'),
+    ('day', u'дн.'),
+)
 
-class EventRemember(models.Model):
-    favorite_event = models.ForeignKey(FavoriteEvent, verbose_name=u"Избранное событие")
-    remember_date = models.DateField(verbose_name=u"Дата напоминания", blank=True, null=True)
-    remember_system = models.IntegerField(verbose_name=u"Система напоминания (0-email, 1-sms)",default=0)
+class EventNotification(models.Model):
+    event = models.ForeignKey(Event)
+    email = models.EmailField(verbose_name=u'email', max_length=255, help_text=u'На этот адрес будет выслано напоминание')
+    items_count = models.PositiveIntegerField(verbose_name=u'Напомнить за', default=1)
+    time_item  = models.CharField(verbose_name=u'Интервал', max_length=16, choices=TIME_ITEMS, default='day')
+    notification_time = models.DateTimeField(verbose_name=u'Время отправки сообшения', db_index=True)
+    is_notificated = models.BooleanField(default=False, db_index=True)
+    create_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('event', 'email', 'items_count', 'time_item')
+
+
+    def make_notification_time(self):
+        if self.time_item == 'min':
+            td = timedelta(minutes=self.items_count)
+        elif self.time_item == 'hour':
+            td = timedelta(hours=self.items_count)
+        else:
+            td = timedelta(days=self.items_count)
+
+        self.notification_time = self.event.start_date - td
+
 
 class EventComment(models.Model):
     event = models.ForeignKey(Event, verbose_name=u"Мероприятие")
@@ -80,6 +132,16 @@ class EventComment(models.Model):
     class Meta:
         verbose_name = u"комментарий"
         verbose_name_plural = u"комментарии"
+
+
+class EventSubscribe(models.Model):
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    age_category = models.ManyToManyField(AgeCategory, verbose_name=u'Возрастная категория')
+    event_type = models.ManyToManyField(EventType, verbose_name=u'Направление события')
+    library = models.ForeignKey(Library)
+    email = models.EmailField(verbose_name=u'Email адрес', max_length=255)
+    create_date = models.DateTimeField(auto_now_add=True)
+
 
 
 @receiver(models.signals.post_save, sender=Event)

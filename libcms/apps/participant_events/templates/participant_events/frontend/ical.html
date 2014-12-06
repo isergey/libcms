@@ -1,0 +1,23 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//kitap.tatar.ru
+CALSCALE:GREGORIAN
+BEGIN:VTIMEZONE
+TZID:Europe/Moscow
+TZURL:http://tzurl.org/zoneinfo-outlook/Europe/Moscow
+BEGIN:STANDARD
+TZOFFSETFROM:+0300
+TZOFFSETTO:+0300
+TZNAME:MSK
+DTSTART:19700101T000000
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:{{ event.id }}
+DTSTART;TZID="Europe/Moscow":{{ event.start_date|date:'Ymd\THi00' }}
+DTEND;TZID="Europe/Moscow":{{ event.end_date|date:'Ymd\THi00' }}
+SUMMARY:Event {{ content.title }}
+DESCRIPTION:{{ content.teaser }}
+LOCATION:{{ event.address }}
+END:VEVENT
+END:VCALENDAR

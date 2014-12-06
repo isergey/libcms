@@ -91,6 +91,9 @@
     <div class="row">
         <div class="span12">
             <form class="form-search" method="GET">
+                {% if request.GET.library %}
+                    <input type="hidden" name="library" value="{{ request.GET.library }}">
+                {% endif %}
                 {% for search_breadcumb in search_breadcumbs %}
                     <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">
                     <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">

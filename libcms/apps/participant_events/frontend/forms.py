@@ -1,7 +1,28 @@
 # -*- encoding: utf-8 -*-
 from django import forms
 from datetime import date
+from .. import models
 
+
+class EventSubscribeForm(forms.ModelForm):
+    class Meta:
+        model = models.EventSubscribe
+        exclude = ('user', 'library', 'create_date')
+        widgets = {
+            'age_category': forms.CheckboxSelectMultiple(),
+            'event_type': forms.CheckboxSelectMultiple()
+        }
+
+    def clean_email(self):
+        return self.cleaned_data['email'].strip().lower()
+
+class NotificationForm(forms.ModelForm):
+    class Meta:
+        model = models.EventNotification
+        exclude = ('notification_time', 'is_notificated', 'event')
+
+    def clean_email(self):
+        return self.cleaned_data['email'].strip().lower()
 
 DAY_CHOISE = (
     (u'1', u'За один день'),

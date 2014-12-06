@@ -1,21 +1,78 @@
 {% extends 'index/frontend/index.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <ul class="breadcrumb">
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        {% if request.GET.back %}
-            <li><a href="{{ request.GET.back }}">Афиша событий</a> <span class="divider">/</span></li>
-        {% else %}
-            <li><a href="{% url 'events:frontend:index' %}">Афиша событий</a> <span class="divider">/</span></li>
-        {% endif %}
-        <li class="active">{{ content.title }}</li>
-    </ul>
-    <div class="content">
-        {{ content.content|safe }}
+    <div class="span12">
+        <div class="breadcrumb">
+            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
+            {% for ancestor in event.library.get_ancestors %}
+                <span>
+                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>
+                    <span class="divider">/</span>
+                </span>
+            {% endfor %}
+            <span>
+                <a href="{% url 'participant_site:frontend:index' event.library.code %}">{{ event.library.name }}</a>
+                <span class="divider">/</span></span>
+            <span><a href="{% url 'participant_events:frontend:index' event.library.code %}">Афиша</a> <span class="divider">/</span></span>
+            <span>Информация о событии</span>
+        </div>
     </div>
-    <hr/>
-    <div class="info">
-        <b>Место проведения</b>: {{ event.address }}<br/>
-        <b>Начало</b>: {{ event.start_date }}
+
+    <div class="span3">
+        {% include 'participant_site/frontend/site_menu.html' %}
     </div>
+
+    <div class="span9">
+        {% include 'participant_site/frontend/inline_org_info.html' %}
+        <h3>{{ content.title }}</h3>
+        <table class="table">
+            <tr>
+                <th style="width: 150px">Место проведения:</th>
+                <td>{{ event.address }}</td>
+            </tr>
+            <tr>
+                <th>Начало:</th>
+                <td>{{ event.start_date|date:'D' }} {{ event.start_date|date:'d E Y H:i' }}</td>
+            </tr>
+            <tr>
+                <th>Окончание:</th>
+                <td>{{ event.end_date|date:'D' }} {{ event.end_date|date:'d E Y H:i' }}</td>
+            </tr>
+            <tr>
+                <th>Длительность:</th>
+                <td>
+                    {% if period.0 %}
+                        {{ period.0 }} д.
+                    {% endif %}
+                    {% if period.1 %}
+                        {{ period.1 }} ч.
+                    {% endif %}
+                    {% if period.2 %}
+                        {{ period.2 }} мин.
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Возрастная категория:</th>
+                <td>{% for age_category in event.age_category.all %}<span class="label label-info">{{ age_category|lower }}</span> {% endfor %}</td>
+            </tr>
+            <tr>
+                <th>Направление:</th>
+                <td>{% for event_type in event.event_type.all %}<span class="label label-info">{{ event_type|lower }}</span> {% endfor %}</td>
+            </tr>
+        </table>
+        <div class="btn-group">
+             <a href="{% url 'participant_events:frontend:create_notification' library.code event.id %}"  class="btn">Установить напоминание</a>
+{#            <a href="#" class="btn">Добавить в избранное</a>#}
+            <a href="{% url 'participant_events:frontend:make_icalendar' library.code event.id %}" class="btn">Загрузить в календарь</a>
+        </div>
+        <hr/>
+        <p>
+            {{ content.content|safe }}
+        </p>
+    </div>
+
+
 {% endblock %}

@@ -166,6 +166,8 @@ def _make_search_attrs(catalog):
 
 
 def index(request, catalog=None):
+    library = request.GET.get('library', '')
+    print 'library', library
     q = request.GET.get('q', None)
     fq = request.GET.get('fq', None)
     if not catalog:
@@ -260,6 +262,9 @@ def terms_constructor(attrs, values):
 
 
 def search(request, catalog=None):
+
+
+
     facet_fields = ['fond_sf', 'author_sf', 'subject-heading_sf', 'date-of-publication_s', 'content-type_t',
                     'code-language_t']
     search_attrs = _make_search_attrs(catalog)

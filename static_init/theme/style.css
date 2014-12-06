@@ -241,3 +241,22 @@ ul.group ul {
 .library_menu .active {
     font-weight: bold;
 }
+
+.event_calendar_filter select{
+    width: 100px;
+}
+
+
+.event_calendar_filter {
+    margin: 0;
+}
+
+.event_calendar {
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.event_calendar .today {
+    background: #e5e5e5;
+}

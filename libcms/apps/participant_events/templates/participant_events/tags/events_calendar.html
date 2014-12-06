@@ -1,8 +1,8 @@
-<form name="event_calendar_filter" action="" method="POST">{% csrf_token %}
+<form class="event_calendar_filter" name="event_calendar_filter" action="" method="POST">{% csrf_token %}
     {{ form.month }}
     {{ form.year }}
 </form>
-<table cellspacing="0">
+<table class="event_calendar" cellspacing="0">
     <thead>
     <tr>
         <th>Пн</th>
@@ -30,7 +30,7 @@
             {% endif %}
 
             {% if  day.events %}
-                <a class='awesome blue' href="{% url 'events:frontend:events_by_date' year month day.day %}"
+                <a class='awesome blue' href="{% url 'participant_events:frontend:events_by_date' library.code year month day.day %}"
                    title="Показать события дня"> {{ day.day }}</a>
 
             {% else %}

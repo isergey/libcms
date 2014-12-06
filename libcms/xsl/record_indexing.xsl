@@ -224,6 +224,7 @@ dtf - фасет даты
 
 <xsl:template name="systems">
     <xsl:call-template name="Linked-record-number"/>
+    <xsl:call-template name="Holder-sigla"/>
 </xsl:template>
 
 
@@ -1101,6 +1102,14 @@ dtf - фасет даты
         <field name="linked-record-number_s">
             <xsl:value-of select="."/>
         </field>
+    </xsl:for-each>
+</xsl:template>
+
+<xsl:template name="Holder-sigla">
+    <xsl:for-each select="field[@id='999']/subfield[@id='a']">
+            <field name="holder-sigla_s">
+                <xsl:value-of select="."/>
+            </field>
     </xsl:for-each>
 </xsl:template>
 

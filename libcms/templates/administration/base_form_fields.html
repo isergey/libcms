@@ -1,15 +1,20 @@
+<style type="text/css">
+    .control-label {
+        font-weight: bold;
+    }
+</style>
 {% for hidden in form.hidden_fields %}
     {{ hidden }}
 {% endfor %}
 {% for field in form.visible_fields %}
     <div class="control-group {% if field.errors %}error{% endif %}">
-        <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+        <label class="control-label" for="{{ field.auto_id }}">{{ field.label }} {% if field.field.required %}<span title="Обязательное поле">*</span>{% endif %}</label>
         <div class="controls">
             {{ field }}
             {% if field.errors %}
                 {{ field.errors }}
             {% endif %}
-            {% if field.field.required %}<p class="help-block">Обязательное поле</p>{% endif %}
+
             {% if  field.help_text %}<p class="help-block">{{ field.help_text }}</p>{% endif %}
         </div>
 

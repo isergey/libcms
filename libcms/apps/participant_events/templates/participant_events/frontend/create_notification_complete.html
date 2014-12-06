@@ -1,0 +1,39 @@
+{% extends 'index/frontend/index.html' %}
+{% load pagination_tag %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    {% url 'participant_events:frontend:show' library.code event.id  as event_url %}
+    <div class="span12">
+        <div class="breadcrumb">
+            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
+            {% for ancestor in library.get_ancestors %}
+                <span>
+                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>
+                    <span class="divider">/</span>
+                </span>
+            {% endfor %}
+            <span><a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a> <span
+                    class="divider">/</span></span>
+            <span><a href="{% url 'participant_events:frontend:index' library.code %}">Афиша</a> <span
+                    class="divider">/</span></span>
+            <span><a
+                    href="{{ event_url }}">{{ content.title }}</a> <span
+                    class="divider">/</span></span>
+            <span class="active">Уведомление создано</span>
+        </div>
+    </div>
+    <div class="span3">
+        {% include 'participant_site/frontend/site_menu.html' %}
+    </div>
+    <div class="span9">
+        <p class="alert alert-info">Заявка на уведомление о событии создана. Вы получите письмо с уведомлением в указанный Вами срок.</p>
+        <p>Через несколько секунд Вы будете переправлены на страницу события. <a href="{{ event_url }}">Перейти к событию </a></p>
+        <script>
+            setTimeout(
+                function () {
+                    window.location = "{{ event_url }}"
+                },
+                10000);
+        </script>
+    </div>
+{% endblock %}

@@ -25,12 +25,9 @@ def index(request, library_code, library):
 @login_required
 @decorators.must_be_manager
 def events_list(request, library_code, library):
-    print request.GET.get('page', 1)
     if not request.user.has_module_perms('participant_events'):
         return HttpResponseForbidden()
     events_page = get_page(request, Event.objects.filter(library=library).order_by('-create_date'), 10)
-
-    print events_page.number
 
     event_contents = list(EventContent.objects.filter(event__in=list(events_page.object_list), lang=get_language()[:2]))
 
@@ -80,6 +77,7 @@ def create_event(request, library_code, library):
                     event_content.lang = event_content_form['lang']
                     event_content.event = event
                     event_content.save()
+                event_form.save_m2m()
                 return redirect('participant_events:administration:events_list', library_code=library_code)
     else:
         event_form = EventForm(prefix="event_form")
@@ -113,7 +111,7 @@ def edit_event(request, id, library_code, library):
 
     if request.method == 'POST':
         event_form = EventForm(request.POST, request.FILES, prefix='event_form', instance=event)
-
+        event_content_forms = []
         if event_form.is_valid():
             event_form.save()
             event_content_forms = []
@@ -143,7 +141,6 @@ def edit_event(request, id, library_code, library):
                     event_content.event = event
                     event_content.lang = event_content_form['lang']
                     event_content.save()
-
                 return redirect('participant_events:administration:events_list', library_code=library_code)
     else:
         event_form = EventForm(prefix="event_form", instance=event)

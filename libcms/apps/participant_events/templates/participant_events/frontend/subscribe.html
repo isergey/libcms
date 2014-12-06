@@ -1,0 +1,33 @@
+{% extends 'index/frontend/index.html' %}
+{% load pagination_tag %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <div class="span12">
+        <div class="breadcrumb">
+            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
+            {% for ancestor in library.get_ancestors %}
+                <span>
+                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>
+                    <span class="divider">/</span>
+                </span>
+            {% endfor %}
+            <span><a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a> <span
+                    class="divider">/</span></span>
+            <span><a href="{% url 'participant_events:frontend:index' library.code %}">Афиша</a> <span class="divider">/</span></span>
+            <span class="active">Подписка на мероприятия</span>
+        </div>
+    </div>
+    <div class="span3">
+                {% include 'participant_site/frontend/site_menu.html' %}
+    </div>
+    <div class="span9">
+        <div class="alert alert-info">
+            Для форомления подписки укажите возрастые категории и направления событий.
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            {% include 'administration/base_form_fields.html' %}
+            <input type="submit" class="btn btn-success" value="Подписаться"/>
+        </form>
+    </div>
+{% endblock %}

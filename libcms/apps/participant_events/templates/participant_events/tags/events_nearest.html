@@ -1,8 +1,7 @@
-<ul>
-    {% for event in events %}
-        <li><b>{{ event.start_date|date:"d.m.Y H:i" }}</b><br/> <a href="{% url 'events:frontend:show' event.id %}">{{ event.event_content.title }}</a></li>
-        {% if not forloop.last %}<hr/>{% endif %}
-    {% empty %}
-        Ближайших событий нет
-    {% endfor %}
-</ul>
+{% for event in events %}
+    <div class="near_events_feed">
+        <div class="title"><a href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a></div>
+        <div class="create_date">Начало: <b>{{ event.start_date|date:'d E Y H:i' }}</b></div>
+        <div class="teaser">{{ event.event_content.teaser }}</div>
+    </div>
+{% endfor %}

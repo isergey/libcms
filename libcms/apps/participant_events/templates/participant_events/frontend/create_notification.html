@@ -1,0 +1,42 @@
+{% extends 'index/frontend/index.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <div class="span12">
+        <div class="breadcrumb">
+            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
+            {% for ancestor in event.library.get_ancestors %}
+                <span>
+                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>
+                    <span class="divider">/</span>
+                </span>
+            {% endfor %}
+            <span>
+                <a href="{% url 'participant_site:frontend:index' event.library.code %}">{{ event.library.name }}</a>
+                <span class="divider">/</span></span>
+            <span><a href="{% url 'participant_events:frontend:index' event.library.code %}">Афиша</a> <span class="divider">/</span></span>
+            <span><a href="{% url 'participant_events:frontend:show' event.library.code event.id %}">{{ content.title }}</a> <span class="divider">/</span></span>
+            <span>Добавить напоминание</span>
+        </div>
+    </div>
+
+    <div class="span3">
+        {% include 'participant_site/frontend/site_menu.html' %}
+    </div>
+
+    <div class="span9">
+        {% include 'participant_site/frontend/inline_org_info.html' %}
+        <form method="post" class="form-horizontal">
+            {% csrf_token %}
+            {% include 'administration/base_form_fields.html' with form=notification_form %}
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-success">Создать напоминание</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+{% endblock %}

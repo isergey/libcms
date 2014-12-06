@@ -4,13 +4,15 @@ import calendar
 from django import template
 from django.core.cache import cache
 from django.utils.translation import get_language
+
 from ..models import Event, EventContent
 from ..frontend.forms import CalendarFilterForm, get_current_month_choice, get_current_year_choice
 
 register = template.Library()
 
-@register.inclusion_tag('events/tags/events_calendar.html', takes_context=True)
-def events_calendar(context, y=0, m=0):
+@register.inclusion_tag('participant_events/tags/events_calendar.html', takes_context=True)
+def participant_events_calendar(context, library, y=0, m=0):
+
     request = context['request']
 
     if request.method == 'POST':
@@ -19,8 +21,12 @@ def events_calendar(context, y=0, m=0):
             y = int(form.cleaned_data['year'])
             m = int(form.cleaned_data['month'])
     else:
-        form = CalendarFilterForm(initial={'month': get_current_month_choice(),
-                                           'year': get_current_year_choice()})
+        form = CalendarFilterForm(
+            initial={
+                'month': get_current_month_choice(),
+                'year': get_current_year_choice()
+            }
+        )
     today = date.today()
     year = today.year
     month = today.month
@@ -31,10 +37,10 @@ def events_calendar(context, y=0, m=0):
     cache_key = 'events_y_m' + str(year) + str(month) + 'active=1'
     events = cache.get(cache_key, [])
     if not events:
-        events = list(Event.objects.filter(start_date__year=year, start_date__month=month, active=True))
+        events = list(Event.objects.filter(library=library, start_date__year=year, start_date__month=month, active=True))
         cache.set(cache_key, events)
 
-    events = Event.objects.filter(start_date__year=year, start_date__month=month, active=True)
+    events = Event.objects.filter(library=library, start_date__year=year, start_date__month=month, active=True)
     calendar_of_events = []
     for week in weeks:
         week_events = []
@@ -55,14 +61,22 @@ def events_calendar(context, y=0, m=0):
                     })
             week_events.append(day_events)
         calendar_of_events.append(week_events)
-    return {'calendar': calendar_of_events,
-            'month': month,
-            'year': year,
-            'form': form}
+    return {
+        'calendar': calendar_of_events,
+        'month': month,
+        'year': year,
+        'form': form,
+        'library': library
+    }
 
-@register.inclusion_tag('events/tags/events_nearest.html')
-def events_nearest(count=5):
-    events = list(Event.objects.filter(active=True, start_date__gte=datetime.now()).order_by('-start_date')[:count])
+@register.inclusion_tag('participant_events/tags/events_nearest.html')
+def participant_events_nearest(library_id, count=5):
+    events = list(
+        Event.objects.filter(
+            library_id=library_id,
+            active=True,
+            end_date__gte=datetime.now()
+        ).prefetch_related('age_category', 'event_type').order_by('-start_date')[:count])
     event_contents = list(EventContent.objects.filter(event__in=events, lang=get_language()[:2]))
 
     t_dict = {}

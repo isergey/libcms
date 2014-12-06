@@ -2,12 +2,24 @@
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <ul class="breadcrumb">
-
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        <li class="active">Афиша событий</li>
-
-    </ul>
+    <div class="span12">
+        <div class="breadcrumb">
+            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
+            {% for ancestor in library.get_ancestors %}
+                <span>
+                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>
+                    <span class="divider">/</span>
+                </span>
+            {% endfor %}
+            <span><a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a> <span
+                    class="divider">/</span></span>
+            <span class="active">Афиша {% if date %}за {{ date|date:'d E Y' }}{% endif %}</span>
+        </div>
+    </div>
+    <div class="span3">
+                {% include 'participant_site/frontend/site_menu.html' %}
+    </div>
+    <div class="span9">
     <style>
         ul.news {
             list-style: none;
@@ -24,20 +36,20 @@
             color: #2a2a2a;
         }
     </style>
-
+    <div>
+        <a class="btn" href="{% url 'participant_events:frontend:subscribe' library.code%}">
+            <i class="icon-envelope"></i> подписаться на события
+            </a>
+    </div>
+    <hr/>
     <ul class="news">
         {% for event in events_list %}
-            <div class="title"><a href="{% url 'events:frontend:show' event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a></div>
+            <div class="title"><a href="{% url 'participant_events:frontend:show' library.code event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a></div>
             <div class="teaser">{{ event.event_content.teaser }}</div>
-            <div class="create_date">Начало: <b>{{ event.start_date }}</b></div>
-            <a class="btn btn-small " href="{% url 'events:frontend:add_to_favorits' event.id %}"><i class="icon-star"></i> Добавть в избранное</a>
+            <div class="create_date">Начало: <b>{{ event.start_date|date:'d E Y H:i' }}</b></div>
             {% if not forloop.last %}<hr/>{% endif %}
         {% endfor %}
     </ul>
-{#    <ul class="news">#}
-{#    {% for event in events_list %}#}
-{#        <li><a href="{% url events:frontend:show event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a></li>#}
-{#    {% endfor %}#}
-{#    </ul>#}
     {% admin_pagination events_page %}
+    </div>
 {% endblock %}
