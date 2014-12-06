@@ -176,4 +176,20 @@
         }
 
     </script>
+    <script>
+        $(function () {
+            if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+                $('.record .elink').each(function (index) {
+                    var $elink = $(this);
+                    var href = $elink.attr('href');
+                    var hrefParts = href.split('/');
+                    if (hrefParts[hrefParts.length - 2] === 'dl') {
+                        var newHref = hrefParts.slice(0, hrefParts.length - 1).join('/') + '/pdf/' + hrefParts[hrefParts.length - 1] + '.pdf';
+                        $elink.attr('href', newHref);
+                        $elink.attr('target', '_blank');
+                    }
+                });
+            }
+        });
+    </script>
 {% endblock %}
