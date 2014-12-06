@@ -44,7 +44,7 @@ def show(request, library_code, slug):
         content = None
     children = None
 
-    if not page.is_leaf_node():
+    if not page.is_leaf_node() and page.show_children:
         children = list(Page.objects.filter(parent=page, public=True))
         contents = Content.objects.filter(page__in=children, lang=cur_language[:2])
         cd = {}
