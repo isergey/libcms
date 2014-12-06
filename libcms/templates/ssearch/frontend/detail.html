@@ -162,10 +162,7 @@
         </div>
     </div>
     <script>
-       $('#card .elink').click(function(){
-           var elink_href = $(this).attr('href');
-           $(this).attr('href', insertParam(elink_href, 'gen_id', '{{ gen_id|urlencode }}'));
-       });
+
 
         function insertParam(href, key, value){
             if (href.indexOf('?') > -1){
@@ -189,6 +186,11 @@
                         $elink.attr('target', '_blank');
                     }
                 });
+            } else {
+                $('#card .elink').click(function(){
+                   var elink_href = $(this).attr('href');
+                   $(this).attr('href', insertParam(elink_href, 'gen_id', '{{ gen_id|urlencode }}'));
+               });
             }
         });
     </script>
