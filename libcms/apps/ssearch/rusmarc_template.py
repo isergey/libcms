@@ -141,7 +141,7 @@ def beautify(libcard):
     r = libcard
     for replace in replaces:
         r = replace[1].join(r.split(replace[0]))
-    return r
+    return r.strip().strip(u'.').strip('.—')
 
 
 def __as_is(title_parts):
