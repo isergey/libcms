@@ -207,12 +207,12 @@ span.twitter-typeahead .tt-suggestion > p:focus {
     color: #ffffff;
     text-decoration: none;
     outline: 0;
-    background-color: #428bca;
+    background-color: #e1e1e1;
 }
 
 span.twitter-typeahead .tt-suggestion.tt-cursor {
     color: #ffffff;
-    background-color: #428bca;
+    background-color: #e1e1e1;
 }
 
 span.twitter-typeahead {
