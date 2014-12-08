@@ -17,6 +17,9 @@
         .library-info {
             color: #313131;
         }
+        .addr_form {
+            margin: 0;
+        }
     </style>
     <div class="span12">
         <div class="row">
@@ -44,14 +47,16 @@
                         браузера.
                     </div>
                     <div class="current-location"></div>
-                    <form class="addr_form form-inline">
-                        <div class="control-group">
-                            <input style="width: 100%" class="typeahead" type="text"
-                                   placeholder="Казань, ул.Кремлевская, 33"
-                                   name="qaddr" autofocus/>
-                            <span class="help-block">Введите адрес своего местонахождения</span>
-                        </div>
-                    </form>
+                    <div class="well well-small">
+                        <form class="addr_form form-inline">
+                            <div class="control-group">
+                                <input style="width: 98%" class="typeahead" type="text"
+                                       placeholder="Казань, ул.Кремлевская, 33"
+                                       name="qaddr" autofocus/>
+                                <span class="help-block">Введите адрес своего местонахождения</span>
+                            </div>
+                        </form>
+                    </div>
 
                 </div>
                 <div class="results">
