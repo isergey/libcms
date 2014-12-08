@@ -1,0 +1,22 @@
+{% extends 'participant_site/administration/backend_base.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% block module_title %}Информация о библиотеке{% endblock %}
+
+{% block module_content %}
+    <style>
+        .info_form input, .info_form textarea {
+            width: 95%;
+        }
+    </style>
+    <form class="info_form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset>
+        {% include 'administration/base_form_fields.html' with form=avatar_from %}
+        {% include 'administration/base_form_fields.html' with form=library_form %}
+        </fieldset>
+        <input class="btn btn-success" type="submit" value="Редактировать">
+    </form>
+
+{% endblock %}

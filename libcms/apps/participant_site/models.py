@@ -57,9 +57,16 @@ def get_avatar_file_name(instance, arg_filename):
     filename_hash = str(binascii.crc32(filename.encode('utf-8')) & 0xffffffff)
     return  os.path.join(AVATAR_MEDIA_SUFFIX, filename_hash[0:2], filename_hash + '.jpg')
 
+
 class LibraryAvatar(models.Model):
     library = models.OneToOneField(Library, unique=True)
-    avatar = models.ImageField(upload_to=get_avatar_file_name, width_field='width', height_field='height', max_length=255)
+    avatar = models.ImageField(
+        verbose_name=u'Изображение библиотеки',
+        upload_to=get_avatar_file_name,
+        width_field='width',
+        height_field='height',
+        max_length=255
+    )
     width = models.IntegerField(default=0, verbose_name=u'Ширина изображения аватарки')
     height = models.IntegerField(default=0, verbose_name=u'Высота изображения аватарки')
 

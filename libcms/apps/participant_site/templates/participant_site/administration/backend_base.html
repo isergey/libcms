@@ -27,7 +27,7 @@
                             <li><a href="{% url 'participant_pages:administration:index' library.code %}">Страницы</a></li>
                             <li><a href="{% url 'participant_menu:administration:index' library.code %}">Меню сайта</a></li>
                             <hr class="divider"/>
-                            <li><a href="#">Карточка библиотеки</a></li>
+                            <li><a href="{% url 'participant_site:administration:edit_info' library.code %}">Карточка библиотеки</a></li>
                         </ul>
                     </li>
                 </ul>
