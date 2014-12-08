@@ -431,7 +431,7 @@ def _indexing(slug, reset=False):
     index_status.deleted = len(record_gen_ids)
     index_status.last_index_date = start_index_date
     index_status.save()
-
+    conn.query('DELETE FROM records WHERE deleted = 1')
     return True
 
 
@@ -584,7 +584,7 @@ def local_records_indexing(request):
     index_status.deleted = len(record_gen_ids)
     index_status.last_index_date = start_index_date
     index_status.save()
-
+    conn.query('DELETE FROM records WHERE deleted = 1')
     return True
 
 from ..common import resolve_date
