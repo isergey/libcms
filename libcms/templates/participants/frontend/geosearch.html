@@ -1,0 +1,273 @@
+{% extends 'theme_frontend_base.html' %}
+{% block title %}Библиотеки{% endblock %}
+{% block content %}
+    <style>
+        .geo-results-title {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .library {
+            padding: 10px 0;
+            border-bottom: solid #e8e8e8 1px;
+        }
+        .library:last-child {
+            border: none;
+        }
+        .library-info {
+            color: #313131;
+        }
+    </style>
+    <div class="span12">
+        <div class="row">
+            <div class="span12">
+                <ul class="breadcrumb">
+                    <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+                    <li><a href="{% url 'participants:frontend:index' %}">Библиотеки</a> <span class="divider">/</span>
+                    </li>
+                    <li class="active">Поиск ближайшей библиотеки</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span6">
+            <ul class="nav nav-tabs">
+              <li>
+                <a href="{% url 'participants:frontend:index' %}">Библиотеки</a>
+              </li>
+              <li class="active"><a href="{% url 'participants:frontend:geosearch' %}">Поиск по местоположению</a></li>
+            </ul>
+                <div>
+                    <div class="geo-permission-alert alert alert-info">
+                        Для более точно определения вашего местополжения мы запрашиваем ваши координаты.
+                        Мы не храним историю вашего местоположения. Нажмите кнопку <b>"Разрешить"</b> в окне вашего
+                        браузера.
+                    </div>
+                    <h4>Введите адрес своего местонахождения</h4>
+
+                    <form class="addr_form form-inline">
+                        <div class="control-group">
+                            <input style="width: 100%" class="typeahead" type="text"
+                                   placeholder="Казань, ул.Кремлевская, 33"
+                                   name="qaddr"/>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="results">
+
+                </div>
+            </div>
+            <div class="span6">
+                <style>
+                    .map{
+                        background: white;
+                        box-shadow: 0 0 10px #999;
+                        border-radius: 2px;
+                    }
+                </style>
+                <div style="height: 400px;" class="map"></div>
+            </div>
+        </div>
+
+
+    </div>
+    <script type="text/html" id="library_item_tpl">
+        <div class='library'>
+            <div class="library-title">
+                <a code="<%= library.code %>" target="_blank" href='<%= href %>'>
+                    <%= library.name %>
+                </a>
+            </div>
+            <div class="library-info"><b>Растояние</b>: <%= distance %></div>
+            <div class="library-info"><b>Адрес</b>: <%= library.postal_address %></div>
+        </div>
+    </script>
+
+    <script>
+        var humanizeDistance = function (distance) {
+            var km = Math.floor(distance);
+            var meters = Math.round(distance % 1 * 1000);
+            var stringParts = [];
+            if (km) {
+                stringParts.push(km + ' км.')
+            }
+
+            if (meters) {
+                stringParts.push(meters + ' м.')
+            }
+            return stringParts.join(' ');
+        };
+    </script>
+
+    <script>
+
+        ymaps.ready(init);
+
+        function init() {
+            'use strict';
+
+            if (navigator.geolocation) {
+
+                navigator.geolocation.getCurrentPosition(function (result) {
+                    $('.geo-permission-alert').remove();
+                }, function (error) {
+                    if (error.code !== 1) {
+                        $('.geo-permission-alert').remove();
+                    }
+                });
+            } else {
+                $('.geo-permission-alert').remove();
+            }
+
+            var library_item_tpl = _.template($('#library_item_tpl').html());
+
+            var myPosition = [55.793001, 49.107958]; // Казань
+
+            var geolocation = ymaps.geolocation,
+                    myMap = new ymaps.Map($('.map')[0], {
+                        center: myPosition,
+                        zoom: 10
+                    });
+
+            var drowObjects = function (iam, orgs) {
+                myMap.geoObjects.removeAll();
+                var objectsCollection = new ymaps.GeoObjectCollection();
+                var iamPlacemark = new ymaps.Placemark(iam.position, {
+                    hintContent: 'Ваше местоположение',
+                    balloonContent: iam.address
+                }, {
+                    preset: 'islands#redCircleIcon'
+                });
+                objectsCollection.add(iamPlacemark);
+
+                _.each(orgs, function (item) {
+                    var library = item.library;
+                    objectsCollection.add(
+                        new ymaps.Placemark([library.latitude, library.longitude], {
+                            hintContent: library.name,
+                            balloonContent: library_item_tpl({
+                                'library': library,
+                                'distance': humanizeDistance(item.distance),
+                                'href': item.href
+                            })
+                        }));
+                });
+
+
+                myMap.geoObjects.add(objectsCollection);
+                myMap.setBounds(objectsCollection.getBounds());
+                if (myMap.getZoom() > 15) {
+                    myMap.setZoom(15);
+                }
+
+            };
+
+            var drawResults = function (iam, data) {
+                var $results = $('.results');
+                $results.empty();
+                if (data.object_list.length === '0') {
+                    $results.append('<div>Ничего не найдено</div>');
+                    return;
+                }
+                $results.append('<div class="geo-results-title">Ближайшие библиотеки ↴</div>');
+                var $fragment = $('<div class="libraries"></div>');
+                var orgs = [];
+                _.each(data.object_list, function (item) {
+                    orgs.push(item);
+                    $fragment.append(library_item_tpl({
+                        'library': item.library,
+                        'distance': humanizeDistance(item.distance),
+                        'href': item.href
+                    }));
+                });
+                $results.append($fragment);
+                drowObjects(iam, orgs);
+            };
+
+
+            geolocation.get({
+                provider: ['browser', 'yandex'],
+                mapStateAutoApply: true
+            }).then(function (result) {
+                myPosition = result.geoObjects.position;
+                var iam = {
+                    position: myPosition
+                };
+
+                $.get('{% url 'participants:frontend:geo_nearest' %}', {
+                    'lat': myPosition[1],
+                    'lon': myPosition[0]
+                }).done(function (data) {
+                    drawResults(iam, data);
+                });
+
+            });
+
+            $('.addr_form').on('submit', function () {
+                console.log($(this).serializeObject());
+                return false;
+            });
+
+            var typeheadSource = function (query, cb) {
+
+                $.get('http://geocode-maps.yandex.ru/1.x/', {
+                    'format': 'json',
+                    'geocode': query,
+                    'll': myPosition[1] + ',' + myPosition[0],
+                    'spn': '3.0,3.0'
+                }).done(function (data) {
+                    var results = [];
+                    _.each(data.response.GeoObjectCollection.featureMember, function (item) {
+                        results.push({
+                            value: item.GeoObject.metaDataProperty.GeocoderMetaData.text,
+                            position: item.GeoObject.Point.pos
+                        });
+                    });
+                    cb(results);
+                }).error(function (error) {
+                    console.error(error);
+                });
+            };
+            var $typeahead = $('.typeahead');
+            $typeahead.typeahead({
+                        minLength: 3,
+                        highlight: true
+                    }, {
+                        name: 'qaddr',
+                        source: typeheadSource
+                    }
+            );
+            $typeahead.on('typeahead:selected', function (e, datum) {
+                var positionParts = datum.position.split(' ');
+                var iam = {
+                    position: [positionParts[1], positionParts[0]]
+                };
+                myPosition = iam.position;
+                $.get('{% url 'participants:frontend:geo_nearest' %}', {
+                    'lat': iam.position[1],
+                    'lon': iam.position[0]
+                }).done(function (data) {
+                    drawResults(iam, data);
+                });
+            });
+
+        }
+    </script>
+    <script>
+        $.fn.serializeObject = function () {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function () {
+                if (o[this.name] !== undefined) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        };
+    </script>
+{% endblock %}

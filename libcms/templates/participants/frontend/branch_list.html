@@ -8,7 +8,7 @@
             <li class="active">{{ library.name }}</li>
         </ul>
         <div class="row">
-            <div class="span7" >
+            <div class="span5" >
                 <ul class="participants">
                     {% for library in  libraries %}
                         <li style="margin-bottom: 10px"><a href="{% url 'participants:frontend:detail' library.code %}">{{ library.name }}<br/></a>
@@ -20,7 +20,7 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="span5">
+            <div class="span7">
                 <style>
                     #map_canvas{
                         background: white;

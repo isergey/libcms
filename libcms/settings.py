@@ -166,7 +166,7 @@ INSTALLED_APPS = (
     'mydocs',
     'guestbook',
     'newinlib',
-    'attacher'
+    'attacher',
 )
 
 

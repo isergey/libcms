@@ -7,9 +7,13 @@
             <li class="active">Библиотеки</li>
         </ul>
     <div class="row">
-
         <div class="span6">
-
+            <ul class="nav nav-tabs">
+              <li class="active">
+                <a href="{% url 'participants:frontend:index' %}">Библиотеки</a>
+              </li>
+              <li><a href="{% url 'participants:frontend:geosearch' %}">Поиск по местоположению</a></li>
+            </ul>
             <ul class="participants" style="list-style: none; margin: 0">
                 {% for cbs in  cbs_list %}
                     <li style="margin-bottom: 10px">

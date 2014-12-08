@@ -1,0 +1,5 @@
+{% for object in objects %}
+    <div>
+        <a code="" href="{% url 'participants:frontend:detail' object.library.code %}">{{ object.library.name }}</a>
+    </div>
+{% endfor %}
