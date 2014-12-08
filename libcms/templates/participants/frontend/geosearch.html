@@ -43,13 +43,13 @@
                         Мы не храним историю вашего местоположения. Нажмите кнопку <b>"Разрешить"</b> в окне вашего
                         браузера.
                     </div>
-                    <h4>Введите адрес своего местонахождения</h4>
-
+                    <div class="current-location"></div>
                     <form class="addr_form form-inline">
                         <div class="control-group">
                             <input style="width: 100%" class="typeahead" type="text"
                                    placeholder="Казань, ул.Кремлевская, 33"
-                                   name="qaddr"/>
+                                   name="qaddr" autofocus/>
+                            <span class="help-block">Введите адрес своего местонахождения</span>
                         </div>
                     </form>
 
@@ -185,12 +185,25 @@
                 drowObjects(iam, orgs);
             };
 
+            var renderMyPosition = function (position) {
+                $.get('http://geocode-maps.yandex.ru/1.x/', {
+                    'format': 'json',
+                    'geocode': position[1] + ',' + position[0]
+                }).done(function (data) {
+                    var address = data.response.GeoObjectCollection.featureMember[0].GeoObject.metaDataProperty.GeocoderMetaData.text;
+                    $('.current-location').html('<div class="alert alert-success"><b>Ваше местонахождение</b>: ' + address + '</div>');
+
+                }).error(function (error) {
+                    $('.current-location').html('<div class="alert alert-warning"><b>Ваше местонахождение не определено</div>');
+                });
+            };
 
             geolocation.get({
                 provider: ['browser', 'yandex'],
                 mapStateAutoApply: true
             }).then(function (result) {
                 myPosition = result.geoObjects.position;
+                renderMyPosition(myPosition);
                 var iam = {
                     position: myPosition
                 };
