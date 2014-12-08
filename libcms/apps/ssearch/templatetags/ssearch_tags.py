@@ -1,14 +1,68 @@
 # -*- encoding: utf-8 -*-
+from lxml import etree
 import socket
 from django.conf import settings
 import sunburnt
 import datetime
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import Library
 from django.utils.translation import get_language
 from django.core.cache import cache
-from ..models import Collection
-from ..frontend.views import get_collections
+from ..models import Collection, Record
+
+from ..frontend.views import get_collections, replace_doc_attrs, xml_doc_to_dict
+from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
+
 register = Library()
+
+
+@register.inclusion_tag('ssearch/tags/participant_income.html')
+def participant_income(sigla):
+
+    solr = sunburnt.SolrInterface(settings.SOLR['local_records_host'])
+    if sigla:
+        query = solr.Q(**{'holder-sigla_s': sigla})
+    else:
+        query = solr.Q(**{'*': '*'})
+
+    solr_searcher = solr.query(query)
+    solr_searcher = solr_searcher.field_limit(['id', 'record-create-date_dts'])
+
+    solr_searcher = solr_searcher.sort_by('-record-create-date_dts')
+
+    paginator = Paginator(solr_searcher, 10)  # Show 25 contacts per page
+
+
+        # If page is not an integer, deliver first page.
+    results_page = paginator.page(1)
+
+
+    docs = []
+
+    for row in results_page.object_list:
+        print row
+        docs.append(replace_doc_attrs(row))
+
+    doc_ids = []
+    for doc in docs:
+        doc_ids.append(doc['id'])
+
+    records_dict = {}
+    records = list(Record.objects.using('local_records').filter(gen_id__in=doc_ids))
+    for record in records:
+        records_dict[record.gen_id] = etree.tostring(
+            xslt_bib_draw_transformer(etree.XML(record.content), abstract='false()'), encoding='utf-8')
+
+    for doc in docs:
+        doc['record'] = records_dict.get(doc['id'])
+
+    return {
+        #'results_page': results_page,
+        'docs': docs
+    }
+
+
+
 
 @register.filter
 def date_from_isostring(isostring):

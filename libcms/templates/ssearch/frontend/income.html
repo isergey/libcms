@@ -1,0 +1,24 @@
+{% load pagination_tag %}
+{% load hash %}
+
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html>
+<head lang="ru">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<ul>
+    {% for doc in docs %}
+        <li>
+        {{ doc.record|safe }}
+        <a href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">подробнее</a>
+        </li>
+        <hr/>
+    {% endfor %}
+</ul>
+{#{% admin_pagination results_page %}#}
+</body>
+</html>

@@ -284,8 +284,6 @@ re_t1 = re.compile(ur"(?P<t1>\d+)" ,re.UNICODE)
 
 @transaction.commit_on_success
 def _indexing(slug, reset=False):
-
-
     try:
         solr_address = settings.SOLR['host']
         db_conf =  settings.DATABASES.get(settings.SOLR['catalogs'][slug]['database'], None)
@@ -425,6 +423,158 @@ def _indexing(slug, reset=False):
 
     return True
 
+
+@transaction.commit_on_success
+def local_records_indexing(request):
+    slug = 'local_records'
+    try:
+        solr_address = settings.SOLR['local_records_host']
+        db_conf =  settings.DATABASES.get('local_records')
+    except KeyError:
+        raise Http404(u'Catalog not founded')
+
+    if not db_conf:
+        raise Exception(u'Settings not have inforamation about database, where contains records.')
+
+    if db_conf['ENGINE'] != 'django.db.backends.mysql':
+        raise Exception(u' Support only Mysql Database where contains records.')
+    try:
+        conn = MySQLdb.connect(
+            host=db_conf['HOST'],
+            user=db_conf['USER'],
+            passwd=db_conf['PASSWORD'],
+            db=db_conf['NAME'],
+            port=int(db_conf['PORT']
+            ),
+            cursorclass =MySQLdb.cursors.SSDictCursor
+        )
+    except MySQLdb.OperationalError as e:
+        conn = MySQLdb.connect(
+            unix_socket=db_conf['HOST'],
+            user=db_conf['USER'],
+            passwd=db_conf['PASSWORD'],
+            db=db_conf['NAME'],
+            port=int(db_conf['PORT']
+            ),
+            cursorclass =MySQLdb.cursors.SSDictCursor
+        )
+
+    print 'indexing start',
+    try:
+        index_status = IndexStatus.objects.get(catalog=slug)
+    except IndexStatus.DoesNotExist:
+        index_status = IndexStatus(catalog=slug)
+
+    if not getattr(index_status, 'last_index_date', None):
+        select_query = "SELECT * FROM records where deleted = 0"
+    else:
+        select_query = "SELECT * FROM records where update_date >= '%s' and deleted = 0" % (str(index_status.last_index_date))
+
+    print 'records finded',
+    solr = sunburnt.SolrInterface(solr_address)
+    docs = list()
+
+    start_index_date = datetime.datetime.now()
+
+    conn.query(select_query)
+    rows=conn.use_result()
+    res = rows.fetch_row(how=1)
+    print 'records fetched',
+    i = 0
+    while res:
+        content = zlib.decompress(res[0]['content'],-15).decode('utf-8')
+        doc_tree = etree.XML(content)
+        doc_tree = xslt_transformer(doc_tree)
+        doc = doc_tree_to_dict(doc_tree)
+        doc = add_sort_fields(doc)
+
+        # для сортировки по тому, извлекаем строку содержащую номер тома или промежуток и посещаем резултат вычисления
+        # в поле tom_f, которое в последствии сортируется
+        # если трока типа т.1 то в том добавляется float 1
+        # если строка содержит т.1-2 то добавляется float (1+2) / 2 - средне арифметическое, чтобы усреднить для сортировки
+
+        tom = doc.get('tom_s', None)
+        if tom and isinstance(tom, unicode):
+            tom = tom.strip().replace(u' ',u'')
+            r = re_t1_t2.search(tom)
+            if r:
+                groups = r.groups()
+                doc['tom_f'] = (int(groups[0]) + int(groups[1])) / 2.0
+            else:
+                r = re_t1.search(tom)
+                if r:
+                    doc['tom_f'] = float(r.groups()[0])
+        try:
+            record_create_date = doc.get('record-create-date_dt', None)
+            #print 'record_create_date1', record_create_date
+            if record_create_date:
+                doc['record-create-date_dts'] = record_create_date
+        except Exception as e:
+            print 'Error record-create-date_dt', e.message
+
+
+        doc['system-add-date_dt'] = res[0]['add_date']
+        doc['system-add-date_dts'] = res[0]['add_date']
+        doc['system-update-date_dt'] = res[0]['update_date']
+        doc['system-update-date_dts'] = res[0]['update_date']
+        doc['system-catalog_s'] = res[0]['source_id']
+
+
+
+
+        if str(doc['system-catalog_s']) == '2':
+            full_text_file =None
+#            doc['system-update-date_dt'] = res[0]['doc-id_s']
+            urls = doc.get('doc-id_s', None)
+            if urls and type(urls) == list:
+                for url in doc.get('doc-id_s', None):
+                    if url:
+                        full_text_file =  url.split('/')[-1]
+            else:
+                if urls:
+                    full_text_file =  urls.split('/')[-1]
+            if full_text_file:
+                text =  full_text_extract(full_text_file)
+                if text:
+                    doc['full-text'] = text
+
+        docs.append(doc)
+        i+=1
+        if len(docs) > 25:
+            solr.add(docs)
+            print i
+            docs = list()
+        res = rows.fetch_row(how=1)
+
+
+    if docs:
+        solr.add(docs)
+
+    solr.commit()
+    index_status.indexed = i
+
+    # удаление
+    records = []
+
+    if getattr(index_status, 'last_index_date', None):
+        records = Record.objects.using('records').filter(deleted=True, update_date__gte=index_status.last_index_date).values('gen_id')
+    else:
+        records = Record.objects.using('records').filter(deleted=True).values('gen_id', 'update_date')
+
+    record_gen_ids = []
+    for record in list(records):
+        record_gen_ids.append(record['gen_id'])
+
+
+    if record_gen_ids:
+        solr.delete(record_gen_ids)
+        solr.commit()
+
+    index_status.deleted = len(record_gen_ids)
+    index_status.last_index_date = start_index_date
+    index_status.save()
+
+    return True
 
 from ..common import resolve_date
 # распознование типа

@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load participant_news_tags %}
 {% load participant_events_tags %}
+{% load ssearch_tags %}
 {#{% load news_tags %}#}
 {#{% load events_tags %}#}
 {#{% load ssearch_tags %}#}
@@ -111,7 +112,13 @@
                 {% participant_events_calendar library %}
             </div>
         </div>
-
+        <div class="row">
+            <div class="span9">
+                <hr/>
+                <h3 style="margin-bottom: 10px">Последние поступления в библиотеку</h3>
+                {% participant_income library.code %}
+            </div>
+        </div>
     </div>
     <script type="text/javascript">
         ymaps.ready(init);

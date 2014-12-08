@@ -225,6 +225,7 @@ dtf - фасет даты
 <xsl:template name="systems">
     <xsl:call-template name="Linked-record-number"/>
     <xsl:call-template name="Holder-sigla"/>
+    <xsl:call-template name="Record-create-date"/>
 </xsl:template>
 
 
@@ -1113,6 +1114,13 @@ dtf - фасет даты
     </xsl:for-each>
 </xsl:template>
 
+<xsl:template name="Record-create-date">
+    <xsl:for-each select="field[@id='100'][1]/subfield[@id='a'][1]">
+            <field name="record-create-date_dt">
+                <xsl:value-of select="substring(., 1, 8)"/>
+            </field>
+    </xsl:for-each>
+</xsl:template>
 </xsl:stylesheet>
 
 

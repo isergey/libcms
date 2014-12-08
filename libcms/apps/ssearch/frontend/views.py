@@ -13,7 +13,7 @@ from django.shortcuts import render, HttpResponse, get_object_or_404, Http404, u
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import QueryDict
 from ..models import Record, SavedRequest, DetailAccessLog, Collection
-
+from participants.models import Library
 from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
 # # на эти трансформаторы ссылаются из других модулей
 #xslt_root = etree.parse('libcms/xsl/record_in_search.xsl')
@@ -166,19 +166,24 @@ def _make_search_attrs(catalog):
 
 
 def index(request, catalog=None):
-    library = request.GET.get('library', '')
-    print 'library', library
+    library_code = request.GET.get('library', None)
+
+    try:
+        library = Library.objects.get(code=library_code)
+    except Library.DoesNotExist:
+        library = None
+
     q = request.GET.get('q', None)
     fq = request.GET.get('fq', None)
     if not catalog:
         catalog = request.GET.get('catalog', None)
     if not q and not fq:
-        return init_search(request, catalog)
+        return init_search(request, catalog, library=library)
     else:
-        return search(request, catalog)
+        return search(request, catalog, library=library)
 
 
-def init_search(request, catalog=None):
+def init_search(request, catalog=None, library=None):
     search_attrs = _make_search_attrs(catalog)
     stats = None
     if catalog == u'ebooks':
@@ -191,7 +196,8 @@ def init_search(request, catalog=None):
         'search_attrs': search_attrs,
         'stats': stats,
         'catalog': catalog,
-        'collections': collections
+        'collections': collections,
+        'library': library
     })
 
 
@@ -240,33 +246,27 @@ def terms_constructor(attrs, values):
     terms = []
     for i, q in enumerate(values):
         attr = attrs[i]
-        # attr = attr_map.get(attrs[i], None)
-        # if not attr:
-        #     raise WrongSearchAttribute()
-        # else:
-        #     attr = attr['attr']
-        #
-        # split_attr = attr.split('_')
-        # if len(split_attr) > 1 and split_attr[-1] in resolvers:
-        #     try:
-        #         value = resolvers[split_attr[-1]](q)
-        #         if type(value) == tuple or type(value) == list:
-        #             q = value[0]
-        #         else:
-        #             q = value
-        #     except ValueError:
-        #         continue
-
         terms.append({attr: q})
     return terms
 
 
-def search(request, catalog=None):
+def search(request, catalog=None, library=None):
+    holders = []
+    if library:
+        holders.append(library.code)
+        leaf_libraries = library.get_leafnodes()
+        for leaf_library in leaf_libraries:
+            holders.append(getattr(leaf_library, 'code'))
 
+    facet_fields = [
+        'fond_sf',
+        'author_sf',
+        'subject-heading_sf',
+        'date-of-publication_s',
+        'content-type_t',
+        'code-language_t',
+    ]
 
-
-    facet_fields = ['fond_sf', 'author_sf', 'subject-heading_sf', 'date-of-publication_s', 'content-type_t',
-                    'code-language_t']
     search_attrs = _make_search_attrs(catalog)
     search_deep_limit = 5  # ограничение вложенных поисков
     solr = sunburnt.SolrInterface(settings.SOLR['host'])
@@ -335,7 +335,14 @@ def search(request, catalog=None):
     if qs and attrs:
         log_search_request({'attr': attrs[0], 'value': qs[0]}, catalog)
 
+    if holders:
+        holders_query = solr.Q(**{'holder-sigla_s': holders[0]})
+        for holder in holders[1:]:
+            holders_query |= solr.Q(**{'holder-sigla_s': holder})
+        query = query & holders_query
+
     solr_searcher = solr.query(query)
+
     if 'full-text' in request.GET.getlist('attr'):
         solr_searcher = solr_searcher.highlight(fields=['full-text'])
 
@@ -449,7 +456,7 @@ def search(request, catalog=None):
                     'values': facets[facet_field]
                 }
             )
-
+    print 'json_search_breadcumbs', 'json_search_breadcumbs'
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
         'results_page': results_page,
@@ -459,9 +466,66 @@ def search(request, catalog=None):
         'search_statisics': search_statisics,
         'search_request': json_search_breadcumbs,
         'search_attrs': search_attrs,
-        'catalog': catalog
+        'catalog': catalog,
+        'library': library
     })
 
+
+def participant_income(request):
+    sigla = request.GET.get('sigla', None)
+    solr = sunburnt.SolrInterface(settings.SOLR['local_records_host'])
+
+    if sigla:
+        query = solr.Q(**{'holder-sigla_s': sigla})
+    else:
+        query = solr.Q(**{'*': '*'})
+
+    solr_searcher = solr.query(query)
+    solr_searcher = solr_searcher.field_limit("id")
+
+    solr_searcher = solr_searcher.sort_by('-record-create-date_dts')
+
+    paginator = Paginator(solr_searcher, 20)  # Show 25 contacts per page
+
+    page = request.GET.get('page')
+    try:
+        results_page = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        results_page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        results_page = paginator.page(paginator.num_pages)
+
+    docs = []
+
+    for row in results_page.object_list:
+        docs.append(replace_doc_attrs(row))
+
+    doc_ids = []
+    for doc in docs:
+        doc_ids.append(doc['id'])
+
+    records_dict = {}
+    records = list(Record.objects.using('local_records').filter(gen_id__in=doc_ids))
+    for record in records:
+        records_dict[record.gen_id] = etree.tostring(
+            xslt_bib_draw_transformer(etree.XML(record.content), abstract='false()'), encoding='utf-8')
+
+    for doc in docs:
+        doc['record'] = records_dict.get(doc['id'])
+
+    return render(request, 'ssearch/frontend/income.html', {
+        'results_page': results_page,
+        'docs': docs
+    })
+
+
+def select_library(request):
+    libraries = Library.objects.filter(parent=None).values('code', 'name', 'id')
+    return render(request, 'ssearch/frontend/select_library.html', {
+        'libraries': libraries,
+    })
 
 from levenshtein import levenshtein
 

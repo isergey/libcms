@@ -1,0 +1,9 @@
+<table class="table table-bordered">
+    {% for library in libraries %}
+    <tr>
+        <td style="padding: 0">
+            <a style="display: block;padding: 5px;" code="{{ library.code }}" href="#select_by_code">{{ library.name }}</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

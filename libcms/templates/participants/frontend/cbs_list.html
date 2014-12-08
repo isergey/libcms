@@ -12,9 +12,18 @@
 
             <ul class="participants" style="list-style: none; margin: 0">
                 {% for cbs in  cbs_list %}
-                    <li style="margin-bottom: 10px"><a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}<br/></a>
-                        Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
-                        {% else %} <a href="{% url 'participants:frontend:branches' cbs.code %}" target="_blank"> {{ request.META.HTTP_HOST }}{% url 'participants:frontend:branches' cbs.code %}</a> {% endif %}
+                    <li style="margin-bottom: 10px">
+                        <div><a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}</a></div>
+                        <div>
+                            Сайт: {% if cbs.http_service  %}
+                            <a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
+                            {% else %}
+                                <a href="{% url 'participants:frontend:branches' cbs.code %}" target="_blank"> {{ request.META.HTTP_HOST }}{% url 'participants:frontend:branches' cbs.code %}</a>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <a class="btn btn-mini btn-info" href="{% url 'ssearch:frontend:index' %}?library={{ cbs.code }}">поиск в каталоге</a>
+                        </div>
                     </li>
                 {% empty %}
                     Список еще не сформирован

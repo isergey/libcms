@@ -395,7 +395,7 @@ RUSMARC
   <xsl:apply-templates select="field[@id='225']"/>
 
   <xsl:call-template name="notes"/>
-
+  <div class="record_table_of_contents">
   <xsl:if test="$fmt != 'B' and field[@id='464']">
     <p><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='I_CONTENTS']"/> </p>
     <xsl:for-each select="field[@id='464']">
@@ -417,6 +417,7 @@ RUSMARC
     </xsl:for-each>
     <p/>
   </xsl:if>
+  </div>
   <xsl:call-template name="links"/>
 
   <xsl:apply-templates select="field[@id='010']"/>
@@ -442,7 +443,7 @@ RUSMARC
       <xsl:variable name="h2">
         <xsl:apply-templates select="$p/field[@id='710']"/>
       </xsl:variable>
-      <b>
+
         <xsl:choose>
           <xsl:when test="$follow.header and not($enclosed_link) and not(//record[@syntax='1.2.840.10003.5.106']) and //database != $circ.db">
             <xsl:if test="string-length($h1) &gt; 0">
@@ -457,7 +458,7 @@ RUSMARC
             <xsl:value-of select="$h2"/>
           </xsl:otherwise>
         </xsl:choose>
-      </b>
+
       <xsl:if test="substring($h1, string-length($h1), 1) != '.' and substring($h2, string-length($h2), 1) != '.'">
         <xsl:text> </xsl:text>
       </xsl:if>
