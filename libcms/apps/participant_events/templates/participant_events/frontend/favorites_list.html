@@ -28,7 +28,12 @@
     <ul class="news">
         {% for event in events_list %}
             <div class="title"><a href="{% url 'events:frontend:favorite_show' event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a></div>
-            <div class="teaser">{{ event.event_content.teaser }}</div>
+            <div class="teaser">
+                {% if event.avatar %}
+                    <img src="{{ MEDIA_URL }}{{ events.avatar }}" />
+                {% endif %}
+                {{ event.event_content.teaser }}
+            </div>
             <div class="create_date">Начало: <b>{{ event.start_date }}</b></div>
             {% if not forloop.last %}<hr/>{% endif %}
         {% endfor %}

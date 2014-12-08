@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
  * $Log: rusmarc.xsl,v $
- * Revision 1.59  2013/08/21 13:14:13  rustam
- * Another scheme for monograph's part support
- *
- * Revision 1.58  2013/02/20 13:12:29  rustam
- * Process enclosed links fore serials and analytics
- *
- * Revision 1.57  2012/05/21 10:49:59  rustam
- * Improved header representation
- *
- * Revision 1.56  2012/03/24 06:37:43  rustam
- * Overdue documents highlighting
- *
  * Revision 1.55  2011/06/14 13:00:27  rustam
  * Do not show links from header and subjects for task packages and records from circulation DB
  *
@@ -267,42 +255,45 @@ RUSMARC
             <xsl:otherwise>
               <xsl:choose>
                 <xsl:when test="$hide.record.warnings">
-                  <a class="warn" title="{$msg/messages/localization[@language=$lang]/msg[@id='F_IBL']}: '{$bl}'"><xsl:text>*</xsl:text></a>
+                  <a class="warn" title="{$msg/messages/localization[@language=$lang]/msg[@id='F_IBL']}: '{$bl}'"><xsl:text>*</xsl:text> </a>
                 </xsl:when>
                 <xsl:otherwise>
-                  <span class="warn"><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='F_IBL']"/><xsl:text>: '</xsl:text><xsl:value-of select="$bl"/><xsl:text>'</xsl:text></span>
+                  <span class="warn"><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='F_IBL']"/><xsl:text>: '</xsl:text><xsl:value-of select="$bl"/><xsl:text>'</xsl:text> </span>
                 </xsl:otherwise>
               </xsl:choose>
               <br/>
               <xsl:call-template name="monograph"/>
             </xsl:otherwise>
           </xsl:choose>
+          
         </xsl:otherwise>
       </xsl:choose>
       <xsl:if test="$fmt='F'">
         <xsl:if test="$subject">
           <xsl:call-template name="subjects"/>
         </xsl:if>
-        <table width="100%">
-        <tr></tr><tr>
-        <td align="left" valign="top" class="recsrc">
-          <xsl:if test="$record.source">
-            <xsl:call-template name="int"/>
-          </xsl:if>
-        </td>
-        <td align="right" valign="top">
-        <xsl:if test="not($type='x' or $type='y' or $type='z') and $class">
-          <xsl:call-template name="class"/>
-        </xsl:if>
-        </td>
-        </tr>
-        </table>
+	<xsl:if test="$record.source or $holdings">
+		<table width="100%">
+		<tr> </tr><tr>
+		<td align="left" valign="top" class="recsrc">
+		  <xsl:if test="$record.source">
+		    <xsl:call-template name="int"/>
+		  </xsl:if>
+		</td>
+		<td align="right" valign="top">
+		<xsl:if test="not($type='x' or $type='y' or $type='z') and $class">
+		  <xsl:call-template name="class"/>
+		</xsl:if>
+		</td>
+		</tr>
+		</table>
+	</xsl:if>
         <xsl:if test="$holdings and count(../../holdingsData) = 0">
           <xsl:apply-templates select="field[@id='850']"/>
           <xsl:apply-templates select="field[@id='899']"/>
         </xsl:if>
       </xsl:if>
-      <xsl:apply-templates select="field[@id='999']/subfield[@id='z']"/>
+      <!--<xsl:apply-templates select="field[@id='999']/subfield[@id='z']"/>-->
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -313,7 +304,7 @@ RUSMARC
   <xsl:param name="pub" select="'all'"/>
   <xsl:param name="na" select="true()"/>
   <xsl:param name="enclosed_link" select="false()"/>
-  <xsl:if test="$na">
+ <xsl:if test="$na">
     <xsl:call-template name="header">
       <xsl:with-param name="p" select="$r/subfield[@id='1']"/>
       <xsl:with-param name="enclosed_link" select="$enclosed_link"/>
@@ -366,7 +357,7 @@ RUSMARC
     <xsl:apply-templates select="$s/subfield[@id='1']/field[@id='011']"/>
   </xsl:if>
   <xsl:apply-templates select="$r/subfield[@id='1']/field[@id='856']"/>
-  <xsl:text>.</xsl:text>
+  <xsl:text> </xsl:text>
 </xsl:template>
 
 <xsl:template name="spec">
@@ -383,14 +374,30 @@ RUSMARC
   <xsl:apply-templates select="field[@id='207']"/>
   <xsl:apply-templates select="field[@id='229']"/>
   <xsl:apply-templates select="field[@id='230']"/>
-  <xsl:apply-templates select="field[@id='210']"/>
+  <xsl:choose>
+    <xsl:when test="$pub='all'">
+      <xsl:apply-templates select="field[@id='210']"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:if test="count(field[@id='210']/subfield[@id='d'])">
+        <xsl:choose>
+          <xsl:when test="leader/leader07='s'">
+            <xsl:text> (</xsl:text><xsl:value-of select="field[@id='210']/subfield[@id='d']"/><xsl:text>)</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+             <xsl:value-of select="$dlm"/><xsl:value-of select="field[@id='210']/subfield[@id='d']"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:if>
+    </xsl:otherwise>
+  </xsl:choose>
   <xsl:apply-templates select="field[@id='215']"/>
   <xsl:apply-templates select="field[@id='225']"/>
 
   <xsl:call-template name="notes"/>
-
+  <div class="record_table_of_contents">
   <xsl:if test="$fmt != 'B' and field[@id='464']">
-    <p><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='I_CONTENTS']"/></p>
+    <p><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='I_CONTENTS']"/> </p>
     <xsl:for-each select="field[@id='464']">
       <xsl:choose>
         <xsl:when test="subfield[@id='1']/field[@id='001'] and $ht">
@@ -410,12 +417,13 @@ RUSMARC
     </xsl:for-each>
     <p/>
   </xsl:if>
+  </div>
   <xsl:call-template name="links"/>
 
   <xsl:apply-templates select="field[@id='010']"/>
   <xsl:apply-templates select="field[@id='011']"/>
   <xsl:apply-templates select="field[@id='856']"/>
-  <xsl:text>.</xsl:text>
+  <xsl:text> </xsl:text>
 </xsl:template>
 
 <xsl:template name="header">
@@ -424,27 +432,25 @@ RUSMARC
   <xsl:param name="p" select="."/>
   <xsl:choose>
     <xsl:when test="$p/field[@id='029']/indicator[@id='1'] = 1">
-      <div class="header">
       <xsl:call-template name="std">
         <xsl:with-param name="p" select="$p"/>
       </xsl:call-template>
-      </div>
     </xsl:when>
-    <xsl:when test="$show_author and $p/field[@id='700' or @id='710']">
+    <xsl:when test="$show_author">
       <xsl:variable name="h1">
         <xsl:apply-templates select="$p/field[@id='700']"/>
       </xsl:variable>
       <xsl:variable name="h2">
         <xsl:apply-templates select="$p/field[@id='710']"/>
       </xsl:variable>
-      <div class="header">
+
         <xsl:choose>
           <xsl:when test="$follow.header and not($enclosed_link) and not(//record[@syntax='1.2.840.10003.5.106']) and //database != $circ.db">
             <xsl:if test="string-length($h1) &gt; 0">
-              <a href="{$cgi.script.URL}?ACTION=follow&amp;SESSION_ID={$session.id}&amp;TERM={$h1}{$personal.author.attrs}&amp;LANG={$lang}"><xsl:value-of select="$h1"/></a>
+              <a href="{$cgi.script.URL}?ACTION=follow&amp;SESSION_ID={$session.id}&amp;TERM={$h1}{$personal.author.attrs}&amp;LANG={$lang}"><xsl:value-of select="$h1"/> </a>
             </xsl:if>
             <xsl:if test="string-length($h2) &gt; 0">
-              <a href="{$cgi.script.URL}?ACTION=follow&amp;SESSION_ID={$session.id}&amp;TERM={$h2}{$corporate.author.attrs}&amp;LANG={$lang}"><xsl:value-of select="$h2"/></a>
+              <a href="{$cgi.script.URL}?ACTION=follow&amp;SESSION_ID={$session.id}&amp;TERM={$h2}{$corporate.author.attrs}&amp;LANG={$lang}"><xsl:value-of select="$h2"/> </a>
             </xsl:if>
           </xsl:when>
           <xsl:otherwise>
@@ -452,16 +458,18 @@ RUSMARC
             <xsl:value-of select="$h2"/>
           </xsl:otherwise>
         </xsl:choose>
-        <xsl:if test="substring($h1, string-length($h1), 1) != '.' and substring($h2, string-length($h2), 1) != '.' and string-length($h1)+string-length($h2) &gt; 0">
-          <xsl:text>.</xsl:text>
-        </xsl:if>
-      </div>
+
+      <xsl:if test="substring($h1, string-length($h1), 1) != '.' and substring($h2, string-length($h2), 1) != '.'">
+        <xsl:text> </xsl:text>
+      </xsl:if>
+      <xsl:text> </xsl:text>
     </xsl:when>
   </xsl:choose>
 </xsl:template>
 
 <xsl:template name="std">
   <xsl:param name="p" select="."/>
+  <b>
   <xsl:for-each select="$p/field[@id='029']">
     <xsl:if test="indicator[@id='1'] = 1">
       <xsl:if test="position() = 2">
@@ -503,7 +511,7 @@ RUSMARC
       </xsl:if>
     </xsl:if>
   </xsl:for-each>
-  <xsl:text>. </xsl:text>
+  </b><!--<xsl:text>. </xsl:text>-->
 </xsl:template>
 
 <xsl:template name="sub">
@@ -527,9 +535,9 @@ RUSMARC
           </xsl:call-template>
         </xsl:otherwise>
       </xsl:choose>
-      </td></tr>
+      </td> </tr>
     </xsl:for-each>
-    </table></p>
+    </table> </p>
   </xsl:if>
 </xsl:template>
 
@@ -595,7 +603,7 @@ RUSMARC
     <xsl:value-of select="."/>
   </xsl:for-each>
   <xsl:for-each select="$s2/subfield[@id='1']/field[@id='200']">
-    <xsl:text>. </xsl:text>
+    <!--<xsl:text>. </xsl:text>-->
     <xsl:call-template name="title">
       <xsl:with-param name="s1" select="."/>
       <xsl:with-param name="show.v" select="$show.v"/>
@@ -611,10 +619,10 @@ RUSMARC
     <xsl:text> : </xsl:text><xsl:value-of select="."/>
   </xsl:for-each>
   <xsl:for-each select="$s1/subfield[@id='h']">
-    <xsl:text>. </xsl:text><xsl:value-of select="."/>
+    <!--<xsl:text>. </xsl:text>--><xsl:value-of select="."/>
   </xsl:for-each>
   <xsl:for-each select="$s1/subfield[@id='i']">
-    <xsl:text>. </xsl:text><xsl:value-of select="."/>
+    <!--<xsl:text>. </xsl:text>--><xsl:value-of select="."/>
   </xsl:for-each>
   <xsl:if test="$s1/subfield[@id='f'] or $s1/subfield[@id='g']">
     <xsl:text> / </xsl:text>
@@ -729,7 +737,6 @@ RUSMARC
         <xsl:when test="field[@id='461']/subfield[@id='1']/field[@id='001'] and $fmt != 'B' and $ht">
           <a href="{$cgi.script.URL}?follow+{$session.id}+{field[@id='461']/subfield[@id='1']/field[@id='001']}{$follow.attrs}+{$lang}">
           <xsl:call-template name="gen">
-            <xsl:with-param name="enclosed_link" select="true()"/>
             <xsl:with-param name="r" select="field[@id='461']"/>
             <xsl:with-param name="s" select="field[@id='462']"/>
           </xsl:call-template>
@@ -770,21 +777,13 @@ RUSMARC
   <xsl:text> // </xsl:text>
   <xsl:choose>
     <xsl:when test="field[@id='461']/subfield[@id='1']">
-      <xsl:variable name="pub">
-        <xsl:choose>
-          <xsl:when test="field[@id='463']/subfield[@id='1']/field[@id='210']/subfield[@id='d']">place</xsl:when>
-          <xsl:otherwise>all</xsl:otherwise>
-        </xsl:choose>
-      </xsl:variable>
-
       <xsl:choose>
         <xsl:when test="field[@id='461']/subfield[@id='1']/field[@id='001'] and $fmt != 'B' and $ht">
           <a href="{$cgi.script.URL}?follow+{$session.id}+{field[@id='461']/subfield[@id='1']/field[@id='001']}{$follow.attrs}+{$lang}">
           <xsl:call-template name="gen">
-            <xsl:with-param name="enclosed_link" select="true()"/>
             <xsl:with-param name="r" select="field[@id='461']"/>
             <xsl:with-param name="s" select="field[@id='462']"/>
-            <xsl:with-param name="pub" select="$pub"/>
+            <xsl:with-param name="pub" select="'place'"/>
             <xsl:with-param name="na" select="false()"/>
           </xsl:call-template>
           </a>
@@ -793,7 +792,7 @@ RUSMARC
           <xsl:call-template name="gen">
             <xsl:with-param name="r" select="field[@id='461']"/>
             <xsl:with-param name="s" select="field[@id='462']"/>
-            <xsl:with-param name="pub" select="$pub"/>
+            <xsl:with-param name="pub" select="'place'"/>
             <xsl:with-param name="na" select="false()"/>
           </xsl:call-template>
         </xsl:otherwise>
@@ -803,7 +802,7 @@ RUSMARC
           <xsl:when test="position() != 1">
             <xsl:text> ; </xsl:text>
           </xsl:when>
-          <xsl:when test="../field[@id='461']/subfield[@id='1']/field[@id='210']/subfield[@id='a'] and subfield[@id='1']/field[@id='210']/subfield[@id='d']">
+          <xsl:when test="../field[@id='461']/subfield[@id='1']/field[@id='210']/subfield[@id='a']">
             <xsl:text>, </xsl:text>
           </xsl:when>
           <xsl:otherwise>
@@ -848,11 +847,11 @@ RUSMARC
   <xsl:call-template name="notes"/>
   <xsl:call-template name="links"/>
   <xsl:apply-templates select="field[@id='856']"/>
-  <xsl:text>.</xsl:text>
+  <xsl:text> </xsl:text>
 </xsl:template>
 
 <xsl:template name="collection">
-  <span class="warn"><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='W_UNIMPL']"/></span>
+  <span class="warn"><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='W_UNIMPL']"/> </span>
 </xsl:template>
 
 <xsl:template name="subjects">
@@ -872,7 +871,7 @@ RUSMARC
   <xsl:for-each select="field[@id='600']">
     <xsl:text> </xsl:text>
     <xsl:value-of select="position()"/>
-    <xsl:text>. </xsl:text>
+    <!--<xsl:text>. </xsl:text>-->
     <xsl:variable name="na">
     <xsl:value-of select="subfield[@id='a']"/>
     <xsl:choose>
@@ -964,12 +963,12 @@ RUSMARC
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
-    <xsl:text>.</xsl:text>
+    <xsl:text> </xsl:text>
   </xsl:for-each>
   <xsl:for-each select="field[@id='601']">
     <xsl:text> </xsl:text>
     <xsl:value-of select="$p600 + position()"/>
-    <xsl:text>. </xsl:text>
+    <!--<xsl:text>. </xsl:text>-->
       <xsl:choose>
         <xsl:when test="$fs">
           <a href="{$cgi.script.URL}?ACTION=follow&amp;SESSION_ID={$session.id}&amp;TERM={subfield[@id='a']}[1,21]&amp;LANG={$lang}">
@@ -1041,12 +1040,12 @@ RUSMARC
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
-    <xsl:text>.</xsl:text>
+    <xsl:text> </xsl:text>
   </xsl:for-each>
   <xsl:for-each select="field[@id='602']">
     <xsl:text> </xsl:text>
     <xsl:value-of select="$p600 + $p601 + position()"/>
-    <xsl:text>. </xsl:text>
+    <!--<xsl:text>. </xsl:text>-->
     <xsl:value-of select="subfield[@id='a']"/>
     <xsl:if test="subfield[@id='f']">
       <xsl:text>, </xsl:text>
@@ -1091,12 +1090,12 @@ RUSMARC
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
-    <xsl:text>.</xsl:text>
+    <xsl:text> </xsl:text>
   </xsl:for-each>
   <xsl:for-each select="field[@id='604']">
     <xsl:text> </xsl:text>
     <xsl:value-of select="$p600 + $p601 + $p602 + position()"/>
-    <xsl:text>. </xsl:text>
+    <!--<xsl:text>. </xsl:text>-->
     <xsl:choose>
     <xsl:when test="subfield[@id='1']/field[starts-with(@id, '70')]">
       <xsl:value-of select="subfield[@id='1']/field[starts-with(@id,'70')]/subfield[@id='a']"/>
@@ -1114,25 +1113,25 @@ RUSMARC
         <xsl:text> (</xsl:text>
         <xsl:for-each select="subfield[@id='1']/field[starts-with(@id,'70')]/subfield[@id='c' or @id='f']">
           <xsl:value-of select="."/>
-          <xsl:if test="position() != last()"><xsl:text> ; </xsl:text></xsl:if>
+          <xsl:if test="position() != last()"><xsl:text> ; </xsl:text> </xsl:if>
         </xsl:for-each>
         <xsl:text>)</xsl:text>
       </xsl:if>
-      <xsl:text>. </xsl:text>
+      <!--<xsl:text>. </xsl:text>-->
     </xsl:when>
     <xsl:when test="subfield[@id='1']/field[starts-with(@id, '71')]">
       <xsl:value-of select="subfield[@id='1']/field[starts-with(@id, '71')]/subfield[@id='a']"/>
       <xsl:for-each select="subfield[@id='1']/field[starts-with(@id, '71')]/subfield[@id='b']">
-        <xsl:text>. </xsl:text><xsl:value-of select="."/>
+        <!--<xsl:text>. </xsl:text>--><xsl:value-of select="."/>
       </xsl:for-each>
-      <xsl:text>. </xsl:text>
+      <!--<xsl:text>. </xsl:text>-->
     </xsl:when>
     <xsl:when test="subfield[@id='1']/field[starts-with(@id, '72')]">
       <xsl:value-of select="subfield[@id='1']/field[starts-with(@id, '72')]/subfield[@id='a']"/>
       <xsl:if test="subfield[@id='1']/field[starts-with(@id,'72')]/subfield[@id='f']">
         <xsl:text> (</xsl:text><xsl:value-of select="subfield[@id='1']/field[starts-with(@id,'72')]/subfield[@id='f']"/><xsl:text>)</xsl:text>
       </xsl:if>
-      <xsl:text>. </xsl:text>
+      <!--<xsl:text>. </xsl:text>-->
     </xsl:when>
     </xsl:choose>
     <xsl:if test="subfield[@id='1']/field[starts-with(@id, '50')]">
@@ -1155,7 +1154,7 @@ RUSMARC
             </xsl:choose>
           </xsl:when>
           <xsl:when test="@id='l' or @id='r' or @id='u'">
-            <xsl:text>. </xsl:text>
+            <!--<xsl:text>. </xsl:text>-->
             <xsl:choose>
               <xsl:when test="$fs">
                 <a href="{$cgi.script.URL}?ACTION=follow&amp;SESSION_ID={$session.id}&amp;TERM={.}[1,47]&amp;LANG={$lang}">
@@ -1184,12 +1183,12 @@ RUSMARC
         </xsl:choose>
       </xsl:for-each>
     </xsl:if>
-    <xsl:text>.</xsl:text>
+    <xsl:text> </xsl:text>
   </xsl:for-each>
   <xsl:for-each select="field[@id='605']">
     <xsl:text> </xsl:text>
     <xsl:value-of select="$p600 + $p601 + $p602 + $p604 + position()"/>
-    <xsl:text>. </xsl:text>
+    <!--<xsl:text>. </xsl:text>-->
     <xsl:choose>
       <xsl:when test="$fs">
         <a href="{$cgi.script.URL}?ACTION=follow&amp;SESSION_ID={$session.id}&amp;TERM={subfield[@id='a']}[1,21]&amp;LANG={$lang}">
@@ -1201,10 +1200,10 @@ RUSMARC
       </xsl:otherwise>
     </xsl:choose>
     <xsl:for-each select="subfield[@id='h']">
-      <xsl:text>. </xsl:text><xsl:value-of select="."/>
+      <!--<xsl:text>. </xsl:text>--><xsl:value-of select="."/>
     </xsl:for-each>
     <xsl:for-each select="subfield[@id='i']">
-      <xsl:text>. </xsl:text><xsl:value-of select="."/>
+      <!--<xsl:text>. </xsl:text>--><xsl:value-of select="."/>
     </xsl:for-each>
     <xsl:if test="subfield[@id='l']">
       <xsl:text>(</xsl:text><xsl:value-of select="subfield[@id='l']"/><xsl:text>)</xsl:text>
@@ -1261,12 +1260,12 @@ RUSMARC
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
-    <xsl:text>.</xsl:text>
+    <xsl:text> </xsl:text>
   </xsl:for-each>
   <xsl:for-each select="field[@id='606']">
     <xsl:text> </xsl:text>
     <xsl:value-of select="$p600 + $p601 + $p602 + $p604 + $p605 + position()"/>
-    <xsl:text>. </xsl:text>
+    <!--<xsl:text>. </xsl:text>-->
     <xsl:choose>
       <xsl:when test="$fs">
         <a href="{$cgi.script.URL}?ACTION=follow&amp;SESSION_ID={$session.id}&amp;TERM={subfield[@id='a']}[1,21]&amp;LANG={$lang}">
@@ -1329,12 +1328,12 @@ RUSMARC
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
-    <xsl:text>.</xsl:text>
+    <xsl:text> </xsl:text>
   </xsl:for-each>
   <xsl:for-each select="field[@id='607']">
     <xsl:text> </xsl:text>
     <xsl:value-of select="$p600 + $p601 + $p602 + $p604 + $p605 + $p606 + position()"/>
-    <xsl:text>. </xsl:text>
+    <!--<xsl:text>. </xsl:text>-->
     <xsl:choose>
       <xsl:when test="$fs">
         <a href="{$cgi.script.URL}?ACTION=follow&amp;SESSION_ID={$session.id}&amp;TERM={subfield[@id='a']}[1,21]&amp;LANG={$lang}">
@@ -1397,12 +1396,12 @@ RUSMARC
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
-    <xsl:text>.</xsl:text>
+    <xsl:text> </xsl:text>
   </xsl:for-each>
   <xsl:for-each select="field[@id='610']">
     <xsl:text> </xsl:text>
     <xsl:value-of select="$p600 + $p601 + $p602 + $p604 + $p605 + $p606 + $p607 + position()"/>
-    <xsl:text>. </xsl:text>
+    <!--<xsl:text>. </xsl:text>-->
     <xsl:for-each select="subfield[@id='a']">
       <xsl:if test="position() != 1">
         <xsl:text>, </xsl:text>
@@ -1418,7 +1417,7 @@ RUSMARC
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
-    <xsl:text>.</xsl:text>
+    <xsl:text> </xsl:text>
   </xsl:for-each>
   </div>
 </xsl:template>
@@ -1512,9 +1511,10 @@ RUSMARC
   <xsl:for-each select="field[@id='316'] | field[@id='317']">
     <xsl:value-of select="$dlm"/><xsl:value-of select="subfield[@id='a']"/>
     <xsl:text> </xsl:text>
+      <!--
     <xsl:call-template name="org.by.code">
       <xsl:with-param name="oname" select="subfield[@id='5']"/>
-    </xsl:call-template>
+    </xsl:call-template>-->
     <xsl:if test="count(subfield[@id='9'])">
       <xsl:text> : </xsl:text><xsl:value-of select="subfield[@id='9']"/>
     </xsl:if>
@@ -1546,11 +1546,11 @@ RUSMARC
   <xsl:if test="$abstract">
     <xsl:for-each select="field[@id='330']/subfield[@id='a']">
       <xsl:if test="position()=1">
-        <xsl:text>.</xsl:text>
+        <!--<xsl:text> </xsl:text>-->
       </xsl:if>
       <p class="note">
       <xsl:value-of select="."/>
-      <xsl:text>.</xsl:text>
+      <!--<xsl:text> </xsl:text>-->
       </p>
     </xsl:for-each>
   </xsl:if>
@@ -1623,12 +1623,12 @@ RUSMARC
 	| field[@id='482' and indicator[@id='2'] = 1]
 	| field[@id='488' and indicator[@id='2'] = 1]"/>
   <xsl:if test="$links">
-    <xsl:text>.</xsl:text><div class="links">
+    <xsl:text> </xsl:text><div class="links">
   <xsl:for-each select="$links">
     <xsl:sort select="@id"/>
       <xsl:choose>
       <xsl:when test="generate-id() = generate-id(key('link', concat(generate-id(..), @id)))">
-        <xsl:text>.</xsl:text><p/>
+        <xsl:text> </xsl:text><p/>
         <xsl:call-template name="link">
           <xsl:with-param name="lbl" select="$msg/messages/localization[@language=$lang]/msg[@id=current()/@id]"/>
         </xsl:call-template>
@@ -1643,15 +1643,15 @@ RUSMARC
     </div>
   </xsl:if>
 </xsl:template>
-
+<!--
 <xsl:template match="field[@id='801']">
   <xsl:call-template name="org.by.code">
     <xsl:with-param name="oname" select="subfield[@id='b']"/>
   </xsl:call-template>
   <xsl:text> </xsl:text>
   <xsl:variable name="date" select="subfield[@id='c']"/>
-  <xsl:value-of select="substring($date, 7, 2)"/><xsl:text>.</xsl:text>
-  <xsl:value-of select="substring($date, 5, 2)"/><xsl:text>.</xsl:text>
+  <xsl:value-of select="substring($date, 7, 2)"/><xsl:text> </xsl:text>
+  <xsl:value-of select="substring($date, 5, 2)"/><xsl:text> </xsl:text>
   <xsl:value-of select="substring($date, 1, 4)"/><br/>
 </xsl:template>
 
@@ -1692,7 +1692,7 @@ RUSMARC
   </xsl:for-each>
   <br/>
 </xsl:template>
-
+-->
 <xsl:template match="field[@id='856']">
   <xsl:choose>
     <xsl:when test="subfield[@id='x'] = $cover">
@@ -1702,13 +1702,10 @@ RUSMARC
         <xsl:value-of select="$dlm"/>
         <xsl:choose>
           <xsl:when test="subfield[@id='z']">
-            <a href="{subfield[@id='u']}"><xsl:value-of select="subfield[@id='z']"/></a>
-          </xsl:when>
-          <xsl:when test="not(../leader/type='l') and not(../field[@id='106']/subfield[@id='a']='s')">
-            <xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='I_SEE_URL']"/><a href="{subfield[@id='u']}"><xsl:value-of select="subfield[@id='u']"/></a>
+            <a class="elink" href="{subfield[@id='u']}"><xsl:value-of select="subfield[@id='z']"/> </a>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text>&lt;URL:</xsl:text><a href="{subfield[@id='u']}"><xsl:value-of select="subfield[@id='u']"/></a><xsl:text>&gt;</xsl:text>
+            <xsl:text>&lt;URL:</xsl:text><a class="elink" href="{subfield[@id='u']}"><xsl:value-of select="subfield[@id='u']"/> </a><xsl:text>&gt;</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
@@ -1799,7 +1796,7 @@ RUSMARC
     <xsl:text> (</xsl:text>
     <xsl:for-each select="subfield[@id='c' or @id='f']">
       <xsl:value-of select="."/>
-      <xsl:if test="position() != last()"><xsl:text> ; </xsl:text></xsl:if>
+      <xsl:if test="position() != last()"><xsl:text> ; </xsl:text> </xsl:if>
     </xsl:for-each>
     <xsl:text>) </xsl:text>
   </xsl:if>
@@ -1808,7 +1805,7 @@ RUSMARC
 <xsl:template match="field[@id='710']">
   <xsl:value-of select="subfield[@id='a']"/>
     <xsl:for-each select="subfield[@id='b']">
-      <xsl:text>. </xsl:text><xsl:value-of select="."/>
+      <!--<xsl:text>. </xsl:text>--><xsl:value-of select="."/>
     </xsl:for-each>
 </xsl:template>
 
@@ -1881,48 +1878,41 @@ RUSMARC
 
 <xsl:template match="field[@id='210']">
   <xsl:value-of select="$dlm"/>
-  <xsl:choose>
-    <xsl:when test="subfield[@id='r'] and count(subfield)=1">
-      <xsl:value-of select="subfield[@id='r']"/>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:for-each select="subfield[@id='a']">
-        <xsl:if test="position() != 1">
-          <xsl:text> ; </xsl:text>
-        </xsl:if>
-        <xsl:value-of select="."/>
-      </xsl:for-each>
-      <xsl:for-each select="subfield[@id='c']">
-        <xsl:text> : </xsl:text><xsl:value-of select="."/>
-      </xsl:for-each>
+  <xsl:for-each select="subfield[@id='a']">
+    <xsl:if test="position() != 1">
+      <xsl:text> ; </xsl:text>
+    </xsl:if>
+    <xsl:value-of select="."/>
+  </xsl:for-each>
+  <xsl:for-each select="subfield[@id='c']">
+    <xsl:text> : </xsl:text><xsl:value-of select="."/>
+  </xsl:for-each>
+  <xsl:text>, </xsl:text>
+  <xsl:for-each select="subfield[@id='d']">
+    <xsl:if test="position() != 1">
       <xsl:text>, </xsl:text>
-      <xsl:for-each select="subfield[@id='d']">
-        <xsl:if test="position() != 1">
-          <xsl:text>, </xsl:text>
-        </xsl:if>
-        <xsl:value-of select="."/>
-      </xsl:for-each>
-      <xsl:if test="subfield[@id='e'] | subfield[@id='f'] | subfield[@id='g'] | subfield[@id='h']">
-        <xsl:text> (</xsl:text>
-        <xsl:for-each select="subfield[@id='e']">
-          <xsl:if test="position() != 1">
-            <xsl:text>, </xsl:text>
-          </xsl:if>
-          <xsl:value-of select="."/>
-        </xsl:for-each>
-        <xsl:for-each select="subfield[@id='f']">
-          <xsl:value-of select="."/>
-        </xsl:for-each>
-        <xsl:for-each select="subfield[@id='g']">
-          <xsl:text> : </xsl:text><xsl:value-of select="."/>
-        </xsl:for-each>
-        <xsl:for-each select="subfield[@id='h']">
-          <xsl:text>, </xsl:text><xsl:value-of select="."/>
-        </xsl:for-each>
-        <xsl:text>) </xsl:text>
+    </xsl:if>
+    <xsl:value-of select="."/>
+  </xsl:for-each>
+  <xsl:if test="subfield[@id='e'] | subfield[@id='f'] | subfield[@id='g'] | subfield[@id='h']">
+    <xsl:text> (</xsl:text>
+    <xsl:for-each select="subfield[@id='e']">
+      <xsl:if test="position() != 1">
+        <xsl:text>, </xsl:text>
       </xsl:if>
-    </xsl:otherwise>
-  </xsl:choose>
+      <xsl:value-of select="."/>
+    </xsl:for-each>
+    <xsl:for-each select="subfield[@id='f']">
+      <xsl:value-of select="."/>
+    </xsl:for-each>
+    <xsl:for-each select="subfield[@id='g']">
+      <xsl:text> : </xsl:text><xsl:value-of select="."/>
+    </xsl:for-each>
+    <xsl:for-each select="subfield[@id='h']">
+      <xsl:text>, </xsl:text><xsl:value-of select="."/>
+    </xsl:for-each>
+    <xsl:text>) </xsl:text>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="field[@id='215']">
@@ -1962,7 +1952,7 @@ RUSMARC
     <xsl:text> = </xsl:text><xsl:value-of select="."/>
   </xsl:for-each>
   <xsl:for-each select="subfield[@id='h']">
-    <xsl:text>. </xsl:text><xsl:value-of select="."/>
+    <!--<xsl:text>. </xsl:text>--><xsl:value-of select="."/>
   </xsl:for-each>
   <xsl:for-each select="subfield[@id='i']">
     <xsl:choose>
@@ -1970,7 +1960,7 @@ RUSMARC
         <xsl:text>, </xsl:text><xsl:value-of select="."/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>. </xsl:text><xsl:value-of select="."/>
+        <!--<xsl:text>. </xsl:text>--><xsl:value-of select="."/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
@@ -2014,14 +2004,9 @@ RUSMARC
 </xsl:template>
 
 <xsl:template match="field[@id='999']/subfield[@id='z']">
-  <xsl:choose>
-    <xsl:when test='contains(., "размер штрафа за задержку")'>
-      <p class="fine"><xsl:value-of select="."/></p>
-    </xsl:when>
-    <xsl:otherwise>
-      <p class="terms"><xsl:value-of select="."/></p>
-    </xsl:otherwise>
-  </xsl:choose>
+  <p class="terms">
+  <xsl:value-of select="."/>
+  </p>
 </xsl:template>
 
 </xsl:stylesheet>
