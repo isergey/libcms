@@ -123,19 +123,23 @@ attr_map = {
 }
 
 sort_attr_map = {
-    u'author_ts': {
+    u'author': {
         'attr': u'author_ts',
         'order': 'asc',
     },
-    u'title_ts': {
+    u'title': {
         'attr': u'title_ts',
         'order': 'asc',
     },
-    u'date-of-publication_dts': {
+    u'date-of-publication': {
         'attr': u'date-of-publication_dts',
         'order': 'desc',
     },
-    u'tom_f': {
+    u'record-create-date': {
+        'attr': u'record-create-date_dts',
+        'order': 'desc',
+    },
+    u'tom': {
         'attr': u'tom_f',
         'order': 'asc',
     },
@@ -275,17 +279,23 @@ def search(request, catalog=None, library=None):
     attrs = request.GET.getlist('attr', [])
     sort = request.GET.getlist('sort', [])
 
+
+
     sort_attrs = []
 
     for sort_attr in sort:
-        sort_attr = sort_attr_map.get(sort_attr, None)
-        if not sort_attr:
+        mapped_sort_attr = sort_attr_map.get(sort_attr, None)
+        print 'mapped_sort_attr', sort_attr, mapped_sort_attr
+        if not mapped_sort_attr:
             continue
 
         sort_attrs.append({
-            'attr': sort_attr['attr'],
-            'order': sort_attr.get('order', 'asc')
+            'attr': mapped_sort_attr['attr'],
+            'order': mapped_sort_attr.get('order', 'asc')
         })
+
+    print 'sort_attrs', sort_attrs
+
 
     fqs = request.GET.getlist('fq', [])
     fattrs = request.GET.getlist('fattr', [])

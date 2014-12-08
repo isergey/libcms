@@ -231,6 +231,10 @@
                                         {% if sort_attr == 'date-of-publication' %}selected="selected"{% endif %}>
                                     {% if LANGUAGE_CODE == 'ru' %}году публикации{% elif LANGUAGE_CODE == 'tt' %}
                                         бастырып чыгару елы{% else %}publication year{% endif %}</option>
+                                <option value="record-create-date"
+                                        {% if sort_attr == 'record-create-date' %}selected="selected"{% endif %}>
+                                    {% if LANGUAGE_CODE == 'ru' %}дате поступления{% elif LANGUAGE_CODE == 'tt' %}
+                                        дате поступления{% else %}incoming date{% endif %}</option>
                                 <option value="tom" {% if sort_attr == 'tom' %}selected="selected"{% endif %}>
                                     Тому/части
                                 </option>
@@ -250,6 +254,10 @@
                                         {% if sort_attr == 'date-of-publication' %}selected="selected"{% endif %}>
                                     {% if LANGUAGE_CODE == 'ru' %}году публикации{% elif LANGUAGE_CODE == 'tt' %}
                                         бастырып чыгару елы{% else %}publication year{% endif %}</option>
+                                <option value="record-create-date"
+                                        {% if sort_attr == 'record-create-date' %}selected="selected"{% endif %}>
+                                    {% if LANGUAGE_CODE == 'ru' %}дате поступления{% elif LANGUAGE_CODE == 'tt' %}
+                                        дате поступления{% else %}incoming date{% endif %}</option>
                                 <option value="tom" {% if sort_attr == 'tom' %}selected="selected"{% endif %}>
                                     Тому/части
                                 </option>

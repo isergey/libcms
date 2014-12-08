@@ -98,6 +98,11 @@ facet_titles = {
         'en':u'Publication year',
         'tt':u'Бастырып чыгару елы'
     },
+    'record-create-date': {
+        'ru':u'Дата поступления',
+        'en':u'Incoming date',
+        'tt':u'Дата поступления'
+    },
     'subject-heading': {
         'ru':u'Тематика',
         'en':u'Subject',
