@@ -12,9 +12,11 @@ from django.core.cache import cache
 from django.shortcuts import render, HttpResponse, get_object_or_404, Http404, urlresolvers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import QueryDict
-from ..models import Record, SavedRequest, DetailAccessLog, Collection
-from participants.models import Library
 from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
+
+from participants.models import Library
+from ..models import Record, SavedRequest, DetailAccessLog, Collection
+from .. import rusmarc_template
 # # на эти трансформаторы ссылаются из других модулей
 #xslt_root = etree.parse('libcms/xsl/record_in_search.xsl')
 #xslt_transformer = etree.XSLT(xslt_root)
@@ -285,7 +287,6 @@ def search(request, catalog=None, library=None):
 
     for sort_attr in sort:
         mapped_sort_attr = sort_attr_map.get(sort_attr, None)
-        print 'mapped_sort_attr', sort_attr, mapped_sort_attr
         if not mapped_sort_attr:
             continue
 
@@ -293,9 +294,6 @@ def search(request, catalog=None, library=None):
             'attr': mapped_sort_attr['attr'],
             'order': mapped_sort_attr.get('order', 'asc')
         })
-
-    print 'sort_attrs', sort_attrs
-
 
     fqs = request.GET.getlist('fq', [])
     fattrs = request.GET.getlist('fattr', [])
@@ -466,7 +464,6 @@ def search(request, catalog=None, library=None):
                     'values': facets[facet_field]
                 }
             )
-    print 'json_search_breadcumbs', 'json_search_breadcumbs'
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
         'results_page': results_page,
@@ -611,7 +608,7 @@ def detail(request, gen_id):
     access_count = DetailAccessLog.objects.filter(catalog=catalog, gen_id=record.gen_id).count()
 
     return render(request, 'ssearch/frontend/detail.html', {
-        'doc_dump': bib_dump.replace('<b/>', ''),
+        'doc_dump': rusmarc_template.beautify(bib_dump.replace('<b/>', '')),
         'marc_dump': marc_dump,
         'doc': doc,
         'gen_id': gen_id,

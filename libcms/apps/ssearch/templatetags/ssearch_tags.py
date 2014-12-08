@@ -7,11 +7,10 @@ import datetime
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import Library
 from django.utils.translation import get_language
-from django.core.cache import cache
-from ..models import Collection, Record
-
-from ..frontend.views import get_collections, replace_doc_attrs, xml_doc_to_dict
 from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
+from ..models import Collection, Record
+from ..frontend.views import get_collections, replace_doc_attrs, xml_doc_to_dict
+from .. import rusmarc_template
 
 register = Library()
 
@@ -40,7 +39,6 @@ def participant_income(sigla):
     docs = []
 
     for row in results_page.object_list:
-        print row
         docs.append(replace_doc_attrs(row))
 
     doc_ids = []
@@ -50,8 +48,8 @@ def participant_income(sigla):
     records_dict = {}
     records = list(Record.objects.using('local_records').filter(gen_id__in=doc_ids))
     for record in records:
-        records_dict[record.gen_id] = etree.tostring(
-            xslt_bib_draw_transformer(etree.XML(record.content), abstract='false()'), encoding='utf-8')
+        records_dict[record.gen_id] = rusmarc_template.beautify(etree.tostring(
+            xslt_bib_draw_transformer(etree.XML(record.content), abstract='false()'), encoding='utf-8'))
 
     for doc in docs:
         doc['record'] = records_dict.get(doc['id'])

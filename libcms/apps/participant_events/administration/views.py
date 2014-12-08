@@ -64,7 +64,6 @@ def create_event(request, library_code, library):
             valid = False
             for event_content_form in event_content_forms:
                 valid = event_content_form['form'].is_valid()
-                print valid
                 if not valid:
                     break
 
