@@ -58,7 +58,8 @@ def participant_income(sigla):
 
     return {
         #'results_page': results_page,
-        'docs': docs
+        'docs': docs,
+        'sigla': sigla
     }
 
 

@@ -160,14 +160,13 @@
                 {#            <input type="text" class="search-query" name="q" style="width: 64%" value="{{ request.GET.q }}"/>#}
                 {#            <input type="submit" class="btn btn-success" style="width: 10%" value="Поиск">#}
                 <div class="input-append">
-                    <input name="q" class="span8" id="appendedInputButton" size="16" type="text_t"><input type="submit"
-                                                                                                          class="btn btn-success span2"
-                                                                                                          value="Поиск">
+                    <input name="q" class="span8" id="appendedInputButton" size="16" type="text_t">
+                    <input type="submit" class="btn btn-success span2" value="Поиск">
                 </div>
                 {#                <br/>#}
                 {% if LANGUAGE_CODE == 'ru' %}Искать в найденном{% elif LANGUAGE_CODE == 'tt' %}Табылганнан
-                    эзләү{% else %}search in results{% endif %}: <input type="checkbox" name="in_founded"
-                                                                        {% if request.GET.in_founded %}checked="checked"{% endif %}>
+                    эзләү{% else %}search in results{% endif %}:
+                <input type="checkbox" name="in_founded" {% if request.GET.in_founded %}checked="checked"{% endif %}>
             </form>
 
         </div>
@@ -214,6 +213,9 @@
                 <div class="sorting">
                     <form action="{{ request.path }}?{{ request.GET.urlencode }}" method="GET" class="form-inline"
                           style="float: right;">
+                        {% if library %}
+                            <input type="hidden" name="library" value="{{ library.code }}">
+                        {% endif %}
                         <label>{% if LANGUAGE_CODE == 'ru' %}Сортировать по{% elif LANGUAGE_CODE == 'tt' %}
                             Аеру{% else %}Sort by{% endif %}:</label>
                         {% for sort_attr in sort %}

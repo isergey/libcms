@@ -1,19 +1,22 @@
 {% load hash %}
-<style>
-    .record_table_of_contents {
-        display: none;
-    }
-</style>
-{% for doc in docs %}
-    <div>
-        <div class="record-wrapper">{{ doc.record|safe }}</div>
-        <div style="padding-top: 5px">
-            <div><b>Дата поступления</b>: {{ doc|hash:'record-create-date_dts'|date:'d E Y' }}</div>
-            <div><a href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">подробнее</a></div>
+{% if docs %}
+    <style>
+        .record_table_of_contents {
+            display: none;
+        }
+    </style>
+    {% for doc in docs %}
+        <div>
+            <div class="record-wrapper">{{ doc.record|safe }}</div>
+            <div style="padding-top: 5px">
+                <div><b>Дата поступления</b>: {{ doc|hash:'record-create-date_dts'|date:'d E Y' }}</div>
+                <div><a href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">подробнее</a></div>
+            </div>
         </div>
-    </div>
-    <hr/>
-{% empty %}
+        <hr/>
+    {% endfor %}
+    <a href="{% url 'ssearch:frontend:index' %}?library={{ sigla }}?sort=record-create-date&attr=*&q=*">все поступления >></a>
+{% else %}
     Записи отсутствуют
-{% endfor %}
+{% endif %}
 

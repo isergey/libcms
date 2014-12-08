@@ -362,8 +362,19 @@ def _indexing(slug, reset=False):
                 if r:
                     doc['tom_f'] = float(r.groups()[0])
 
+        try:
+            record_create_date = doc.get('record-create-date_dt', None)
+            #print 'record_create_date1', record_create_date
+            if record_create_date:
+                doc['record-create-date_dts'] = record_create_date
+        except Exception as e:
+            print 'Error record-create-date_dt', e.message
+
+
         doc['system-add-date_dt'] = res[0]['add_date']
+        doc['system-add-date_dts'] = res[0]['add_date']
         doc['system-update-date_dt'] = res[0]['update_date']
+        doc['system-update-date_dts'] = res[0]['update_date']
         doc['system-catalog_s'] = res[0]['source_id']
 
 
