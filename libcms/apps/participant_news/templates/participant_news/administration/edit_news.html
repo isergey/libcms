@@ -12,15 +12,17 @@
 {% block action_content %}
     <div class="well">URL этой новости: {% url 'participant_news:frontend:show' library.code news_form.instance.id as news_show_url %} <a href="/{{ news_form.instance.lang }}{{ news_show_url|rmlocale }}" target="_blank">/{{ news_form.instance.lang }}{{ news_show_url|rmlocale }}</a></div>
 
-
-        <div class="tabbable">
+    <div class="well well-small">
+        <a title="Фотоматериалы для новости" class="fotomaterials btn btn-info" href="{% url 'participant_news:administration:news_images' library.code news.id  %}">Фотоматериалы</a>
+    </div>
+    <div class="tabbable">
       <ul class="nav nav-tabs">
         <li class="active"><a href="#s1" data-toggle="tab">Редактирование содержимого</a></li>
         <li><a href="#s2" data-toggle="tab">Управление вложениями</a></li>
       </ul>
       <div class="tab-content">
         <div class="tab-pane active" id="s1">
-<form class="" method="POST" enctype="multipart/form-data">{% csrf_token %}
+<form class="news_form" method="POST" enctype="multipart/form-data">{% csrf_token %}
         <legend>Редактирование новости</legend>
         <fieldset>
             <div class="control-group ">
@@ -48,12 +50,24 @@
             </div>
         </fieldset>
     </form>
-{% include 'participant_news/administration/editor.html' %}
+    {% include 'participant_news/administration/editor.html' %}
         </div>
         <div class="tab-pane" id="s2">
            {% include 'participant_pages/administration/attacher.html' %}
         </div>
       </div>
     </div>
-
+    <script type="application/javascript">
+        $(function () {
+            var $newsForm = $('.news_form');
+            var initFormValues = JSON.stringify($newsForm.serialize());
+            $('.fotomaterials').on('click', function () {
+                if (initFormValues !== JSON.stringify($newsForm.serialize())) {
+                    if (!confirm("Вы не сохранили новость. Изменения могут быть потеряны! ")) {
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
 {% endblock %}

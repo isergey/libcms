@@ -9,8 +9,8 @@ from django.contrib.auth.decorators import login_required
 from common.pagination import get_page
 
 from participant_site.decorators import must_be_manager
-from ..models import News
-from forms import NewsForm
+from ..models import News, NewsImage
+from . import forms
 
 @login_required
 @permission_required_or_403('participant_news.add_news')
@@ -39,7 +39,7 @@ def news_list(request, library_code, library):
 def create_news(request, library_code, library):
 
     if request.method == 'POST':
-        news_form = NewsForm(request.POST, prefix='news_form')
+        news_form = forms.NewsForm(request.POST, prefix='news_form')
 
         if news_form.is_valid():
                 news = news_form.save(commit=False)
@@ -53,7 +53,7 @@ def create_news(request, library_code, library):
                 else:
                     return redirect('participant_news:administration:news_list', library_code=library_code)
     else:
-        news_form = NewsForm(prefix="news_form")
+        news_form = forms.NewsForm(prefix="news_form")
 
     return render(request, 'participant_news/administration/create_news.html', {
         'library': library,
@@ -65,9 +65,9 @@ def create_news(request, library_code, library):
 @transaction.atomic()
 @must_be_manager
 def edit_news(request, library_code, library, id):
-    news = get_object_or_404(News, id=id)
+    news = get_object_or_404(News, library=library, id=id)
     if request.method == 'POST':
-        news_form = NewsForm(request.POST,prefix='news_form', instance=news)
+        news_form = forms.NewsForm(request.POST,prefix='news_form', instance=news)
 
         if news_form.is_valid():
             news = news_form.save(commit=False)
@@ -83,9 +83,10 @@ def edit_news(request, library_code, library, id):
             else:
                 return redirect('participant_news:administration:news_list', library_code=library_code)
     else:
-        news_form = NewsForm(prefix="news_form", instance=news)
+        news_form = forms.NewsForm(prefix="news_form", instance=news)
     return render(request, 'participant_news/administration/edit_news.html', {
         'library': library,
+        'news': news,
         'news_form': news_form,
         'content_type': 'participant_news',
         'content_id': unicode(news.id)
@@ -97,12 +98,81 @@ def edit_news(request, library_code, library, id):
 @transaction.atomic()
 @must_be_manager
 def delete_news(request, library_code, library, id):
-    news = get_object_or_404(News, id=id)
+    news = get_object_or_404(News, library=library, id=id)
     news.delete()
     delete_avatar(news.avatar_img_name)
     return redirect('participant_news:administration:news_list', library_code=library_code)
 
 
+
+
+@login_required
+@permission_required_or_403('participant_news.change_news')
+@transaction.atomic()
+@must_be_manager
+def news_images(request, library_code, library, id):
+    news = get_object_or_404(News, library=library, id=id)
+    news_images = NewsImage.objects.filter(news=news)
+    return render(request, 'participant_news/administration/news_images.html', {
+        'news_images': news_images,
+        'news': news,
+        'library': library
+    })
+
+
+@login_required
+@permission_required_or_403('participant_news.change_news')
+@transaction.atomic()
+@must_be_manager
+def create_news_image(request, library_code, library, id):
+    news = get_object_or_404(News, library=library, id=id)
+
+    if request.method == 'POST':
+        form = forms.NewsImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            news_image = form.save(commit=False)
+            news_image.news = news
+            news_image.save()
+            return redirect('participant_news:administration:news_images', library_code=library_code, id=id)
+    else:
+        form = forms.NewsImageForm()
+
+    return render(request, 'participant_news/administration/create_news_image.html', {
+        'news': news,
+        'library': library,
+        'form': form
+    })
+
+@login_required
+@permission_required_or_403('participant_news.change_news')
+@transaction.atomic()
+@must_be_manager
+def edit_news_image(request, library_code, library, id, image_id):
+    news_image = get_object_or_404(NewsImage, news_id=id, id=image_id)
+
+    if request.method == 'POST':
+        form = forms.NewsImageForm(request.POST, request.FILES, instance=news_image)
+        if form.is_valid():
+            form.save()
+            return redirect('participant_news:administration:news_images', library_code=library_code, id=news_image.news_id)
+    else:
+        form = forms.NewsImageForm(instance=news_image)
+
+    return render(request, 'participant_news/administration/edit_news_image.html', {
+        'news': news_image.news,
+        'news_image': news_image,
+        'library': library,
+        'form': form
+    })
+
+@login_required
+@permission_required_or_403('participant_news.change_news')
+@transaction.atomic()
+@must_be_manager
+def delete_news_image(request, library_code, library, id, image_id):
+    news_image = get_object_or_404(NewsImage, news_id=id, id=image_id)
+    news_image.delete()
+    return redirect('participant_news:administration:news_images', library_code=library_code, id=id)
 
 
 import os

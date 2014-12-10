@@ -2,7 +2,7 @@
 from django import template
 from django.utils import translation
 from django.utils.translation import to_locale, get_language
-from pages.models import Page, Content
+from ..models import Page, Content
 
 register = template.Library()
 

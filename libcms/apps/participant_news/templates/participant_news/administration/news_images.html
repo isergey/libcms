@@ -1,0 +1,37 @@
+{% extends 'participant_news/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load localeurl_tags %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'participant_news:administration:news_list' library.code %}">Новости</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'participant_news:administration:edit_news' library.code news.id %}">{{ news.title }}</a> <span class="divider">/</span></li>
+    <li class="active">Фотоматериалы</li>
+{% endblock %}
+
+{% block action_content %}
+<div class="well well-small">
+    <a href="{% url 'participant_news:administration:create_news_image' library.code news.id %}" class="btn btn-success">Добавить фотоматериал</a>
+</div>
+    <table class="table">
+    <tr>
+        <th style="width: 150px">Изображение</th>
+        <th>Название</th>
+        <th style="width: 50px">Отображать</th>
+        <th style="width: 100px">Действия</th>
+    </tr>
+    {% for news_image in news_images %}
+        <tr>
+        <td>
+            <a href="{% url 'participant_news:administration:edit_news_image' library.code news.id news_image.id  %}">
+                <img src="{{ MEDIA_URL }}{{ news_image.get_tmb_path }}" alt="">
+            </a>
+        </td>
+        <td>{{ news_image.title }}</td>
+        <td>{% if news_image.is_show %}<span class="label label-success">да</span>{% else %}<span class="label label-warning">нет</span>{% endif %}</td>
+        <td><a href="{% url 'participant_news:administration:delete_news_image' library.code news.id news_image.id %}" class="btn btn-danger">X</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 from common.pagination import get_page
 from participants.models import Library
-from ..models import News
+from ..models import News, NewsImage
 
 
 def index(request, library_code):
@@ -26,8 +26,11 @@ def show(request, library_code, id):
         news = News.objects.get(id=id, lang=lang)
     except News.DoesNotExist:
         raise Http404()
+
+    news_images = NewsImage.objects.filter(news=news)
     return render(request, 'participant_news/frontend/show.html', {
         'news': news,
+        'news_images': news_images,
         'library': news.library
     })
 

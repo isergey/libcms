@@ -1,0 +1,20 @@
+{% extends 'participant_news/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load localeurl_tags %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'participant_news:administration:news_list' library.code %}">Новости</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'participant_news:administration:edit_news' library.code news.id %}">{{ news.title }}</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'participant_news:administration:news_images' library.code news.id %}">Фотоматериалы</a> <span class="divider">/</span></li>
+    <li class="active">Редактирование изображения</li>
+{% endblock %}
+
+{% block action_content %}
+    <form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        {% include 'administration/base_form_fields.html' %}
+        <input type="submit" class="btn btn-success" value="Редактировать">
+    </form>
+{% endblock %}

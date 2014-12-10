@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from participants.models import Library
+
+
 def index(request, library_code):
     library = get_object_or_404(Library, code=library_code)
     ancestors = library.get_ancestors()
