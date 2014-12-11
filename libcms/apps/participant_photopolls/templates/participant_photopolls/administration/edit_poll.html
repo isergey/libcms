@@ -1,0 +1,53 @@
+{% extends 'participant_photopolls/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% block breadcrumb %}
+    <li><a href="{% url 'participant_photopolls:administration:polls_list' library.code %}">Фотоконкурсы</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'participant_photopolls:administration:poll_detail' library.code poll.id %}">{{ poll.get_cur_lang_content.title }}</a> <span class="divider">/</span></li>
+    <li class="active">Редактирование фотоконкурса</li>
+
+{% endblock %}
+
+{% block action_content %}
+
+    <script type="text/javascript" src="{% url 'jsi18n' %}"></script>
+{#    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>#}
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/calendar.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/DateTimeShortcuts.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css"/>
+
+    <script type="text/javascript">
+        window.__admin_media_prefix__ = "{{ STATIC_URL }}admin/";
+    </script>
+    <style>
+        form input[type=text], textarea {
+            width: 95%;
+        }
+    </style>
+    <div class="tabbable">
+        <div class="tab-content">
+            <div class="tab-pane active" id="s1">
+                <form enctype="multipart/form-data"  class="" method="POST">{% csrf_token %}
+                    <legend>Редактирование фотоконкурса</legend>
+                    {% if poll.avatar %}
+                        <img src="{{ MEDIA_URL }}{{ poll.avatar }}" alt="">
+                    {% endif %}
+                    <fieldset>
+                        {% include 'administration/base_form_fields.html' with form=poll_form %}
+                        {% for poll_content_form in poll_content_forms %}
+                            <p>Описание конкурса на языке: <b>{{ poll_content_form.lang }}</b>↴</p>
+                            {% include 'administration/base_form_fields.html' with form=poll_content_form.form %}
+                            <hr/>
+                        {% endfor %}
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Редактировать</button>
+                            <button type="reset" class="btn">Отмена{{ ADMIN_MEDIA }}</button>
+                        </div>
+                    </fieldset>
+                </form>
+                {% include 'participant_photopolls/administration/editor.html' %}
+            </div>
+        <div>
+{% endblock %}

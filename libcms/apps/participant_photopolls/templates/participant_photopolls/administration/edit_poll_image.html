@@ -1,0 +1,31 @@
+{% extends 'participant_photopolls/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% block breadcrumb %}
+    <li><a href="{% url 'participant_photopolls:administration:polls_list' library.code %}">Фотоконкурсы</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'participant_photopolls:administration:poll_detail' library.code poll.id %}">{{ poll.get_cur_lang_content.title }}</a> <span class="divider">/</span></li>
+    <li class="active">Редактирование фотографии</li>
+
+{% endblock %}
+
+{% block action_content %}
+
+    <form class="" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <legend>Изменение фотографии</legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=poll_image_form %}
+            {% for poll_image_content_form in poll_image_content_forms %}
+                <p>Описание на языке: <b>{{  poll_image_content_form.lang }}</b>↴</p>
+                {% include 'administration/base_form_fields.html' with form=poll_image_content_form.form %}
+                <hr/>
+            {% endfor %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Редактировать</button>
+                <button type="reset" class="btn">Отмена</button>
+            </div>
+        </fieldset>
+    </form>
+
+    {% include 'participant_photopolls/administration/editor.html' %}
+{% endblock %}

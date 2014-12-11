@@ -38,10 +38,9 @@ urlpatterns = patterns('',
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/news/', include('participant_news.urls', namespace='participant_news')),
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/pages/', include('participant_pages.urls', namespace='participant_pages')),
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/events/', include('participant_events.urls', namespace='participant_events')),
+    (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/photopolls/', include('participant_photopolls.urls', namespace='participant_photopolls')),
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/menu/', include('participant_menu.urls', namespace='participant_menu')),
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/', include('participant_site.urls', namespace='participant_site')),
-
-
 
 #    (r'^mydocs/', include('mydocs.urls',)),
     # Uncomment the next line to enable the admin:

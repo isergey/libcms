@@ -1,0 +1,47 @@
+{% extends 'participant_photopolls/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+{#    {% breadcrumb "События" events:administration:index %}#}
+{#    {% breadcrumb "Список" %}#}
+{% endblock %}
+
+{% block action_content %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>фотоголосование</th>
+            <th class="span2">Дата начала</th>
+            <th class="span2">Дата окончания</th>
+            <th class="span2">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for poll in polls_list %}
+
+            <tr>
+                <td><a href="{% url 'participant_photopolls:administration:poll_detail' library.code poll.id %}">{{ poll.poll_content.title }}</a></td>
+                <td>{{ poll.start_date }}</td>
+                <td>{{ poll.end_date }}</td>
+                <td>
+                    <a class="delete btn btn-danger"  href="{% url 'participant_photopolls:administration:delete_poll' library.code poll.id %}">
+                        <i class="icon-trash icon-white" title="Удалить"></i>
+                    </a>
+                </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+    {% admin_pagination polls_page %}
+    <script type="text/javascript">
+        $("a.delete").click(function () {
+            if (!confirm('Вы уверены, что хотите удалить?')) return false;
+        });
+    </script>
+{% endblock %}
+
+

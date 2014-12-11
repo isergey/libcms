@@ -1,0 +1,91 @@
+{% extends 'participant_photopolls/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {#    {% breadcrumb "События" events:administration:index %}#}
+    {#    {% breadcrumb "Список" %}#}
+{% endblock %}
+
+{% block action_content %}
+    Загрузка фотографий
+    <input id="fileupload" type="file" name="image" data-url="" multiple>
+    <div class="file_list"></div>
+    <div class=""><button class="upload_button btn btn-success">Загрузить файлы</button></div>
+    <script src="{{ STATIC_URL }}jqfu/js/vendor/jquery.ui.widget.js"></script>
+    <script src="{{ STATIC_URL }}jqfu/js/jquery.iframe-transport.js"></script>
+    <script src="{{ STATIC_URL }}jqfu/js/jquery.fileupload.js"></script>
+    <script src="{{ STATIC_URL }}js/lodash.compat.min.js"></script>
+    <script>
+        $(function () {
+            $filesListRowTpl = _.template($('#files_list_row_tpl').html());
+            var files = {};
+            var $filesList = $('.file_list');
+            var renderFileList = function () {
+                $filesList.empty();
+                _.each(files, function (data, name) {
+                    $filesList.append($filesListRowTpl({
+                        name: name
+                    }));
+                });
+            };
+
+            var addSucceesToFile = function (name) {
+                $filesList.find('div[file="' + name+'"]').append('<span class="label label-success">ok</span>');
+            };
+            var addErrorToFile = function (name, error) {
+                $filesList.find('div[file="' + name+'"]').append('<span title="' + error + '" class="label label-warning">ошибка</span>');
+            };
+            var setProgress = function (name, progress) {
+                $filesList.find('div[file="' + name+'"] .progress').text(progress);
+            };
+            $('#fileupload').fileupload({
+                dataType: 'json',
+                add: function (e, data) {
+                    files[data.files[0].name] = data;
+                    renderFileList();
+{#                    //$filesList.find('.delete_file').off('click');#}
+                    $filesList.find('.delete_file').on('click', function () {
+                        delete files[$(this).attr('file')];
+                        $(this).parent().remove();
+                    });
+                },
+                done: function (e, data) {
+                    addSucceesToFile(data.files[0].name);
+                },
+                progress: function (e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    setProgress(data.files[0].name, progress);
+                }
+            });
+
+            $('.upload_button').on('click', function () {
+                $(this).prop('disabled', true);
+                $filesList.find('.delete_file').remove();
+                _.each(files, function (data, name) {
+                    //console.log(data);
+                    data.submit()
+                         .success(function (result, textStatus, jqXHR) {
+                                console.log('success');
+                            })
+                        .error(function (jqXHR, textStatus, errorThrown) {
+                                addErrorToFile(name, errorThrown);
+                            })
+                        .complete(function (result, textStatus, jqXHR) {
+                                console.log('complete', result, textStatus, jqXHR);
+                            });
+                });
+            });
+        });
+    </script>
+    <script type="text/html" id="files_list_row_tpl">
+        <div file="<%= name %>">
+            <a file="<%= name %>" class="delete_file btn btn-danger">x</a>
+            <%= name %> <span class="progress label label-info">0</span>
+        </div>
+    </script>
+{% endblock %}
+
+

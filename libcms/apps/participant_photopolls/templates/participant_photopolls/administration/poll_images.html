@@ -1,0 +1,50 @@
+{% extends 'participant_photopolls/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    <li><a href="{% url 'participant_photopolls:administration:polls_list' library.code %}">Фотоконкурсы</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'participant_photopolls:administration:edit_poll' library.code poll.id %}">{{ poll.get_cur_lang_content.title }}</a> <span class="divider">/</span></li>
+    <li class="active">Фотографии</li>
+{% endblock %}
+
+{% block action_content %}
+    <div class="well well-small">
+        <a class="btn btn-success" href="{% url 'participant_photopolls:administration:create_poll_image' poll.library.code poll.id %} ">Загрузить фотографии</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Фотографии</th>
+            <th class="span2">Голосов</th>
+            <th class="span2">Комментариев</th>
+            <th class="span2">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for image in images %}
+
+            <tr>
+                <td>
+                    <a href="{% url 'participant_photopolls:administration:edit_poll_image' poll.library.code poll.id image.id  %}">
+                        <img src="{{ MEDIA_URL }}{{ image.get_tmb_path }}" alt="">
+                    </a>
+                </td>
+                <td>{{ image.get_votes|default:'0' }}</td>
+                <td>{{ image.get_comments|default:'0'}}</td>
+                <td><a class="delete btn btn-danger"  href="#"><i class="icon-trash icon-white" title="Удалить"></i></a></td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+    <script type="text/javascript">
+        $("a.delete").click(function () {
+            if (!confirm('Вы уверены, что хотите удалить?')) return false;
+        });
+    </script>
+{% endblock %}
+
+

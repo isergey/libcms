@@ -1,0 +1,51 @@
+{% extends 'index/frontend/index.html' %}
+{% load pagination_tag %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <div class="span12">
+        <div class="breadcrumb">
+            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
+            {% for ancestor in library.get_ancestors %}
+                <span>
+                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>
+                    <span class="divider">/</span>
+                </span>
+            {% endfor %}
+            <span><a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a> <span
+                    class="divider">/</span></span>
+            <span class="active">Фотоконкурсы</span>
+        </div>
+    </div>
+    <div class="span3">
+                {% include 'participant_site/frontend/site_menu.html' %}
+    </div>
+    <div class="span9">
+    <style>
+        ul.news {
+            list-style: none;
+            margin: 0;
+        }
+        .news .title{
+            font-size: 14px;
+            /*font-weight: bold;*/
+        }
+        .news .teaser{
+            padding: 5px 0;
+        }
+        .news .create_date{
+            color: #2a2a2a;
+        }
+    </style>
+    <hr/>
+    <ul class="news">
+        {% for poll in polls_list %}
+            <div class="title"><a href="{% url 'participant_photopolls:frontend:show' library.code poll.id %}?back={{ request.get_full_path }}">{{ poll.poll_content.title }}</a></div>
+            <div class="teaser">{{ poll.poll_content.teaser }}</div>
+            <div class="create_date">Начало конкурса: <b>{{ poll.start_date|date:'d E Y H:i' }}</b></div>
+            <div class="end_date">Окончание конкурса: <b>{{ poll.end_date|date:'d E Y H:i' }}</b></div>
+            {% if not forloop.last %}<hr/>{% endif %}
+        {% endfor %}
+    </ul>
+    {% admin_pagination polls_page %}
+    </div>
+{% endblock %}

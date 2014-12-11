@@ -152,6 +152,7 @@ INSTALLED_APPS = (
     'participant_pages',
     'participant_site',
     'participant_menu',
+    'participant_photopolls',
     'professionals_pages',
     'professionals_news',
     'professionals',

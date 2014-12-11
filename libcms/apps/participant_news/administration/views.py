@@ -88,7 +88,7 @@ def edit_news(request, library_code, library, id):
         'library': library,
         'news': news,
         'news_form': news_form,
-        'content_type': 'participant_news',
+        'content_type': 'participant_news_' + str(library.id),
         'content_id': unicode(news.id)
         })
 

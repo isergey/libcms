@@ -2,7 +2,7 @@
 from PIL import Image
 import os
 import binascii
-
+from django.utils.translation import get_language
 from django.dispatch import receiver
 from django.conf import settings
 from django.db import models
@@ -28,7 +28,7 @@ def get_avatar_file_name(instance, arg_filename):
 
 class Poll(models.Model):
     library = models.ForeignKey(Library)
-    avatar = models.ImageField(max_length=255, upload_to=get_avatar_file_name, verbose_name=u'Изображение события')
+    avatar = models.ImageField(max_length=255, upload_to=get_avatar_file_name, verbose_name=u'Аватар голосования')
     show_avatar = models.BooleanField(verbose_name=u"Показывать изображение события", default=False)
 
     start_date = models.DateTimeField(verbose_name=u"Дата начала голосования",
@@ -36,7 +36,15 @@ class Poll(models.Model):
     end_date = models.DateTimeField(verbose_name=u"Дата окончания голосования",
         null=False, blank=False, db_index=True)
 
-    is_active = models.BooleanField(verbose_name=u'Ативно', default=True)
+    publicated = models.BooleanField(
+        verbose_name=u'Опубликовано', default=False, db_index=True,
+        help_text=u'Опубликовывайте фотоконкурс только после загрузки фотографий и полной подготовки описания'
+    )
+
+    multi_vote = models.BooleanField(
+        verbose_name=u'Возможность проголосовать за несколько вариантов', default=False,
+        help_text=u'Пользователь получит возможность проголосовать сразу за несколько фотографий'
+    )
 
     show_after_end = models.BooleanField(
         verbose_name=u'Отображать голосование после окончания срока', default=False,
@@ -58,8 +66,27 @@ class Poll(models.Model):
     premoderate_comments = models.BooleanField(verbose_name=u'Премодерация комментариев', default=True)
     create_date = models.DateTimeField(auto_now_add=True, db_index=True)
 
+    def get_cur_lang_content(self):
+        cur_language = get_language()
+        try:
+            content = PollContent.objects.get(poll=self, lang=cur_language[:2])
+        except PollContent.DoesNotExist:
+            content = None
+        return content
+
+
     class Meta:
         ordering = ['-create_date']
+
+
+class PollContent(models.Model):
+    poll = models.ForeignKey(Poll)
+    lang = models.CharField(verbose_name=u"Язык", db_index=True, max_length=2, choices=settings.LANGUAGES)
+    title = models.CharField(verbose_name=u'Заглавие', max_length=512)
+    teaser = models.CharField(verbose_name=u'Тизер', max_length=512)
+    content = models.TextField(verbose_name=u'Описание')
+    class Meta:
+        unique_together = (('poll', 'lang'),)
 
 
 
@@ -74,15 +101,33 @@ class PollImage(models.Model):
     image = models.ImageField(max_length=255, upload_to=get_image_file_name, verbose_name=u'Изображение фотоматериалов новости')
     order = models.IntegerField(default=0, verbose_name=u'Порядок')
     is_show = models.BooleanField(default=True, verbose_name=u'Показывать фото')
-    title = models.CharField(verbose_name=u'Название фото', max_length=1024, blank=True)
-    description = models.TextField(verbose_name=u"Описание фото", blank=True, max_length=100000)
+
 
     def get_tmb_path(self):
         image_path = unicode(self.image)
         return os.path.dirname(image_path) + u'/' + TMB_SUFFIX + u'/' + os.path.basename(image_path)
 
+    def get_cur_lang_content(self):
+        cur_language = get_language()
+        try:
+            content = PollImageContent.objects.get(poll_image=self, lang=cur_language[:2])
+        except PollImageContent.DoesNotExist:
+            content = None
+        return content
+
     class Meta:
         ordering = ['-order']
+
+
+class PollImageContent(models.Model):
+    poll_image = models.ForeignKey(PollImage)
+    lang = models.CharField(verbose_name=u"Язык", db_index=True, max_length=2, choices=settings.LANGUAGES)
+    title = models.CharField(verbose_name=u'Название фото', max_length=1024, blank=True)
+    description = models.TextField(verbose_name=u"Описание фото", blank=True, max_length=100000)
+
+    class Meta:
+        unique_together = (('poll_image', 'lang'),)
+
 
 
 class Vote(models.Model):
@@ -102,8 +147,16 @@ class Comment(models.Model):
         ordering = ['-create_date']
 
 
+@receiver(models.signals.post_save, sender=Poll)
+def resize_poll_avatar(sender, **kwargs):
+    instance = kwargs['instance']
+    image_path = MEDIA_ROOT + unicode(instance.avatar)
+    im = Image.open(image_path)
+    tumbnail = image_utils.image_crop_center(im)
+    tumbnail.save(image_path, "JPEG", quality=95, optimize=True, progressive=True)
+
 @receiver(models.signals.post_save, sender=PollImage)
-def resize_news_image(sender, **kwargs):
+def resize_poll_image(sender, **kwargs):
     maximum_width =  1920
     maximum_height = 1440
     instance = kwargs['instance']
