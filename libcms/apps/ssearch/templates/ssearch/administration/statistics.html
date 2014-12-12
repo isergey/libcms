@@ -1,5 +1,5 @@
 {% extends 'ssearch/administration/index.html' %}
-{% load adminmedia %}
+{#{% load adminmedia %}#}
 {% load active_link %}
 {% load pagination_tag %}
 {% load breadcrumbs %}
@@ -14,18 +14,21 @@
 
 {% endblock %}
 {% block action_content %}
-    <script type="text/javascript" src="http://ksob.spb.ru/media/js/jquery.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/highcharts/highcharts.js"></script>
     <script type="text/javascript" src="{% url 'jsi18n' %}"></script>
-    <script type="text/javascript" src="{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}js/jquery.init.js"></script>
-    <script type="text/javascript" src="{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}js/core.js"></script>
-    <script type="text/javascript" src="{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}js/calendar.js"></script>
-    <script type="text/javascript" src="{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}js/admin/DateTimeShortcuts.js"></script>
-    <link rel="stylesheet" type="text/css" href="{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}css/widgets.css"/>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/calendar.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/DateTimeShortcuts.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css"/>
 
     <script type="text/javascript">
-        window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";
+        window.__admin_media_prefix__ = "{{ STATIC_URL }}admin/";
     </script>
+    <style>
+    form input[type=text], textarea{
+        width: 95%;
+    }
+    </style>
     <div class="module_actions column prepend-1 last">
         <a href="?statistics=attributes" class="button">Статистика по поисковым атрибутам</a>
         <a href="?statistics=requests" class="button">Статистика по запросам</a>
