@@ -176,7 +176,7 @@
     <script>
         $(function () {
             if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-                $('.record .elink').each(function (index) {
+                $('.record a').each(function (index) {
                     var $elink = $(this);
                     var href = $elink.attr('href');
                     var hrefParts = href.split('/');
