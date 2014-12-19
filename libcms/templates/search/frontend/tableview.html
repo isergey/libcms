@@ -1,0 +1,38 @@
+{% url 'ssearch:frontend:index' as ssearch_index_url %}
+{% url 'ssearch:frontend:detail' as ssearch_index_detail %}
+{% if record.dict.udk %}
+    <div><b>УДК</b>:
+         {% include 'search/frontend/print_attr.html' with attrs=record.dict.udk %}
+    </div>
+{% endif %}
+{% if record.dict.bbk %}
+    <div><b>ББК</b>: {% include 'search/frontend/print_attr.html' with attrs=record.dict.bbk %}
+    </div>
+{% endif %}
+{% if record.dict.subject_heading %}
+    <div><b>Предметные рубрики</b>: {% include 'search/frontend/print_attr.html' with attrs=record.dict.subject_heading %}
+    </div>
+{% endif %}
+{% if record.dict.subject_keywords %}
+    <div><b>Ключевые слова</b>:<br/>
+        {% for subject in record.dict.subject_keywords %}
+            <a href="?attr=subject_keywords_t&value=
+                    {{ subject }}{% if request.GET.per_page %}&per_page={{ request.GET.per_page }}{% endif %}">
+                {{ subject }}
+            </a>{% if not forloop.last %} -- {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+{% if record.attrs.income_date %}
+<div>
+    <b>Дата поступления</b>: {{ record.attrs.income_date|date:"j E Y" }}
+</div>
+{% endif %}
+{% if record.item_info.items_count %}
+    <div>
+        <b>Количество экземпляров</b>: {{ record.item_info.items_count }}
+    </div>
+{% endif %}
+{% if record.highlighting.full_text_tru or  record.highlighting.full_text_t %}
+    <div style="background-color: #ffe1b6" class="highlighting"><b>Найдены совпадения в полном тексте</b>{#{{ record.highlighting.full_text_tru.0|safe }} {{ record.highlighting.full_text_t.0|safe }}#}</div>
+{% endif %}

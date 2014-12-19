@@ -1,0 +1,57 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}{{ album.title }}{% endblock %}
+{% block content %}
+    <link type="text/css" href="{{ STATIC_URL }}gallery/picachooce/styles/bottom.css" rel="stylesheet" />
+    <script type="text/javascript" src="{{ STATIC_URL }}gallery/picachooce/lib/jquery.jcarousel.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}gallery/picachooce/lib/jquery.pikachoose.full.js"></script>
+    <script language="javascript">
+        $(document).ready(
+                function (){
+                    $("#pikame").PikaChoose({carousel:true,carouselOptions:{wrap:'circular'}});
+                });
+    </script>
+
+    <div class="pikachoose">
+        Basic example - with looping carousel
+        <ul id="pikame" class="jcarousel-skin-pika">
+            {% for album_image in album_images %}
+            <li>
+                                            <a href="/static/gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}">
+                                                <img src="/static/gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}" title="{{ image.title }}"
+                                                     alt="{{ album_image.comments }}">
+                                            </a>
+
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+    <hr/>
+    <div class="comments">
+        {{ album.get_description|safe }}
+    </div>
+
+{#    <hr/>#}
+{#    <ul class="images" >#}
+{#        {% for album_image in album_images %}#}
+{#            <li>#}
+{#                <a title="{{ album_image.comments }}" class="mins" href="{{ MEDIA_URL }}gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}" class="thumbnail"  rel="gallery_group">#}
+{#                    <img class="tumb" src="{{ MEDIA_URL }}gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" alt="" rel="tooltip" data-original-title="{{ album_image.comments }}">#}
+{#                </a>#}
+{#                <a title="{{ album_image.comments }}" class="mins" href="/static/gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}" class="thumbnail"  rel="gallery_group">#}
+{#                    <img class="tumb" src="/static/gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" alt="" rel="tooltip" data-original-title="{{ album_image.comments }}">#}
+{#                </a>#}
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#    <script type="text/javascript">#}
+{#        $('.tumb').tooltip();#}
+{#    </script>#}
+{#    <script type="text/javascript">#}
+{#        $("a.mins").fancybox({#}
+{#            'overlayColor'        : '#000',#}
+{#            'overlayOpacity'    : 0.9#}
+{#        });#}
+{#    </script>#}
+{% endblock %}

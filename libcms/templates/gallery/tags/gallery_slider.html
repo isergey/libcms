@@ -1,0 +1,15 @@
+{% if album_images %}
+<ul>
+{% for album_image in album_images %}
+    {% if album_image.comments %}
+        <li><a href="{{ album_image.comments }}" target="_parent"><img  src="/media/gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}" /></a></li>
+    {% else %}
+        <li><img  src="/media/gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}" /></li>
+    {% endif %}
+{% empty %}
+    <li>Галерея {{ gallery_name }} не существует</li>
+{% endfor %}
+</ul>
+{% else %}
+    Slider gallery doesn't exist
+{% endif %}

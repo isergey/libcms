@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--
+ * $Log: zgate_countries.xml,v $
+ * Revision 1.4  2010/05/28 09:01:29  rustam
+ * Further tatar translation
+ *
+ * Revision 1.3  2010/05/06 16:53:34  rustam
+ * Tatar translation
+ *
+ * Revision 1.2  2004/05/18 10:12:27  rustam
+ * Errors corrected
+ *
+ * Revision 1.1  2004/04/29 10:00:55  rustam
+ * Added human-readable country names representation
+ *
+-->
+<countries>
+<localization language="eng">
+  <country id="GB">Great Britain</country>
+  <country id="RU">Russia</country>
+  <country id="SU">USSR</country>
+</localization>
+<localization language="rus">
+  <country id="GB">Великобритания</country>
+  <country id="RU">Россия</country>
+  <country id="SU">СССР</country>
+</localization>
+<localization language="tat">
+  <country id="GB">Бөек Британия</country>
+  <country id="RU">Россия</country>
+  <country id="SU">СССР</country>
+</localization>
+</countries>

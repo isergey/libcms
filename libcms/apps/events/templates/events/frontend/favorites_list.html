@@ -1,0 +1,42 @@
+{% extends 'index/frontend/index.html' %}
+{% load pagination_tag %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Мои события</li>
+
+    </ul>
+    <style>
+        ul.news {
+            list-style: none;
+            margin: 0;
+        }
+        .news .title{
+            font-size: 14px;
+            /*font-weight: bold;*/
+        }
+        .news .teaser{
+            padding: 5px 0;
+        }
+        .news .create_date{
+            color: #2a2a2a;
+        }
+    </style>
+
+    <ul class="news">
+        {% for event in events_list %}
+            <div class="title"><a href="{% url 'events:frontend:favorite_show' event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a></div>
+            <div class="teaser">{{ event.event_content.teaser }}</div>
+            <div class="create_date">Начало: <b>{{ event.start_date }}</b></div>
+            {% if not forloop.last %}<hr/>{% endif %}
+        {% endfor %}
+    </ul>
+{#    <ul class="news">#}
+{#    {% for event in events_list %}#}
+{#        <li><a href="{% url events:frontend:show event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a></li>#}
+{#    {% endfor %}#}
+{#    </ul>#}
+    {% admin_pagination events_page %}
+{% endblock %}

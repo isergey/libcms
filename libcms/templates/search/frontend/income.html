@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/datepicker.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/reset.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/960.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/dropdown.linear.columnar.css" media="screen"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/theme/default.advanced.css" media="screen"/>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-datepicker.js"></script>
+    <script src="{{ STATIC_URL }}js/Placeholders.min.js"></script>
+    <style>
+        ul.income, ul.income>ul{
+            list-style: none;
+        }
+        ul.income>li{
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body style="width: 470px">
+
+<ul class="income" style="width: 470px">
+    {% for date, groups in date_groups.items %}
+        <li><b><a target="" href="{% url 'ssearch:frontend:index' %}?q={{ date|date:"Y-m-d"|urlencode }}T00:00:00Z&attr=create_date_dts&sort=create_date_dts&order=desc">{{ date }}</a></b>
+            <ul>
+                {% for group in  groups %}
+                    <li><a target="" href="{% url 'ssearch:frontend:index' %}?q={{ date|date:"Y-m-d"|urlencode }}T00:00:00Z&attr=create_date_dts{% if value.linked_record_number_s %}&q={{ value.linked_record_number_s|urlencode }}&attr=linked_record_number_s&{% endif %}{% if value.catalog_s %}&q={{ value.catalog_s|urlencode }}&attr=catalog_s&{% endif %}&q={{ group.scollection_s|urlencode }}&attr=scollection_s&sort=create_date_dts&order=desc">{{ group.title }}</a>
+                        {% if group.values %}
+                            <ul>
+                                {% for value in group.values %}
+
+                                    <li><a target="" href="{% url 'ssearch:frontend:index' %}?q={{ date|date:"Y-m-d"|urlencode }}T00:00:00Z&attr=create_date_dts{% if value.linked_record_number_s %}&q={{ value.linked_record_number_s|urlencode }}&attr=linked_record_number_s&{% endif %}{% if value.catalog_s %}&q={{ value.catalog_s|urlencode }}&attr=catalog_s&{% endif %}&q={{ group.scollection_s|urlencode }}&attr=scollection_s&sort=create_date_dts&order=desc" title="{{ value.title }}">{{ value.title|truncatewords:"7" }} </a>{{ value.count }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% if group.records %}
+                            <ul>
+                            {% for record in group.records %}
+                                <li>{{ record.irbiscard.0 }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>
+<form method="POST" class="form-inline">{% csrf_token %}
+{% include 'administration/base_form_fields.html' with form=date_filter_form %}
+    <input type="submit" class="btn" value="Фильтровать">
+</form>
+    <script type="text/javascript">
+    $('.vDateField').datepicker({
+        format: 'dd.mm.yyyy'
+    });
+</script>
+</body>
+</html>

@@ -10,7 +10,7 @@ from django.contrib.auth import login, REDIRECT_FIELD_NAME
 from django.utils.translation import to_locale, get_language
 
 from core.forms import LanguageForm
-from news.models import News, NewsContent
+from ..models import News, NewsContent
 from forms import NewsForm, NewsContentForm
 
 @login_required

@@ -1,0 +1,150 @@
+{% extends 'theme_frontend_base.html' %}
+{% load pagination_tag %}
+{% load mydocs_tags %}
+{% load content_types %}
+{% block title %}Поиск по каталогам{% endblock %}
+{% block breadcrumb %}
+    <section>
+        <div id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+                <li><a href="{% url 'search:frontend:index' %}">Поиск</a><span class="divider">/</span></li>
+                {% if request.GET.back %}
+                    <li><a href="{{ request.GET.back }}">Результаты</a><span class="divider">/</span></li>{% endif %}
+                <li class="active">Детальная информация о записи</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+{% block content %}
+    <style>
+        a.btn {
+            text-decoration: none;
+        }
+
+        #searchresults ul.records {
+            list-style: none;
+        }
+
+        #searchresults ul.records li {
+            margin: 0;
+            padding: 0;
+        }
+
+        .cover {
+            height: 120px;
+            text-align: center;
+            vertical-align: middle;
+            background: #eeeeee;
+            color: #d0d0d0;
+
+        }
+        .record .note {
+            margin-top: 10px;
+            font-family: Georgia, "Times New Roman", Times, serif;
+            text-indent: 20px;
+            font-size: 14px;
+            text-align: justify;
+            border-top: 1px solid #ced2d5;
+
+        }
+        .record .header {
+            font-weight: bold;
+        }
+    </style>
+    <div class="grid_5_1" style="width: 530px">
+        <table style="width: 100%">
+            <tr >
+                {% if record.dict.cover %}
+                    <td style="width: 105px";>
+					<a class="mins" href="{{ COVER_PREFIX }}{{ record.dict.cover.0 }}.gif" class="thumbnail"  rel="gallery_group">
+						<img style="width: 100px; margin: 0 5px 5px 0; border: solid #8c8c8c 1px" class="tumb" src="{{ COVER_PREFIX }}{{ record.dict.cover.0 }}.gif" alt="" rel="tooltip">
+					</a>
+                    </td>
+                {% endif %}
+                <td>
+                    {% if record.item_info.author_code %}
+                        <div><b>{{ record.item_info.author_code }}</b></div>
+                    {% endif %}
+                    {% if record.item_info.bd_code %}
+                        <div><b>{{ record.item_info.bd_code }}</b></div>
+                    {% endif %}
+                    {{ record.libcard|safe }}
+                </td>
+            </tr>
+        </table>
+
+        {% if record.dict %}
+            <hr/>
+            <div class="record_attrs">
+                {% include 'search/frontend/detail_tableview.html' %}
+            </div>
+        {% endif %}
+        {% if record.urls %}
+            <hr/>
+            <div>
+                {% for url in record.urls %}
+                    <img style="width:20px"
+                             src="{{ STATIC_URL }}images/content_types/{{ url.href|content_type }}.png"/> <a class="link_button" target=""
+                            href="{% url 'search:frontend:full_text_redirect' %}?ft_url={{ url.href|urlencode }}&id={{ record.model.record_id }}">
+                         {{ url.title }}
+                    </a>{% if not forloop.last %}<br/>{% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if request.user.is_staff or request.user.is_superuser %}
+            <hr/>
+            <div>
+                <a class="btn btn-small show_marc" href="#1">Rusmarc</a>
+                <a class="btn btn-small show_marc" href="{% url 'search:frontend:load_raw_record' %}?id={{ record.model.record_id }}">Загрузить запись</a>
+            </div>
+            <div class="marc"
+                 style='display: none; font-family: "Bitstream Vera Sans Mono", Monaco, "Courier New", Courier, monospace'>
+                {{ record.object.to_html|safe }}
+            </div>
+        {% endif %}
+
+        <hr/>
+        {% if linked_records.linked_records %}
+            <div>
+            <h3>Содержит:</h3>
+            <ul>
+                {% for linked_record in linked_records.linked_records %}
+                    <li>
+                        <p><a target=""
+                              href="{% url 'search:frontend:detail' %}?id={{ linked_record.model.record_id }}">{{ linked_record.title.parts_of }} {{ linked_record.title.title }}</a>
+                        {% if linked_record.dict.date_of_publication %}
+                            <p>Дата публикации: {{ linked_record.dict.date_of_publication.0 }}</p>{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            {% pagination linked_records.result_page %}
+            </div>
+        {% endif %}
+    </div>
+    <div class="grid_3_2 omega" style="width: 200px">
+
+        <div class="info">
+            <h3>Сервисы</h3>
+            {% drow_save_doc request.user record.model.record_id %}
+
+            <a style="display: block; text-align: left" class="btn" href="{% url 'search:frontend:detail' %}?id={{ record.model.record_id }}&print=1"><i class="icon-print"></i> печать</a>
+            <a style="display: block; text-align: left" class="btn" href="mailto:?subject={{ record.title.parts_of|urlencode }}%20{{ record.title.title|urlencode }}&body=http://{{ request.META.HTTP_HOST }}{% url 'search:frontend:detail' %}?id={{ record.model.record_id }}"><i class="icon-envelope"></i> отправить ссылку</a>
+        </div>
+        <div class="info">
+            Количество обращений: {{ access_count }} <br/>
+            Загрузка полного текста: {{ full_text_count }}
+        </div>
+
+    </div>
+
+    <div class="clear"></div>
+    {#    {% include 'ssearch/frontend/app.js.html' %}#}
+    <script>
+        $('.show_marc').on('click', function () {
+            $('.marc').toggle();
+        });
+    </script>
+
+{% endblock %}

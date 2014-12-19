@@ -1,0 +1,98 @@
+
+<script type="text/javascript">
+    var example = 'column-rotated-labels',
+            theme = 'default';
+</script>
+
+<script type="text/javascript">
+    Highcharts.theme = { colors:['#4572A7'] };// prevent errors in default theme
+    var highchartsOptions = null;
+</script>
+
+
+<script type="text/javascript">
+    var chart_type = '{{ chart_type }}';
+    var margin = [ 50, 50, 100, 80];
+    var rotation = -80
+    if (chart_type == 'bar'){
+        margin = [ 50, 50, 100, 200]
+        rotation = 0
+    }
+
+    var data_rows = {{ data_rows|safe}};
+//    var data_rows = [
+//        ["26.04.2012", 14],
+//                ["27.04.2012", 34]
+//    ];
+
+    var chart;
+//    $(document).ready(function () {
+        var highchartsOptions = Highcharts.getOptions();
+        var categories = new Array();
+        var data = new Array();
+        for (i in data_rows){
+            categories.push(data_rows[i][0])
+            data.push(data_rows[i][1])
+        }
+        chart = new Highcharts.Chart({
+            chart:{
+                renderTo:'chart_container',
+                defaultSeriesType:'{{ chart_type }}',
+                margin:margin
+            },
+            plotOptions: {
+                series: {
+                    pointPadding: 0,
+                    groupPadding: 0
+                }
+            },
+            title:{
+                text:'{{ chart_title }}'
+            },
+            xAxis:{
+                categories:categories,
+                labels:{
+                    rotation:rotation,
+                    align:'right',
+                    style:{
+                        font:'normal 12px Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis:{
+                min:0,
+                title:{
+                    text:'{{ y_title }}'
+                }
+            },
+            legend:{
+                enabled:false
+            },
+//                tooltip:{
+//                    formatter:function () {
+//                        return '<b>' + this.x + '</b><br/>' +
+//                                'Population in 2008: ' + Highcharts.numberFormat(this.y, 1) +
+//                                ' millions';
+//                    }
+//                },
+            series:[
+                {
+                    name:'{{ row_title }}',
+                    data:data,
+                    dataLabels:{
+                        enabled:true,
+                        style:{
+                            font:'normal 10px Verdana, sans-serif',
+                            'font-weight': 'bold'
+                        }
+                    }
+                }
+            ]
+        });
+        var width = $('#chart_container').width();
+        var height =  $('#chart_container').height();
+        if (chart_type == 'bar'){
+            chart.setSize(width, data_rows.length * 20 + 400);
+        }
+//    });
+</script>

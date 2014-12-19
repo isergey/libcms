@@ -1,0 +1,39 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}{{ poll.question }}{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url polls:frontend:index %}">Голосования</a> <span class="divider">/</span></li>
+        <li class="active">{{ poll.question }}</li>
+    </ul>
+    <style type="text/css">
+        .polls .content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .polls .content ul li {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <div class="polls">
+        <div class="content">
+            {% if show_results %}
+                <ul>
+                    {% for choices_dict in choices_dicts %}
+                        <li><b>{{ choices_dict.choice.choice }}</b> (голосов: {{ choice.votes }} - {{ choices_dict.percent_from_sum_votes }} % )
+                            <div class="progress progress-info progress-striped" style="margin-bottom: 9px;">
+                                <div class="bar" style="width: {{ choices_dict.percent_from_max }}%"></div>
+                            </div>
+                        </li>
+                    {% empty %}
+                        Нет результатов
+                    {% endfor %}
+                </ul>
+            {% else %}
+                {{ message }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

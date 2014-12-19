@@ -1,0 +1,29 @@
+{% extends 'polls/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    {% breadcrumb "Голосования" polls:administration:index %}
+    {% breadcrumb "Создание голосования" %}
+
+{% endblock %}
+
+{% block action_content %}
+    <style>
+    form input[type=text], textarea{
+        width: 99%;
+    }
+    </style>
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+        <legend>Создание голосования</legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Создать</button>
+                <button type="reset" class="btn">Отмена</button>
+            </div>
+        </fieldset>
+    </form>
+
+{% endblock %}

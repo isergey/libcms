@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--
+ * $Log: zgate_id2addr.xml,v $
+ * Revision 1.3  2007/02/21 15:10:48  rustam
+ * Address changes
+ *
+ * Revision 1.2  2006/02/14 10:01:02  rustam
+ * Further improvements
+ *
+ * Revision 1.1  2004/05/21 09:54:02  rustam
+ * *** empty log message ***
+ *
+-->
+<map>
+<mapping>
+  <id>RU\LODB\person</id>
+  <zurl>z39.50r://opac.ruslan.ru/clauth?rs=RUSmarc;esn=f</zurl>
+</mapping>
+<mapping>
+  <id>ru\spstu\sub</id>
+  <zurl>z39.50r://ruslan.ru/a_subj?rs=RUSmarc;esn=f</zurl>
+</mapping>
+<mapping>
+  <id>RU\SPSTU\staff</id>
+  <zurl>z39.50r://ruslan.ru/person?rs=RUSmarc;esn=f</zurl>
+</mapping>
+<mapping>
+  <id>ru\spstu\authors</id>
+  <zurl>z39.50r://ruslan.ru/authors?rs=RUSmarc;esn=f</zurl>
+</mapping>
+</map>

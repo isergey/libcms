@@ -1,0 +1,275 @@
+<record syntax="1.2.840.10003.5.28">
+    <leader>
+        <length>03746</length>
+        <status>n</status>
+        <type>a</type>
+        <leader07>m</leader07>
+        <leader08>0</leader08>
+        <leader09></leader09>
+        <indicatorCount>2</indicatorCount>
+        <identifierLength>2</identifierLength>
+        <dataBaseAddress>00433</dataBaseAddress>
+        <leader17></leader17>
+        <leader18>i</leader18>
+        <leader19></leader19>
+        <entryMap>450</entryMap>
+    </leader>
+    <field id="001">//KSOB/-222043</field>
+    <field id="005">20110427000000.0</field>
+    <field id="010">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">978-5-93898-196-6</subfield>
+    </field>
+    <field id="100">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">20090410d2009 ma y0rusy0279 ca</subfield>
+    </field>
+    <field id="101">
+        <indicator id="1">0</indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">rus</subfield>
+    </field>
+    <field id="102">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">RU</subfield>
+    </field>
+    <field id="105">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">a z 000ay</subfield>
+    </field>
+    <field id="200">
+        <indicator id="1">0</indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">Т. 7</subfield>
+        <subfield id="f">[ил. Г. Лавренко]</subfield>
+    </field>
+    <field id="210">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="d">2009</subfield>
+    </field>
+    <field id="215">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">507, [3] с.</subfield>
+        <subfield id="c">ил.</subfield>
+    </field>
+    <field id="320">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">Библиогр. указ.: с. 571</subfield>
+    </field>
+    <field id="327">
+        <indicator id="1">1</indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">Содержание : Вечера с Петром Великим (7-354); Потерянное милосердие (355-507)</subfield>
+    </field>
+    <field id="330">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">Настоящее издание подготовлено к 90-летию Даниила Александровича Гранина и отпечатано тиражом
+            три тысячи экземпляров, из которых девяносто выполнены в особых переплетах, украшены золотым обрезом и
+            пронумерованы. В него включены знаковые для пятидесятых-шестидесятых годов романы "Искатели" и "Иду на
+            грозу", романы "Картина", "Бегство в Россию", "Вечера с Петром Великим", знаменитые повести "Эта странная
+            жизнь" и "Зубр", рассказы о войне, повести "Наш комбат", "Однофамилец", "Кто-то должен", "Примечания к
+            путеводителю", "Обратный билет", эссе "Два лика", "Священный дар", "Тринадцать ступенек", "Чужой дневник" и
+            "Страх", книга "Изменчивые тени", публицистика... Словом, лучшие страницы русской прозы второй половины XX -
+            начала XXI века. Ряд произведений дан в новых авторских редакциях. Над cобранием сочинений работали
+            известные художники-графики Санкт-Петербурга: В. Бабанов, Р. Доминов, А. Кабанин, Г.Лавренко, Клим Ли,
+            В.Мишин, Г.А.В.Траугот, О.Яхнин. Каждый том сопровожден кратким библиографическим указателем.
+        </subfield>
+    </field>
+    <field id="461">
+        <indicator id="1"></indicator>
+        <indicator id="2">0</indicator>
+        <subfield id="1">
+            <field id="700">
+                <indicator id="1"></indicator>
+                <indicator id="2">1</indicator>
+                <subfield id="a">Гранин</subfield>
+                <subfield id="b">Д. А.</subfield>
+                <subfield id="g">Даниил Александрович</subfield>
+                <subfield id="c">советский и российский писатель</subfield>
+                <subfield id="f">1919-</subfield>
+                <subfield id="3">2</subfield>
+            </field>
+        </subfield>
+        <subfield id="1">
+            <field id="702">
+                <indicator id="1"></indicator>
+                <indicator id="2">1</indicator>
+                <subfield id="a">Плаксин</subfield>
+                <subfield id="b">С.</subfield>
+                <subfield id="g">Сергей</subfield>
+                <subfield id="4">340</subfield>
+            </field>
+        </subfield>
+        <subfield id="1">
+            <field id="200">
+                <indicator id="1">1</indicator>
+                <indicator id="2"></indicator>
+                <subfield id="a">Собрание сочинений</subfield>
+                <subfield id="b">Текст</subfield>
+                <subfield id="f">Даниил Гранин</subfield>
+                <subfield id="g">[худож. ред. С. Плаксин]</subfield>
+                <subfield id="v">Т. 7</subfield>
+            </field>
+        </subfield>
+        <subfield id="1">
+            <field id="300">
+                <indicator id="1"></indicator>
+                <indicator id="2"></indicator>
+                <subfield id="a">Изд. подгот. к 90-летию Д. А. Гранина</subfield>
+            </field>
+        </subfield>
+        <subfield id="1">
+            <field id="210">
+                <indicator id="1"></indicator>
+                <indicator id="2"></indicator>
+                <subfield id="c">Вита Нова</subfield>
+                <subfield id="d">2009</subfield>
+            </field>
+        </subfield>
+        <subfield id="1">
+            <field id="010">
+                <indicator id="1"></indicator>
+                <indicator id="2"></indicator>
+                <subfield id="a">978-5-93898-192-8</subfield>
+            </field>
+        </subfield>
+    </field>
+    <field id="464">
+        <indicator id="1"></indicator>
+        <indicator id="2">0</indicator>
+        <subfield id="1">
+            <field id="200">
+                <indicator id="1">1</indicator>
+                <indicator id="2"></indicator>
+                <subfield id="a">Вечера с Петром Великим</subfield>
+            </field>
+        </subfield>
+    </field>
+    <field id="464">
+        <indicator id="1"></indicator>
+        <indicator id="2">0</indicator>
+        <subfield id="1">
+            <field id="200">
+                <indicator id="1">1</indicator>
+                <indicator id="2"></indicator>
+                <subfield id="a">Потерянное милосердие</subfield>
+            </field>
+        </subfield>
+    </field>
+    <field id="600">
+        <indicator id="1"></indicator>
+        <indicator id="2">0</indicator>
+        <subfield id="a">Петр</subfield>
+        <subfield id="c">император российский</subfield>
+        <subfield id="d">I</subfield>
+        <subfield id="f">1672-1725</subfield>
+        <subfield id="3">6</subfield>
+    </field>
+    <field id="606">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">Русская литература</subfield>
+        <subfield id="x">Проза</subfield>
+        <subfield id="z">20 в.</subfield>
+        <subfield id="2">ksob_sh</subfield>
+    </field>
+    <field id="606">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">Исторические романы, повести, рассказы</subfield>
+        <subfield id="2">ksob_sh</subfield>
+    </field>
+    <field id="606">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">Эссе</subfield>
+        <subfield id="2">ksob_sh</subfield>
+    </field>
+    <field id="702">
+        <indicator id="1"></indicator>
+        <indicator id="2">1</indicator>
+        <subfield id="a">Лавренко</subfield>
+        <subfield id="b">Г. Б.</subfield>
+        <subfield id="g">Галина Борисовна</subfield>
+        <subfield id="c">художник-иллюстратор</subfield>
+        <subfield id="f">1951-</subfield>
+        <subfield id="3">11</subfield>
+        <subfield id="4">440</subfield>
+    </field>
+    <field id="801">
+        <indicator id="1"></indicator>
+        <indicator id="2">2</indicator>
+        <subfield id="b"/>
+        <subfield id="a"/>
+        <subfield id="c">20090410</subfield>
+    </field>
+    <field id="850">
+        <indicator id="1">#</indicator>
+        <indicator id="2">8</indicator>
+        <subfield id="0">-</subfield>
+        <subfield id="a">19017901</subfield>
+    </field>
+    <field id="850">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">19217021</subfield>
+    </field>
+    <field id="850">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">19218028</subfield>
+    </field>
+    <field id="850">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">19719027</subfield>
+    </field>
+    <field id="850">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">19417020</subfield>
+    </field>
+    <field id="850">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">1961702X</subfield>
+    </field>
+    <field id="850">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">19618026</subfield>
+    </field>
+    <field id="850">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">19817029</subfield>
+    </field>
+    <field id="850">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">19117906</subfield>
+    </field>
+    <field id="850">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">19717024</subfield>
+    </field>
+    <field id="850">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">19919026</subfield>
+    </field>
+    <field id="850">
+        <indicator id="1"></indicator>
+        <indicator id="2"></indicator>
+        <subfield id="a">19117027</subfield>
+    </field>
+</record>

@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!--
+ * $Log: materials.xml,v $
+ * Revision 1.4  2010/05/28 09:01:29  rustam
+ * Further tatar translation
+ *
+ * Revision 1.3  2010/05/06 16:53:34  rustam
+ * Tatar translation
+ *
+ * Revision 1.2  2003/04/02 09:54:06  rustam
+ * Minor corrections
+ *
+ * Revision 1.1  2003/01/31 14:11:45  rustam
+ * New pre-release
+ *
+-->
+<messages>
+<localization lang="eng">
+  <msg id="m[1:1021]">Monographs</msg>
+  <msg id="AND(s[1:1021],1[1:1045])">Journals, Newspapers</msg>
+  <msg id="AND(s[1:1021],2[1:1045])">Issues</msg>
+  <msg id="OR(a[1:1021]:b[1:1021])">Papers, reports</msg>
+  <msg id="c[1:1021]">Collections</msg>
+  <msg id="i[1:1021]">Integrating resources</msg>
+  <msg id="OR(a[1:1001],b[1:1001])">Texts</msg>
+  <msg id="OR(c[1:1001],d[1:1001])">Notated music</msg>
+  <msg id="OR(e[1:1001],f[1:1001])">Maps</msg>
+  <msg id="g[1:1001]">Video</msg>
+  <msg id="OR(i[1:1001],j[1:1001])">Audio</msg>
+  <msg id="k[1:1001]">Graphic</msg>
+  <msg id="l[1:1001]">Electronic resources</msg>
+  <msg id="OR(m[1:1034]:d[1:1034])">Dissertations, abstracts</msg>
+  <msg id="j[1:1034]">Text books</msg>
+  <msg id="AND(m[1:1021]:k[1:1034])">Patents</msg>
+  <msg id="AND(m[1:1021]:l[1:1034])">Standards</msg>
+  <msg id="OR(AND(s[1:1021]:l[1:1034]):AND(m[1:1021]:n[1:1034]))">Laws, legislation</msg>
+  <msg id="AND(m[1:1021]:p[1:1034])">Technical reports</msg>
+  <msg id="g[1:1034]">Directories</msg>
+  <msg id="e[1:1034]">Dictionaries</msg>
+  <msg id="f[1:1034]">Encyclopaedia</msg>
+</localization>
+<localization lang="rus">
+  <msg id="m[1:1021]">Монографии</msg>
+  <msg id="AND(s[1:1021],1[1:1045])">Журналы, газеты</msg>
+  <msg id="AND(s[1:1021],2[1:1045])">Выпуски</msg>
+  <msg id="OR(a[1:1021]:b[1:1021])">Cтатьи, доклады</msg>
+  <msg id="c[1:1021]">Подборки</msg>
+  <msg id="i[1:1021]">Интегрируемые ресурсы</msg>
+  <msg id="OR(a[1:1001],b[1:1001])">Тексты</msg>
+  <msg id="OR(c[1:1001],d[1:1001])">Музыкальные партитуры</msg>
+  <msg id="OR(e[1:1001],f[1:1001])">Карты</msg>
+  <msg id="g[1:1001]">Видео</msg>
+  <msg id="OR(i[1:1001],j[1:1001])">Звукозаписи</msg>
+  <msg id="k[1:1001]">Графика</msg>
+  <msg id="l[1:1001]">Электронные ресурсы</msg>
+  <msg id="OR(m[1:1034]:d[1:1034])">Диссертации, рефераты</msg>
+  <msg id="j[1:1034]">Учебники</msg>
+  <msg id="AND(m[1:1021]:k[1:1034])">Патенты</msg>
+  <msg id="AND(m[1:1021]:l[1:1034])">Стандарты</msg>
+  <msg id="OR(AND(s[1:1021]:l[1:1034]):AND(m[1:1021]:n[1:1034]))">Законодательные акты</msg>
+  <msg id="AND(m[1:1021]:p[1:1034])">Технические отчеты</msg>
+  <msg id="g[1:1034]">Справочники</msg>
+  <msg id="e[1:1034]">Словари</msg>
+  <msg id="f[1:1034]">Энциклопедии</msg>
+</localization>
+<localization lang="tat">
+  <msg id="m[1:1021]">Монографияләр</msg>
+  <msg id="s[1:1021]">Сериаль</msg>
+  <msg id="OR(a[1:1021]:b[1:1021])">Мәкаләләр, докладлар</msg>
+  <msg id="c[1:1021]">Сайлап җыю</msg>
+  <msg id="OR(m[1:1034]:d[1:1034])">Дессертацияләр, рефератлар</msg>
+  <msg id="j[1:1034]">Дәреслекләр</msg>
+  <msg id="AND(m[1:1021]:k[1:1034])">Патентлар</msg>
+  <msg id="AND(m[1:1021]:l[1:1034])">Стандартлар</msg>
+  <msg id="OR(AND(s[1:1021]:l[1:1034]):AND(m[1:1021]:n[1:1034]))">Законнар чыгара торган актлар</msg>
+  <msg id="AND(m[1:1021]:p[1:1034])">Техник отчетлар</msg>
+  <msg id="g[1:1034]">Белешмәлекләр</msg>
+  <msg id="e[1:1034]">Сүзлекләр</msg>
+  <msg id="f[1:1034]">Энциклопедияләр</msg>
+</localization>
+</messages>

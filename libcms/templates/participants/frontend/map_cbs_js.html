@@ -24,8 +24,11 @@
         var orgsCollection = new ymaps.GeoObjectCollection();
         orgsMap = new ymaps.Map("map_canvas", {
             center: [62.371126, 93.702104],
-            zoom: 3
+            zoom: 3,
+            controls: ['zoomControl', 'routeEditor', 'trafficControl']
         });
+
+        orgsMap.controls.add('typeSelector');
 
         _.each(jsOrgs, function (jsOrg) {
             var fields = jsOrg;

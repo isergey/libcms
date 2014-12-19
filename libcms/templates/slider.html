@@ -1,0 +1,58 @@
+{% load gallery_tags %}
+<div id="slider">
+    {% gallery_slider %}
+</div>
+<script type="text/javascript">
+    var containerId = '#slider'; // Контейнер, в котором находится слайдер
+
+    var sliderSate = {
+        slidersLength: 0, // количество элементов в слайдере
+        currentSlide: 0, // текущий элемент для показа
+        mouseIn: false,
+        renderElement: null,
+        sliderElemets: []
+
+    };
+
+    function changeSlide(){
+        if (sliderSate.mouseIn){
+            return;
+        }
+        render(sliderSate.sliderElemets[sliderSate.currentSlide]);
+        if (sliderSate.currentSlide == sliderSate.slidersLength - 1){
+            sliderSate.currentSlide = 0;
+        }else{
+            sliderSate.currentSlide++;
+        }
+    }
+
+    $().ready(function(){
+        $(containerId + '>ul').css('display', 'none');
+        $(containerId).append('<div class="render"></div>');
+{#        $(containerId).append('<div class="controls">туда сюда</div>');#}
+        $(containerId + '>ul>li').each(function(){
+            sliderSate.sliderElemets.push($(this));
+        });
+
+
+        sliderSate.renderElement = $(containerId + '>div.render');
+        if (sliderSate.sliderElemets.length > 0){
+            sliderSate.slidersLength = sliderSate.sliderElemets.length;
+            changeSlide();
+            setInterval(changeSlide,5000);
+        }
+        $(sliderSate.renderElement).mouseenter(function() {
+            sliderSate.mouseIn = true;
+        });
+        $(sliderSate.renderElement).mouseleave(function() {
+            sliderSate.mouseIn = false;
+        });
+    });
+
+    function render(slideElement){
+        $(sliderSate.renderElement).fadeTo(500, 0, function(){
+            $(sliderSate.renderElement).html(slideElement.html());
+            $(sliderSate.renderElement).fadeTo(500, 1);
+        });
+    }
+</script>

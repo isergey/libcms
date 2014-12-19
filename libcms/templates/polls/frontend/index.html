@@ -1,0 +1,44 @@
+{% extends 'index/frontend/index.html' %}
+{% load pagination_tag %}
+{% block title %}Голосования{% endblock %}
+{% block breadcrumb %}
+<section>
+    <div id="breadcrumbs">
+        <ul class="breadcrumb">
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Голосования</li>
+    </ul>
+    </div>
+<section>
+{% endblock %}
+{% block index_content %}
+    {% for poll in polls_page.object_list %}
+        <div class="item">
+            {% if poll.is_active %}
+                {% url 'polls:frontend:vote' poll.id as detail_url %}
+            {% else %}
+                {% url 'polls:frontend:results'  poll.id as detail_url %}
+            {% endif %}
+            <div class="title">
+                <h4><span class="date">{{ poll.start_poll_date|date:"d M Y"}}.</span><a href="{{ detail_url }}">{{ poll.question }}</a>
+                    {% if poll.is_active %}<sup><span style="color:green;">Активен</span></sup>{% else %}<sup><span style="color:#026DA5;">Завершен</span></sup>{% endif %}</h4>
+            </div>
+            <div class="detail">
+                {% if poll.is_active %}
+                    <span class="show"><a href="{{ detail_url }}">Подробнее</a></span>
+                {% else %}
+                    {% if poll.show_results_after_end_poll %}
+                        <span class="show"><a href="{{ detail_url }}">Результаты</a></span>
+                    {% else %}
+                        <span class="show">Результаты не доступны</span>
+                    {% endif %}
+                {% endif %}
+
+            </div>
+            {% if not forloop.last %}<hr/>{% endif %}
+        </div>
+    {% empty %}
+        Нет опросов.
+    {% endfor %}
+    {% admin_pagination polls_page %}
+{% endblock %}

@@ -1,0 +1,9 @@
+{% load mptt_tags %}
+<ul id="nav" class="dropdown dropdown-linear dropdown-columnar">
+    {% if nodes %}
+        {% recursetree nodes %}
+            <li {% if not node.is_leaf_node or node.is_active %} class="{% if not node.is_leaf_node %}dir {% endif %}{% if node.is_active  %}active{% endif %}"{% endif %}><a {% if node.is_active  %}class="active" {% endif %} href="{{ node.item_title.url }}" {% if node.open_in_new %} target="_blank" {% endif %}>{{ node.item_title.title }}</a>
+            {% if not node.is_leaf_node %}<ul>{{ children }}</ul>{% endif %}</li>
+        {% endrecursetree %}
+    {% endif %}
+</ul>

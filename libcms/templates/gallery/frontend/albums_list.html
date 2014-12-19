@@ -1,0 +1,59 @@
+{% extends 'index/frontend/index.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block title %}{% if LANGUAGE_CODE == 'ru' %}Галерея{% else %}Gallery{% endif %}{% endblock %}
+{% block  breadcrumb %}
+<section>
+    <div id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li class="active">Галерея</li>
+        </ul>
+    </div>
+</section>
+{% endblock %}
+{% block index_content %}
+    <style>
+        ul.albums {
+            list-style: none;
+        }
+
+        ul.albums li {
+            margin: 0;
+        }
+
+        ul.albums .create_date {
+            color: #4D4B47;
+        }
+        .albums img {
+            border: 5px solid #E0DCD0;
+            float: left;
+            margin-right: 15px;
+            margin-bottom: 15px;
+        }
+    </style>
+    <ul class="albums">
+        {% for album in albums %}
+            <li class="album">
+                {% if album.avatar_img_name and album.show_avatar %}
+                    <a href="{% url  'gallery:frontend:album_view' album.id %}"><img class="tumb"
+                                                                                         src="{{ MEDIA_URL }}uploads/galleryavatars/{{ album.avatar_img_name }}"
+                                                                                         style="float: left; margin-right: 5px"/></a>
+                {% endif %}
+                <div>
+                    <h3>
+                        <a href="{% url  'gallery:frontend:album_view' album.id %}?back={{ request.get_full_path }}">{{ album }}</a>
+                    </h3>
+
+                    <div>
+                        <span class="create_date"><b>Дата создания:</b> {{ album.create_date|date:"j E Y" }}</span>
+                    </div>
+                </div>
+                <div style="clear: both; margin-bottom: 5px;"></div>
+                <hr/>
+            </li>
+        {% empty %}
+            <li>Альбомов нет</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

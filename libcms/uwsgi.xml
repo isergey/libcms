@@ -1,0 +1,32 @@
+<!-- UWSGI XML Configuration File -->
+<uwsgi>
+
+    <!-- Сокет для передачи данных -->
+    <socket>127.0.0.1:3032</socket>
+
+    <!-- Нам понадобится включенный python плагин -->
+    <plugins>python</plugins>
+
+    <!-- Дополнительный python-путь -->
+    <pythonpath>/home/sergey/PycharmProjects/liart_portal/libcms/libcms</pythonpath>
+    <pythonpath>/home/sergey/PycharmProjects/liart_portal/libcms</pythonpath>
+    <!-- Модуль python с определением wsgi приложения -->
+    <module>wsgi</module>
+
+    <!-- Количество процессов -->
+    <processes>4</processes>
+
+    <!-- Максимальное количество соединений для каждого процесса -->
+    <max-requests>10</max-requests>
+
+    <!-- Максимальный размер запроса -->
+    <buffer-size>32768</buffer-size>
+
+    <!-- Убивать каждое соединение требующее больше 30 сек для обработки -->
+    <harakiri>30</harakiri>
+
+    <reload-mercy>8</reload-mercy>
+    <master />
+    <no-orphans />
+    <disable-logging />
+</uwsgi>

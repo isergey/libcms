@@ -1,0 +1,30 @@
+{% extends 'polls/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'polls:administration:index' %}">Голосования</a> <span class="divider">/</span></li>
+    <li>{{ poll.question }}<span class="divider">/</span></li>
+    <li><a href="{% url 'polls:administration:view' poll.id %}">Управление ответами</a> <span class="divider">/</span></li>
+    <li class="active">Создание варианта ответа</li>
+{% endblock %}
+
+{% block action_content %}
+    <style>
+    form input[type=text], textarea{
+        width: 99%;
+    }
+    </style>
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+        <legend>Создание варианта ответа</legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Создать</button>
+                <button type="reset" class="btn">Отмена</button>
+            </div>
+        </fieldset>
+    </form>
+
+{% endblock %}

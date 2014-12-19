@@ -1,0 +1,7 @@
+{% load active_link %}
+<ul class="nav nav-list">
+    <li class="nav-header">Голосования</li>
+    <li class="{% active 'polls:administration:index' %}"><a href="{% url 'polls:administration:index' %}">Список</a></li>
+    <li class="{% active 'polls:administration:create' %}"><a href="{% url 'polls:administration:create' %}">Создать голосование</a></li>
+
+</ul>

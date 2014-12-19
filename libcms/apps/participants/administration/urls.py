@@ -5,6 +5,8 @@ import views
 
 urlpatterns = patterns('',
     url(r'^$', views.index , name="index"),
+    url(r'^detail/(?P<id>\d+)/$', views.detail, name="detail"),
+    url(r'^add_user/(?P<id>\d+)/$', views.add_user, name="add_user"),
     url(r'^list/$', views.list, name="list"),
     url(r'^list/(?P<parent>\d+)/$', views.list, name="list"),
     url(r'^create/$', views.create , name="create"),

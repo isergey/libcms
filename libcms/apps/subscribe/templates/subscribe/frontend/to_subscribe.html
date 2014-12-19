@@ -1,0 +1,27 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}Подписки{% endblock %}
+{% block breadcrumb %}
+    <section>
+        <div id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+                <li><a href="{% url 'subscribe:frontend:index' %}">Подписки</a> <span class="divider">/</span></li>
+                <li><a href="{% url 'subscribe:frontend:subscription_detail' subscribe.id %}">{{ subscribe.name }}</a>
+                    <span class="divider">/</span></li>
+                <li class="active">Оформление подписки</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+{% block index_content %}
+    <h1>Оформление подписки на: {{ subscribe.name }}</h1>
+    <form method="POST" class="form-horizontal">{% csrf_token %}
+        <fieldset>
+            {% include 'frontend/base_form_fields.html' %}
+            <div class="form-actions">
+                <input type="submit" value="Подписаться" class="btn"/>
+            </div>
+        </fieldset>
+    </form>
+
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'theme_frontend_base.html' %}
+{% load add_get_tag %}
+{% load pagination_tag %}
+{% block title %}Новые поступления{% endblock %}
+{% block breadcrumb %}
+<section>
+    <div id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'search:frontend:income' %}">Новые поступления</a> <span class="divider">/</span></li>
+            {% if collection.title %}
+                <li class="active">{{ collection.title }}</li>
+            {% endif %}
+        </ul>
+    </div>
+</section>
+{% endblock %}
+{% block content %}
+    <div class="grid_5_1">
+{% include 'search_bar.html' %}
+{#		<div id="picture">#}
+{#			<img src="{{ STATIC_URL }}images/sample/sample_pic2.jpg">#}
+{#		</div>#}
+{##}
+{#        <div class="search-bar inside">#}
+{#        <form>#}
+{#          <input type="text" placeholder="Введите автора, заглавие, тему">#}
+{#          <button type="submit" class="btn">Найти</button><br>#}
+{#          <label class="radio"><input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked="">По каталогам</label>#}
+{#          <label class="radio gap"><input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">По полному тексту</label>#}
+{#          <a href="" class="gap1 blue">Расширенный поиск</a>#}
+{#        </form>#}
+{#        </div>#}
+
+        <div id="news">
+		    {% if start_date or end_date %}
+                <p>Выбранный период: {% if start_date %}с <span class="date">{{ start_date }}</span>{% endif %}{% if end_date %} по <span class="date">{{ end_date }}</span>{% endif %} <a title="Убрать фильтр по дате" href="{% add_get start_date='' end_date='' %}"><i class="icon-remove"></i></a></p>
+            {% endif %}
+{#            {% if request.GET.linked_record_number_s %}#}
+{#                {% for linked_record_number in linked_record_numbers %}#}
+{#                    <a href="{% url ssearch:frontend:income %}{% add_get linked_record_number_s=linked_record_number.0 %}">{{ linked_record_number.1 }}</a>#}
+{#                {% endfor %}#}
+{#            {% endif %}#}
+		    <div style="clear:both">
+                <ul class="income">
+                    {% for date, groups in date_groups.items %}
+                        <li><h3><a target="_parent" href="{% url 'search:frontend:index' %}?q={{ date|date:"Y-m-d"|urlencode }}T00:00:00Z&attr=create_date_dts&sort=create_date_dts&order=desc{% if collection.code %}&q={{ collection.code|urlencode }}&attr=scollection_s{% endif %}">{{ date|date:"d E Y" }}</a></h3>
+{#                            <ul>#}
+                                {% for group in  groups %}
+{#                                    <li>#}
+                                        {% if group.values %}
+                                            <ul>
+                                                {% for value in group.values %}
+
+                                                    <li><a target="_parent" href="{% url 'search:frontend:index' %}?q={{ date|date:"Y-m-d"|urlencode }}T00:00:00Z&attr=create_date_dts{% if value.linked_record_number_s %}&q={{ value.linked_record_number_s|urlencode }}&attr=linked_record_number_s&{% endif %}{% if value.catalog_s %}&q={{ value.catalog_s|urlencode }}&attr=catalog_s&{% endif %}&q={{ group.scollection_s|urlencode }}&attr=scollection_s&sort=create_date_dts&order=desc" title="{{ value.title }}">{{ value.title|truncatewords:"7" }} </a>{{ value.count }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                        {% if group.records %}
+                                            <ul>
+                                            {% for record in group.records %}
+                                <li><a href="{% if record.dict.full_text %}http://10.85.160.158/{{ record.dict.full_text.0 }}{% else %}{% url 'search:frontend:detail' %}?genid={{ record.genid }}{% endif %}">{{ record.library_cadr|safe }}</a>
+{#                                {% if record.dict.full_text %}<a href="http://10.85.160.158/{{ record.dict.full_text.0 }}"><b>полный текст &rarr;</b></a>{% endif %}#}
+{#                                    {{ record.dict.create_date }}#}
+                                    {% if not forloop.last %}<hr class="lightgray"/>{% endif %}
+                                </li>
+{#                                                <li>1<a href="{% url ssearch:frontend:detail %}?genid={{ record.genid }}">{{ record.library_cadr|safe }}</a>#}
+{#                                                    {% if record.dict.full_text %}{% for ft in record.dict.full_text %}<a href="http://10.85.160.158/{{ ft }}"><b>полный текст  &rarr;</b></a> {% if not forloop.last %}<br/>{% endif %}{% endfor %}{% endif %}#}
+
+                                            {% endfor %}
+                                            </ul>
+                                        {% endif %}
+{#                                    </li>#}
+                                {% endfor %}
+{#                            </ul>#}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% pagination date_pages %}
+    </div>
+<div class="grid_3_2 omega">
+
+<div class="info nomargin">
+    <h3 class="block_title">Показать поступления:</h3>
+    <form method="GET" class="form-inline">
+    {% include 'administration/base_form_fields.html' with form=date_filter_form %}
+        <input type="submit" class="btn" value="Показать">
+        {% if request.GET.linked_record_number_s %}
+            <input type="hidden" name="linked_record_number_s" value="{{ request.GET.linked_record_number_s }}">
+        {% endif %}
+        {% if request.GET.collection %}
+            <input type="hidden" name="collection" value="{{ request.GET.collection }}">
+        {% endif %}
+    </form>
+        <script type="text/javascript">
+        $('.vDateField').datepicker({
+            format: 'dd.mm.yyyy'
+        });
+    </script>
+</div>
+
+        <div class="info-white">
+        {% if linked_record_numbers %}
+          <h3>Публикации:</h3>
+		  <ul>
+              {% for linked_record_number in linked_record_numbers %}
+                  <li style="margin-bottom: 5px"><a href="{% url 'search:frontend:income_sic' %}{% add_get linked_record_number_s=linked_record_number.0 %}">{{ linked_record_number.1 }}{{ linked_record_number.2 }}</a></li>
+              {% endfor %}
+          </ul>
+        {% if request.GET.linked_record_number_s %}
+            <a class="btn btn-mini" href="{% url 'search:frontend:income_sic' %}{% add_get linked_record_number_s=''%}" ><i class="icon-remove"></i> Убрать фильтр по публикации</a>
+        {% endif %}
+        {% endif %}
+        </div>
+
+      </div>
+{% endblock %}

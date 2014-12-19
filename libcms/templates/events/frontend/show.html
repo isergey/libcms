@@ -1,0 +1,34 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block breadcrumb %}
+<section>
+    <div id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        {% if request.GET.back %}
+            <li><a href="{{ request.GET.back }}">Календарь мероприятий</a> <span class="divider">/</span></li>
+        {% else %}
+            <li><a href="{% url 'events:frontend:index' %}">Календарь мероприятий</a> <span class="divider">/</span></li>
+        {% endif %}
+        <li class="active">{{ content.title }}</li>
+    </ul>
+    </div>
+</section>
+{% endblock %}
+{% block index_content %}
+    {% if content.report %}
+        <h3>Отчет о событии</h3>
+        <div class="content">
+            {{ content.report|safe }}
+        </div>
+    {% endif %}
+    <div class="content">
+        {{ content.content|safe }}
+    </div>
+
+    <hr/>
+    <div class="info1">
+        <b>Место проведения</b>: {{ event.address }}<br/>
+        <b>Начало</b>: {{ event.start_date }}
+    </div>
+{% endblock %}

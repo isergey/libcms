@@ -7,34 +7,7 @@
             <li class="active">Библиотеки</li>
         </ul>
     <div class="row">
-        <div class="span6">
-            <ul class="nav nav-tabs">
-              <li class="active">
-                <a href="{% url 'participants:frontend:index' %}">Библиотеки</a>
-              </li>
-              <li><a href="{% url 'participants:frontend:geosearch' %}">Поиск по местоположению</a></li>
-            </ul>
-            <ul class="participants" style="list-style: none; margin: 0">
-                {% for cbs in  cbs_list %}
-                    <li style="margin-bottom: 10px">
-                        <div><a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}</a></div>
-                        <div>
-                            Сайт: {% if cbs.http_service  %}
-                            <a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
-                            {% else %}
-                                <a href="{% url 'participants:frontend:branches' cbs.code %}" target="_blank"> {{ request.META.HTTP_HOST }}{% url 'participants:frontend:branches' cbs.code %}</a>
-                            {% endif %}
-                        </div>
-                        <div>
-                            <a class="btn btn-mini btn-info" href="{% url 'ssearch:frontend:index' %}?library={{ cbs.code }}">поиск в каталоге</a>
-                        </div>
-                    </li>
-                {% empty %}
-                    Список еще не сформирован
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="span6">
+        <div class="span12">
             <style>
                 #map_canvas{
                     background: white;
@@ -45,6 +18,36 @@
             </style>
             <div id="map_canvas" style="height: 400px"></div>
             {% include 'participants/frontend/map_cbs_js.html' %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="span12">
+        <hr/>
+            <ul class="nav nav-tabs">
+              <li class="active">
+                <a href="{% url 'participants:frontend:index' %}">Библиотеки</a>
+              </li>
+              <li><a href="{% url 'participants:frontend:geosearch' %}">Поиск по местоположению</a></li>
+            </ul>
+            <table class="table">
+                {% for cbs in  cbs_list %}
+                    <tr>
+                        <td>
+                            {% if cbs.republican %}
+                                <div><a href="{% url 'participant_site:frontend:index' cbs.code %}">{{ cbs.name }}</a></div>
+                            {% else %}
+                                <div><a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}</a></div>
+                            {% endif %}
+
+                            <div>
+                                <a class="btn btn-mini btn-info" href="{% url 'ssearch:frontend:index' %}?library={{ cbs.code }}">поиск в каталоге</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    Список еще не сформирован
+                {% endfor %}
+            </table>
         </div>
     </div>
 

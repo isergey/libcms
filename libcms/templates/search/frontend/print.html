@@ -1,0 +1,91 @@
+{% load mydocs_tags %}
+{% load content_types %}
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style>
+    a.btn {
+        text-decoration: none;
+    }
+
+    #searchresults ul.records {
+        list-style: none;
+    }
+
+    #searchresults ul.records li {
+        margin: 0;
+        padding: 0;
+    }
+
+    .cover {
+        height: 120px;
+        text-align: center;
+        vertical-align: middle;
+        background: #eeeeee;
+        color: #d0d0d0;
+
+    }
+
+    .record .note {
+        margin-top: 10px;
+        font-family: Georgia, "Times New Roman", Times, serif;
+        text-indent: 20px;
+        font-size: 14px;
+        text-align: justify;
+        border-top: 1px solid #ced2d5;
+
+    }
+
+    .record .header {
+        font-weight: bold;
+    }
+</style>
+</head>
+<body onload="window.print();">
+
+<table style="width: 100%">
+    <tr>
+        {% if record.dict.cover %}
+        <td style="width: 105px" ;>
+            <a class="mins" href="{{ COVER_PREFIX }}{{ record.dict.cover.0 }}.gif" class="thumbnail"
+               rel="gallery_group">
+                <img style="width: 100px; margin: 0 5px 5px 0" class="tumb"
+                     src="{{ COVER_PREFIX }}{{ record.dict.cover.0 }}.gif" alt="" rel="tooltip">
+            </a>
+        </td>
+        {% endif %}
+        <td>
+            {% if record.item_info.author_code %}
+            <div><b>{{ record.item_info.author_code }}</b></div>
+            {% endif %}
+            {% if record.item_info.bd_code %}
+            <div><b>{{ record.item_info.bd_code }}</b></div>
+            {% endif %}
+            {{ record.libcard|safe }}
+        </td>
+    </tr>
+</table>
+
+{% if record.dict %}
+<hr/>
+<div class="record_attrs">
+    {% include 'search/frontend/detail_tableview.html' %}
+</div>
+{% endif %}
+{% if record.urls %}
+<hr/>
+<div>
+    {% for url in record.urls %}
+    <img style="width:20px"
+         src="{{ STATIC_URL }}images/content_types/{{ url.href|content_type }}.png"/>
+    <a class="link_button"
+       href="{% url 'search:frontend:full_text_redirect' %}?ft_url={{ url.href|urlencode }}&id={{ record.model.record_id }}">
+        {{ url.title }}
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+</body>
+</html>
+

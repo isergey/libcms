@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+
+-->
+<units>
+<localization language="eng">
+</localization>
+<localization language="rus">
+<!--
+  <unit id="ОНЛ">
+    <desk id="АбонОНЛ">Абонемент отдела научной литературы</desk>
+    <desk id="ОЧЗ">Общий читальный зал</desk>
+    <desk id="НЧЗ">Научный читальный зал</desk>
+  </unit>
+-->
+</localization>
+</units>

@@ -57,6 +57,8 @@ class Library(MPTTModel):
     )
     name = models.CharField(max_length=255, verbose_name=u'Название')
     code = models.CharField(verbose_name=u'Сигла', max_length=32, db_index=True, unique=True)
+    sigla = models.CharField(verbose_name=u'Сигла из подполя 999b', max_length=32, db_index=True, blank=True)
+    republican = models.BooleanField(verbose_name=u'Руспубликанская библиотека', default=False, db_index=True)
     types = models.ManyToManyField(LibraryType, verbose_name=u'Тип библиотеки', blank=True, null=True)
 
 #    country = models.ForeignKey(Country, verbose_name=u'Страна', db_index=True, blank=True, null=True)
@@ -118,13 +120,14 @@ class UserLibrary(models.Model):
             library = self.library
         except Library.DoesNotExist:
             raise ValidationError(u'Укажите организацию к которой принадлежит пользователь.')
-        if not library.ill_service:
-            raise ValidationError(u'У библиотеки нет ill адреса, она не сможет получать заказы. ill адрес необходимо узнать у администратора службы МБА и присвоить его библиотеке.')
 
     class Meta:
-        verbose_name = u"Пользователь МБА"
-        verbose_name_plural = u"Пользователи МБА"
-
+        verbose_name = u"Пользователи организации"
+        verbose_name_plural = u"Пользователи организаций"
+        permissions = (
+            ("mba", "Can use ill"),
+            ("view_org_statistics", "Can view org statistics"),
+        )
 
 
 class LibraryContentEditor(models.Model):

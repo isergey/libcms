@@ -1,0 +1,97 @@
+{% extends 'theme_frontend_base.html' %}
+{% load add_get_tag %}
+{% load pagination_tag %}
+{% block title %}Новые поступления{% endblock %}
+{% block breadcrumb %}
+    <section>
+        <div id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+                <li class="active">Новые поступления</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+{% block content %}
+    <div class="grid_5_1">
+        {#        {% include 'search_bar.html' %}#}
+        <ul class="income-list">
+            {% for income_group in income_groups %}
+                <li class="income-list__item">
+                    <span class="income-title">{{ income_group.title }}</span>
+                    <ul class="income-dates">
+                        {% for date, records in income_group.date_groups.items %}
+                            <li><span class="income-date">{{ date|date:"j E Y" }}</span>
+                                <ul class="income-date-items" {% if not forloop.first %}
+                                    style="display: none" {% endif %}>
+                                    {% for id, record in records.items %}
+                                        <li>
+                                            {% if record.record_dict.cover %}
+                                            <a class="mins" href="{{ COVER_PREFIX }}{{ record.record_dict.cover.0 }}.gif"  rel="gallery_group">
+                                                <img class="tumb" src="{{ COVER_PREFIX }}{{ record.record_dict.cover.0 }}.gif" alt="" rel="tooltip">
+                                            </a>
+                                            {% endif %}
+                                            <a target=""
+                                               href="{% url 'search:frontend:detail' %}?id={{ id }}">
+                                            {{ record.libcard|safe }}</a> {% if not forloop.last %}
+                                            <hr/>{% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% empty %}
+                            <li>Новых поступлений нет.</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="grid_3_2 omega">
+
+        <div class="info nomargin">
+            <h3 class="block_title">Показать поступления:</h3>
+
+            <form method="GET" class="form-inline" action="{% url 'search:frontend:income' %}">
+                {% include 'administration/base_form_fields.html' with form=date_filter_form %}
+                <input type="hidden" name="date_filter" value="on">
+                <input type="submit" class="btn" value="Показать">
+            </form>
+
+        </div>
+{#        <div class="info-white">#}
+{#            <h3>Публикации:</h3>#}
+{#            <ul>#}
+{#                {% for linked_record_number in linked_record_numbers %}#}
+{#                    <li style="margin-bottom: 5px">#}
+{#                        <a href="#}
+{##}
+{##}
+{##}
+{#                                {% url 'search:frontend:income' %}{% add_get linked_record_number_s=linked_record_number.0 %}">#}
+{#                            {{ linked_record_number.1 }}{{ linked_record_number.2 }}</a>#}
+{#                    </li>#}
+{#                {% endfor %}#}
+{#            </ul>#}
+{#            {% if request.GET.linked_record_number_s %}#}
+{#                <a class="btn btn-mini"#}
+{#                   href="{% url 'search:frontend:income' %}{% add_get linked_record_number_s='' %}"><i#}
+{#                        class="icon-remove"></i> Убрать фильтр по публикации</a>#}
+{#            {% endif %}#}
+{#        </div>#}
+
+    </div>
+    <script type="text/javascript">
+        $('.vDateField').datepicker({
+            format: 'dd.mm.yyyy'
+        });
+    </script>
+    <script>
+        $('.income-date').on('click', function () {
+            $(this).siblings('.income-date-items').toggle(100);
+        });
+        $('.income-title').on('click', function () {
+            $(this).siblings('.income-dates').toggle(100);
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,18 @@
+<div class="search-bar inside" {% if  request.META.PATH_INFO != '/ru/' %}style="margin-top: 0"{% endif %} >
+     <div style="text-align: left">
+         <a href="/ru/pages/rubricator/" class="blue">Поиск по рубрикатору</a>
+         <a style="float: right" href="{% url 'search:frontend:advanced_search' %}" class="blue">Расширенный поиск</a>
+     </div>
+    <form action="{% url 'search:frontend:index' %}" method="GET">
+
+        {% if  request.META.PATH_INFO == '/ru/' %}<h3 class="search">Поиск</h3>{% endif %}
+        <input type="text" placeholder="Введите автора, заглавие, тему" name="value"/>
+        <button type="submit" class="btn">Найти</button>
+        <br>
+        <label class="radio"><input type="radio" name="attr" id="all_tru" value="all_t"
+                                    checked="">По каталогам</label>
+        <label class="radio gap"><input type="radio" name="attr" id="optionsRadios2"
+                                        value="full_text_tru">По полному тексту</label>
+
+    </form>
+</div>

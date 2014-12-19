@@ -1,0 +1,14 @@
+{# Внимание! Этот шаблон рендерится при отсылке письма. Переменная content сожержит тело письма, поэтому при составлении шаблона для#}
+{# письма рассылки, учитывать то, что тело уже будет заключено в тег body #}
+<!DOCTYPE html>
+<html>
+<head lang="ru">
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+{{ content|safe }}
+<hr/>
+Если вы хотите отписаться от этой рассылки нажмите <a href="http://{{ SITE_DOMAIN }}{% url 'subscribe:frontend:unsubscribe' subscribe_id %}?email={{ email|urlencode }}&key={{ key }}">здесь</a>
+</body>
+</html>

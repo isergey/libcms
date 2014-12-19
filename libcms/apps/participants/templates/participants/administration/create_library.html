@@ -4,8 +4,24 @@
 {% load breadcrumbs %}
 
 {% block breadcrumb %}
-    {% breadcrumb "Библиотеки" participants:administration:list %}
-    {% breadcrumb "Создание" %}
+    <li>
+        <a href="{% url 'participants:administration:index' %}">Библиотеки</a>
+        <span class="divider">/</span>
+    </li>
+    {% if parent_org %}
+        {% for ancestor in parent_org.get_ancestors %}
+            <li>
+                <a href="{% url 'participants:administration:detail' ancestor.id %}">{{ ancestor.name }}</a>
+                <span class="divider">/</span>
+            </li>
+        {% endfor %}
+        <a href="{% url 'participants:administration:detail' parent_org.id %}">{{ parent_org.name }}</a>
+        <span class="divider">/</span>
+        <li class="active">Создание филиала</li>
+    {% else %}
+        <li class="active">Создание библиотеки</li>
+    {% endif %}
+
 
 {% endblock %}
 
@@ -26,7 +42,7 @@
     }
     </style>
     <form class="form-horizontal" method="POST">{% csrf_token %}
-        {% if parent %}
+        {% if parent_org %}
             <legend>Создание филиала</legend>
         {% else %}
             <legend>Создание ЦБС</legend>

@@ -1,0 +1,44 @@
+{% extends 'gallery/administration/index.html' %}
+{% load  breadcrumbs %}
+{% block breadcrumb %}
+    {% breadcrumb "Галерея" gallery:administration:index %}
+    {% breadcrumb "Альбомы"  gallery:administration:albums_list %}
+    {% breadcrumb_url album  'gallery:administration:album_view' album.id %}
+    {% breadcrumb "Загрузка изображений"  %}
+{% endblock %}
+{% block action_content %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}gallery/uploadify/uploadify.css">
+    <script type="text/javascript" src="{{ STATIC_URL }}gallery/uploadify/jquery.uploadify-3.1.min.js"></script>
+
+    <h3>{{ album }}</h3>
+    <hr/>
+    <div class="alert alert-info">
+        Для загрузки изображений укажите нужные файлы (можно сразу несколько). Поддерживаемые форматы: JPEG, PNG, GIF.
+    </div>
+    <form class="form-horizontal" method="POST" enctype="multipart/form-data">{% csrf_token %}
+{#        <legend>Загрузка изображений</legend>#}
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=form %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Загрузить</button>
+            </div>
+        </fieldset>
+    </form>
+    <script type="text/javascript">
+        $(function() {
+            $('#id_image').uploadify({
+                'formData'      : {'sessionid' : '{{ request.COOKIES.sessionid }}'},
+                'buttonText' : 'Укажите файлы',
+                'fileObjName' : 'image',
+                'swf'      : '{{ STATIC_URL }}gallery/uploadify/uploadify.swf',
+                'uploader' : '{% url 'gallery:administration:album_upload' album.id %}',
+                'onQueueComplete' : function(queueData) {
+                    if (queueData.uploadsErrored){
+                        alert("Во время загрузки возникла ошибка");
+                    }
+                    window.location = "{% url 'gallery:administration:album_view' album.id %}";
+                }
+            });
+        });
+    </script>
+{% endblock %}

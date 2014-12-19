@@ -1,0 +1,46 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}{{ poll.question }}{% endblock %}
+{% block breadcrumb %}
+<section>
+    <div id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'polls:frontend:index' %}">Голосования</a> <span class="divider">/</span></li>
+        <li class="active">{{ poll.question }}</li>
+    </ul>
+    </div>
+</section>
+{% endblock %}
+{% block index_content %}
+    <style type="text/css">
+        .polls .content ul {
+            list-style: none;
+            padding:0;
+        }
+
+    </style>
+    <div class="polls">
+        <div class="content">
+
+            <form action="" method="POST">{% csrf_token %}
+                <ul>
+                    {% if poll.poll_type == 'radio' %}
+                        {% for choice in choices %}
+                            <li><input type="radio" name="answer" value="{{ choice.id }}"/> {{ choice.choice }} </li>
+                        {% empty %}
+                            Нет вариантов ответа.
+                        {% endfor %}
+                    {% else %}
+                        {% for choice in choices %}
+
+                            <li><input type="checkbox" name="answer" value="{{ choice.id }}"/> {{ choice.choice }} </li>
+                        {% empty %}
+                            Нет вариантов ответа.
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+                <button name="send" value="send" type="submit" class="btn">Ответить</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

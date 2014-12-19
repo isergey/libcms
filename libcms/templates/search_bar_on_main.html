@@ -1,0 +1,16 @@
+<div class="search-bar">
+    <form action="{% url 'ssearch:frontend:index' %}" method="GET">
+        <h3 class="search">Поиск</h3>
+        <input type="text" placeholder="Введите автора, заглавие, тему" name="q"/>
+        <button type="submit" class="btn">Найти</button>
+        <br>
+        <label class="radio"><input type="radio" name="attr" id="all_tru" value="all_tru"
+                                    checked="">По каталогам</label>
+        <label class="radio gap"><input type="radio" name="attr" id="optionsRadios2"
+                                        value="full_text_tru">По полному тексту</label>
+         <div style="text-align: left">
+             <a href="/ru/pages/rubricator/" class="blue">Поиск по рубрикатору</a>
+             <a style="float: right" href="{% url 'search:frontend:advanced_search' %}" class="blue">Расширенный поиск</a>
+         </div>
+    </form>
+</div>

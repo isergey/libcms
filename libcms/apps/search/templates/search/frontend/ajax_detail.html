@@ -1,0 +1,41 @@
+<div>
+    {{ record.libcard|safe }}
+</div>
+<hr/>
+<ul class="nav nav-tabs">
+    {% if holders %}
+        <li class="active"><a href="#items" data-toggle="tab">Экземпляры</a></li>
+    {% endif %}
+    <li><a href="#servises" data-toggle="tab">Сервисы</a></li>
+    <li><a href="#marc" data-toggle="tab">RUSMARC</a></li>
+</ul>
+
+<div class="tab-content">
+    {% if holders %}
+        <div class="tab-pane" id="items">
+            <table style="margin-top: 5px" class="table">
+            <tr>
+                <th>Организация</th>
+                <th>Отдел</th>
+                <th>Инвентарный номер</th>
+                <th></th>
+            </tr>
+                {% for holder in holders %}
+                    <tr>
+                        <td>{{ holder.org }}</td>
+                        <td>{{ holder.branch }}</td>
+                        <td> {{ holder.item_id }}</td>
+                        <td><a class="btn btn-success" href="#1">Забронировать</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+    <div class="tab-pane" id="servises">
+        <div style="margin: 5px">
+            <a class="btn btn-success" href="#1">Заказать по МБА</a>
+        </div>
+
+    </div>
+    <div class="tab-pane" id="marc">{{ record.object.to_html|safe }}</div>
+</div>

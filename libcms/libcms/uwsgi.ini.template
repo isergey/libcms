@@ -1,0 +1,13 @@
+[uwsgi]
+chdir=/var/www/artlib/libcms/
+module=libcms.wsgi:application
+master=True
+pidfile=/tmp/artlib.pid
+socket=127.0.0.1:49152
+processes=4
+harakiri=60
+limit-as=512
+max-requests=5000
+vacuum=True
+disable-logging=True
+

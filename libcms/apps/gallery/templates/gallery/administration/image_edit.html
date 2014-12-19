@@ -1,0 +1,24 @@
+{% extends 'gallery/administration/index.html' %}
+{% load  breadcrumbs %}
+{% block breadcrumb %}
+    {% breadcrumb "Галерея" gallery:administration:index %}
+    {% breadcrumb "Альбомы" gallery:administration:albums_list  %}
+    {% breadcrumb_url  album_image.album  'gallery:administration:album_view' album_image.album_id  %}
+    {% breadcrumb "Редактирование изображения"  %}
+{% endblock %}
+{% block action_content %}
+    <style type="text/css">
+        form textarea {
+            width: 99%;
+        }
+    </style>
+    <form class="" method="POST">{% csrf_token %}
+        <legend>Редактирование изображения</legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=form %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Редактировать</button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

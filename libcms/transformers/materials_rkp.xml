@@ -1,0 +1,13 @@
+﻿<?xml version="1.0"?>
+<messages>
+<localization lang="eng">
+  <msg id="AND(s[1:1021],1[1:1045])">Journals</msg>
+  <msg id="AND(s[1:1021],2[1:1045])">Issues</msg>
+  <msg id="OR(a[1:1021]:b[1:1021])">Articles</msg>
+</localization>
+<localization lang="rus">
+  <msg id="AND(s[1:1021],1[1:1045])">Журналы</msg>
+  <msg id="AND(s[1:1021],2[1:1045])">Выпуски</msg>
+  <msg id="OR(a[1:1021]:b[1:1021])">Cтатьи</msg>
+</localization>
+</messages>

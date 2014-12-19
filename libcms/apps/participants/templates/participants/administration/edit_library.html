@@ -4,22 +4,27 @@
 {% load breadcrumbs %}
 
 {% block breadcrumb %}
-    {% breadcrumb "Библиотеки" participants:administration:list %}
-    {% breadcrumb "Редактирование" %}
+    <li>
+        <a href="{% url 'participants:administration:index' %}">Библиотеки</a>
+        <span class="divider">/</span>
+    </li>
+    {% if parent %}
+        {% for ancestor in parent.get_ancestors %}
+            <li>
+                <a href="{% url 'participants:administration:detail' ancestor.id %}">{{ ancestor.name }}</a>
+                <span class="divider">/</span>
+            </li>
+        {% endfor %}
+        <a href="{% url 'participants:administration:detail' parent.id %}">{{ parent.name }}</a>
+        <span class="divider">/</span>
+    {% endif %}
+        <a href="{% url 'participants:administration:detail' library.id %}">{{ library.name }}</a>
+        <span class="divider">/</span>
+        <li class="active">Редактирование</li>
 
 {% endblock %}
 
 {% block action_content %}
-    {% if parent %}
-        {% for ancestor in parent.get_ancestors %}
-            <a href="{% url 'participants:administration:list' ancestor.id %}">{{ ancestor }}</a> →
-        {% endfor %}
-        {% if parent.parent_id %}
-            <a href="{% url 'participants:administration:list' parent.id %}">{{ parent }}</a>
-        {% else %}
-            <a href="{% url 'participants:administration:list' %}">{{ parent }}</a>
-        {% endif %}
-    {% endif %}
     <style type="text/css">
     form input, textarea{
         width: 100%;

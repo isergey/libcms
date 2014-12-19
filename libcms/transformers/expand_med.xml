@@ -1,0 +1,47 @@
+﻿<target>
+<explain>
+  <serverInfo>
+    <host>z3950.arbicon.ru</host>
+    <port>210</port>
+    <database>mesh2004</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">MeSH</title>
+    <title lang="rus">MeSH</title>
+  </databaseInfo>
+  <configInfo>
+    <setting type="scheme">auth</setting>
+    <setting type="charset">UTF-8</setting>
+  </configInfo>
+</explain>
+<explain>
+  <serverInfo>
+    <host>opac.ruslan.ru</host>
+    <port>210</port>
+    <database>nlrsh</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">NLR subject headings</title>
+    <title lang="rus">Рубрикатор РНБ</title>
+  </databaseInfo>
+  <configInfo>
+    <setting type="scheme">auth</setting>
+    <setting type="charset">UTF-8</setting>
+  </configInfo>
+</explain>
+<explain>
+  <serverInfo>
+    <host>opac.ruslan.ru</host>
+    <port>210</port>
+    <database>mplsubtez</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">St.Petersburg Central Public Library thesaurus</title>
+    <title lang="rus">Тезаурус ЦГПБ им. В.В. Маяковского</title>
+  </databaseInfo>
+  <configInfo>
+    <setting type="scheme">auth</setting>
+    <setting type="charset">UTF-8</setting>
+  </configInfo>
+</explain>
+</target>

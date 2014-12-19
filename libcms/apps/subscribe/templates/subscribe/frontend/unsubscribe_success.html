@@ -1,0 +1,18 @@
+{% extends 'index/frontend/index.html' %}
+{% load add_get_tag %}
+{% block title %}Подписки{% endblock %}
+{% block breadcrumb %}
+<section>
+    <div id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'subscribe:frontend:index' %}">Подписки</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'subscribe:frontend:subscription_detail' subscribe.id  %}">{{ subscribe.name }}</a> <span class="divider">/</span></li>
+            <li class="active">Отписаться от рассылки</li>
+        </ul>
+    </div>
+</section>
+{% endblock %}
+{% block index_content %}
+    <p>Ваш email {{ email }} был исключен из рассылки <b>{{ subscribe.name }}</b>. Спасибо за пользование сервисом!</p>
+{% endblock %}

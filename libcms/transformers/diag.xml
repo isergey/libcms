@@ -1,0 +1,251 @@
+<?xml version="1.0"?>
+<!--
+ * $Log: diag.xml,v $
+ * Revision 1.5  2010/05/28 09:01:29  rustam
+ * Further tatar translation
+ *
+ * Revision 1.4  2010/05/12 11:35:42  rustam
+ * Tatar translation
+ *
+ * Revision 1.3  2010/05/06 16:53:34  rustam
+ * Tatar translation
+ *
+ * Revision 1.2  2003/04/08 11:36:07  rustam
+ * Added some new diagnostics
+ *
+ * Revision 1.1  2003/01/31 14:11:27  rustam
+ * New pre-release
+ *
+-->
+<diagnostic>
+  <set id="1.2.840.10003.4.1">
+    <localization lang="eng">
+      <code value="1">Permanent system error</code>
+      <code value="2">Temporary system error</code>
+      <code value="3">Unsupported search</code>
+      <code value="4">Terms only exclusion (stop) words</code>
+      <code value="5">Too many argument words</code>
+      <code value="6">Too many boolean operators</code>
+      <code value="7">Too many trucated words</code>
+      <code value="9">Trucated words too short</code>
+      <code value="11">Too many characters in search statement</code>
+      <code value="12">Too many records retrieved</code>
+      <code value="13">Present request out-of-range</code>	
+      <code value="14">System error in presenting records</code>
+      <code value="23">Specified combination of databases not supported</code>
+      <code value="27">Result set no longer exists - unilaterally deleted by target</code>
+      <code value="28">Result set is in use</code>
+      <code value="29">One of the specified databases is locked</code>
+      <code value="30">Specified result set does not exist</code>
+      <code value="31">Resourses exhausted – no results available</code>
+      <code value="32">Resourses exhausted – unpredictable partial results available</code>
+      <code value="33">Resourses exhausted – valid subset of results available</code>
+      <code value="100">(Unspecified) error</code>
+      <code value="101">Access-control failure</code>
+      <code value="106">No abstract syntaxes agreed to for this record</code>
+      <code value="107">Query type not supported</code>
+      <code value="108">Malformed query</code>
+      <code value="109">Database unavailable</code>
+      <code value="110">Operator unsupported</code>
+      <code value="111">Too many databases specified</code>
+      <code value="112">Too many result sets created</code>
+      <code value="113">Unsupported attribute type</code>
+      <code value="114">Unsupported Use attribute</code>
+      <code value="115">Unsupported term value for Use attribute</code>
+      <code value="116">Use attribute required but not supplied</code>
+      <code value="117">Unsupported Relation attribute</code>
+      <code value="118">Unsupported Structure attribute</code>
+      <code value="119">Unsupported Position attribute</code>
+      <code value="120">Unsupported Truncation attribute</code>
+      <code value="121">Unsupported Attribute Set</code>
+      <code value="122">Unsupported Completeness Attribute</code>
+      <code value="123">Unsupported attribute combination</code>
+      <code value="125">Malformed search term</code>
+      <code value="126">Illegal term value for attribute</code>
+      <code value="205">Only zero step size supported for Scan</code>
+      <code value="206">Specified step size not supported for Scan</code>
+      <code value="219">No such package, on modify/delete</code>
+      <code value="220">Quota exceeded</code>
+      <code value="221">Service not supported</code>
+      <code value="222">Permission denied - id not authorized</code>
+      <code value="223">Permission denied - cannot modify or delete</code>
+      <code value="235">Database does not exist</code>
+      <code value="236">Access to specified database denied</code>
+      <code value="238">Record not available in requested syntax</code>
+      <code value="239">Record syntax not supported</code>
+      <code value="240">Scan: Resources exhausted looking for satisfying terms</code>
+      <code value="1025">Service not supported for this database</code>
+      <code value="1026">Record cannot be opened because it is locked</code>
+      <code value="1027">SQL error</code>
+      <code value="1028">Record deleted</code>
+      <code value="1040">ES: Invalid function</code>
+      <code value="1041">ES: Error in retention time</code>
+      <code value="1042">ES: Permissions data not understood</code>
+      <code value="1043">ES: Invalid OID for task specific parameters</code>
+      <code value="1044">ES: invalid action</code>
+      <code value="1045">ES: Unknown schema</code>
+      <code value="1046">ES: Too many records in package</code>
+      <code value="1047">ES: Invalid wait action</code>
+      <code value="1056">Attribute not supported for database</code>
+      <code value="1058">Duplicate Detection: Cannot dedup on requested record portion</code>
+      <code value="1059">Duplicate Detection: Requested detection criterion not supported</code>
+      <code value="1060">Duplicate Detection: Requested level of match not supported</code>
+      <code value="1061">Duplicate Detection: Requested regular expression not supported</code>
+      <code value="1062">Duplicate Detection: Cannot do clustering</code>
+      <code value="1063">Duplicate Detection: Retention criterion not supported</code>
+      <code value="1064">Duplicate Detection: Requested number (or percentage) of entries for retention too large</code>
+    </localization>
+    <localization lang="rus">
+      <code value="1">Постоянная системная ошибка</code>
+      <code value="2">Временная системная ошибка</code>
+      <code value="3">Неподдерживаемый поиск</code>
+      <code value="4">Поисковое выражение состоит только из стоп-слов</code>
+      <code value="5">Слишком много слов</code>
+      <code value="6">Слишком много логических операторов</code>
+      <code value="7">Слишком много усеченных слов</code>
+      <code value="9">Усеченные слова слишком коротки</code>
+      <code value="11">Слишком большой поисковый запрос</code>
+      <code value="12">Найдено слишком много записей</code>
+      <code value="13">Попытка извлечения несуществующей записи</code>	
+      <code value="14">Системная ошибка при извлечении записей</code>
+      <code value="23">Указанная комбинация баз данных не поддерживается</code>
+      <code value="27">Результатов поиска больше не существует - удалены сервером</code>
+      <code value="28">Результаты поиска еще формируются</code>
+      <code value="29">Одна из указанных баз данных заблокирована</code>
+      <code value="30">Указанное результирующее множество не существует</code>
+      <code value="31">Ресурсы исчерпаны – результат отсутствует</code>
+      <code value="32">Ресурсы исчерпаны – доступен непредсказуемый частичный результат</code>
+      <code value="33">Ресурсы исчерпаны – доступен достоверный частичный результат</code>
+      <code value="100">(Точно неустановленная) ошибка</code>
+      <code value="101">Нет доступа</code>
+      <code value="106">Для записи не установлен абстрактный формат</code>
+      <code value="107">Неподдерживамый тип запроса</code>
+      <code value="108">Некорректный запрос</code>
+      <code value="109">База данных недоступна</code>
+      <code value="110">Неподдерживаемый оператор</code>
+      <code value="111">Указано слишком много баз данных</code>
+      <code value="112">Создано слишком много результатов поиска</code>
+      <code value="113">Неподдерживаемый тип атрибута</code>
+      <code value="114">Неподдерживаемая точка доступа</code>
+      <code value="115">Неподдерживаемое значение терма для данной точки доступа</code>
+      <code value="116">Не указана точка доступа</code>
+      <code value="117">Неподдерживаемый атрибут отношения</code>
+      <code value="118">Неподдерживаемый атрибут структуры</code>
+      <code value="119">Неподдерживаемый атрибут позиции</code>
+      <code value="120">Неподдерживамый атрибут усечения</code>
+      <code value="121">Неподдерживамый набор атрибутов</code>
+      <code value="122">Неподдерживамый атрибут полноты</code>
+      <code value="123">Неподдерживамая комбинация атрибутов</code>
+      <code value="125">Некорректное поисковое выражение</code>
+      <code value="126">Некорректное значение терма для данной точки доступа</code>
+      <code value="205">Поддерживается только нулевой шаг просмотра</code>
+      <code value="206">Указанный размер шага просмотра не подерживается</code>
+      <code value="219">Не обнаружена запись при модификации/удалении</code>
+      <code value="220">Исчерпана квота</code>
+      <code value="221">Служба не поддерживается</code>
+      <code value="222">Не хватает полномочий для выполнения операции</code>
+      <code value="223">Не хватает полномочий для модификации или удаления</code>
+      <code value="235">Несуществующая база данных</code>
+      <code value="236">Отказано в доступе к базе данных</code>
+      <code value="238">Невозможно представить запись в требуемой форме</code>
+      <code value="239">Неподдерживамый формaт записи</code>
+      <code value="240">Просмотр: Ресурсы исчерпаны в поисках подходящего термина</code>
+      <code value="1025">Услуга не предоставляется для этой базы данных</code>
+      <code value="1026">Невозможно открыть запись, т.к. она заблокирована</code>
+      <code value="1027">Ошибка SQL</code>
+      <code value="1028">Запись удалена</code>
+      <code value="1040">Дополнительные услуги: Неверная функция</code>
+      <code value="1041">Дополнительные услуги: Неверное время хранения</code>
+      <code value="1042">Дополнительные услуги: Непонятные сведения о полномочиях</code>
+      <code value="1043">Дополнительные услуги: Неверный идентификатор объекта для конкретной услуги</code>
+      <code value="1044">Дополнительные услуги: Неверное действие</code>
+      <code value="1045">Дополнительные услуги: Неизвестная схема</code>
+      <code value="1046">Дополнительные услуги: Слишком много записей в пакете</code>
+      <code value="1047">Дополнительные услуги: Неверный признак ожидания</code>
+      <code value="1056">Точка доступа не поддерживается для указанной базы данных</code>
+      <code value="1058">Обнаружение дублетов: Дедупликация по указанным элементам записи невозможна</code>
+      <code value="1059">Обнаружение дублетов: Не поддерживается требуемый критерий обнаружения дублетов</code>
+      <code value="1060">Обнаружение дублетов: Не поддерживается требуемая степень совпадения</code>
+      <code value="1061">Обнаружение дублетов: Не поддерживается требуемое регулярное выражение</code>
+      <code value="1062">Обнаружение дублетов: Невозможно выполнить кластеризацию</code>
+      <code value="1063">Обнаружение дублетов: Не поддерживается требуемый критерий отбора записей</code>
+      <code value="1064">Обнаружение дублетов: Требуемое количество (%) отобранных записей слишком велико</code>
+    </localization>
+    <localization lang="tat">
+      <code value="1">Система хатасы даими</code>
+      <code value="2">Система хатасы вакытлыча</code>
+      <code value="3">Эзләнү тотрыксыз</code>
+      <code value="4">Эзләү аңлатмасы туктату сүзләреннән генә тора</code>
+      <code value="5">Сүзләр артык күп</code>
+      <code value="6">Логик операторлар артык күп</code>
+      <code value="7">Кыскартылган сүзләр артык күп</code>
+      <code value="9">Кыскартылган сүзләр артык кыска</code>
+      <code value="11">Эзләү ихтыяҗы артык зур</code>
+      <code value="12">Язмалар артык күп табылган</code>
+      <code value="13">Булмаган язмаларны алырга омтылу</code>	
+      <code value="14">Язмаларны  алганда система хатасы</code>
+      <code value="23">ММәгълүматлар базасының күрсәтелгән комбинациясе хупланмый</code>
+      <code value="27">Эзләү нәтиҗәләре бүтән юк – сервер ярдәмендә бетерелгән</code>
+      <code value="28">Эзләү нәтиҗәләре әле формалаша</code>
+      <code value="29">Күрсәтелгән мәгълүматлар базасының берсе блокировкаланган</code>
+      <code value="30">Күрсәтелгән  күпчелекнең нәтиҗәлелеге юк</code>
+      <code value="31">Ресурслар тәмам – нәтиҗә юк</code>
+      <code value="32">Ресурслар тәмам – өлешчә көтелмәгән нәтиҗә булырга мөмкин</code>
+      <code value="33">Ресурслар тәмам – ышанычлы өлешчә нәтиҗә бар</code>
+      <code value="100">(Төгәл билгеләнмәгән) хата</code>
+      <code value="101">Керү мөмкинлеге юк</code>
+      <code value="106">Язу өчен абстракт формат урнаштырылмаган</code>
+      <code value="107">Сорау төрләре хупланмый</code>
+      <code value="108">Дөрес булмаган сорау</code>
+      <code value="109">Мәгълумат базасына кереп булмый</code>
+      <code value="110">Тотрыксыз оператор</code>
+      <code value="111">Артык күп мәгълүматлар базасы күрсәтелгән</code>
+      <code value="112">Эзләү нәтиҗәләре кирәгеннән артык булдырылган</code>
+      <code value="113">Атрибут төре хупланмый</code>
+      <code value="114">Керү ноктасы хупланмый</code>
+      <code value="115">Бу керү ноктасына терманың кирәге юк</code>
+      <code value="116">Керү ноктасы күрсәтелмәгән</code>
+      <code value="117">Атрибут мөнәсәбәтләр хупланмый</code>
+      <code value="118">Атрибут структурасы хупланмый</code>
+      <code value="119">Атрибутның тоткан урыны хупланмый</code>
+      <code value="120">Атрибут кыскартылмасы хупланмый</code>
+      <code value="121">Хупланмаган атрибут җыелмасы</code>
+      <code value="122">Атрибутның тулылыгы хупланмый</code>
+      <code value="123">Атрибутлар комбинациясе хупланмый</code>
+      <code value="125">Эзләү аңлатмасы дөрес түгел</code>
+      <code value="126">Күрсәтелгән керү ноктасына терманың мәгънәсе юк</code>
+      <code value="205">Бары тик нольдән башланган карап чыгу гына хуплана</code>
+      <code value="206">Күрсәтелгән карап чыгу хупланмый</code>
+      <code value="219">Модификацияләгәндә / бетергәндә язу табылмаган</code>
+      <code value="220">Квота (норма) тотылып беткән</code>
+      <code value="221">Хезмәт күрсәтү хупланмый</code>
+      <code value="222">Операцияны үтәү өчен вәкаләт җитми</code>
+      <code value="223">Модификацияләү яки бетерү өчен вәкаләт җитми</code>
+      <code value="235">Булмаган мәгълүматлар базасы</code>
+      <code value="236">Мәгълүматлар базасына керү тыела</code>
+      <code value="238">Тәлап ителгән формада язманы күрсәтеп булмый</code>
+      <code value="239">Язманың форматы хупланмый</code>
+      <code value="240">Карау: уңайлы терминны эзләргә ресурслар беткән</code>
+      <code value="1025">Бу мәгълүматлар базасына хезмәт күрсәтелми</code>
+      <code value="1026">Язманы ачу мөмкинлеге юк, ул блокировкаланган</code>
+      <code value="1027">SQL хатасы</code>
+      <code value="1028">Язма юкка чыгарылган</code>
+      <code value="1040">Өстәмә хезмәт күрсәтү: Вазифа дөрес түгел</code>
+      <code value="1041">Өстәмә хезмәт күрсәтү: Саклау вакыты дөрес түгел</code>
+      <code value="1042">Өстәмә хезмәт күрсәтү: Хокуклар турында аңлаешсыз мәгълүматлар</code>
+      <code value="1043">Өстәмә хезмәт күрсәтү: Билгеле хезмәт күрсәтү өчен объектның иденфикаторы дөрес түгел</code>
+      <code value="1044">Өстәмә хезмәт күрсәтү: Гамәл дөрес түгел</code>
+      <code value="1045">Өстәмә хезмәт күрсәтү: Билгесез схема</code>
+      <code value="1046">Өстәмә хезмәт күрсәтү: Пакетта язмалар артык күп</code>
+      <code value="1047">Өстәмә хезмәт күрсәтү: Көтү билгесе ялгыш</code>
+      <code value="1056">Бу мәгълүмат базасы өчен керү ноктасы белән бәйләнеш юк</code>
+      <code value="1058">Дублетларны табу: Язманың күрсәтелгән элементларын дедупликацияләү мөмкинлеге юк</code>
+      <code value="1059">Дублетларны табу: Дублетларны табу өчен кирәкле критерийлар булышмый</code>
+      <code value="1060">Дублетларны табу: Тәңгәл килү соралган дәрәҗәдә кабул ителми</code>
+      <code value="1061">Дублетларны табу: Даими сорала торган аңлатма кабул ителми</code>
+      <code value="1062">Дублетларны табу: Кластеризацияләү  мөмкин түгел</code>
+      <code value="1063">Дублетларны табу: Соралган язмаларның сайлап алу критерийлары хупланмый</code>
+      <code value="1064">Дублетларны табу: Сайлап алынган язмаларның сорала торган саны (%) артык күп</code>
+    </localization>
+    </set>
+</diagnostic>

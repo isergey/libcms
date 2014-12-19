@@ -1,0 +1,65 @@
+{% extends 'index/frontend/index.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block title %}{{ album.title }}{% endblock %}
+{% block  breadcrumb %}
+<section>
+    <div id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            {% if request.GET.back %}
+                <li><a href="{{ request.GET.back }}">{% if LANGUAGE_CODE == 'ru' %}Галерея{% else %}Gallery{% endif %}</a><span class="divider">/</span></li>
+            {% else %}
+                <a href="{% url 'gallery:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Галерея{% else %}Gallery{% endif %}</a> <span class="divider">/</span></li>
+            {% endif %}
+            <li class="active">{{ album.title }}</li>
+        </ul>
+    </div>
+</section>
+{% endblock %}
+
+{% block index_content %}
+    <!--<script type="text/javascript" src="{{ STATIC_URL }}gallery/fancybox/jquery.fancybox.pack.js"></script>-->
+    <!--<link rel="stylesheet" href="{{ STATIC_URL }}gallery/fancybox/jquery.fancybox.css">-->
+    <style>
+        ul.images{
+            list-style: none;
+        }
+        ul.images li {
+            float: left;
+            margin: 0;
+
+
+        }
+        a.tumb {
+            display: inline-block;
+            margin: 2px;
+            border: 4px solid #E0DCD0;
+            width: 148px;
+        }
+    </style>
+    <div>
+    {{ album.description|safe }}
+    </div>
+    <hr/>
+    <ul class="images" >
+        {% for album_image in album_images %}
+            <li>
+                <a title="{{ album_image.comments }}" class="mins tumb" href="{{ MEDIA_URL }}gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}" class="thumbnail"  rel="gallery_group">
+                    <img class="" src="{{ MEDIA_URL }}gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" alt="" rel="tooltip" data-original-title="{{ album_image.comments }}">
+                </a>
+                <div><a href="{{ MEDIA_URL }}gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}origin.jpg">Оригинал</a><div>
+            </li>
+            {% if forloop.counter|divisibleby:"3" %}<div style="clear: both"/>{% endif %}
+        {% endfor %}
+    </ul>
+    <script type="text/javascript">
+        $('.tumb').tooltip();
+    </script>
+    <script type="text/javascript">
+       /* $("a.mins").fancybox({
+            'overlayColor'        : '#000',
+            'overlayOpacity'    : 0.9
+        });*/
+    </script>
+{% endblock %}

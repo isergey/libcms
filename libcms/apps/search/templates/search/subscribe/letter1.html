@@ -1,0 +1,14 @@
+<h2>{{ title }}</h2>
+<table>
+    {% for record in records %}
+        <tr>
+            <td>
+                {{ forloop.counter }}
+            </td>
+            <td>
+                <div>{{ record.libcard|safe }}</div>
+                <div><a target="_blank" href="http://{{ SITE_DOMAIN }}{% url 'search:frontend:detail' %}?id={{ record.model.record_id }}">Подробнее</a></div>
+            </td>
+        </tr>
+    {% endfor %}
+</table>

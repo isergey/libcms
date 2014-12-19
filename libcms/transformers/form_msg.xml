@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<!--
+ * $Log: form_msg.xml,v $
+ * Revision 1.9  2010/12/18 16:29:58  rustam
+ * Persistent query
+ *
+ * Revision 1.8  2010/12/17 14:32:25  rustam
+ * interface redesign
+ *
+ * Revision 1.7  2010/05/28 09:01:29  rustam
+ * Further tatar translation
+ *
+ * Revision 1.6  2010/05/06 16:53:34  rustam
+ * Tatar translation
+ *
+ * Revision 1.5  2004/09/23 07:21:09  rustam
+ * Added virtual keyboard
+ *
+ * Revision 1.4  2003/05/27 09:21:12  rustam
+ * Minor changes
+ *
+ * Revision 1.3  2003/05/15 07:27:33  rustam
+ * Implemented profiles
+ *
+ * Revision 1.2  2003/03/27 10:58:25  rustam
+ * Added support for external selector dialog
+ *
+ * Revision 1.1  2003/01/31 14:11:37  rustam
+ * New pre-release
+ *
+-->
+<messages>
+<localization lang="eng">
+  <msg id="I_HELP">Help</msg>
+  <msg id="I_KBD">Virtual Keyboard</msg>
+  <msg id="I_SEARCH">Search</msg>
+  <msg id="I_BROWSE">Browse</msg>
+  <msg id="I_SUBMIT">Submit Query</msg>
+  <msg id="I_RESET">Reset</msg>
+  <msg id="I_CLASS">Classifications</msg>
+  <msg id="I_MATERIALS">Materials</msg>
+  <msg id="I_LANGUAGES">Language</msg>
+  <msg id="I_DATABASES">Databases</msg>
+  <msg id="I_ANY_SM">Any</msg>
+  <msg id="I_ANY_M">Any</msg>
+  <msg id="I_ALL">All</msg>
+  <msg id="I_AS"> as </msg>
+  <msg id="I_AND">AND</msg>
+  <msg id="I_OR">OR</msg>
+  <msg id="I_ANDNOT">AND-NOT</msg>
+  <msg id="I_MAXREC">Maximum number of records to view </msg>
+  <msg id="I_DEDUP">Eliminate duplicates</msg>
+  <msg id="I_SHOW_HOLDINGS">Show holdings</msg>
+  <msg id="I_SORT">Sort by </msg>
+  <msg id="I_EXPAND">Expand query with </msg>
+  <msg id="I_RECSYN">Preferred record syntax </msg>
+  <msg id="I_IO_STATUS">Order status </msg>
+  <msg id="I_T_STATUS_ANY">Any</msg>
+  <msg id="I_T_STATUS_PENDING">Pending</msg>
+  <msg id="I_T_STATUS_ACTIVE">Active</msg>
+  <msg id="I_T_STATUS_COMPLETE">Complete</msg>
+  <msg id="I_T_STATUS_ABORTED">Aborted</msg>
+  <msg id="I_SIMPLE">Simple search</msg>
+  <msg id="I_EXTENDED">Extended search</msg>
+  <msg id="I_PSETS">Selected records</msg>
+  <msg id="I_PQUERIES">Saved queries</msg>
+  <msg id="I_PSCHEDS">Query schedules</msg>
+  <msg id="I_ORDERS">Orders</msg>
+  <msg id="I_BORROWED">Borrowed materials</msg>
+  <msg id="URL_SEARCH_PIC">/images/buttons/search_e.gif</msg>
+  <msg id="URL_BROWSE_PIC">/images/buttons/browse_e.gif</msg>
+</localization>
+<localization lang="rus">
+  <msg id="I_HELP">Справка</msg>
+  <msg id="I_KBD">Виртуальная клавиатура</msg>
+  <msg id="I_SEARCH">Поиск</msg>
+  <msg id="I_BROWSE">Просмотр</msg>
+  <msg id="I_SUBMIT">Поиск</msg>
+  <msg id="I_RESET">Очистить поля</msg>
+  <msg id="I_CLASS">Классификации</msg>
+  <msg id="I_MATERIALS">Материалы</msg>
+  <msg id="I_LANGUAGES">Язык</msg>
+  <msg id="I_DATABASES">Базы данных</msg>
+  <msg id="I_ANY_SM">Любой</msg>
+  <msg id="I_ANY_M">Любые</msg>
+  <msg id="I_ALL">Все</msg>
+  <msg id="I_AS"> как </msg>
+  <msg id="I_AND">И</msg>
+  <msg id="I_OR">ИЛИ</msg>
+  <msg id="I_ANDNOT">И-НЕ</msg>
+  <msg id="I_MAXREC">Количество извлекаемых записей </msg>
+  <msg id="I_DEDUP">Устранение дублетности</msg>
+  <msg id="I_SHOW_HOLDINGS">Показывать местонахождение</msg>
+  <msg id="I_SORT">Сортировка по ключу </msg>
+  <msg id="I_EXPAND">Расширять запрос используя </msg>
+  <msg id="I_RECSYN">Форма представления записей </msg>
+  <msg id="I_IO_STATUS">Статус заказа </msg>
+  <msg id="I_T_STATUS_ANY">Любой</msg>
+  <msg id="I_T_STATUS_PENDING">Еще не выполнен</msg>
+  <msg id="I_T_STATUS_ACTIVE">Выполнен</msg>
+  <msg id="I_T_STATUS_COMPLETE">Документ выдан</msg>
+  <msg id="I_T_STATUS_ABORTED">Отказ</msg>
+  <msg id="I_SIMPLE">Простой поиск</msg>
+  <msg id="I_EXTENDED">Расширенный поиск</msg>
+  <msg id="I_PSETS">Избранное</msg>
+  <msg id="I_PQUERIES">Запросы</msg>
+  <msg id="I_PSCHEDS">Расписания</msg>
+  <msg id="I_ORDERS">Заказы</msg>
+  <msg id="I_BORROWED">Документы во временном пользовании</msg>
+  <msg id="URL_SEARCH_PIC">/images/buttons/search_r.gif</msg>
+  <msg id="URL_BROWSE_PIC">/images/buttons/browse_r.gif</msg>
+</localization>
+<localization lang="tat">
+  <msg id="I_HELP">Белешмә</msg>
+  <msg id="I_KBD">Виртуаль төймә җыймасы</msg>
+  <msg id="I_SEARCH">Эзләү (эзләнү)</msg>
+  <msg id="I_BROWSE">Карау</msg>
+  <msg id="I_SUBMIT">Эзләү (эзләнү)</msg>
+  <msg id="I_RESET">Кырларны чистарту</msg>
+  <msg id="I_CLASS">Классификацияләр</msg>
+  <msg id="I_MATERIALS">Материаллар</msg>
+  <msg id="I_LANGUAGES">Тел</msg>
+  <msg id="I_DATABASES">Мәгълүматлар базасы</msg>
+  <msg id="I_ANY_SM">Теләсә нинди</msg>
+  <msg id="I_ANY_M">Теләсә кайсылары</msg>
+  <msg id="I_ALL">Барысы да</msg>
+  <msg id="I_AS"> ничек </msg>
+  <msg id="I_AND">Һәм, белән</msg>
+  <msg id="I_OR">Яки</msg>
+  <msg id="I_ANDNOT">Белән-түгел</msg>
+  <msg id="I_MAXREC">Алынган язмалар саны </msg>
+  <msg id="I_DEDUP">Кабатлауларны бетерү</msg>
+  <msg id="I_SHOW_HOLDINGS">Табылу урынын күрсәтү</msg>
+  <msg id="I_SORT">Ачкыч буенча сортлау </msg>
+  <msg id="I_EXPAND">Таләпләрне киңәйтү... кулланып </msg>
+  <msg id="I_RECSYN">Язмаларны күрсәтү формасы </msg>
+  <msg id="I_IO_STATUS">Заказ дәрәҗәсе </msg>
+  <msg id="I_T_STATUS_ANY">Теләсә нинди</msg>
+  <msg id="I_T_STATUS_PENDING">Әлегә башкарылмаган</msg>
+  <msg id="I_T_STATUS_ACTIVE">Башкарылган</msg>
+  <msg id="I_T_STATUS_COMPLETE">Документ тапшырылган (бирелгән)</msg>
+  <msg id="I_T_STATUS_ABORTED">Үтәмәү</msg>
+  <msg id="I_SIMPLE">Гади эзләү</msg>
+  <msg id="I_EXTENDED">Киңәйтелгән өзләү</msg>
+  <msg id="I_PSETS">Избранное</msg>
+  <msg id="I_PQUERIES">Запросы</msg>
+  <msg id="I_PSCHEDS">Расписания</msg>
+  <msg id="I_ORDERS">Заказы</msg>
+  <msg id="I_BORROWED">Документы во временном пользовании</msg>
+  <msg id="URL_SEARCH_PIC">/images/buttons/search_r.gif</msg>
+  <msg id="URL_BROWSE_PIC">/images/buttons/browse_r.gif</msg>
+</localization>
+</messages>

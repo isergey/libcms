@@ -1,0 +1,12 @@
+*.[oa]
+*~
+*.py[co]
+.idea
+local_settings.py
+*.mo
+*.tmp
+*.log
+*.log.*
+var
+uwsgi.ini
+

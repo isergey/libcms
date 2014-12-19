@@ -1,0 +1,7 @@
+<h2>Новости СИЦ за {{ date|date:"j E Y" }}</h2>
+<ul class="news">
+    {% for news in news_list %}
+        <li><a href="http://{{ SITE_DOMAIN }}{% url 'news:frontend:show' news.type news.id %}">{{ news.create_date|date:"j E Y" }}: {{ news.teaser|safe }}</a></li>
+        {% if not forloop.last %}<hr/>{% endif %}
+    {% endfor %}
+</ul>

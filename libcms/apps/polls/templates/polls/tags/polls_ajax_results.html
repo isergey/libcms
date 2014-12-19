@@ -1,0 +1,17 @@
+<div style="padding:5px 0 5px 0;"><b>{{ poll.question }}</b></div>
+{% if show_results %}
+    <ul style="margin:0;padding: 0;list-style:none;">
+        {% for choices_dict in choices_dicts %}
+            <li><b>{{ choices_dict.choice.choice }}</b> (голосов: {{ choice.votes }} - {{ choices_dict.percent_from_sum_votes }} % )
+                <div class="progress progress-info progress-striped" style="margin-bottom: 9px;">
+                    <div class="bar" style="width: {{ choices_dict.percent_from_sum_votes }}%"></div>
+                </div>
+            </li>
+        {% empty %}
+            Нет результатов
+        {% endfor %}
+    </ul>
+{% else %}
+    {{ message }}
+{% endif %}
+<div style="text-align:center;padding:5px 0 5px 0;"><a href="{% url polls:frontend:index %}">Архив опросов</a></div>

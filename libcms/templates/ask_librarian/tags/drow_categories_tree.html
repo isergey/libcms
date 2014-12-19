@@ -1,0 +1,26 @@
+{% load mptt_tags %}
+{% load ask_librarian_tags %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% url 'ask_librarian:frontend:index' as ask_librarian_index %}
+<ul class="items">
+    {% if nodes %}
+        {% recursetree nodes %}
+            <li {% if path == node.item_title.url  %}class="active"{% endif %}>
+                <a href="{{ ask_librarian_index }}?category={{ node.id }}">{{ node.node_title.title }}
+            {#     (<b>{%  get_question_category_count node %}</b>)#}
+                 </a>
+            </li>
+            {% if not node.is_leaf_node %}
+
+                <li><ul class="children" style="list-style: none;">
+                    {{ children }}
+                </ul>
+                </li>
+            {% endif %}
+        {% endrecursetree %}
+    {% endif %}
+</ul>
+
+
+

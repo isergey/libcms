@@ -1,0 +1,52 @@
+{% extends 'gallery/administration/index.html' %}
+{% load  breadcrumbs %}
+{% block breadcrumb %}
+    {% breadcrumb "Галерея" gallery:administration:index %}
+    {% breadcrumb "Альбомы"  gallery:administration:albums_list %}
+    {% breadcrumb album  %}
+{% endblock %}
+{% block action_content %}
+    <script type="text/javascript" src="{{ STATIC_URL }}gallery/fancybox/jquery.fancybox.pack.js"></script>
+    <link rel="stylesheet" href="{{ STATIC_URL }}gallery/fancybox/jquery.fancybox.css">
+    <style type="text/css">
+        .buttons .btn{
+            padding: 3px;
+        }
+    </style>
+    <h3>{{ album }}</h3>
+    <div>
+    Ссылка на альбом: <a href="{% url 'gallery:frontend:album_view' album.id %}">{% url 'gallery:frontend:album_view' album.id %}</a>
+    </div>
+    <hr/>
+    <a class="btn btn-success" href="{% url 'gallery:administration:album_upload' album.id %}">Загрузить изображения</a>
+    <hr/>
+    <ul class="thumbnails" >
+        {% for album_image in album_images %}
+            <li class="span2" style="margin-bottom: 40px;">
+                <a title="{{ album_image.comments }}" class="mins" href="{{ MEDIA_URL }}gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}" class="thumbnail"  rel="gallery_group">
+                    <img class="tumb" src="{{ MEDIA_URL }}gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" alt="" rel="tooltip" data-original-title="{{ album_image.comments }}">
+                </a>
+                <a href="{{ MEDIA_URL }}gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}origin.jpg">Оригинал</a>
+                <div class="buttons" style="margin-top: 5px;">
+                    <a class="btn" href="{% url 'gallery:administration:image_to_begin' album_image.id %}" title="В начало">|←</a>
+                    <a class="btn" href="{% url 'gallery:administration:image_down' album_image.id %}" title="Ниже">←</a>
+                    <a class="btn" href="{% url 'gallery:administration:image_up' album_image.id %}" title="Выше">→</a>
+                    <a class="btn" href="{% url 'gallery:administration:image_to_end' album_image.id %}" title="В конец">→|</a><br/>
+                    <a class="btn" href="{% url 'gallery:administration:image_edit' album_image.id %}" title="Редактировать"><i class="icon-pencil"></i></a>
+                    <a class="btn btn-danger delete" href="{% url 'gallery:administration:image_delete' album_image.id %}" title="Удалить"><i class="icon-trash icon-white"></i></a>
+
+
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    <script type="text/javascript">
+        $('.tumb').tooltip();
+    </script>
+    <script type="text/javascript">
+        $("a.mins").fancybox({
+            'overlayColor'        : '#000',
+            'overlayOpacity'    : 0.9
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'frontend_base.html' %}
+{% load menu_tags %}
+{% load news_tags %}
+{% load events_tags %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block index_content %}
+    <style>
+        .active{
+            font-weight: bold;
+        }
+        .menu>ul, .news>ul{
+            padding: 0;
+            margin: 0;
+        }
+        .menu ul, .news ul {
+            list-style: none;
+        }
+        .menu .title{
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .events #id_month{
+            width: 80px;
+        }
+        .events #id_year{
+            width: 70px;
+        }
+        .events form{
+            margin: 0;
+        }
+        .events table{
+            width: 100%;
+        }
+        .news ul li {
+            margin: 0 0 10px 0;
+        }
+    </style>
+{#    <div>#}
+{#        {% drow_menu 'main' %}#}
+{#    </div>#}
+
+    <div class="row">
+
+
+        <div class="span3">
+
+            <div class="well">
+                <div class="menu">
+                    {% drow_menu 'main' %}
+                    <hr/>
+                </div>
+                <div class="news">
+                    <h3>Новости</h3>
+                    {% cache 60 'news' LANGUAGE_CODE %}
+                    {% news_feed %}
+                    {% endcache %}
+                    <a href="{% url 'news:frontend:index' %}">Остальные новости >></a>
+                    <hr/>
+                </div>
+                <div class="events">
+                    <h3>События</h3>
+                    {% cache 60 'events' LANGUAGE_CODE %}
+                    {% events_calendar %}
+                    {% endcache %}
+                </div>
+            </div>
+        </div>
+        <div class="span9">
+            {% block content %}wefwefwef{% endblock %}
+        </div>
+    </div>
+{% endblock %}

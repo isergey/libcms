@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<messages>
+<localization lang="eng">
+  <msg id="Публикации[1:1031]">Publications</msg>
+  <msg id="Персоны[1:1031]">Persons</msg>
+  <msg id="Организации[1:1031]">Organisations</msg>
+  <msg id="Проекты[1:1031]">Projects</msg>
+  <msg id="Метаданные[1:1031]">Metadata</msg>
+</localization>
+<localization lang="rus">
+  <msg id="Публикации[1:1031]">Публикации</msg>
+  <msg id="Персоны[1:1031]">Персоны</msg>
+  <msg id="Организации[1:1031]">Организации</msg>
+  <msg id="Проекты[1:1031]">Проекты</msg>
+  <msg id="Метаданные[1:1031]">Метаданные</msg>
+</localization>
+</messages>

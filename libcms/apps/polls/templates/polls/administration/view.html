@@ -1,0 +1,78 @@
+{% extends 'polls/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+        <li><a href="{% url 'polls:administration:index' %}">Голосования</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'polls:administration:edit' poll.id %}">{{ poll.question }}</a><span class="divider">/</span></li>
+        <li class="active">Управление ответами</li>
+{% endblock %}
+
+{% block action_content %}
+    <div class="module_actions column prepend-1 last">
+        <a href="{% url 'polls:administration:create_choice' poll.id %}" class="btn btn-success"><i class="icon-plus icon-white"></i>Добавить вариант ответа</a>
+    </div>
+
+        <h3>Варианты ответов</h3>
+        <table class="table table-striped">
+            <tr>
+                <th class="span6">Вариант ответа</th>
+                <th>Количество голосов</th>
+                <th>Сортировка</th>
+                <th class="span2">Действия</th>
+            </tr>
+            {% for choice in choices %}
+                <tr>
+                    <td>{{ choice.choice }}</td>
+                    <td>{{ choice.votes }}</td>
+                    <td>{{ choice.sort }}</td>
+                    <td>
+                        <a title="Редактировать вариант" class="btn" href="{% url 'polls:administration:edit_choice' choice.id %}">
+                            <i class="icon-pencil"></i>
+                        </a>
+                        <a class="btn btn-danger" title="Удалить вариант" href="{% url 'polls:administration:delete_choice' choice.id %}">
+                            <i class="icon-remove icon-white"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+
+    {% if polls_list.paginator.num_pages > 1 %}
+        <div class="span-19 prepend-1 last">
+            <div class="block">
+                <div class="pagination">
+                <span class="step-links">
+                    {% if polls_list.has_previous %}
+                        <a class="page" href="?page={{ polls_list.previous_page_number }}">сюда</a>
+                    {% endif %}
+                    {% for page in polls_list.paginator.page_range %}
+                        {% if page %}
+                            {% ifequal page polls_list.number %}
+                                <span class="current page">{{ page }}</span>
+                            {% else %}
+                                <a href="?page={{ page }}" class="page">{{ page }}</a>
+                            {% endifequal %}
+                        {% else %}
+                            ...
+                        {% endif %}
+                    {% endfor %}
+                    {% if polls_list.has_next %}
+                        <a class="page" href="?page={{ polls_list.next_page_number }}">туда</a>
+                    {% endif %}
+                </span>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <script type="text/javascript">
+        $("a.delete").click(function () {
+            if (!confirm('Вы уверены, что хотите удалить?')) return false;
+        });
+    </script>
+{% endblock %}
+
+

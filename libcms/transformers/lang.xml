@@ -1,0 +1,274 @@
+<?xml version="1.0"?>
+<!--
+ * $Log: lang.xml,v $
+ * Revision 1.7  2010/05/28 09:01:29  rustam
+ * Further tatar translation
+ *
+ * Revision 1.6  2010/05/12 11:37:04  rustam
+ * Tatar translation
+ *
+ * Revision 1.5  2010/05/06 16:53:34  rustam
+ * Tatar translation
+ *
+ * Revision 1.4  2009/04/14 08:18:45  rustam
+ * Added new language
+ *
+ * Revision 1.3  2003/11/05 08:44:06  rustam
+ * Minor changes
+ *
+ * Revision 1.2  2003/04/22 05:13:36  rustam
+ * Added new languages
+ *
+ * Revision 1.1  2003/01/31 14:11:43  rustam
+ * New pre-release
+ *
+-->
+<messages>
+<localization lang="eng">
+  <msg id="afr[1:54]">Afrikaans</msg>
+  <msg id="alb[1:54]">Albanian</msg>
+  <msg id="amh[1:54]">Amharic</msg>
+  <msg id="ara[1:54]">Arabic</msg>
+  <msg id="arm[1:54]">Armenian</msg>
+  <msg id="aze[1:54]">Azerbaijani</msg>
+  <msg id="bal[1:54]">Baluchi</msg>
+  <msg id="bak[1:54]">Bashkir</msg>
+  <msg id="baq[1:54]">Basque</msg>
+  <msg id="bel[1:54]">Belarusian</msg>
+  <msg id="ben[1:54]">Bengali</msg>
+  <msg id="bul[1:54]">Bulgarian</msg>
+  <msg id="bua[1:54]">Buriat</msg>
+  <msg id="bur[1:54]">Burmese</msg>
+  <msg id="cat[1:54]">Catalan</msg>
+  <msg id="cau[1:54]">Caucasian</msg>
+  <msg id="che[1:54]">Chechen</msg>
+  <msg id="chi[1:54]">Chinese</msg>
+  <msg id="chv[1:54]">Chuvash</msg>
+  <msg id="cpe[1:54]">Creoles</msg>
+  <msg id="scr[1:54]">Croatian</msg>
+  <msg id="cze[1:54]">Czech</msg>
+  <msg id="dan[1:54]">Danish</msg>
+  <msg id="dra[1:54]">Dravidian</msg>
+  <msg id="dut[1:54]">Dutch</msg>
+  <msg id="egy[1:54]">Egyptian</msg>
+  <msg id="eng[1:54]">English</msg>
+  <msg id="OR(esp[1:54]:epo[1:54])">Esperanto</msg>
+  <msg id="est[1:54]">Estonian</msg>
+  <msg id="fin[1:54]">Finnish</msg>
+  <msg id="fiu[1:54]">Finno-Ugrian</msg>
+  <msg id="fre[1:54]">French</msg>
+  <msg id="OR(eth[1:54]:gez[1:54])">Geez</msg>
+  <msg id="geo[1:54]">Georgian</msg>
+  <msg id="ger[1:54]">German</msg>
+  <msg id="grc[1:54]">Greek, Ancient</msg>
+  <msg id="gre[1:54]">Greek, Modern</msg>
+  <msg id="heb[1:54]">Hebrew</msg>
+  <msg id="hin[1:54]">Hindi</msg>
+  <msg id="hun[1:54]">Hungarian</msg>
+  <msg id="ice[1:54]">Icelandic</msg>
+  <msg id="ind[1:54]">Indonesian</msg>
+  <msg id="ira[1:54]">Iranian</msg>
+  <msg id="ita[1:54]">Italian</msg>
+  <msg id="jpn[1:54]">Japanese</msg>
+  <msg id="kaz[1:54]">Kazakh</msg>
+  <msg id="OR(cam[1:54]:khm[1:54])">Khmer</msg>
+  <msg id="kir[1:54]">Kirghiz</msg>
+  <msg id="kor[1:54]">Korean</msg>
+  <msg id="lao[1:54]">Lao</msg>
+  <msg id="lat[1:54]">Latin</msg>
+  <msg id="lav[1:54]">Latvian</msg>
+  <msg id="lit[1:54]">Lithuanian</msg>
+  <msg id="mac[1:54]">Macedonian</msg>
+  <msg id="mlg[1:54]">Malagasy</msg>
+  <msg id="may[1:54]">Malay</msg>
+  <msg id="mnc[1:54]">Manchu</msg>
+  <msg id="mar[1:54]">Marathi</msg>
+  <msg id="chm[1:54]">Mari</msg>
+  <msg id="mol[1:54]">Moldavian</msg>
+  <msg id="mon[1:54]">Mongolian</msg>
+  <msg id="nor[1:54]">Norwegian</msg>
+  <msg id="per[1:54]">Persian</msg>
+  <msg id="pol[1:54]">Polish</msg>
+  <msg id="por[1:54]">Portugues</msg>
+  <msg id="rum[1:54]">Romanian</msg>
+  <msg id="rus[1:54]">Russian</msg>
+  <msg id="san[1:54]">Sanskrit</msg>
+  <msg id="scc[1:54]">Serbian</msg>
+  <msg id="sla[1:54]">Slavic</msg>
+  <msg id="slo[1:54]">Slovak</msg>
+  <msg id="spa[1:54]">Spanish</msg>
+  <msg id="swa[1:54]">Swahili</msg>
+  <msg id="swe[1:54]">Swedish</msg>
+  <msg id="syr[1:54]">Syriac</msg>
+  <msg id="tai[1:54]">Tai</msg>
+  <msg id="OR(taj[1:54]:tgk[1:54])">Tajik</msg>
+  <msg id="tam[1:54]">Tamil</msg>
+  <msg id="OR(tat[1:54]:tar[1:54])">Tatar</msg>
+  <msg id="tha[1:54]">Thai</msg>
+  <msg id="tib[1:54]">Tibetan</msg>
+  <msg id="tur[1:54]">Turkish</msg>
+  <msg id="tuk[1:54]">Turkmen</msg>
+  <msg id="udm[1:54]">Udmurt</msg>
+  <msg id="ukr[1:54]">Ukrainian</msg>
+  <msg id="uzb[1:54]">Uzbek</msg>
+  <msg id="vie[1:54]">Vietnamese</msg>
+  <msg id="sah[1:54]">Yakut</msg>
+  <msg id="yid[1:54]">Yiddish</msg>
+  <msg id="yuk[1:54]">Yukagir</msg>
+</localization>
+<localization lang="rus">
+  <msg id="aze[1:54]">Азербайджанский</msg>
+  <msg id="alb[1:54]">Албанский</msg>
+  <msg id="amh[1:54]">Амхарский</msg>
+  <msg id="eng[1:54]">Английский</msg>
+  <msg id="ara[1:54]">Арабский</msg>
+  <msg id="arm[1:54]">Армянский</msg>
+  <msg id="afr[1:54]">Африкаанс</msg>
+  <msg id="baq[1:54]">Баскский</msg>
+  <msg id="bak[1:54]">Башкирский</msg>
+  <msg id="bel[1:54]">Белорусский</msg>
+  <msg id="bal[1:54]">Белуджский</msg>
+  <msg id="ben[1:54]">Бенгальский</msg>
+  <msg id="bur[1:54]">Бирманский</msg>
+  <msg id="bul[1:54]">Болгарский</msg>
+  <msg id="bua[1:54]">Бурятский</msg>
+  <msg id="hun[1:54]">Венгерский</msg>
+  <msg id="vie[1:54]">Вьетнамский</msg>
+  <msg id="dut[1:54]">Голландский</msg>
+  <msg id="gre[1:54]">Греческий</msg>
+  <msg id="geo[1:54]">Грузинский</msg>
+  <msg id="dan[1:54]">Датский</msg>
+  <msg id="dra[1:54]">Дравидийские</msg>
+  <msg id="grc[1:54]">Древнегреческий</msg>
+  <msg id="egy[1:54]">Египетский</msg>
+  <msg id="heb[1:54]">Иврит</msg>
+  <msg id="yid[1:54]">Идиш</msg>
+  <msg id="ind[1:54]">Индонезийский</msg>
+  <msg id="ira[1:54]">Иранские</msg>
+  <msg id="ice[1:54]">Исландский</msg>
+  <msg id="spa[1:54]">Испанский</msg>
+  <msg id="ita[1:54]">Итальянский</msg>
+  <msg id="cau[1:54]">Кавказские</msg>
+  <msg id="kaz[1:54]">Казахский</msg>
+  <msg id="cat[1:54]">Каталанский</msg>
+  <msg id="kir[1:54]">Киргизский</msg>
+  <msg id="chi[1:54]">Китайский</msg>
+  <msg id="kor[1:54]">Корейский</msg>
+  <msg id="cpe[1:54]">Креольские</msg>
+  <msg id="OR(cam[1:54]:khm[1:54])">Кхмерский</msg>
+  <msg id="lao[1:54]">Лаосский</msg>
+  <msg id="lat[1:54]">Латинский</msg>
+  <msg id="lav[1:54]">Латышский</msg>
+  <msg id="lit[1:54]">Литовский</msg>
+  <msg id="mac[1:54]">Македонский</msg>
+  <msg id="mlg[1:54]">Малагасийский</msg>
+  <msg id="may[1:54]">Малайский</msg>
+  <msg id="mnc[1:54]">Маньчжурский</msg>
+  <msg id="mar[1:54]">Маратхи</msg>
+  <msg id="chm[1:54]">Марийский</msg>
+  <msg id="mol[1:54]">Молдавский</msg>
+  <msg id="mon[1:54]">Монгольский</msg>
+  <msg id="ger[1:54]">Немецкий</msg>
+  <msg id="nor[1:54]">Норвежский</msg>
+  <msg id="per[1:54]">Персидский</msg>
+  <msg id="pol[1:54]">Польский</msg>
+  <msg id="por[1:54]">Португальский</msg>
+  <msg id="rum[1:54]">Румынский</msg>
+  <msg id="rus[1:54]">Русский</msg>
+  <msg id="san[1:54]">Санскрит</msg>
+  <msg id="scc[1:54]">Сербский</msg>
+  <msg id="syr[1:54]">Сирийский</msg>
+  <msg id="sla[1:54]">Славянский</msg>
+  <msg id="slo[1:54]">Словацкий</msg>
+  <msg id="swa[1:54]">Суахили</msg>
+  <msg id="OR(taj[1:54]:tgk[1:54])">Таджикский</msg>
+  <msg id="tam[1:54]">Тамильский</msg>
+  <msg id="OR(tat[1:54]:tar[1:54])">Татарский</msg>
+  <msg id="tib[1:54]">Тибетский</msg>
+  <msg id="tur[1:54]">Турецкий</msg>
+  <msg id="tuk[1:54]">Туркменский</msg>
+  <msg id="uzb[1:54]">Узбекский</msg>
+  <msg id="udm[1:54]">Удмуртский</msg>
+  <msg id="ukr[1:54]">Украинский</msg>
+  <msg id="fin[1:54]">Финский</msg>
+  <msg id="fiu[1:54]">Финно-угорские</msg>
+  <msg id="fre[1:54]">Французский</msg>
+  <msg id="hin[1:54]">Хинди</msg>
+  <msg id="scr[1:54]">Хорватский</msg>
+  <msg id="che[1:54]">Чеченский</msg>
+  <msg id="cze[1:54]">Чешский</msg>
+  <msg id="chv[1:54]">Чувашский</msg>
+  <msg id="swe[1:54]">Шведский</msg>
+  <msg id="est[1:54]">Эстонский</msg>
+  <msg id="OR(esp[1:54]:epo[1:54])">Эсперанто</msg>
+  <msg id="OR(eth[1:54]:gez[1:54])">Эфиопский</msg>
+  <msg id="yuk[1:54]">Юкагирский</msg>
+  <msg id="sah[1:54]">Якутский</msg>
+  <msg id="jpn[1:54]">Японский</msg>
+</localization>
+<localization lang="tat">
+  <msg id="aze[1:54]">Азербайҗан</msg>
+  <msg id="amh[1:54]">Амхар</msg>
+  <msg id="eng[1:54]">Инглиз</msg>
+  <msg id="ara[1:54]">Гарәп</msg>
+  <msg id="afr[1:54]">Африка</msg>
+  <msg id="baq[1:54]">Баск</msg>
+  <msg id="bak[1:54]">Башкорт</msg>
+  <msg id="bel[1:54]">Белорус</msg>
+  <msg id="bal[1:54]">Белудж</msg>
+  <msg id="bul[1:54]">Болгар</msg>
+  <msg id="bua[1:54]">Бурят</msg>
+  <msg id="hun[1:54]">Венгр</msg>
+  <msg id="vie[1:54]">Вьетнам</msg>
+  <msg id="dut[1:54]">Голланд</msg>
+  <msg id="gre[1:54]">Грек</msg>
+  <msg id="geo[1:54]">Грузин</msg>
+  <msg id="dan[1:54]">Датчан</msg>
+  <msg id="dra[1:54]">Дравидий</msg>
+  <msg id="grc[1:54]">Борынгы грек</msg>
+  <msg id="egy[1:54]">Мисыр</msg>
+  <msg id="heb[1:54]">Иврит</msg>
+  <msg id="ind[1:54]">Индонезия</msg>
+  <msg id="ira[1:54]">Иран</msg>
+  <msg id="ice[1:54]">Исланд</msg>
+  <msg id="spa[1:54]">Испан</msg>
+  <msg id="ita[1:54]">Итальян</msg>
+  <msg id="kaz[1:54]">Казах</msg>
+  <msg id="cat[1:54]">Каталан</msg>
+  <msg id="kir[1:54]">Кыргыз</msg>
+  <msg id="chi[1:54]">Кытай</msg>
+  <msg id="kor[1:54]">Корея</msg>
+  <msg id="cpe[1:54]">Креол</msg>
+  <msg id="OR(cam[1:54]:khm[1:54])">Кхмер</msg>
+  <msg id="lav[1:54]">Латыш</msg>
+  <msg id="lit[1:54]">Литвалы</msg>
+  <msg id="mac[1:54]">Македон</msg>
+  <msg id="chm[1:54]">Мари</msg>
+  <msg id="mon[1:54]">Монгол</msg>
+  <msg id="ger[1:54]">Немец</msg>
+  <msg id="nor[1:54]">Норвегияле</msg>
+  <msg id="pol[1:54]">Поляк</msg>
+  <msg id="por[1:54]">Португал</msg>
+  <msg id="rum[1:54]">Румын</msg>
+  <msg id="rus[1:54]">Рус</msg>
+  <msg id="sla[1:54]">Славян</msg>
+  <msg id="slo[1:54]">Словак</msg>
+  <msg id="OR(tat[1:54]:tar[1:54])">Татар</msg>
+  <msg id="tib[1:54]">Тибет</msg>
+  <msg id="tur[1:54]">Төрек</msg>
+  <msg id="uzb[1:54]">Үзбәк</msg>
+  <msg id="ukr[1:54]">Украин</msg>
+  <msg id="fin[1:54]">Фин</msg>
+  <msg id="fiu[1:54]">Угро-фин</msg>
+  <msg id="fre[1:54]">Француз</msg>
+  <msg id="hin[1:54]">Һинд</msg>
+  <msg id="che[1:54]">Чечен</msg>
+  <msg id="cze[1:54]">Чех</msg>
+  <msg id="chv[1:54]">Чуваш</msg>
+  <msg id="swe[1:54]">Швед</msg>
+  <msg id="est[1:54]">Эстон</msg>
+  <msg id="OR(esp[1:54]:epo[1:54])">Эсперанто</msg>
+  <msg id="OR(eth[1:54]:gez[1:54])">Хәбәш (эфиоп)</msg>
+  <msg id="jpn[1:54]">Япон</msg>
+</localization>
+</messages>

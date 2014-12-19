@@ -1,0 +1,92 @@
+{% extends 'polls/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Голосования" polls:administration:index %}
+    {% breadcrumb "Список" %}
+{% endblock %}
+
+{% block action_content %}
+    <table class="table table-striped">
+        <tr>
+            <th>#</th>
+            <th class="span6">Вопрос</th>
+            <th>Дата начала</th>
+            <th>Дата окончания</th>
+            <th>Активно</th>
+            <th>Опубликовано</th>
+            <th class="span3">Действия</th>
+        </tr>
+        {% for poll in polls_list.object_list %}
+            <tr>
+                <td>{{ poll.id }}</td>
+                <td>{{ poll.question }}</td>
+                <td>{{ poll.start_poll_date|date:"d-M-Y H:i:s" }}</td>
+                <td>{{ poll.end_poll_date|date:"d-M-Y H:i:s" }}</td>
+                <td>
+                    {% if poll.is_active  %}
+                        <span style="color:green;">Да</span>
+                    {% else %}
+                        <span style="color:red;">Нет</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if poll.published %}
+                        <span style="color:green;">Да</span>
+                    {% else %}
+                        <span style="color:red;">Нет</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a  title="Упраление ответами"  class="btn" href="{% url 'polls:administration:view' poll.id %}" >
+                        <i class="icon-edit"></i>
+                    </a>
+                    <a title="Редактировать голосование" class="btn" href="{% url 'polls:administration:edit' poll.id %}">
+                        <i class="icon-pencil"></i>
+                    </a>
+                    <a class="btn btn-danger" title="Удалить новость" href="{% url 'polls:administration:delete' poll.id %}">
+                        <i class="icon-remove icon-white"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    {% if polls_list.paginator.num_pages > 1 %}
+        <div class="span-19 prepend-1 last">
+            <div class="block">
+                <div class="pagination">
+                <span class="step-links">
+                    {% if polls_list.has_previous %}
+                        <a class="page" href="?page={{ polls_list.previous_page_number }}">сюда</a>
+                    {% endif %}
+                    {% for page in polls_list.paginator.page_range %}
+                        {% if page %}
+                            {% ifequal page polls_list.number %}
+                                <span class="current page">{{ page }}</span>
+                            {% else %}
+                                <a href="?page={{ page }}" class="page">{{ page }}</a>
+                            {% endifequal %}
+                        {% else %}
+                            ...
+                        {% endif %}
+                    {% endfor %}
+                    {% if polls_list.has_next %}
+                        <a class="page" href="?page={{ polls_list.next_page_number }}">туда</a>
+                    {% endif %}
+                </span>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <script type="text/javascript">
+        $("a.delete").click(function () {
+            if (!confirm('Вы уверены, что хотите удалить?')) return false;
+        });
+    </script>
+{% endblock %}
+
+

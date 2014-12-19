@@ -1,0 +1,107 @@
+<target>
+<explain>
+  <serverInfo>
+    <host>dbiref.kub.nl</host>
+    <port>1800</port>
+    <database>thatt</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">Attent thesaurus</title>
+    <title lang="rus">Тезаурус Attent</title>
+  </databaseInfo>
+  <configInfo>
+    <setting type="scheme">zthes</setting>
+    <setting type="charset">ISO-8859-1</setting>
+  </configInfo>
+</explain>
+<explain>
+  <serverInfo>
+    <host>dbiref.kub.nl</host>
+    <port>1800</port>
+    <database>jel</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">Journal of Economic Literature classification</title>
+    <title lang="rus">Классификация Journal of Economic Literature</title>
+  </databaseInfo>
+  <configInfo>
+    <setting type="scheme">zthes</setting>
+    <setting type="charset">ISO-8859-1</setting>
+  </configInfo>
+</explain>
+<explain>
+  <serverInfo>
+    <host>opac.ruslan.ru</host>
+    <port>210</port>
+    <database>nlrsh</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">NLR subject headings</title>
+    <title lang="rus">Рубрикатор РНБ</title>
+  </databaseInfo>
+  <configInfo>
+    <setting type="scheme">auth</setting>
+    <setting type="charset">UTF-8</setting>
+  </configInfo>
+</explain>
+<explain>
+  <serverInfo>
+    <host>opac.ruslan.ru</host>
+    <port>210</port>
+    <database>mplsubtez</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">St.Petersburg Central Public Library thesaurus</title>
+    <title lang="rus">Тезаурус ЦГПБ им. В.В. Маяковского</title>
+  </databaseInfo>
+  <configInfo>
+    <setting type="scheme">auth</setting>
+    <setting type="charset">UTF-8</setting>
+  </configInfo>
+</explain>
+<explain>
+  <serverInfo>
+    <host>ruslan.ru</host>
+    <port>210</port>
+    <database>a_subj</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">Personal Names of FL SPSPU</title>
+    <title lang="rus">Персоналии ФБ СПбГПУ</title>
+  </databaseInfo>
+  <configInfo>
+    <setting type="scheme">auth</setting>
+    <setting type="charset">UTF-8</setting>
+  </configInfo>
+</explain>
+<explain>
+  <serverInfo>
+    <host>opac.ruslan.ru</host>
+    <port>210</port>
+    <database>clauth</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">Personal Names of LRLC</title>
+    <title lang="rus">Имена индивидульного автора ЛОДБ</title>
+  </databaseInfo>
+  <configInfo>
+    <setting type="scheme">auth</setting>
+    <setting type="charset">UTF-8</setting>
+  </configInfo>
+</explain>
+<explain>
+  <serverInfo>
+    <host>z3950.arbicon.ru</host>
+    <port>210</port>
+    <database>mesh2004</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">MeSH</title>
+    <title lang="rus">MeSH</title>
+  </databaseInfo>
+  <configInfo>
+    <setting type="scheme">auth</setting>
+    <setting type="charset">UTF-8</setting>
+  </configInfo>
+</explain>
+</target>

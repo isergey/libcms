@@ -1,0 +1,32 @@
+{% extends 'gallery/administration/index.html' %}
+{% load  breadcrumbs %}
+{% block breadcrumb %}
+    {% breadcrumb "Галерея" gallery:administration:index %}
+    {% breadcrumb "Альбомы"  %}
+{% endblock %}
+{% block action_content %}
+    <ul style="margin: 0; list-style: none">
+    {% for album in albums %}
+        <li>
+            {% if album.avatar_img_name and album.show_avatar %}
+                <a href="{% url  'gallery:administration:album_view' album.id %}"><img class="tumb"
+                                                                               src="{{ MEDIA_URL }}uploads/galleryavatars/{{ album.avatar_img_name }}"
+                                                                               style="float: left; margin-right: 5px"/></a>
+            {% endif %}
+            <div>
+                <h3><a href="{% url  'gallery:administration:album_view' album.id %}">{{ album }}</a></h3>
+                <div>
+                    <b>Дата создания:</b> {{ album.create_date }}
+
+                    <a style="margin-left: 20px; float: right;" class="btn btn-danger delete" href="{% url 'gallery:administration:album_delete' album.id %}"><i class="icon-trash icon-white"></i></a>
+                    <a style="margin-left: 20px; float: right;" class="btn" href="{% url 'gallery:administration:album_edit' album.id %}"><i class="icon-pencil"></i></a>
+                </div>
+                <div style="clear: both"></div>
+            </div>
+            <hr/>
+        </li>
+    {% empty %}
+        <li>Альбомов нет</li>
+    {% endfor %}
+    </ul>
+{% endblock %}

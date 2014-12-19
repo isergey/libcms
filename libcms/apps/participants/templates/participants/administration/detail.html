@@ -1,0 +1,165 @@
+{% extends 'participants/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% block breadcrumb %}
+    <li>
+        <a href="{% url 'participants:administration:index' %}">Библиотеки</a>
+        <span class="divider">/</span>
+    </li>
+    {% for ancestor in org.get_ancestors %}
+        <li>
+            <a href="{% url 'participants:administration:detail' ancestor.id %}">{{ ancestor.name }}</a>
+            <span class="divider">/</span>
+        </li>
+    {% endfor %}
+    <li class="active">{{ org.name }}</li>
+{% endblock %}
+
+{% block action_content %}
+    <div class="well well-small">
+        <a title="Просмотр и редактирование информации об организации" class="btn" href="{% url 'participants:administration:edit' org.id %}">
+            <i class="icon-pencil"></i>
+            Редактировать
+        </a>
+    </div>
+    <ul class="nav nav-tabs" id="myTab">
+        <li title="Филиалы организации" class="active"><a href="#home">Филиалы</a></li>
+        <li title="Пользователи организации"><a href="#profile">Пользователи</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="home">
+            <div class="well well-small">
+                <a class="btn btn-success" href="{% url 'participants:administration:create' org.id %}">
+                    <i class="icon-plus icon-white"></i> Добавить филиал
+                </a>
+            </div>
+
+            <table class="table">
+                <tr>
+                    <th>Филиал</th>
+                    <th>Действия</th>
+                </tr>
+                {% for library in branches %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'participants:administration:detail' library.id %}"
+                               title="{{ library }}">{{ library }}</a>
+                        </td>
+                        <td style="width: 100px">
+                            {% if parent %}
+                                <a class="btn btn-mini btn-danger {% if not perms.participants.delete_library %} disabled {% endif %}"
+                                   href="{% url 'participants:administration:delete' library.id %}">
+                                    <i class="icon-trash icon-white"></i></a>
+                            {% else %}
+                                <a class="btn btn-mini btn-danger {% if not perms.participants.delete_cbs %} disabled {% endif %}"
+                                   href="{% url 'participants:administration:delete' library.id %}"><i
+                                        class="icon-trash icon-white"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {% if not  branches %}
+                Филиалов нет
+            {% endif %}
+        </div>
+        <div class="tab-pane" id="profile">
+            <div class="well well-small">
+                <a class="btn btn-success" href="{% url 'participants:administration:add_user' org.id %}">
+                    <i class="icon-plus icon-white"></i> Добавить пользователя
+                </a>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>#</th>
+                    <th>Логин</th>
+                    <th>Email</th>
+                    <th>Имя</th>
+                    <th>Фамилия</th>
+                    <th>Действия</th>
+                </tr>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.user.id }}</td>
+                        <td>{{ user.user.username }}</td>
+                        <td>{{ user.user.email }}</td>
+                        <td>{{ user.user.first_name }}</td>
+                        <td>{{ user.user.last_name }}</td>
+                        <td style="width: 100px"><a title="Отвязать пользователя от организации" class="btn btn-danger btn-mini" href="#1"><i class="icon-remove icon-white"></i></a> </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <script>
+    $('#myTab a').click(function (e) {
+      e.preventDefault();
+      $(this).tab('show');
+    })
+    </script>
+    {#    {% if parent %}#}
+    {#        <h3>#}
+    {#        {% for ancestor in parent.get_ancestors %}#}
+    {#            <a href="{% url 'participants:administration:list' ancestor.id %}">{{ ancestor }}</a> →#}
+    {#        {% endfor %}#}
+    {#        {% if parent.parent_id %}#}
+    {#            <a href="{% url 'participants:administration:list' parent.id %}">{{ parent }}</a>#}
+    {#        {% else %}#}
+    {#            <a href="{% url 'participants:administration:list' %}">{{ parent }}</a>#}
+    {#        {% endif %}#}
+    {#        </h3>#}
+    {#    {% endif %}#}
+    {#    <style>#}
+    {#        ul.list li {#}
+    {#            margin-bottom:25px;#}
+    {#        }#}
+    {#    </style>#}
+    {#    <div>#}
+    {#    <table class="table">#}
+    {#        <tr>#}
+    {#            <th>Организация</th>#}
+    {#            <th>Действия</th>#}
+    {#        </tr>#}
+    {#        {% for library in libraries_page.object_list %}#}
+    {#            <tr>#}
+    {#                <td>#}
+    {#                    <a style="font-size: 14px" href="{% url 'participants:administration:edit' library.id %}" title="{{ library }}">{{ library }}</a>#}
+    {#                </td>#}
+    {#                <td>#}
+    {#                    {% if parent %}#}
+    {#                        <a class="btn btn-mini btn-danger {% if not perms.participants.delete_library %} disabled {% endif %}" href="{% url 'participants:administration:delete' library.id %}"><i class="icon-trash icon-white"></i></a>#}
+    {#                    {% else %}#}
+    {#                        <a class="btn btn-mini btn-danger {% if not perms.participants.delete_cbs %} disabled {% endif %}" href="{% url 'participants:administration:delete' library.id %}"><i class="icon-trash icon-white"></i></a>#}
+    {#                    {% endif %}#}
+    {#                </td>#}
+    {#            </tr>#}
+    {#        {% endfor %}#}
+    {#    </table>#}
+    {#    </div>#}
+    {#    <ul class="list">#}
+    {#        {% for library in libraries_page.object_list %}#}
+    {#            <li class="title">#}
+    {#                <div></div>#}
+    {#            <div>#}
+    {#                {% if not library.is_leaf_node %}#}
+    {#                    <a class="btn btn-mini" href="{% url 'participants:administration:list' library.id %}">Филиалы</a>#}
+    {#                {% endif %}#}
+    {#                <span class="buttons">#}
+    {##}
+    {#                    {% if not parent  %}<a class="btn btn-mini {% if not perms.participants.add_library %} disabled {% endif %}" href="{% url 'participants:administration:create' library.id %}"><i class="icon-plus"></i>Добавить филиал</a>{% endif %}#}
+    {#                    {% if parent %}#}
+    {#                        <a class="btn btn-mini btn-danger {% if not perms.participants.delete_library %} disabled {% endif %}" href="{% url 'participants:administration:delete' library.id %}"><i class="icon-trash icon-white"></i></a>#}
+    {#                    {% else %}#}
+    {#                    <a class="btn btn-success {% if not perms.participants_pages %} disabled {% endif %}" href="{% url 'participants_pages:administration:index' library.id %}">Страницы</a>#}
+    {#                        <a class="btn btn-mini btn-danger {% if not perms.participants.delete_cbs %} disabled {% endif %}" href="{% url 'participants:administration:delete' library.id %}"><i class="icon-trash icon-white"></i></a>#}
+    {#                    {% endif %}#}
+    {##}
+    {#                </span>#}
+    {#            </div>#}
+    {#            </li>#}
+    {#        {% endfor %}#}
+    {#    </ul>#}
+    {#    {% admin_pagination libraries_page %}#}
+{% endblock %}

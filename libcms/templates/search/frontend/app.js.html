@@ -1,0 +1,192 @@
+<script type="text/javascript">
+    $('.marc').click(function () {
+        var id = $(this).attr('id');
+        var marc_div = $('#m' + id);
+        if (marc_div.css('display') == 'none') {
+            marc_div.css('display', 'block');
+        } else {
+            marc_div.css('display', 'none');
+        }
+    });
+
+    $('.collaps').click(function () {
+        var id = $(this).attr('rel');
+        var fid = $('#f' + id);
+        //$('#f'+id).css('height', 200);
+        if (fid.height() > 200) {
+            fid.animate({height: '200px'}, 500, function () {
+                fid.css('overflow', "hidden");
+            });
+            $('html, body').animate({ scrollTop: $('#t' + id).offset().top - 0 }, 500);
+        }
+        return false;
+
+    });
+</script>
+<script type="text/javascript">
+    /*var offset_step = 7;
+    var load_limit = 7;
+    var facets_params = {};
+    var subfacets_params = {};
+    var request_params = {{ request_params|safe }};
+
+    facets_params = {};
+    $('.load_facet_fwd').click(function () {
+        var button = $(this);
+        var facet_id = button.attr("id");
+
+        if (!facets_params[facet_id]) {
+            facets_params[facet_id] = {
+                offset: offset_step,
+                limit: load_limit
+            }
+        } else {
+            facets_params[facet_id].offset = facets_params[facet_id].offset + offset_step;
+        }
+
+        request_params['facet'] = facet_id;
+        request_params['facet_limit'] = facets_params[facet_id].limit;
+        request_params['facet_offset'] = facets_params[facet_id].offset;
+        render_facet(facet_id, request_params, button);
+        $('#f' + facet_id).css('height', "auto");
+        $('html, body').animate({ scrollTop: $(this).offset().top - 400 }, 500);
+
+    });*/
+
+    $('.drilldown').click(function () {
+        var button = $(this);
+        var facet_id = button.attr("id").replace('df', '');
+        var facet_name = button.attr("name");
+        var facet_value = button.attr("rel");
+
+        if (!$('#dft' + facet_id).is(':visible')) {
+            button.text('-');
+            $('#dft' + facet_id).show();
+        } else {
+            button.text('+');
+            $('#dft' + facet_id).hide();
+        }
+
+        if (!subfacets_params[facet_id]) {
+            subfacets_params[facet_id] = {
+                offset: 0,
+                limit: 50
+            }
+        } else {
+            subfacets_params[facet_id].offset = subfacets_params[facet_id].offset + offset_step;
+        }
+
+        request_params['facet'] = facet_name;
+        if (facet_name === 'subject_heading_s') {
+            request_params['sub_facet'] = 'subject_subheading_s';
+        }
+
+        request_params['facet_value'] = facet_value;
+        request_params['facet_limit'] = subfacets_params[facet_id].limit;
+        request_params['facet_offset'] = subfacets_params[facet_id].offset;
+
+        render_subfacet(facet_id, request_params['sub_facet'], request_params, button);
+
+    });
+
+    function render_facet(facet_id, request_params, button) {
+        var orig_text = button.html();
+        $.ajax({
+            type: "GET",
+            url: "{% url 'search:frontend:more_facets' %}",
+            data: request_params,
+            dataType: "JSON",
+            beforeSend: function (xhr) {
+                button.html('Загрузка...');
+            }
+        }).done(function (content) {
+            button.html(orig_text);
+            if (content[facet_id]['values'].length == 0) {
+                button.addClass('disabled');
+            }
+            drow_facet(content[facet_id], facet_id);
+            var render_results = tmpl("facet_tmpl", {
+                content: content[facet_id],
+                facet_id: facet_id,
+                prepand_href: window.location.search
+            });
+            var container = $('#f' + facet_id);
+            container.html(container.html() + render_results);
+        });
+    }
+    {#        function render_subfacet(facet_id, facet_name, request_params, button){#}
+    {#            var orig_text = button.html();#}
+    {#            $.ajax({#}
+    {#                type: "GET",#}
+    {#                url: "{% url 'search:frontend:more_subfacet' %}",#}
+    {#                data: request_params,#}
+    {#                dataType: "JSON",#}
+    {#                beforeSend: function ( xhr ) {#}
+    {#                    button.html('Загрузка...');#}
+    {#                }#}
+    {#            }).done(function(content) {#}
+    {#                 button.html(orig_text);#}
+    {#                if (content[facet_name]['values'].length == 0){#}
+    {#                    button.addClass('disabled');#}
+    {#                }#}
+    {#                drow_facet(content[facet_name], facet_id);#}
+    {#                var render_results = tmpl("facet_tmpl", {#}
+    {#                    content: content[facet_name],#}
+    {#                    facet_id: facet_id,#}
+    {#                    prepand_href: window.location.search#}
+    {#                });#}
+    {#                var container = $('#dft'+facet_id);#}
+    {#                container.html(container.html() + render_results);#}
+    {#            });#}
+    {#        }#}
+
+    function drow_facet(content, facet_id) {
+        var prepand_href = window.location.search;
+        var values = content['values'];
+        var lines = [];
+        for (var i in values) {
+            var value = values[i];
+            if (value.length == 3) {
+                lines.push('<li><a href="' + prepand_href + '&q=<%=content.values[value][0]%>&attr=<%=facet_id%>"><%=content.values[value][0]%> (<b><%=content.values[value][1]%></b>)</a></li>');
+            }
+        }
+    }
+</script>
+
+
+<script type="text/html" id="facet_tmpl">
+    <% for ( var value in content.values ) { %>
+    <% if ( content.values[value].length == 3 ) { %>
+    <li><a href="<%=prepand_href%>&q=<%=content.values[value][0]%>&attr=<%=facet_id%>"><%=content.values[value][2]%>
+        (<b><%=content.values[value][1]%></b>)</a></li>
+    <% }else{ %>
+    <li><a href="<%=prepand_href%>&q=<%=content.values[value][0]%>&attr=<%=facet_id%>"><%=content.values[value][0]%>
+        (<b><%=content.values[value][1]%></b>)</a></li>
+    <% } %>
+    <% } %>
+</script>
+
+<script type="text/javascript">
+    (function () {
+        var cache = {};
+
+        this.tmpl = function tmpl(str, data) {
+            var fn = !/\W/.test(str) ?
+                    cache[str] = cache[str] ||
+                            tmpl(document.getElementById(str).innerHTML) :
+                    new Function("obj",
+                                    "var p=[],print=function(){p.push.apply(p,arguments);};" +
+                                    "with(obj){p.push('" +
+                                    str
+                                            .replace(/[\r\t\n]/g, " ")
+                                            .split("<%").join("\t")
+                                            .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+                                            .replace(/\t=(.*?)%>/g, "',$1,'")
+                                            .split("\t").join("');")
+                                            .split("%>").join("p.push('")
+                                            .split("\r").join("\\'")
+                                    + "');}return p.join('');");
+            return data ? fn(data) : fn;
+        };
+    })();
+</script>

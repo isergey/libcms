@@ -1,0 +1,29 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}Галерея{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Галерея</li>
+
+    </ul>
+    <ul style="margin: 0; list-style: none">
+        {% for album in albums %}
+            <li>
+                {% if album.avatar %}
+                    <a href="{% url  gallery:administration:album_view album.id %}"><img class="tumb" src="{{ MEDIA_URL }}gallery/{{ album.slug }}/thumbinails/{{ album.avatar.get_image_file_name }}" style="float: left; margin-right: 5px"/></a>
+                {% endif %}
+                <div>
+                    <h3><a href="{% url  gallery:frontend:album_view album.id %}">{{ album }}</a></h3>
+                    <div>
+                        <b>Дата создания:</b> {{ album.create_date }}
+                    </div>
+                </div>
+                <div style="clear: both"></div>
+                <hr/>
+            </li>
+        {% empty %}
+            <li>Альбомов нет</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

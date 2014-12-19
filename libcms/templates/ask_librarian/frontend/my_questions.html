@@ -1,0 +1,47 @@
+{% extends 'ask_librarian/frontend/index.html' %}
+{% load cache %}
+{% load pagination_tag %}
+{% block title %}Мои вопросы{% endblock %}
+{% block breadcrumb %}
+<section>
+    <div id="breadcrumbs">
+        <ul class="breadcrumb">
+            <a href="{% url 'index:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Начало{% else %}Home{% endif %}</a>
+            <span class="divider">/</span>
+
+            {% if request.GET.back %}
+                <a href="{{ request.GET.back }}">{% if LANGUAGE_CODE == 'ru' %}Консультация специалиста СИЦ{% else %}Ask librarian{% endif %}</a> <span class="divider">/</span>
+            {% else %}
+                <a href="{% url 'ask_librarian:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Консультация специалиста СИЦ{% else %}Ask librarian{% endif %}</a> <span class="divider">/</span>
+            {% endif %}
+            {% if LANGUAGE_CODE == 'ru' %}Мои вопросы{% else %}View question{% endif %}
+        </ul>
+    </div>
+</section>
+{% endblock %}
+{% block index_content %}
+    <ul style="list-style: none; padding: 0; margin: 0;">
+        {% for question in questions_page.object_list %}
+            <li>
+                {{ question.question }}<br/>
+                {% if question.category_id %}
+                    <b>
+                        {% cache 30 questions_category question.category_id  LANGUAGE_CODE %}
+                            {% for ancestor in  question.category.get_t_ancestors %}
+                                {{ ancestor }}  →
+                            {% endfor %}
+                            {{ question.category }}
+                        {% endcache %}
+                    </b>
+                    <br/>
+
+                {% endif %}
+                <a href="{% url 'ask_librarian:frontend:detail' question.id %}">подробнее >></a>
+                <hr class="lightgray"/>
+            </li>
+        {% empty %}
+            <li>Вопросов нет</li>
+        {% endfor %}
+    </ul>
+    {% admin_pagination questions_page %}
+{% endblock %}

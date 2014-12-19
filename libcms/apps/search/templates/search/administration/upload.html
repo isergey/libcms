@@ -1,0 +1,11 @@
+{% extends "backend_base.html" %}
+{% block module_content %}
+    <form id="upload_form" action="{% url search:administration:upload %}" method="post" enctype="multipart/form-data" accept-charset="utf-8" class="steps">
+        {% csrf_token %}
+        <fieldset>
+        <legend>Upload a new file</legend>
+        {% include 'administration/base_form_fields.html' %}
+        <div class="actions"><input type="submit" value="Upload" id="submit"  class="btn"/></div>
+        </fieldset>
+    </form>
+{% endblock %}
