@@ -1,6 +1,22 @@
 # -*- encoding: utf-8 -*-
 from django import forms
 from datetime import date
+from participants.models import Library
+from participant_events.models import AgeCategory, EventType
+
+class EventsFilterForm(forms.Form):
+    library = forms.ModelChoiceField(
+        empty_label=u'выберите из списка',
+        label=u'Укажите библиотеку',
+        queryset=Library.objects.filter(parent=None), required=False, widget=forms.Select)
+    event_type = forms.ModelMultipleChoiceField(
+        label=u'Тип события',
+        queryset=EventType.objects.all(), required=False, widget=forms.CheckboxSelectMultiple)
+    age_category = forms.ModelMultipleChoiceField(
+        label=u'Возрастная категория',
+        queryset=AgeCategory.objects.all(), required=False,
+        widget=forms.CheckboxSelectMultiple
+    )
 
 
 DAY_CHOISE = (

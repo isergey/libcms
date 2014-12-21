@@ -17,6 +17,7 @@ MEDIA_ROOT = settings.MEDIA_ROOT
 AVATAR_MEDIA_SUFFIX = 'participant_events/event_avatars/'
 AVATAR_THUMBNAIL_SIZE = (320, 240)
 
+
 class AgeCategory(models.Model):
     name = models.CharField(max_length=255, verbose_name=u'Назавание', unique=True)
 
@@ -32,6 +33,7 @@ class AgeCategory(models.Model):
 
 class EventType(models.Model):
     name = models.CharField(max_length=255, verbose_name=u'Назавание', unique=True)
+
     class Meta:
         verbose_name = u'Направление'
         verbose_name_plural = u'Направления'
@@ -40,10 +42,12 @@ class EventType(models.Model):
     def __unicode__(self):
         return self.name
 
+
 def get_avatar_file_name(instance, arg_filename):
-    filename= arg_filename.lower()
+    filename = arg_filename.lower()
     filename_hash = str(binascii.crc32(filename.encode('utf-8')) & 0xffffffff)
-    return  os.path.join(AVATAR_MEDIA_SUFFIX, filename_hash[0:2], filename_hash + '.jpg')
+    return os.path.join(AVATAR_MEDIA_SUFFIX, filename_hash[0:2], filename_hash + '.jpg')
+
 
 class Event(models.Model):
     library = models.ForeignKey(Library)
@@ -54,22 +58,21 @@ class Event(models.Model):
     event_type = models.ManyToManyField(EventType, verbose_name=u'Направление события')
 
     start_date = models.DateTimeField(verbose_name=u"Дата начала",
-        null=False, blank=False, db_index=True)
+                                      null=False, blank=False, db_index=True)
     end_date = models.DateTimeField(verbose_name=u"Дата окончания",
-        null=False, blank=False, db_index=True)
+                                    null=False, blank=False, db_index=True)
     address = models.CharField(verbose_name=u"Место проведения",
-        max_length=512, blank=True)
-
-
+                               max_length=512, blank=True)
 
     active = models.BooleanField(verbose_name=u"Активно",
-        default=True, db_index=True)
+                                 default=True, db_index=True)
 
     create_date = models.DateTimeField(auto_now=True, verbose_name=u"Дата создания", db_index=True)
 
     class Meta:
         verbose_name = u"мероприятие"
         verbose_name_plural = u"мероприятия"
+        ordering = ['-start_date']
 
 
 class EventContent(models.Model):
@@ -78,9 +81,9 @@ class EventContent(models.Model):
     title = models.CharField(verbose_name=u'Заглавие', max_length=512)
     teaser = models.CharField(verbose_name=u'Тизер', max_length=512)
     content = models.TextField(verbose_name=u'Описание события')
+
     class Meta:
         unique_together = (('event', 'lang'),)
-
 
 
 class FavoriteEvent(models.Model):
@@ -92,17 +95,20 @@ class FavoriteEvent(models.Model):
         verbose_name = u"отмеченное мероприятие"
         verbose_name_plural = u"отмеченные мероприятия"
 
+
 TIME_ITEMS = (
     ('min', u'мин.'),
     ('hour', u'ч.'),
     ('day', u'дн.'),
 )
 
+
 class EventNotification(models.Model):
     event = models.ForeignKey(Event)
-    email = models.EmailField(verbose_name=u'email', max_length=255, help_text=u'На этот адрес будет выслано напоминание')
+    email = models.EmailField(verbose_name=u'email', max_length=255,
+                              help_text=u'На этот адрес будет выслано напоминание')
     items_count = models.PositiveIntegerField(verbose_name=u'Напомнить за', default=1)
-    time_item  = models.CharField(verbose_name=u'Интервал', max_length=16, choices=TIME_ITEMS, default='day')
+    time_item = models.CharField(verbose_name=u'Интервал', max_length=16, choices=TIME_ITEMS, default='day')
     notification_time = models.DateTimeField(verbose_name=u'Время отправки сообшения', db_index=True)
     is_notificated = models.BooleanField(default=False, db_index=True)
     create_date = models.DateTimeField(auto_now_add=True)
@@ -126,9 +132,10 @@ class EventComment(models.Model):
     event = models.ForeignKey(Event, verbose_name=u"Мероприятие")
     user = models.ForeignKey(User, related_name='comment_user', verbose_name=u"Пользователь")
     text = models.CharField(verbose_name=u"Текст комментария (макс. 1024 символа)",
-        max_length=1024, null=False, blank=False)
+                            max_length=1024, null=False, blank=False)
     post_date = models.DateTimeField(verbose_name=u"Дата отправления",
-        auto_now_add=True)
+                                     auto_now_add=True)
+
     class Meta:
         verbose_name = u"комментарий"
         verbose_name_plural = u"комментарии"
@@ -141,7 +148,6 @@ class EventSubscribe(models.Model):
     library = models.ForeignKey(Library)
     email = models.EmailField(verbose_name=u'Email адрес', max_length=255)
     create_date = models.DateTimeField(auto_now_add=True)
-
 
 
 @receiver(models.signals.post_save, sender=Event)
@@ -190,7 +196,6 @@ def resize_avatar(sender, **kwargs):
     final_width = int((image_ratio * final_hight))
     im = im.resize((final_width, final_hight), Image.ANTIALIAS)
     im.save(image_path, "JPEG", quality=90, optimize=True, progressive=True)
-
 
 
 @receiver(models.signals.post_delete, sender=Event)

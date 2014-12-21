@@ -8,62 +8,73 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% block content %}
     <div class="span12" style="margin-bottom: 10px">
-{#        <div class="actions">#}
+        {#        <div class="actions">#}
         <div class="actions">
             <div class="row">
                 <div class="span3" style="font-family: Sans Sherif; font-size: 18px;">
-                    {% if LANGUAGE_CODE == 'ru' %}Поиск по электронному каталогу и коллекциям{% elif LANGUAGE_CODE == 'tt' %}Электрон каталог һәм коллекцияләр буенча эзләү{% else %}Search in e-catalog and e-collections{% endif %}
+                    {% if LANGUAGE_CODE == 'ru' %}Поиск по электронному каталогу и
+                        коллекциям{% elif LANGUAGE_CODE == 'tt' %}Электрон каталог һәм коллекцияләр буенча
+                        эзләү{% else %}Search in e-catalog and e-collections{% endif %}
                 </div>
                 <div class="span8">
-                    <form  action="{% url 'ssearch:frontend:index' %}" class="form-search" method="GET" style="margin: 0">
+                    <form action="{% url 'ssearch:frontend:index' %}" class="form-search" method="GET"
+                          style="margin: 0">
                         <div class="input-prepend">
                             <input type="hidden" name="attr" value="text_t">
-                            <input  name="q" class="span7" size="16" type="text_t"><input type="submit" class="btn btn-success" value="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}" style="width: 80px">
+                            <input name="q" class="span7" size="16" type="text_t"><input type="submit"
+                                                                                         class="btn btn-success"
+                                                                                         value="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}"
+                                                                                         style="width: 80px">
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-{#        </div>#}
+        {#        </div>#}
     </div>
     <div class="span12">
         <div class="row">
-                <div class="span6">
-
-                    <div class="banners thumbnail">
-                        <div style="background: url('{{ STATIC_URL }}theme/banner/loremIpsum.jpg'); height: 246px">
-                            <div class="banner-node" style="position: relative; top: 192px; color: #ffffff; padding-left: 10px">
-                                <div style="background: #34832B; padding: 10px;">
-{#                                    Всего <b>{% ssearch_all_count %}</b> записей в электронном каталоге. Вы можете <a style="color: #ffffff; font-weight: bold;" href="{% url ssearch:frontend:index %}">найти</a> и забронировать книги в библиотеках Республики Татарстан.#}
-                                      В электронном каталоге Вы сможете <a style="color: #ffffff; font-weight: bold;" href="{% url 'ssearch:frontend:index' %}">найти</a> и забронировать книги в библиотеках Республики Татарстан.
-
-                                    {#                        <a  style=" color: #ffffff; text-decoration: none " href="{% url ssearch:frontend:index %}">Забронируй свою книгу заранее</a>#}
-                                </div>
-                                {#                                <a style="color: #ffffff;" href="{% url ssearch:frontend:index %}">Забронировать</a>#}
+            <div class="span6">
+                <div class="banners thumbnail">
+                    <div style="background: url('{{ STATIC_URL }}theme/banner/loremIpsum.jpg'); height: 246px">
+                        <div class="banner-node"
+                             style="position: relative; top: 192px; color: #ffffff; padding-left: 10px">
+                            <div style="background: #34832B; padding: 10px;">
+                                В электронном каталоге Вы сможете <a style="color: #ffffff; font-weight: bold;"
+                                                                     href="{% url 'ssearch:frontend:index' %}">найти</a>
+                                и забронировать книги в библиотеках Республики Татарстан.
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="span6">
-                    <h3 style="margin-top: -5px;">{% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}Яңалыклар{% else %}News{% endif %}<a href="{% url 'news:frontend:rss' %}"> <img width="24" src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a></h3>
-                    {% news_feed %}
-                    <a href="{% url 'news:frontend:index' %}" class="last">{% if LANGUAGE_CODE == 'ru' %}Архив новостей{% elif LANGUAGE_CODE == 'tt' %}Архив новостей{% else %}News archive{% endif %}</a>
-                </div>
+            </div>
+            <div class="span6">
+                <h3 style="margin-top: -5px;">{% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}
+                    Яңалыклар{% else %}News{% endif %}<a href="{% url 'news:frontend:rss' %}"> <img width="24"
+                                                                                                    src="{{ STATIC_URL }}images/rss.png"
+                                                                                                    alt="Подписаться"></a>
+                </h3>
+                {% news_feed %}
+                <a href="{% url 'news:frontend:index' %}" class="last">{% if LANGUAGE_CODE == 'ru' %}Архив
+                    новостей{% elif LANGUAGE_CODE == 'tt' %}Архив новостей{% else %}News archive{% endif %}</a>
+            </div>
         </div>
         <div class="row">
             <style>
-                .incomes .thumbnail{
+                .incomes .thumbnail {
                     margin-top: 10px;
                     background: #f8f8f8;
                     width: 450px;
                 }
-                .incomes .thumbnail .image{
+
+                .incomes .thumbnail .image {
                     width: 90px;
                     float: left;
                     margin-right: 10px;
                 }
-                .incomes .thumbnail .info{
+
+                .incomes .thumbnail .info {
                     float: left;
                 }
 
@@ -71,19 +82,24 @@
                     border: 5px solid #E0DCD0;
 
                 }
+
                 .incomes .thumbnail .item a {
                     font-weight: bold;
                     text-decoration: none;
                     font-size: 12px;
                 }
-                .incomes .thumbnail .info{
+
+                .incomes .thumbnail .info {
                     width: 340px;
                     margin-left: 10px;
                 }
 
             </style>
             <div class="incomes span6">
-                <h3 style="padding-top: 10px;">{% if LANGUAGE_CODE == 'ru' %}Последние поступления{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}From new arrivals{% endif %}</h3>
+                <h3 style="padding-top: 10px;">{% if LANGUAGE_CODE == 'ru' %}Последние
+                    поступления{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}From new
+                    arrivals{% endif %}</h3>
+
                 <div class="row">
                     <div class="span6">
                         {% cache 60 newinlib.html %}
@@ -93,12 +109,24 @@
                     </div>
 
                 </div>
-                <div class="span6" style="text-align: center; font-size: 14px; padding-top: 10px;"><a href="{% url 'newinlib:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Остальные новинки{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}More new arrivals{% endif %} >></a></div>
+                <div class="span6" style="text-align: center; font-size: 14px; padding-top: 10px;"><a
+                        href="{% url 'newinlib:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Остальные
+                    новинки{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}More new
+                    arrivals{% endif %} >></a></div>
             </div>
 
             <div class="span6">
-                <h3 style="margin: 10px 0 10px 0;">{% if LANGUAGE_CODE == 'ru' %}Карта библиотек{% elif LANGUAGE_CODE == 'tt' %}Китапханәләр картасы{% else %}Map of libraries{% endif %}</h3>
+                <h3 style="margin: 10px 0 10px 0;">{% if LANGUAGE_CODE == 'ru' %}Карта
+                    библиотек{% elif LANGUAGE_CODE == 'tt' %}Китапханәләр картасы{% else %}Map of
+                    libraries{% endif %}</h3>
                 {% cbs_map %}
+                {% if request.GET.draft %}
+                    <h3>Афиша событий</h3>
+                    <div>
+                        {% events_nearest %}
+                    </div>
+                    <a href="{% url 'events:frontend:index' %}">Остальные события >></a>
+                {% endif %}
             </div>
         </div>
     </div>
