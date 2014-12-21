@@ -67,7 +67,7 @@
         </div>
         <div class="tab-pane" id="profile">
             <div class="well well-small">
-                <a class="btn btn-success" href="{% url 'participants:administration:add_user' org.id %}">
+                <a class="btn btn-success" href="{% url 'participants:administration:add_lib_user' org.id %}">
                     <i class="icon-plus icon-white"></i> Добавить пользователя
                 </a>
             </div>
@@ -87,7 +87,7 @@
                         <td>{{ user.user.email }}</td>
                         <td>{{ user.user.first_name }}</td>
                         <td>{{ user.user.last_name }}</td>
-                        <td style="width: 100px"><a title="Отвязать пользователя от организации" class="btn btn-danger btn-mini" href="#1"><i class="icon-remove icon-white"></i></a> </td>
+                        <td style="width: 100px"><a title="Отвязать пользователя от организации" class="btn btn-danger btn-mini" href="{% url 'participants:administration:remove_lib_user' user.id %}"><i class="icon-remove icon-white"></i></a> </td>
                     </tr>
                 {% endfor %}
             </table>

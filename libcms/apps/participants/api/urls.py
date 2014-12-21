@@ -10,4 +10,5 @@ urlpatterns = patterns('',
     url(r'^get_org/$', views.get_org, name="get_org"),
     url(r'^find_orgs/$', views.find_orgs, name="find_orgs"),
     url(r'^get_user/$', views.get_user, name="get_user"),
+    url(r'^export_orgs/$', views.export_orgs, name="export_orgs"),
 )

@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
-from django.utils.translation import ugettext as _
 from django.db import transaction
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from django.http import HttpResponseForbidden
 from guardian.decorators import permission_required_or_403
-from common.pagination import get_page
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, REDIRECT_FIELD_NAME
-from django.utils.translation import to_locale, get_language
 
+from common.pagination import get_page
 from ..models import Library, LibraryType, District, LibraryContentEditor, UserLibrary
 from forms import LibraryForm, LibraryTypeForm, DistrictForm, UserLibraryForm
+
 #@permission_required_or_403('accounts.view_users')
 @login_required
 def check_owning(user, library):
@@ -21,6 +19,7 @@ def check_owning(user, library):
             return True
         else:
             return False
+
 @login_required
 def get_cbs(library_node):
     if library_node.parent_id:
@@ -44,12 +43,12 @@ def detail(request, id):
     })
 
 @login_required
-def add_user(request, id):
+@transaction.atomic()
+def add_lib_user(request, id):
     org = get_object_or_404(Library, id=id)
     if request.method == 'POST':
         form = UserLibraryForm(request.POST)
         if form.is_valid():
-            print 'save'
             ul = form.save(commit=False)
             ul.library = org
             ul.save()
@@ -61,6 +60,16 @@ def add_user(request, id):
         'org': org,
         'form': form
     })
+
+@login_required
+@transaction.atomic()
+def remove_lib_user(request, id):
+    ul = get_object_or_404(UserLibrary, id=id)
+    ul.delete()
+    return redirect('participants:administration:detail', id=ul.library_id)
+
+
+
 #@permission_required_or_403('participants.add_library')
 @login_required
 def list(request, parent=None):

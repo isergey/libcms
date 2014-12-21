@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
+import cStringIO as StringIO
 from django.conf import settings
 from django.forms.models import model_to_dict
+from django.core import serializers
 from django.shortcuts import HttpResponse
 from django.contrib.auth.models import User
 
+import unicodecsv
 from api.exceptions import WrongArguments, ApiException
 from api.decorators import api, login_required_or_403
 
@@ -144,6 +147,7 @@ class ApiLibrary(object):
 
 
         return api_library
+
 
 def index(request):
     return HttpResponse(u'Api ok')
@@ -287,3 +291,22 @@ def get_user(request):
         return {}
 
     return ApiUser.from_model(user).to_dict()
+
+
+@api
+def export_orgs(request):
+    scheme = request.GET.get('scheme', 'xml')
+    orgs = list(Library.objects.select_related('types', 'district').all())
+    data = u''
+    if scheme == 'csv' and orgs:
+        iodata = StringIO.StringIO()
+        fieldnames = model_to_dict(orgs[0]).keys()
+        writer = unicodecsv.DictWriter(iodata, fieldnames=fieldnames)
+        writer.writeheader()
+        for org in orgs:
+            writer.writerow(model_to_dict(org))
+        data = iodata.getvalue()
+    else:
+        data = serializers.serialize(scheme, orgs)
+
+    return HttpResponse(data, content_type='application/' + scheme)

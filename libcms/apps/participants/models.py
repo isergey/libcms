@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 from mptt.models import MPTTModel, TreeForeignKey
 
 #
-#class Country(models.Model):
-#    name = models.CharField(verbose_name=u'Страна', max_length=32, unique=True, db_index=True)
+# class Country(models.Model):
+# name = models.CharField(verbose_name=u'Страна', max_length=32, unique=True, db_index=True)
 #
 #    def __unicode__(self):
 #        return self.name
@@ -42,9 +42,9 @@ class District(models.Model):
 
 class LibraryType(models.Model):
     name = models.CharField(verbose_name=u"Тип библиотеки", max_length=64, unique=True)
+
     def __unicode__(self):
         return self.name
-
 
 
 class Library(MPTTModel):
@@ -61,19 +61,19 @@ class Library(MPTTModel):
     republican = models.BooleanField(verbose_name=u'Руспубликанская библиотека', default=False, db_index=True)
     types = models.ManyToManyField(LibraryType, verbose_name=u'Тип библиотеки', blank=True, null=True)
 
-#    country = models.ForeignKey(Country, verbose_name=u'Страна', db_index=True, blank=True, null=True)
-#    city = models.ForeignKey(City, verbose_name=u'Город', db_index=True, blank=True, null=True)
+    #    country = models.ForeignKey(Country, verbose_name=u'Страна', db_index=True, blank=True, null=True)
+    #    city = models.ForeignKey(City, verbose_name=u'Город', db_index=True, blank=True, null=True)
     district = models.ForeignKey(District, verbose_name=u'Район', db_index=True, blank=True, null=True)
-#    letter = models.CharField(verbose_name=u"Первая буква алфавита", help_text=u'Укажите первую букву, которой будет соответвовать фильтрация по алфавиту', max_length=1)
+    #    letter = models.CharField(verbose_name=u"Первая буква алфавита", help_text=u'Укажите первую букву, которой будет соответвовать фильтрация по алфавиту', max_length=1)
 
     profile = models.TextField(verbose_name=u'Профиль', max_length=10000, blank=True)
     phone = models.CharField(max_length=64, verbose_name=u'Телефон', blank=True)
     plans = models.TextField(verbose_name=u'Расписание работы', max_length=512, blank=True)
     postal_address = models.TextField(verbose_name=u'Адрес', max_length=512, blank=True)
 
-
     http_service = models.URLField(max_length=255, verbose_name=u'Адрес сайта', blank=True)
-    z_service = models.CharField(max_length=255, verbose_name=u'Адрес Z сервера', blank=True, help_text=u'Укажите адрес Z сревера в формате host:port (например localhost:210)')
+    z_service = models.CharField(max_length=255, verbose_name=u'Адрес Z сервера', blank=True,
+                                 help_text=u'Укажите адрес Z сревера в формате host:port (например localhost:210)')
     ill_service = models.EmailField(max_length=255, verbose_name=u'Адрес ILL сервиса', blank=True)
     edd_service = models.EmailField(max_length=255, verbose_name=u'Адрес ЭДД сервиса', blank=True)
     mail = models.EmailField(max_length=255, verbose_name=u'Адрес электронной почты', blank=True, null=True)
@@ -89,9 +89,9 @@ class Library(MPTTModel):
             return self.name + u'#ЦБС'
         return self.name
 
-#    def clean(self):
-#        if Library.objects.filter(code=self.code).count():
-#            raise ValidationError(u'Номер сиглы уже занят')
+    #    def clean(self):
+    #        if Library.objects.filter(code=self.code).count():
+    #            raise ValidationError(u'Номер сиглы уже занят')
 
     class Meta:
         verbose_name = u"Библиотека"
@@ -103,42 +103,32 @@ class Library(MPTTModel):
         )
 
     class MPTTMeta:
-        order_insertion_by=['weight']
-
+        order_insertion_by = ['weight']
 
 
 class UserLibrary(models.Model):
     library = models.ForeignKey(Library)
-    user = models.ForeignKey(User, unique=True)
+    user = models.ForeignKey(User)
 
     def __unicode__(self):
         return self.user.username
-
-    def clean(self):
-        from django.core.exceptions import ValidationError
-        try:
-            library = self.library
-        except Library.DoesNotExist:
-            raise ValidationError(u'Укажите организацию к которой принадлежит пользователь.')
 
     class Meta:
         verbose_name = u"Пользователи организации"
         verbose_name_plural = u"Пользователи организаций"
-        permissions = (
-            ("mba", "Can use ill"),
-            ("view_org_statistics", "Can view org statistics"),
-        )
+        unique_together = ('library', 'user')
 
 
 class LibraryContentEditor(models.Model):
     library = models.ForeignKey(Library)
-    user = models.ForeignKey(User, unique=True)
+    user = models.ForeignKey(User)
 
     def __unicode__(self):
         return self.user.username
 
     def clean(self):
         from django.core.exceptions import ValidationError
+
         try:
             library = self.library
         except Library.DoesNotExist:
@@ -146,6 +136,8 @@ class LibraryContentEditor(models.Model):
 
         if self.library.parent_id:
             raise ValidationError(u'Привязка осуществляется только к ЦБС')
+
     class Meta:
         verbose_name = u"Редактор контента ЦБС"
         verbose_name_plural = u"Редакторы контента ЦБС"
+        unique_together = ('library', 'user')

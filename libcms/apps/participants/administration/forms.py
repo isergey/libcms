@@ -5,27 +5,30 @@ from django.contrib.auth.models import User, Group
 
 from ..models import Library, LibraryType, District, UserLibrary
 
+
 class LibraryForm(forms.ModelForm):
     class Meta:
-        model=Library
+        model = Library
         exclude = ('parent',)
 
 
 class LibraryTypeForm(forms.ModelForm):
     class Meta:
-        model=LibraryType
-
+        model = LibraryType
 
 
 class DistrictForm(forms.ModelForm):
     class Meta:
-        model=District
+        model = District
+
 
 class UserLibraryForm(forms.ModelForm):
     class Meta:
-        model=UserLibrary
-        exclude=('library',)
-#from pages.models import Page, Content
+        model = UserLibrary
+        exclude = ('library',)
+
+
+# from pages.models import Page, Content
 #
 #class PageForm(forms.ModelForm):
 #    class Meta:

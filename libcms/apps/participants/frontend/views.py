@@ -10,6 +10,7 @@ from django.utils.translation import get_language
 from common.pagination import get_page
 from ..models import Library, District
 
+
 def make_library_dict(library):
     return {
         'id': library.id,

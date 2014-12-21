@@ -135,7 +135,6 @@ INSTALLED_APPS = (
     'guardian',
     # 'debug_toolbar',
     'django_sorting',
-
     # cms apps
     'core',
     'accounts',
