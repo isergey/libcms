@@ -1,0 +1,22 @@
+{% for news in news_list %}
+<div class="all-news-block">
+    <div><span>{{ news.create_date|date:'j E Y' }}.</span>
+        <span class="news-block__title">
+            <a href="{% url 'participant_news:frontend:show' news.library.code news.id %}">{{ news.title }}</a>
+        </span>
+    </div>
+    <div class="news-block__teaser">
+        <table style="width: 100%">
+            <tr>
+            {% if news.avatar_img_name %}
+                <td style="width: 100px; padding-right: 5px">
+                    <img src="{{ MEDIA_URL }}uploads/participant_news/newsavatars/{{ news.avatar_img_name }}"></td>
+            {% endif %}
+                <td style="vertical-align: top">
+                    {{ news.teaser }}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endfor %}

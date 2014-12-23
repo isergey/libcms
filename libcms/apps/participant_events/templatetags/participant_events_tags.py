@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from datetime import date, datetime
 import calendar
 from django import template
@@ -72,7 +73,7 @@ def participant_events_calendar(context, library, y=0, m=0):
 @register.inclusion_tag('participant_events/tags/events_nearest.html')
 def participant_events_nearest(library_id, count=5):
     events = list(
-        Event.objects.filter(
+        Event.objects.select_related('library').filter(
             library_id=library_id,
             active=True,
             end_date__gte=datetime.now()
@@ -87,5 +88,6 @@ def participant_events_nearest(library_id, count=5):
         t_dict[event_content.event_id]['event'].event_content = event_content
 
     return {
+        'MEDIA_URL': settings.MEDIA_URL,
         'events':events
     }

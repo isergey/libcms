@@ -7,16 +7,20 @@
             font-weight: bold;
             color: green;
         }
+
         .library {
             padding: 10px 0;
             border-bottom: solid #e8e8e8 1px;
         }
+
         .library:last-child {
             border: none;
         }
+
         .library-info {
             color: #313131;
         }
+
         .addr_form {
             margin: 0;
         }
@@ -33,13 +37,27 @@
             </div>
         </div>
         <div class="row">
-            <div class="span6">
-            <ul class="nav nav-tabs">
-              <li>
-                <a href="{% url 'participants:frontend:index' %}">Библиотеки</a>
-              </li>
-              <li class="active"><a href="{% url 'participants:frontend:geosearch' %}">Поиск по местоположению</a></li>
-            </ul>
+            <div class="span12">
+                <style>
+                    .map {
+                        background: white;
+                        box-shadow: 0 0 10px #999;
+                        border-radius: 2px;
+                    }
+                </style>
+                <div style="height: 400px;" class="map"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span12">
+                <hr/>
+                <ul class="nav nav-tabs">
+                    <li>
+                        <a href="{% url 'participants:frontend:index' %}">Библиотеки</a>
+                    </li>
+                    <li class="active"><a href="{% url 'participants:frontend:geosearch' %}">Поиск по местоположению</a>
+                    </li>
+                </ul>
                 <div>
                     <div class="geo-permission-alert alert alert-info">
                         Для более точно определения вашего местополжения мы запрашиваем ваши координаты.
@@ -63,16 +81,6 @@
 
                 </div>
             </div>
-            <div class="span6">
-                <style>
-                    .map{
-                        background: white;
-                        box-shadow: 0 0 10px #999;
-                        border-radius: 2px;
-                    }
-                </style>
-                <div style="height: 400px;" class="map"></div>
-            </div>
         </div>
 
 
@@ -95,11 +103,11 @@
             var meters = Math.round(distance % 1 * 1000);
             var stringParts = [];
             if (km) {
-                stringParts.push(km + ' км.')
+                stringParts.push(km + ' км')
             }
 
             if (meters) {
-                stringParts.push(meters + ' м.')
+                stringParts.push(meters + ' м')
             }
             return stringParts.join(' ');
         };
@@ -149,14 +157,14 @@
                 _.each(orgs, function (item) {
                     var library = item.library;
                     objectsCollection.add(
-                        new ymaps.Placemark([library.latitude, library.longitude], {
-                            hintContent: library.name,
-                            balloonContent: library_item_tpl({
-                                'library': library,
-                                'distance': humanizeDistance(item.distance),
-                                'href': item.href
-                            })
-                        }));
+                            new ymaps.Placemark([library.latitude, library.longitude], {
+                                hintContent: library.name,
+                                balloonContent: library_item_tpl({
+                                    'library': library,
+                                    'distance': humanizeDistance(item.distance),
+                                    'href': item.href
+                                })
+                            }));
                 });
 
 
@@ -223,7 +231,6 @@
             });
 
             $('.addr_form').on('submit', function () {
-                console.log($(this).serializeObject());
                 return false;
             });
 

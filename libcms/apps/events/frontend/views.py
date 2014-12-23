@@ -19,7 +19,10 @@ def index(request, day='', month='', year=''):
         age_category = filter_form.cleaned_data['age_category']
 
         if library:
-            q = q & Q(library=library)
+            libs = [library.id]
+            for item in list(library.get_children().values('id')):
+                libs.append(item['id'])
+            q = q & Q(library__in=libs)
 
         if event_type:
             q_type = Q(event_type='')

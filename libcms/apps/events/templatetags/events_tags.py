@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from datetime import date, datetime
 import calendar
 from django.core.cache import cache
@@ -84,5 +85,6 @@ def events_nearest(count=5):
         t_dict[event_content.event_id]['event'].event_content = event_content
 
     return {
-        'events':events
+        'events':events,
+        'MEDIA_URL': settings.MEDIA_URL
     }

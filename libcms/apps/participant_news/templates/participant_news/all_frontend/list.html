@@ -1,0 +1,94 @@
+{% extends 'index/frontend/index.html' %}
+{% load pagination_tag %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block content %}
+    <style>
+        ul.news {
+            list-style: none;
+            margin: 0;
+        }
+
+        .news .title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .news .teaser {
+            padding: 5px 0;
+        }
+
+        .news .create_date {
+            color: #8c8c8c;
+        }
+    </style>
+    <div class="span12">
+        <div class="breadcrumb">
+            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
+            <span class="active">Новости библиотек</span>
+        </div>
+    </div>
+    <div class="span9">
+        <style>
+            ul.news {
+                list-style: none;
+                margin: 0;
+            }
+
+            .news .title {
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            .news .create_date {
+                color: #8c8c8c;
+            }
+            .news-filter-form select{
+                width: 200px;
+            }
+        </style>
+        <div class="news">
+            {% for news in news_list %}
+                <div class="title"><a
+                        href="{% url 'participant_news:frontend:show' news.library.code news.id %}">{{ news.title }}</a>
+                </div>
+
+                <table style="width: 100%">
+                    <tr>
+                        {% if news.avatar_img_name %}
+                            <td style="width: 100px; padding-right: 5px">
+                                <img src="{{ MEDIA_URL }}uploads/participant_news/newsavatars/{{ news.avatar_img_name }}">
+                            </td>
+                        {% endif %}
+                        <td style="vertical-align: top">
+                            <div><b>{{ news.library.name }}</b></div>
+                            <div>{{ news.teaser }}</div>
+
+                        </td>
+                    </tr>
+                </table>
+                <div class="create_date">{{ news.create_date|date:'j E Y' }}</div>
+                {% if not forloop.last %}
+                    <hr/>{% endif %}
+            {% endfor %}
+        </div>
+        {% admin_pagination news_page %}
+    </div>
+    <div class="span3">
+        <div class="well well-small">
+            <h3>Фильтр новостей</h3>
+            <form class="form news-filter-form" method="get">
+                {% include 'frontend/base_form_fields.html' with form=filter_form %}
+                <input class="btn" type="submit" value="Фильтровать">
+            </form>
+        </div>
+    </div>
+    <script>
+    $(function () {
+        $('.news-filter-form input, .news-filter-form select').on('change', function () {
+            $('.news-filter-form').submit();
+        });
+    });
+    </script>
+
+{% endblock %}
