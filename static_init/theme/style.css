@@ -18,8 +18,8 @@
     margin-bottom: 0;
     background: transparent;
     border: 0;
-    -webkit-border-radius: none;
-    -moz-border-radius: none;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
     border-radius: 0;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
