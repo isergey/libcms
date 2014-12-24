@@ -1,0 +1,82 @@
+{% extends 'theme_frontend_base.html' %}
+{% block title %}Личный кабинет{% endblock %}
+{% block content %}
+    <style>
+        .personal .thumbnail{
+            height: 70px;
+            margin-bottom: 10px;
+            background: #f8f8f8;
+        }
+        .personal .thumbnail:hover{
+            background: #ededed;
+        }
+        .personal .thumbnail a {
+            color: #434343;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            height: 100%;
+        }
+    </style>
+    <div class="span12">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li class="active">Личный кабинет</li>
+        </ul>
+        <div class="row personal">
+            <div class="span6">
+                {% if not lib_reader %}
+                    <div class="thumbnail"  style="background-color: #d9edf7; border-color: #bce8f1;">
+                        <a  style="color: #3a87ad"  href="{% url 'urt:frontend:index' %}">Привязать или зарегистрировать читательский билет</a>
+                    </div>
+                {% else %}
+                    <div class="thumbnail"  style="background-color: #dff0d8; border-color: #d6e9c6;">
+                        <a  style="color: #468847">№ читательского билета: <b>{{ lib_reader.reader_id }}</b></a>
+                    </div>
+                {% endif %}
+            </div>
+{#            <div class="span6">#}
+{#                <div class="thumbnail">#}
+{#                    <a href="{% url 'orders:frontend:on_hand' %}">Привязать учетную запись к ЕСИА <img style="float:right; width: 80px"  src="{{ STATIC_URL }}images/republic-gerb.png"/></a>#}
+{#                </div>#}
+{#            </div>#}
+            <div class="span6">
+                <div class="thumbnail">
+                    <a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="thumbnail">
+                    <a href="{% url 'orders:frontend:reservations' %}">Заказы на бронирование</a>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="thumbnail">
+                    <a href="{% url 'mydocs:frontend:index' %}">Мои документы</a>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="thumbnail">
+                    <a href="{% url 'ssearch:frontend:saved_search_requests' %}">Поисковые запросы</a>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="thumbnail">
+                    <a href="{% url 'ask_librarian:frontend:my_questions' %}">Мои вопросы</a>
+                </div>
+            </div>
+        </div>
+    {% if esia_linked %}
+        <div class="alert alert-info">
+            Установить связь с ЕСИА
+            <img style="width: 50px" src="{{ STATIC_URL }}images/republic-gerb.png">
+        </div>
+    {% else %}
+        <div class="alert alert-success">
+            Свзязь с ЕСИА установлена
+            <img style="width: 50px" src="{{ STATIC_URL }}images/republic-gerb.png">
+        </div>
+    {% endif %}
+    </div>
+
+{% endblock %}

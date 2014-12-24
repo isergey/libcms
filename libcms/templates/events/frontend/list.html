@@ -53,7 +53,7 @@
             </div>
             <div class="span3">
             <div>
-                <form method="GET">
+                <form class="event-filter" method="GET">
                     {% include 'frontend/base_form_fields.html' with form=filter_form %}
                     <input class="btn btn-info" type="submit" value="Фильтровать">
                 </form>
@@ -64,5 +64,12 @@
         </div>
 
     </div>
-
+    <script>
+    $(function () {
+        var $eventFilterForm = $('.event-filter');
+        $('.event-filter select, .event-filter input').on('change', function () {
+            $eventFilterForm.submit();
+        });
+    });
+    </script>
 {% endblock %}

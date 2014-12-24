@@ -4,13 +4,12 @@
             <a class="btn btn btn-large" href="{% url 'personal:frontend:index' %}"><i class="icon-user"></i> Личный кабинет</a>
             <a class="btn dropdown-toggle btn btn-large" data-toggle="dropdown" href="#"><span
                     class="caret"></span></a>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu"><li><a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a></li>
                 <li><a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a></li>
                 <li><a href="{% url 'orders:frontend:reservations' %}">Заказы на бронирование</a></li>
                 <li><a href="{% url 'mydocs:frontend:index' %}">Мои документы</a></li>
                 <li><a href="{% url 'ask_librarian:frontend:my_questions' %}">Мои вопросы</a></li>
                 <li><a href="{% url 'ssearch:frontend:saved_search_requests' %}">Поисковые запросы</a></li>
-                <li><a href="{% url 'urt:frontend:index' %}">Мои библиотеки</a></li>
                 <li class="divider"></li>
                 {#                                    <li><a href="#">Профиль</a></li>#}
                 <li><a href="{% url 'accounts:frontend:logout' %}">Выход</a></li>

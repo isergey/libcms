@@ -592,3 +592,44 @@ div.record {
     text-decoration: underline;
     color: #005580;
 }
+
+
+.olap-parameter
+{
+    margin: 10px;
+}
+
+.olap-parameter-header
+{
+    display: inline-block;
+    font-weight: bold;
+    vertical-align: middle;
+    width: 170px;
+}
+
+.olap-parameter-value
+{
+    width: 200px;
+}
+
+.olap-table
+{
+}
+
+.olap-table th, .olap-table td
+{
+    border: 1px solid #AAAAAA;
+    padding: 3px;
+}
+
+.olap-table tr:first-child
+{
+    font-weight: bold;
+    text-align: center;
+}
+
+.olap-table tr td:first-child
+{
+    font-weight: bold;
+    text-align: left;
+}

@@ -1,27 +1,28 @@
 # -*- encoding: utf-8 -*-
 from django import forms
-from django.contrib.auth.models import User
-
-from participants.models import Library
 from ..models import LibReader
 
 
 class LibReaderForm(forms.ModelForm):
-    library = forms.ModelChoiceField(queryset=Library.objects.filter(parent=None).exclude(z_service=''),
-        label=u'Укажите ЦБС, в которой Вы получили идентификатор читателя и пароль.'
+    password = forms.CharField(
+        label=u'Пароль',
+        required=True,
+        max_length=255,
+        help_text=u'Введите пароль, который Вы получили в библиотке',
+        widget=forms.PasswordInput
     )
-    lib_password = forms.CharField(widget=forms.PasswordInput, label=u'Пароль, выданный библиотекой')
     class Meta:
         model = LibReader
         exclude = ['user',]
+        widgets = {
+            'lib_password': forms.PasswordInput
+        }
 
-    def clean_library(self):
-        library = self.cleaned_data['library']
-        # ЦБС на верхнем уровне. Не имеет родителя.
-        if library.parent_id:
-            raise forms.ValidationError(u'Необходимо выбрать ЦБС')
-
-        return library
+    def clean_reader_id(self):
+        reader_id = self.cleaned_data['reader_id']
+        if LibReader.objects.filter(reader_id=reader_id).exists():
+            raise forms.ValidationError(u'Читательский билет уже зарегистрирован')
+        return reader_id
 
 class LibReaderAuthForm(forms.ModelForm):
     """
