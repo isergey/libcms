@@ -7,7 +7,6 @@ from common.pagination import get_page
 from news.models import News, NewsContent
 
 
-
 def index(request):
     news_page = get_page(request, News.objects.filter(publicated=True).exclude(type=1).order_by('-create_date'))
 
@@ -23,18 +22,19 @@ def index(request):
     return render(request, 'news/frontend/list.html', {
         'news_list': news_page.object_list,
         'news_page': news_page,
-        })
+    })
+
 
 def show(request, id):
     cur_language = translation.get_language()
     try:
-        news = News.objects.get(Q(type=0)|Q(type=2),id=id)
+        news = News.objects.get(Q(type=0) | Q(type=2), id=id)
     except News.DoesNotExist:
         raise Http404()
 
     try:
         content = NewsContent.objects.get(news=news, lang=cur_language[:2])
-    except Content.DoesNotExist:
+    except NewsContent.DoesNotExist:
         content = None
 
     return render(request, 'news/frontend/show.html', {

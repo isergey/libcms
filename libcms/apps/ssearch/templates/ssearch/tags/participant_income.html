@@ -8,7 +8,7 @@
             <div class="record-wrapper">{{ doc.record|safe }}</div>
             <div style="padding-top: 5px">
                 <div><b>Дата поступления</b>: {{ doc|hash:'record-create-date_dts'|date:'d E Y' }}</div>
-                <div><a href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">подробнее >></a></div>
+{#                <div><a href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">подробнее >></a></div>#}
             </div>
         </div>
         <hr/>

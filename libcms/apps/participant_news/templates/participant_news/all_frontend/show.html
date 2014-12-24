@@ -1,0 +1,43 @@
+{% extends 'index/frontend/index.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block content %}
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/fotorama/4.6.2/fotorama.css" rel="stylesheet"> <!-- 3 KB -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/fotorama/4.6.2/fotorama.js"></script> <!-- 16 KB -->
+
+    <div class="span12">
+        <div class="breadcrumb">
+            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
+            <span>
+                <a href="{% url 'participant_site:frontend:index' news.library.code %}">{{ news.library.name }}</a>
+                <span class="divider">/</span></span>
+            <span><a href="{% url 'participant_news:frontend:index' news.library.code %}">Новости</a></span>
+        </div>
+    </div>
+
+    <div class="span3">
+        {% include 'participant_site/frontend/site_menu.html' %}
+    </div>
+
+    <div class="span9">
+        {% include 'participant_site/frontend/inline_org_info.html' %}
+        <h3>{{ news.title }}</h3>
+
+        <div>
+            {{ news.content|safe }}
+        </div>
+        {% if news_images %}
+            <h3>Фотоматериалы</h3>
+            <div class="fotorama" data-nav="thumbs">
+                {% for news_image in news_images %}
+                    <a data-caption='{{ news_image.title }}' title="1111"
+                       href="{{ MEDIA_URL }}{{ news_image.image }}"><img title="2222" src="
+                            {{ MEDIA_URL }}{{ news_image.get_tmb_path }}"></a>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </div>
+
+
+{% endblock %}

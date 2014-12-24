@@ -1,9 +1,25 @@
 {% for event in events %}
-    <div class="near_events_feed">
-        <div class="title"><a href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a></div>
-        <div class="create_date">Начало: <b>{{ event.start_date|date:'d E Y H:i' }}</b></div>
-        <div class="library">Библиотека: <b>{{ event.library.name }}</b></div>
-        <div class="teaser">{{ event.event_content.teaser }}</div>
+    <div class="event-block">
+        <div>
+        <span class="event-block__title">
+            <a href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a>
+        </span>
+        </div>
+        <div class="event-block__teaser">
+            <table style="width: 100%">
+                <tr>
+                    {% if event.avatar %}
+                        <td style="width: 100px; padding-right: 5px">
+                            <img src="{{ MEDIA_URL }}{{ event.avatar }}"></td>
+                    {% endif %}
+                    <td style="vertical-align: top">
+                        {{ event.event_content.teaser }}
+                        <div class="create_date">Начало: <b>{{ event.start_date|date:'j E Y H:i' }}</b></div>
+                        <div class="library">Библиотека: <b>{{ event.library.name }}</b></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 {% empty %}
     Событий нет

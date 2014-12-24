@@ -35,6 +35,7 @@ urlpatterns = patterns('',
     (r'^newinlib/', include('newinlib.urls', namespace='newinlib')),
     (r'^attacher/', include('attacher.urls', namespace='attacher')),
 
+    (r'^participants/news/', include('participant_news.all_frontend.urls', namespace='participant_all_news')),
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/news/', include('participant_news.urls', namespace='participant_news')),
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/pages/', include('participant_pages.urls', namespace='participant_pages')),
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/events/', include('participant_events.urls', namespace='participant_events')),

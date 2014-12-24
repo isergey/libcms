@@ -1,6 +1,7 @@
 {% extends 'theme_frontend_base.html' %}
 {% load i18n %}
 {% load news_tags %}
+{% load participant_news_tags %}
 {% load events_tags %}
 {% load ssearch_tags %}
 {% load participiants_tags %}
@@ -114,16 +115,24 @@
             </div>
 
             <div class="span6">
+
                 <h3 style="margin: 10px 0 10px 0;">{% if LANGUAGE_CODE == 'ru' %}Карта
                     библиотек{% elif LANGUAGE_CODE == 'tt' %}Китапханәләр картасы{% else %}Map of
                     libraries{% endif %}</h3>
                 {% cbs_map %}
                 {% if request.GET.draft %}
+                    <hr/>
                     <h3>Афиша событий</h3>
                     <div>
                         {% events_nearest %}
                     </div>
                     <a href="{% url 'events:frontend:index' %}">Остальные события >></a>
+                    <div>
+                    <hr/>
+                    <h3>Новости библиотек</h3>
+                    {% participant_all_news_feed 10 %}
+                    <a href="{% url 'participant_all_news:index' %}">Остальные новости >></a>
+                    </div>
                 {% endif %}
             </div>
         </div>
