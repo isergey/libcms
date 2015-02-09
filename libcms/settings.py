@@ -158,6 +158,7 @@ INSTALLED_APPS = (
     'personal',
     'ask_librarian',
     'ssearch',
+    'statistics',
     'rbooks',
     'forum',
     'urt',
