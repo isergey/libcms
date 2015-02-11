@@ -85,12 +85,13 @@ MIDDLEWARE_CLASSES = (
 #    'johnny.middleware.LocalStoreClearMiddleware',
 #    'johnny.middleware.QueryCacheMiddleware',
     'localeurl.middleware.LocaleURLMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django_sorting.middleware.SortingMiddleware',
+    'statistics.middleware.RequestLog',
    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
