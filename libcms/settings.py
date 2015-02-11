@@ -197,5 +197,10 @@ DEBUG_TOOLBAR_PANELS = (
 )
 
 
+LOCALE_INDEPENDENT_PATHS = (
+    r'^/statistics/watch/',
+    r'^/participants/api/',
+    r'^/robots.txt/',
+)
 
 from local_settings import *
