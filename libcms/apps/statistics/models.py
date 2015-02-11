@@ -17,7 +17,7 @@ def log_page_view(path, query, url_hash, session):
     ])
 
 
-def get_view_count_stats(from_date, to_date, period, url_filter=''):
+def get_view_count_stats(from_date, to_date, period, visit_type='view' ,url_filter=''):
     date_range = _generate_dates(from_date, to_date, period)
 
     group_by = 'year(datetime), month(datetime), day(datetime)'
@@ -33,7 +33,10 @@ def get_view_count_stats(from_date, to_date, period, url_filter=''):
 
     cursor = connection.cursor()
     args = []
-    select = """count(id) as count, """ + date_format + """ as date"""
+    distinct = ''
+    if visit_type == 'visit':
+        distinct = 'distinct'
+    select = """count(%s session) as count, %s as date""" % (distinct, date_format)
     frm = 'statistics_pageview'
     where = 'datetime >= %s AND datetime <= %s'
     args += [from_date, to_date]

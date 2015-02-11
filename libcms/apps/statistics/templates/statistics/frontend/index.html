@@ -1,6 +1,7 @@
 Статистика
 <form method="get">
-    {{ period_form }}
+    {{ period_form.as_p }}
+    {{ param_form.as_p }}
     <button type="submit">Фильтровать</button>
 </form>
 {% if results %}

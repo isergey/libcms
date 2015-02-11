@@ -9,6 +9,14 @@ PERIOD_CHOICES = (
 )
 
 class PeriodForm(forms.Form):
-    from_date = forms.DateField(required=True)
-    to_date = forms.DateField(required=True)
-    period = forms.ChoiceField(choices=PERIOD_CHOICES, required=True, initial=PERIOD_CHOICES[0])
+    from_date = forms.DateField(label=u'Дата начала')
+    to_date = forms.DateField(label=u'Дата окончания')
+    period = forms.ChoiceField(choices=PERIOD_CHOICES, initial=PERIOD_CHOICES[0], label=u'Период')
+
+VISIT_TYPES = (
+    ('view', u'Просмотр'),
+    ('visit', u'Посетители'),
+)
+class ParamForm(forms.Form):
+    visit_type = forms.ChoiceField(label=u'Тип визита', choices=VISIT_TYPES)
+    url_filter = forms.CharField(label=u'Фильтр URL (без учета префикса локали)', required=False)

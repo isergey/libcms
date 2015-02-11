@@ -308,6 +308,10 @@ style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" tit
     </noscript>
     <!-- end of Top100 code -->
 </div>
-
+<script>
+    $(function () {
+        $.get('{% url 'statistics:frontend:watch' %}');
+    });
+</script>
 </body>
 </html>
