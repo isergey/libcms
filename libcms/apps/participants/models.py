@@ -57,7 +57,7 @@ class Library(MPTTModel):
     )
     name = models.CharField(max_length=255, verbose_name=u'Название')
     code = models.CharField(verbose_name=u'Сигла', max_length=32, db_index=True, unique=True)
-    sigla = models.CharField(verbose_name=u'Сигла из подполя 999b', max_length=32, db_index=True, blank=True)
+    sigla = models.CharField(verbose_name=u'Сигла из подполя 999b', max_length=32, db_index=True, blank=True, unique=True)
     republican = models.BooleanField(verbose_name=u'Руспубликанская библиотека', default=False, db_index=True)
     types = models.ManyToManyField(LibraryType, verbose_name=u'Тип библиотеки', blank=True, null=True)
 

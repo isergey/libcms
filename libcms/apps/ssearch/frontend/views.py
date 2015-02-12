@@ -341,7 +341,7 @@ def search(request, catalog=None, library=None):
         return HttpResponse(u'Неверные параметры')
 
     if qs and attrs:
-        log_search_request({'attr': attrs[0], 'value': qs[0]}, catalog)
+        log_search_request({'attr': attrs[0], 'value': qs[0]}, catalog, getattr(library, 'code', u''))
 
     if holders:
         holders_query = solr.Q(**{'holder-sigla_s': holders[0]})
@@ -779,7 +779,7 @@ def beautify(value):
 import uuid
 from ..models import SearchRequestLog
 #morph = pymorphy.get_morph(settings.PYMORPHY_CDB_DICTS, 'cdb')
-def log_search_request(last_search_value, catalog):
+def log_search_request(last_search_value, catalog, library_code=u''):
     def clean_term(term):
         """
         Возвращает кортеж из ненормализованног и нормализованного терма
@@ -808,19 +808,19 @@ def log_search_request(last_search_value, catalog):
         forms = clean_term(term)
         term_groups.append({
             'nn': forms[0],
-            'n': forms[1],
             'use': last_search_value.get('attr', u'not defined'),
 
         })
-
+    logs = []
     for group in term_groups:
-        SearchRequestLog(
+        logs.append(SearchRequestLog(
             catalog=catalog,
             search_id=search_request_id,
             use=group['use'],
-            normalize=group['n'],
             not_normalize=group['nn'],
-        ).save()
+            library_code=library_code
+        ))
+    SearchRequestLog.objects.bulk_create(logs)
 
 
 def statictics():

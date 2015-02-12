@@ -24,7 +24,7 @@ def get_view_count_stats(from_date, to_date, period, visit_type='view' ,url_filt
     date_format = "date_format(datetime, '%%Y-%%m-%%d')"
     if period == 'y':
         group_by = 'year(datetime)'
-        date_format = "date_format(datetime, '%%Y')"
+        date_format = "date_format(datetime, '%%Y-01-01')"
     elif period == 'm':
         group_by = 'year(datetime), month(datetime)'
         date_format = "date_format(datetime, '%%Y-%%m-01')"
@@ -38,8 +38,8 @@ def get_view_count_stats(from_date, to_date, period, visit_type='view' ,url_filt
         distinct = 'distinct'
     select = """count(%s session) as count, %s as date""" % (distinct, date_format)
     frm = 'statistics_pageview'
-    where = 'datetime >= %s AND datetime <= %s'
-    args += [from_date, to_date]
+    where = 'datetime >= %s AND datetime < %s'
+    args += [from_date, to_date + datetime.timedelta(days=1)]
 
     if url_filter:
         where += " AND path REGEXP %s"

@@ -400,7 +400,6 @@ def _indexing(slug, reset=False):
         i+=1
         if len(docs) > 100:
             solr.add(docs)
-            print i
             docs = list()
         res = rows.fetch_row(how=1)
 

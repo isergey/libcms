@@ -1,4 +1,5 @@
 import uuid
+import json
 import hashlib
 import datetime
 from urlparse import urlparse
@@ -8,8 +9,9 @@ from django.views.decorators.cache import never_cache
 from django.shortcuts import render, HttpResponse
 from .. import models
 from . import forms
-
-URL_TIMEOUT = 10 # mins
+from participants.models import Library
+from ssearch.models import request_group_by_date
+URL_TIMEOUT = 5 # mins
 
 def index(request):
     period_form = forms.PeriodForm(request.GET, prefix='pe')
@@ -24,12 +26,94 @@ def index(request):
             visit_type=param_form.cleaned_data['visit_type'],
             #url_filter='/site/[0-9]+/?$'
         )
-
     return render(request, 'statistics/frontend/index.html', {
         'period_form': period_form,
         'param_form': param_form,
         'results': results
     })
+
+def org_stats(request):
+    org_code = request.GET.get('org_code', None)
+    org_name = ''
+    libs = Library.objects.filter(code=org_code)[:1]
+    if libs:
+        org_name = libs[0].name
+    if not Library.objects.filter(code=org_code).exists():
+        return HttpResponse(u'Org with code %s not exist' % org_code, status=400)
+
+    responce_dict = {
+        'org_code': org_code,
+        'org_name': org_name
+    }
+    period_form = forms.PeriodForm(request.GET, prefix='pe')
+    if period_form.is_valid():
+        from_date=period_form.cleaned_data['from_date']
+        to_date=period_form.cleaned_data['to_date']
+        period=period_form.cleaned_data['period']
+        url_filter=u'/site/%s/' % org_code
+
+        results = models.get_view_count_stats(
+            from_date=from_date,
+            to_date=to_date,
+            period=period,
+            url_filter=url_filter
+        )
+        responce_dict['views'] = results
+        results = models.get_view_count_stats(
+            from_date=from_date,
+            to_date=to_date,
+            period=period,
+            url_filter=url_filter,
+            visit_type='visit'
+        )
+        responce_dict['visits'] = results
+
+        results = request_group_by_date(
+            from_date=from_date,
+            to_date=to_date,
+            period=period,
+            library_code=org_code
+        )
+
+        responce_dict['search_requests'] = results
+
+        print 'search results', results
+
+    else:
+        return HttpResponse(u'Wrong pe params %s' % period_form.errors, status=400)
+
+    return HttpResponse(json.dumps(responce_dict, ensure_ascii=False), content_type='application/json')
+
+
+def search_stats(request):
+    period_form = forms.PeriodForm(request.GET, prefix='pe')
+    responce_dict= {
+        'not_specified': [],
+        'catalogs': {}
+    }
+    if period_form.is_valid():
+        from_date=period_form.cleaned_data['from_date']
+        to_date=period_form.cleaned_data['to_date']
+        period=period_form.cleaned_data['period']
+
+        results = request_group_by_date(
+            from_date=from_date,
+            to_date=to_date,
+            period=period,
+        )
+        responce_dict['not_specified'] = results
+
+        catalogs = ['sc2', 'ebooks']
+        for catalog in catalogs:
+            results = request_group_by_date(
+                from_date=from_date,
+                to_date=to_date,
+                period=period,
+                catalog=catalog
+            )
+            responce_dict['catalogs'][catalog] = results
+
+    return HttpResponse(json.dumps(responce_dict, ensure_ascii=False), content_type='application/json')
 
 @never_cache
 def watch(request):

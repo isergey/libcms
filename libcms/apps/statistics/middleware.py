@@ -8,7 +8,7 @@ from localeurl import utils
 from .models import log_page_view, PageView
 
 IGNORED_PATHES = [settings.STATIC_URL, settings.MEDIA_URL]
-URL_TIMEOUT = 10
+URL_TIMEOUT = 5
 
 
 class SetSessionCookies(object):

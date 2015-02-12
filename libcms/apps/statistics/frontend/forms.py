@@ -11,7 +11,7 @@ PERIOD_CHOICES = (
 class PeriodForm(forms.Form):
     from_date = forms.DateField(label=u'Дата начала')
     to_date = forms.DateField(label=u'Дата окончания')
-    period = forms.ChoiceField(choices=PERIOD_CHOICES, initial=PERIOD_CHOICES[0], label=u'Период')
+    period = forms.ChoiceField(choices=PERIOD_CHOICES, initial=PERIOD_CHOICES[0], label=u'Период', required=False)
 
 VISIT_TYPES = (
     ('view', u'Просмотр'),

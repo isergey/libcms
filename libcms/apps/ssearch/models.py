@@ -1,4 +1,5 @@
 # coding: utf-8
+from collections import OrderedDict
 import datetime
 import zlib
 from django.db import connection
@@ -159,6 +160,40 @@ class SavedRequest(models.Model):
     def __unicode__(self):
         return u"%s %s %s" % (self.search_request, self.catalog, unicode(self.add_time))
 
+
+class SearchRequestLog(models.Model):
+    catalog = models.CharField(max_length=32, null=True, db_index=True)
+    library_code = models.CharField(max_length=32, db_index=True, blank=True)
+    search_id = models.CharField(max_length=32, verbose_name=u'Идентификатор запроса', db_index=True)
+    use = models.CharField(max_length=32, verbose_name=u"Точка доступа", db_index=True)
+    not_normalize = models.CharField(max_length=256, verbose_name=u'Ненормализованный терм', db_index=True)
+    datetime = models.DateTimeField(auto_now_add=True, auto_now=True, db_index=True)
+
+
+DUBLET_STATUSES = (
+    (0, u'На обработке'),
+    (1, u'Обработан'),
+)
+class Dublet(models.Model):
+    key = models.CharField(verbose_name=u'Ключ дублетности', db_index=True, unique=True, max_length=128)
+    statuc = models.IntegerField(choices=DUBLET_STATUSES, db_index=True)
+    change_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=u"Время изменения статуса")
+    owner = models.ForeignKey(User)
+
+CATALOGS_CHOICES = (
+    ('records', u'Сводный'),
+    ('ebooks', u'Электронная библиотека'),
+)
+class WrongRecord(models.Model):
+    gen_id = models.CharField(max_length=32, unique=True)
+    record_id = models.CharField(max_length=32, db_index=True)
+    key = models.CharField(verbose_name=u'Ключ дублетности', db_index=True, unique=True, max_length=128)
+    sender = models.ForeignKey(User)
+    catalog = models.CharField(choices=CATALOGS_CHOICES, db_index=True, max_length=16)
+    send_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=u"Время добавления статуса")
+
+
+
 DEFAULT_LANG_CHICES = (
     ('rus', u'Русский'),
     ('eng', u'English'),
@@ -233,7 +268,7 @@ def date_group(group):
 
 
 
-def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list()):
+def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list(), library_code=''):
     """
     Статистика по количеству запросов в каталог(и)
     """
@@ -256,6 +291,7 @@ def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list()):
     """
     params = []
     where = ['WHERE date(datetime) BETWEEN %s  AND  %s']
+
     params.append(start_date)
     params.append(end_date)
 
@@ -368,7 +404,7 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
 
     select = u"""
         SELECT
-            count(ssearch_searchrequestlog.not_normalize) as count, ssearch_searchrequestlog.not_normalize as normalize
+            count(ssearch_searchrequestlog.not_normalize) as count, ssearch_searchrequestlog.not_normalize as not_normalize
         FROM
             ssearch_searchrequestlog
     """
@@ -403,7 +439,7 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
     where = u' '.join(where)
 
     results = execute(
-        'select normalize, count from (' + select + ' ' + where +
+        'select not_normalize, count from (' + select + ' ' + where +
         u"""
         GROUP BY
             ssearch_searchrequestlog.not_normalize
@@ -417,38 +453,81 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
     rows = []
 
     for row in results:
-        rows.append((row['normalize'], row['count']))
+        rows.append((row['not_normalize'], row['count']))
     return rows
 
 
-class SearchRequestLog(models.Model):
-    catalog = models.CharField(max_length=32, null=True, db_index=True)
-    search_id = models.CharField(max_length=32, verbose_name=u'Идентификатор запроса', db_index=True)
-    use = models.CharField(max_length=32, verbose_name=u"Точка доступа", db_index=True)
-    normalize = models.CharField(max_length=256, verbose_name=u'Нормализованный терм', db_index=True)
-    not_normalize = models.CharField(max_length=256, verbose_name=u'Ненормализованный терм', db_index=True)
-    datetime = models.DateTimeField(auto_now_add=True, auto_now=True, db_index=True)
+
+def request_group_by_date(from_date, to_date, period, catalog='', library_code=''):
+    date_range = _generate_dates(from_date, to_date, period)
+
+    group_by = 'year(datetime), month(datetime), day(datetime)'
+    date_format = "date_format(datetime, '%%Y-%%m-%%d')"
+    if period == 'y':
+        group_by = 'year(datetime)'
+        date_format = "date_format(datetime, '%%Y-01-01')"
+    elif period == 'm':
+        group_by = 'year(datetime), month(datetime)'
+        date_format = "date_format(datetime, '%%Y-%%m-01')"
+    else:
+        pass
+
+    cursor = connection.cursor()
+    args = []
+    select = """count(distinct search_id) as count, %s as date""" % (date_format)
+    frm = 'ssearch_searchrequestlog'
+    where = 'datetime >= %s AND datetime < %s'
+    args += [from_date, to_date + datetime.timedelta(days=1)]
+    if library_code:
+        where += ' AND library_code = %s'
+        args.append(library_code)
+
+    if catalog:
+        where += " AND catalog = %s"
+        args.append(catalog)
+    query = u' '.join(['SELECT', select, 'FROM', frm, 'WHERE', where, 'GROUP BY', group_by])
+
+    cursor.execute(query, args)
+    row_hash = OrderedDict()
+
+    for row in dictfetchall(cursor):
+        row_hash[row['date']] = row['count']
 
 
-DUBLET_STATUSES = (
-    (0, u'На обработке'),
-    (1, u'Обработан'),
-)
-class Dublet(models.Model):
-    key = models.CharField(verbose_name=u'Ключ дублетности', db_index=True, unique=True, max_length=128)
-    statuc = models.IntegerField(choices=DUBLET_STATUSES, db_index=True)
-    change_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=u"Время изменения статуса")
-    owner = models.ForeignKey(User)
+    results = []
+    for date in date_range:
+        results.append({
+            'date': date,
+            'count': row_hash.get(date, 0)
+        })
+    return results
 
-CATALOGS_CHOICES = (
-    ('records', u'Сводный'),
-    ('ebooks', u'Электронная библиотека'),
-)
-class WrongRecord(models.Model):
-    gen_id = models.CharField(max_length=32, unique=True)
-    record_id = models.CharField(max_length=32, db_index=True)
-    key = models.CharField(verbose_name=u'Ключ дублетности', db_index=True, unique=True, max_length=128)
-    sender = models.ForeignKey(User)
-    catalog = models.CharField(choices=CATALOGS_CHOICES, db_index=True, max_length=16)
-    send_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=u"Время добавления статуса")
+def _generate_dates(from_date, to_date, period):
+    date_range = []
+    if period == 'y':
+        for year in range(from_date.year, to_date.year) + [to_date.year]:
+            date_range.append(u'%s-01-01' % year)
+    elif period == 'm':
+        for date in _monthrange(from_date, to_date):
+            date_range.append(date.strftime('%Y-%m-01'))
+    else:
+        for date in _daysrange(from_date, to_date):
+            date_range.append(date.strftime('%Y-%m-%d'))
+
+    return date_range
+
+def _monthrange(start, finish):
+    months = (finish.year - start.year) * 12 + finish.month + 1
+    for i in xrange(start.month, months):
+        year = (i - 1) / 12 + start.year
+        month = (i - 1) % 12 + 1
+        yield datetime.date(year, month, 1)
+
+
+def _daysrange(start, end):
+    dates = []
+    delta = end - start
+    for i in range(delta.days + 1):
+        dates.append(start + datetime.timedelta(days=i))
+    return dates
 
