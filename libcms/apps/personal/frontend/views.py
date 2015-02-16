@@ -5,10 +5,10 @@ from urt.models import LibReader
 
 @login_required
 def index(request):
-    try:
-        lib_reader = LibReader.objects.get(user=request.user)
-    except LibReader.DoesNotExist:
-        lib_reader = None
+    # try:
+    #     lib_reader = LibReader.objects.get(user=request.user)
+    # except LibReader.DoesNotExist:
+    #     lib_reader = None
     return render(request, 'personal/frontend/index.html', {
-        'lib_reader': lib_reader
+        # 'lib_reader': lib_reader
     })
