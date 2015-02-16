@@ -11,7 +11,8 @@ from .. import models
 from . import forms
 from participants.models import Library
 from ssearch.models import request_group_by_date
-URL_TIMEOUT = 5 # mins
+
+URL_TIMEOUT = 1 # mins
 
 def index(request):
     period_form = forms.PeriodForm(request.GET, prefix='pe')
