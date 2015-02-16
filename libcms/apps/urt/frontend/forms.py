@@ -19,10 +19,10 @@ class LibReaderForm(forms.ModelForm):
         }
 
     def clean_reader_id(self):
-        reader_id = self.cleaned_data['reader_id']
-        if LibReader.objects.filter(reader_id=reader_id).exists():
+        lib_login = self.cleaned_data['lib_login']
+        if LibReader.objects.filter(lib_login=lib_login).exists():
             raise forms.ValidationError(u'Читательский билет уже зарегистрирован')
-        return reader_id
+        return lib_login
 
 class LibReaderAuthForm(forms.ModelForm):
     """
