@@ -1,178 +1,81 @@
-import uuid
-import json
-import hashlib
-import datetime
-from urlparse import urlparse
+# coding=utf-8
+import os
 import requests
-from localeurl import utils
-from django.views.decorators.cache import never_cache
+from lxml import etree
+import json
 from django.shortcuts import render, HttpResponse
-from .. import models
 from . import forms
-from participants.models import Library
-from ssearch.models import request_group_by_date
 
-URL_TIMEOUT = 1 # mins
+TOKEN = '123'
+
+
+def _make_request(method, **kwargs):
+    request_method = getattr(requests, method)
+    error = None
+    response = None
+    try:
+        response = request_method(**kwargs)
+        response.raise_for_status()
+    except requests.Timeout:
+        error = u'Таймаут соединения с сервером статистки'
+    except requests.HTTPError:
+        error = u'Ошибка связи с сервером статистики'
+
+    return (response, error)
+
+
+def _check_for_error(response_dict):
+    error = None
+    if not response_dict.get('ok', False):
+        error = response_dict.get('errorMessage', u'Описание ошибки отсутвует')
+    return error
+
+
 
 def index(request):
-    period_form = forms.PeriodForm(request.GET, prefix='pe')
-    param_form = forms.ParamForm(request.GET, prefix='pa')
-    results = []
-    if period_form.is_valid() and param_form.is_valid():
-        results = models.get_view_count_stats(
-            from_date=period_form.cleaned_data['from_date'],
-            to_date=period_form.cleaned_data['to_date'],
-            period=period_form.cleaned_data['period'],
-            url_filter=param_form.cleaned_data['url_filter'],
-            visit_type=param_form.cleaned_data['visit_type'],
-            #url_filter='/site/[0-9]+/?$'
-        )
+    response, error = _make_request('get', url='http://statat.ipq.co/reports/reports', params={
+        'token': TOKEN,
+        #'format': 'json'
+    })
+    response_dict = {}
+    if not error:
+        response_dict = response.text
+        # try:
+        #     #response_dict = response.json()
+        #     #error = _check_for_error(response_dict)
+        # except ValueError:
+        #     error = u'Ошибка структуры ответа от сервера статистики'
+
+
     return render(request, 'statistics/frontend/index.html', {
-        'period_form': period_form,
-        'param_form': param_form,
-        'results': results
+        'response_dict': response_dict,
+        'error': error
     })
 
-def org_stats(request):
-    org_code = request.GET.get('org_code', None)
-    org_name = ''
-    libs = Library.objects.filter(code=org_code)[:1]
-    if libs:
-        org_name = libs[0].name
-    if not Library.objects.filter(code=org_code).exists():
-        return HttpResponse(u'Org with code %s not exist' % org_code, status=400)
 
-    responce_dict = {
-        'org_code': org_code,
-        'org_name': org_name
-    }
-    period_form = forms.PeriodForm(request.GET, prefix='pe')
-    if period_form.is_valid():
-        from_date=period_form.cleaned_data['from_date']
-        to_date=period_form.cleaned_data['to_date']
-        period=period_form.cleaned_data['period']
-        url_filter=u'/site/%s/' % org_code
-
-        results = models.get_view_count_stats(
-            from_date=from_date,
-            to_date=to_date,
-            period=period,
-            url_filter=url_filter
-        )
-        responce_dict['views'] = results
-        results = models.get_view_count_stats(
-            from_date=from_date,
-            to_date=to_date,
-            period=period,
-            url_filter=url_filter,
-            visit_type='visit'
-        )
-        responce_dict['visits'] = results
-
-        results = request_group_by_date(
-            from_date=from_date,
-            to_date=to_date,
-            period=period,
-            library_code=org_code
-        )
-
-        responce_dict['search_requests'] = results
-
-        print 'search results', results
-
+def report(request):
+    report_form = forms.ReportForm(request.GET)
+    error = None
+    report_body = u''
+    if report_form.is_valid():
+        response, error = _make_request('get', url='http://statat.ipq.co/reports/report', params={
+            'token': TOKEN,
+            'view': 'source',
+            'code': report_form.cleaned_data['code'],
+            'security': 'Организация=Total,00000000',
+            'parameters': 'Год=2015;Квартал=Все;Месяц=Все'
+        })
+        if not error:
+            template = etree.XSLT(etree.parse(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'modern.xsl')))
+            report_body = unicode(template(etree.fromstring(response.content)))
+            # report_body = response.text
+            #
+            # root = html.fromstring(report_body)
+            # print root.xpath('//div[class=')
+            # print report_body.decode('cp1251')
     else:
-        return HttpResponse(u'Wrong pe params %s' % period_form.errors, status=400)
-
-    return HttpResponse(json.dumps(responce_dict, ensure_ascii=False), content_type='application/json')
-
-
-def search_stats(request):
-    period_form = forms.PeriodForm(request.GET, prefix='pe')
-    responce_dict= {
-        'not_specified': [],
-        'catalogs': {}
-    }
-    if period_form.is_valid():
-        from_date=period_form.cleaned_data['from_date']
-        to_date=period_form.cleaned_data['to_date']
-        period=period_form.cleaned_data['period']
-
-        results = request_group_by_date(
-            from_date=from_date,
-            to_date=to_date,
-            period=period,
-        )
-        responce_dict['not_specified'] = results
-
-        catalogs = ['sc2', 'ebooks']
-        for catalog in catalogs:
-            results = request_group_by_date(
-                from_date=from_date,
-                to_date=to_date,
-                period=period,
-                catalog=catalog
-            )
-            responce_dict['catalogs'][catalog] = results
-
-    return HttpResponse(json.dumps(responce_dict, ensure_ascii=False), content_type='application/json')
-
-@never_cache
-def watch(request):
-    response = HttpResponse(status=200)
-    session = request.COOKIES.get('_sc', None)
-
-    if not session:
-        session = uuid.uuid4().hex
-        response.set_cookie('_sc', session, max_age=60 * 60 * 24 * 365)
-
-
-    http_referer = request.META.get('HTTP_REFERER', None)
-    if not http_referer:
-        return response
-
-    url_parts = urlparse(http_referer)
-    path_parts = utils.strip_path(url_parts.path)
-    if len(path_parts) > 1:
-        path = path_parts[1]
-    else:
-        path = path_parts[0]
-    ignore = False
-
-    query = url_parts.query
-
-    url_hash = hashlib.md5((path + query).encode('utf-8')).hexdigest()
-
-    before = (datetime.datetime.now() - datetime.timedelta(minutes=URL_TIMEOUT))
-    if models.PageView.objects.filter(datetime__gt=before, session=session, url_hash=url_hash).exists():
-        ignore = True
-
-    if session and not ignore:
-        models.log_page_view(path=path, query=query, url_hash=url_hash, session=session)
-
-    return response
-
-
-
-
-# METRIKA_URL = 'http://api-metrika.yandex.ru'
-# # 444c680b612b47178114c8eef3811e5a
-# def index(request):
-#     response = requests.get(METRIKA_URL + '/counters', headers={
-#         'Accept': 'application/x-yametrika+json',
-#         'Content-type': 'application/x-yametrika+json',
-#         'Authorization': 'OAuth 444c680b612b47178114c8eef3811e5a'
-#     })
-#
-#     response = requests.get(METRIKA_URL + '/stat/content/popular', headers={
-#         'Accept': 'application/x-yametrika+json',
-#         'Content-type': 'application/x-yametrika+json',
-#         'Authorization': 'OAuth 444c680b612b47178114c8eef3811e5a'
-#     }, params={
-#         'id': '3927343',
-#         'table_mode': 'tree'
-#     })
-#
-#     print response.text
-#
-#
-#     return render(request, 'statistics/frontend/index.html')
+        error = unicode(report_form.errors)
+    return render(request, 'statistics/frontend/reports.html', {
+        'report_body': report_body,
+        'error': error
+    })

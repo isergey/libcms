@@ -1,0 +1,20 @@
+Статистика
+<form method="get">
+    {{ period_form.as_p }}
+    {{ param_form.as_p }}
+    <button type="submit">Фильтровать</button>
+</form>
+{% if results %}
+    <table>
+        <tr>
+            <th>Дата</th>
+            <th>Количество</th>
+        </tr>
+        {% for row in results %}
+            <tr>
+                <td>{{ row.date }}</td>
+                <td>{{ row.count }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}

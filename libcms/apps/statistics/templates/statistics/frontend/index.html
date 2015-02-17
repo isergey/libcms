@@ -1,20 +1,18 @@
-Статистика
-<form method="get">
-    {{ period_form.as_p }}
-    {{ param_form.as_p }}
-    <button type="submit">Фильтровать</button>
-</form>
-{% if results %}
-    <table>
-        <tr>
-            <th>Дата</th>
-            <th>Количество</th>
-        </tr>
-        {% for row in results %}
-            <tr>
-                <td>{{ row.date }}</td>
-                <td>{{ row.count }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-{% endif %}
+{% extends 'theme_frontend_base.html' %}
+
+{% block content %}
+    <div class="span12">
+        <ul class="breadcrumb">
+            <li><a href="/ru/">Начало</a> <span class="divider">/</span></li>
+            <li class="active">Статистика</li>
+        </ul>
+        {% if error %}
+            <div class="alert alert-error">
+                {{ error }}
+            </div>
+        {% endif %}
+        {% block index_content %}
+            {{ response_dict|safe }}
+        {% endblock %}
+    </div>
+{% endblock %}
