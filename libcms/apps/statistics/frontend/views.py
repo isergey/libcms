@@ -68,7 +68,7 @@ def report(request):
     if report_form.is_valid():
         params={
             'token': TOKEN,
-            'view': 'source',
+            'view': 'modern2',
             'code': report_form.cleaned_data['code'],
             'security': u'Организация=Total,00000000',
             'parameters': parameters
@@ -80,8 +80,8 @@ def report(request):
             response, error = _make_request('get', url=REPORT_SERVER + 'report', params=params )
 
             if not error:
-                report_body = unicode(template(etree.fromstring(response.content)))
-                cache.set(cache_key, report_body, 60 * 5)
+                report_body = response.content #unicode(template(etree.fromstring(response.content)))
+                #cache.set(cache_key, report_body, 60 * 5)
             # report_body = response.text
             #
             # root = html.fromstring(report_body)
