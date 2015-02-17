@@ -40,7 +40,6 @@ def index(request):
     })
     response_dict = {}
     if not error:
-        print response.text
         #response_dict = response.text
         try:
             response_dict = response.json()
