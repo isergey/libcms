@@ -1,46 +1,37 @@
-.stat-parameters-table
-{
+.stat-parameters-table {
     width: auto !important;
 }
 
-.stat-parameters
-{
+.stat-parameters {
     background: #AAAAAA;
 }
 
-.stat-parameters-title
-{
+.stat-parameters-title {
     padding: 5px;
 }
 
-.stat-parameters-select
-{
+.stat-parameters-select {
     min-width: 150px;
     width: 100%;
 }
 
-.stat-parameter-value
-{
+.stat-parameter-value {
     display: inline-block;
 }
 
-.stat-parameter-value div
-{
+.stat-parameter-value div {
     display: inline-block;
 }
 
-.stat-parameter-value div:before
-{
+.stat-parameter-value div:before {
     content: " / ";
 }
 
-.stat-parameter-value div:first-child:before
-{
+.stat-parameter-value div:first-child:before {
     content: "";
 }
 
-.stat-parameter-change
-{
+.stat-parameter-change {
     margin-left: 10px;
     padding: 0 !important;
     float: right;
@@ -48,112 +39,91 @@
     height: 20px;
 }
 
-.stat-multilevel-parameter
-{
+.stat-multilevel-parameter {
     display: none;
 }
 
-.stat-multilevel-parameter li
-{
+.stat-multilevel-parameter li {
     padding-left: 10px;
 }
 
-
-
-.stat-main-table
-{
+.stat-main-table {
 }
 
-.stat-main-table th
-{
+.stat-main-table th {
     font-weight: normal;
 }
 
-.stat-main-table td
-{
+.stat-main-table td {
     text-align: center;
     font-size: 80%;
 }
 
-.stat-main-table thead th
-{
+.stat-main-table thead th {
     text-align: center;
     vertical-align: middle !important;
 }
 
-.stat-row-level-1
-{
+.stat-row-level-1 {
 
 }
 
-.stat-row-level-2
-{
+.stat-row-level-2 {
 
 }
 
-.stat-row-level-1 td
-{
+.stat-row-level-1 td {
     font-size: 100%;
 }
 
-.stat-row-level-2 td
-{
+.stat-row-level-2 td {
     font-size: 100%;
     font-style: italic;
 }
 
-.stat-row-level-3 td
-{
+.stat-row-level-3 td {
     font-size: 90%;
     font-style: normal;
 }
 
-.stat-row-level-4 td
-{
+.stat-row-level-4 td {
     font-size: 90%;
     font-style: italic;
 }
 
-th.stat-level-1
-{
+th.stat-level-1 {
     font-weight: bold;
     padding-left: 10px !important;
 }
 
-th.stat-level-2
-{
+th.stat-level-2 {
     font-style: italic;
     padding-left: 30px !important;
 }
 
-th.stat-level-3
-{
+th.stat-level-3 {
     font-size: 90%;
     padding-left: 50px !important;
 }
 
-th.stat-level-4
-{
+th.stat-level-4 {
     font-size: 90%;
     font-style: italic;
     padding-left: 70px !important;
 }
 
-th.stat-level-5
-{
+th.stat-level-5 {
     font-size: 80%;
     padding-left: 90px !important;
 }
 
-th.stat-level-6
-{
+th.stat-level-6 {
     font-size: 80%;
     font-style: italic;
     padding-left: 110px !important;
 }
 
-.stat-collapse-control
-{
+.stat-collapse-control {
     color: #000000;
     font-size: 8px;
     /*padding: 5px; */
@@ -162,12 +132,24 @@ th.stat-level-6
 
 }
 
-th .stat-collapse-control
-{
+th .stat-collapse-control {
     margin-left: -10px;
 }
 
-li .stat-collapse-control
-{
+li .stat-collapse-control {
     margin-left: -15px;
+}
+
+.report-loading-modal {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    background: #ffffff;
+    width: 200px;
+    height: 100px;
+    vertical-align: middle;
+    text-align: center;
+    -webkit-box-shadow: 1px 1px 11px 0px rgba(50, 50, 50, 0.55);
+    -moz-box-shadow: 1px 1px 11px 0px rgba(50, 50, 50, 0.55);
+    box-shadow: 1px 1px 11px 0px rgba(50, 50, 50, 0.55);
 }
