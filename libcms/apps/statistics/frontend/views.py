@@ -3,11 +3,12 @@ import os
 import requests
 from lxml import etree
 import json
-from django.shortcuts import render, HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, HttpResponse, urlresolvers
 from . import forms
 
 TOKEN = '123'
-
+REPORT_SERVER = 'http://statat.ipq.co/reports/'
 
 def _make_request(method, **kwargs):
     request_method = getattr(requests, method)
@@ -31,20 +32,21 @@ def _check_for_error(response_dict):
     return error
 
 
-
+@login_required
 def index(request):
-    response, error = _make_request('get', url='http://statat.ipq.co/reports/reports', params={
+    response, error = _make_request('get', url=REPORT_SERVER + 'reports', params={
         'token': TOKEN,
-        #'format': 'json'
+        'format': 'json'
     })
     response_dict = {}
     if not error:
-        response_dict = response.text
-        # try:
-        #     #response_dict = response.json()
-        #     #error = _check_for_error(response_dict)
-        # except ValueError:
-        #     error = u'Ошибка структуры ответа от сервера статистики'
+        print response.text
+        #response_dict = response.text
+        try:
+            response_dict = response.json()
+            error = _check_for_error(response_dict)
+        except ValueError:
+            error = u'Неожиданный ответ от сервера статистики'
 
 
     return render(request, 'statistics/frontend/index.html', {
@@ -52,18 +54,19 @@ def index(request):
         'error': error
     })
 
-
+@login_required
 def report(request):
     report_form = forms.ReportForm(request.GET)
+    parameters = request.GET.get('parameters', '')
     error = None
     report_body = u''
     if report_form.is_valid():
-        response, error = _make_request('get', url='http://statat.ipq.co/reports/report', params={
+        response, error = _make_request('get', url=REPORT_SERVER + 'report', params={
             'token': TOKEN,
             'view': 'source',
             'code': report_form.cleaned_data['code'],
             'security': 'Организация=Total,00000000',
-            'parameters': 'Год=2015;Квартал=Все;Месяц=Все'
+            'parameters': parameters
         })
         if not error:
             template = etree.XSLT(etree.parse(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'modern.xsl')))

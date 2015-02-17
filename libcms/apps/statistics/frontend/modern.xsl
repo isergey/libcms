@@ -426,18 +426,18 @@
   <xsl:template name="PrintCollapseControl">
     <xsl:param name="IsOpen"/>
     <a href="#" class="stat-collapse-control">
-      <span class="glyphicon glyphicon-minus" aria-hidden="true">
+      <i class="toggler glyphicon glyphicon-minus icon-minus" aria-hidden="true">
         <xsl:attribute name="class">
           <xsl:choose>
             <xsl:when test="$IsOpen">
-              <xsl:text>glyphicon glyphicon-minus</xsl:text>
+              <xsl:text>toggler glyphicon glyphicon-minus icon-minus</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:text>glyphicon glyphicon-plus</xsl:text>
+              <xsl:text>toggler glyphicon glyphicon-plus icon-plus</xsl:text>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:attribute>
-      </span>
+      </i>
     </a>
   </xsl:template>
 

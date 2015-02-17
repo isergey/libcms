@@ -198,7 +198,7 @@ DEBUG_TOOLBAR_PANELS = (
 
 
 LOCALE_INDEPENDENT_PATHS = (
-    r'^/statistics/',
+    r'^/statistics/api/',
     r'^/participants/api/',
     r'^/robots.txt/',
 )
