@@ -1,14 +1,19 @@
 # coding=utf-8
+import hashlib
 import os
 import requests
 from lxml import etree
 import json
+from django.core.cache import caches
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, HttpResponse, urlresolvers
 from . import forms
 
+cache = caches['default']
+
 TOKEN = '123'
 REPORT_SERVER = 'http://statat.ipq.co/reports/'
+template = etree.XSLT(etree.parse(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'modern.xsl')))
 
 def _make_request(method, **kwargs):
     request_method = getattr(requests, method)
@@ -55,21 +60,28 @@ def index(request):
 
 @login_required
 def report(request):
+
     report_form = forms.ReportForm(request.GET)
     parameters = request.GET.get('parameters', '')
     error = None
     report_body = u''
     if report_form.is_valid():
-        response, error = _make_request('get', url=REPORT_SERVER + 'report', params={
+        params={
             'token': TOKEN,
             'view': 'source',
             'code': report_form.cleaned_data['code'],
-            'security': 'Организация=Total,00000000',
+            'security': u'Организация=Total,00000000',
             'parameters': parameters
-        })
-        if not error:
-            template = etree.XSLT(etree.parse(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'modern.xsl')))
-            report_body = unicode(template(etree.fromstring(response.content)))
+        }
+        cache_key = hashlib.md5(json.dumps(params, ensure_ascii=False).encode('utf-8')).hexdigest()
+
+        report_body = cache.get(cache_key)
+        if not report_body:
+            response, error = _make_request('get', url=REPORT_SERVER + 'report', params=params )
+
+            if not error:
+                report_body = unicode(template(etree.fromstring(response.content)))
+                cache.set(cache_key, report_body, 60 * 5)
             # report_body = response.text
             #
             # root = html.fromstring(report_body)

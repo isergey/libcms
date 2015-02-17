@@ -41,7 +41,7 @@ def org_stats(request):
     libs = Library.objects.filter(code=org_code)[:1]
     if libs:
         org_name = libs[0].name
-    if not Library.objects.filter(code=org_code).exists():
+    if org_code and not Library.objects.filter(code=org_code).exists():
         return HttpResponse(u'Org with code %s not exist' % org_code, status=400)
 
     responce_dict = {
@@ -49,11 +49,16 @@ def org_stats(request):
         'org_name': org_name
     }
     period_form = forms.PeriodForm(request.GET, prefix='pe')
+
+    url_filter = '/'
+    if org_code:
+        url_filter = u'/site/%s/' % org_code
+
     if period_form.is_valid():
         from_date=period_form.cleaned_data['from_date']
         to_date=period_form.cleaned_data['to_date']
         period=period_form.cleaned_data['period']
-        url_filter=u'/site/%s/' % org_code
+        url_filter=url_filter
 
         results = models.get_view_count_stats(
             from_date=from_date,
