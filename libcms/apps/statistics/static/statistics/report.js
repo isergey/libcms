@@ -5,7 +5,7 @@
     $(".stat-parameters-select").change(function (evt) {
       var control = $(evt.target);
       var val = control.val();
-      $('body').append('<div class="report-loading-modal">Пожалуйста подождите... <img src="/static/statistics/loading-bubbles.svg" width="64" height="64"><div>');
+      $('body').append('<div class="report-loading-modal">Формирование отчета... <img src="/static/statistics/loading-bubbles.svg" width="64" height="64"><div>');
       window.location.replace(val);
     });
 
