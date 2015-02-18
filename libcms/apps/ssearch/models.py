@@ -485,6 +485,8 @@ def request_group_by_date(from_date, to_date, period, catalog='', library_code='
     if catalog:
         where += " AND catalog = %s"
         args.append(catalog)
+    else:
+        where += " AND catalog is null"
     query = u' '.join(['SELECT', select, 'FROM', frm, 'WHERE', where, 'GROUP BY', group_by])
 
     cursor.execute(query, args)
