@@ -109,9 +109,10 @@ def search_stats(request):
             to_date=to_date,
             period=period,
         )
-        responce_dict['not_specified'] = results
+        responce_dict['total'] = results
 
         catalogs = ['sc2', 'ebooks']
+        catalogs_summ = 0
         for catalog in catalogs:
             results = request_group_by_date(
                 from_date=from_date,
@@ -119,8 +120,10 @@ def search_stats(request):
                 period=period,
                 catalog=catalog
             )
+            catalogs_summ += int(results)
             responce_dict['catalogs'][catalog] = results
 
+        responce_dict['not_specified'] = int(responce_dict['total']) - catalogs_summ
     return HttpResponse(json.dumps(responce_dict, ensure_ascii=False), content_type='application/json')
 
 @never_cache
