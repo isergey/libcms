@@ -23,4 +23,11 @@ urlpatterns = patterns('',
     url(r'^district/create/$', views.district_create, name="district_create"),
     url(r'^district/edit/(?P<id>\d+)/$', views.district_edit, name="district_edit"),
     url(r'^district/delete/(?P<id>\d+)/$', views.district_delete, name="district_delete"),
+
+    url(r'^lib_users/$', views.library_user_list, name="library_user_list"),
+    url(r'^lib_users/create/$', views.add_library_user, name="add_library_user"),
+    url(r'^lib_users/edit/(?P<id>\d+)/$', views.edit_library_user, name="edit_library_user"),
+    url(r'^find_library_by_district/$', views.find_library_by_district, name="find_library_by_district"),
+    url(r'^load_libs/$', views.load_libs, name="load_libs"),
+
 )

@@ -8,11 +8,11 @@ from mptt.models import MPTTModel, TreeForeignKey
 # class Country(models.Model):
 # name = models.CharField(verbose_name=u'Страна', max_length=32, unique=True, db_index=True)
 #
-#    def __unicode__(self):
-#        return self.name
+# def __unicode__(self):
+# return self.name
 #
-#    class Meta:
-#        verbose_name = u"Страна"
+# class Meta:
+# verbose_name = u"Страна"
 #        verbose_name_plural = u"Страны"
 #
 #
@@ -57,7 +57,8 @@ class Library(MPTTModel):
     )
     name = models.CharField(max_length=255, verbose_name=u'Название')
     code = models.CharField(verbose_name=u'Сигла', max_length=32, db_index=True, unique=True)
-    sigla = models.CharField(verbose_name=u'Сигла из подполя 999b', max_length=32, db_index=True, blank=True, unique=True)
+    sigla = models.CharField(verbose_name=u'Сигла из подполя 999b', max_length=32, db_index=True, blank=True,
+                             unique=True)
     republican = models.BooleanField(verbose_name=u'Руспубликанская библиотека', default=False, db_index=True)
     types = models.ManyToManyField(LibraryType, verbose_name=u'Тип библиотеки', blank=True, null=True)
 
@@ -104,9 +105,39 @@ class Library(MPTTModel):
         order_insertion_by = ['weight']
 
 
+class UserRole(models.Model):
+    code = models.CharField(verbose_name=u'Код роли', max_length=32, unique=True, editable=False)
+    name = models.CharField(verbose_name=u'Название', max_length=64, unique=True, editable=False)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = u'Роль сотрудника'
+        verbose_name_plural = u'Роли сотрудников'
+        ordering = ['name']
+
+
+class UserLibraryPosition(models.Model):
+    name = models.CharField(max_length=255, verbose_name=u'Должность')
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = u'Должность сотрудника'
+        verbose_name_plural = u'Должности сотрудников'
+
+
 class UserLibrary(models.Model):
     library = models.ForeignKey(Library)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    middle_name = models.CharField(verbose_name=u'Отчество', max_length=255, blank=True)
+    branch = models.CharField(verbose_name=u'Отдел', max_length=255)
+    position = models.CharField(verbose_name=u'Должность', max_length=255)
+    phone = models.CharField(verbose_name=u'Телефон', max_length=32)
+    roles = models.ManyToManyField(UserRole, verbose_name=u'Роли')
 
     def __unicode__(self):
         return self.user.username
@@ -139,3 +170,5 @@ class LibraryContentEditor(models.Model):
         verbose_name = u"Редактор контента ЦБС"
         verbose_name_plural = u"Редакторы контента ЦБС"
         unique_together = ('library', 'user')
+
+

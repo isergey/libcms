@@ -1,21 +1,26 @@
-from datetime import datetime
+from __future__ import absolute_import, print_function, unicode_literals
 
-from django.db.backends import util
-from django.core.management.commands.shell import Command
+from time import time
 
-from debug_toolbar.utils import ms_from_timedelta, sqlparse
+# 'debugsqlshell' is the same as the 'shell'.
+from django.core.management.commands.shell import Command               # noqa
+
+import sqlparse
+
+from debug_toolbar.compat import db_backends_util
 
 
-class PrintQueryWrapper(util.CursorDebugWrapper):
+class PrintQueryWrapper(db_backends_util.CursorDebugWrapper):
     def execute(self, sql, params=()):
-        starttime = datetime.now()
+        start_time = time()
         try:
             return self.cursor.execute(sql, params)
         finally:
             raw_sql = self.db.ops.last_executed_query(self.cursor, sql, params)
-            execution_time = datetime.now() - starttime
-            print sqlparse.format(raw_sql, reindent=True),
-            print ' [%.2fms]' % (ms_from_timedelta(execution_time),)
-            print
+            end_time = time()
+            duration = (end_time - start_time) * 1000
+            formatted_sql = sqlparse.format(raw_sql, reindent=True)
+            print('%s [%.2fms]' % (formatted_sql, duration))
 
-util.CursorDebugWrapper = PrintQueryWrapper
+
+db_backends_util.CursorDebugWrapper = PrintQueryWrapper

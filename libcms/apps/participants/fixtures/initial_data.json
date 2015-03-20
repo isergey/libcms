@@ -1,0 +1,34 @@
+[
+  {
+    "model": "participants.UserRole",
+    "pk": 1,
+    "fields": {
+      "code": "site_moderator",
+      "name": "Модератор библиотечного сайта"
+    }
+  },
+   {
+    "model": "participants.UserRole",
+    "pk": 2,
+    "fields": {
+      "code": "site_admin",
+      "name": "Администратор библиотечного сайта"
+    }
+  },
+  {
+    "model": "participants.UserRole",
+    "pk": 3,
+    "fields": {
+      "code": "it_personal",
+      "name": "Ответственный за информатизацию"
+    }
+  },
+  {
+    "model": "participants.UserRole",
+    "pk": 4,
+    "fields": {
+      "code": "mba",
+      "name": "АРМ МБА"
+    }
+  }
+]

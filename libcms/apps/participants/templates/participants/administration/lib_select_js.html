@@ -1,0 +1,89 @@
+<script>
+    var NodeView = Backbone.View.extend({
+        events: {
+            'change select': 'onChange'
+        },
+        initialize: function (options) {
+            this.options = options;
+            this.childrenView = null;
+        },
+        render: function () {
+            var self = this;
+            this.$el.empty();
+            var $select = $('<select></select>');
+            $select.append('<option value="">------</option>');
+            this.options.items.forEach(function (item) {
+                $select.append('<option value="' + item.id + '" >' + item.name + '</option>');
+            });
+            this.$el.append($select);
+            this.$el.append('<div class="children"></div>');
+            return this;
+        },
+        onChange: function (event) {
+            event.stopPropagation();
+            var self = this;
+            var $selected = $(event.currentTarget);
+            var itemId = $selected.val();
+            var label = $selected.find('option:selected').text();
+            if (this.childrenView !== null) {
+                this.childrenView.remove();
+                this.childrenView = null;
+            }
+            this.options.items.forEach(function (item) {
+                if (item.id == itemId && item.children !== undefined && item.children.length) {
+                    self.childrenView = new NodeView({items: item.children});
+                    self.childrenView.on('select:item', function (itemId, label) {
+                        self.trigger('select:item', itemId, label);
+                    });
+                    self.$el.find('.children').append(self.childrenView.render().el);
+                }
+            });
+            this.trigger('select:item', itemId, label);
+        }
+    });
+
+    var setCurrentOrg = function (itemId, label) {
+        if (itemId !== '') {
+            $('.current_library').text('Выбрана организация: ' + label);
+            $('#id_slf-library').val(itemId);
+        } else {
+            $('.current_library').text('Организация не выбрана');
+        }
+
+    }
+
+
+    $(function () {
+        var treeView = null;
+        var $libSelect = $('.lib_select');
+        var onTreeLoading = function (data) {
+            if (treeView !== null) {
+                treeView.remove();
+                treeView = null;
+            }
+            treeView = new NodeView({
+                items: data
+            });
+            treeView.on('select:item', function (itemId, label) {
+                setCurrentOrg(itemId, label);
+            });
+            $libSelect.append(treeView.render().el);
+        }
+        $.get('{% url 'participants:administration:load_libs' %}', {
+            district_id: $(this).val()
+        }).done(onTreeLoading).fail(function (error) {
+            //alert('При запросе возникла ошибка');
+            //console.log(error);
+        });
+
+        $('#id_sdf-district').on('change', function () {
+            $.get('{% url 'participants:administration:load_libs' %}', {
+                district_id: $(this).val()
+            }).done(onTreeLoading).fail(function (error) {
+                alert('При запросе возникла ошибка');
+                console.log(error);
+            });
+        });
+    });
+
+</script>

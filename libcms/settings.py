@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__)) + '/'
-
-
-
 
 sys.path.insert(0, os.path.join(PROJECT_PATH, "apps"))
 sys.path.insert(0, os.path.join(PROJECT_PATH, "vendors"))
@@ -44,22 +42,22 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-#    ('django.template.loaders.cached.Loader', (
-        'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.app_directories.Loader',
-#    )),
+    # ('django.template.loaders.cached.Loader', (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+    #    )),
     #     'django.template.loaders.eggs.Loader',
 )
 
 
-#TEMPLATE_LOADERS = (
+# TEMPLATE_LOADERS = (
 #        ('django.template.loaders.cached.Loader', (
 #    'django.template.loaders.filesystem.Loader',
 #    'django.template.loaders.app_directories.Loader',
@@ -80,10 +78,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     #'django.contrib.messages.context_processors.messages',
 )
 
-
 MIDDLEWARE_CLASSES = (
-#    'johnny.middleware.LocalStoreClearMiddleware',
-#    'johnny.middleware.QueryCacheMiddleware',
+    #    'johnny.middleware.LocalStoreClearMiddleware',
+    #    'johnny.middleware.QueryCacheMiddleware',
     'localeurl.middleware.LocaleURLMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -92,7 +89,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django_sorting.middleware.SortingMiddleware',
     # 'statistics.middleware.RequestLog',
-   # 'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'libcms.urls'
@@ -102,23 +99,22 @@ AUTHENTICATION_BACKENDS = (
     'social_auth.backends.contrib.vk.VKOAuth2Backend',
     'social_auth.backends.facebook.FacebookBackend',
     # 'social_auth.backends.contrib.mailru.MailruBackend',
-#    'social_auth.backends.contrib.odnoklassniki.OdnoklassnikiBackend',
-#     'social_auth.backends.google.GoogleOAuth2Backend',
+    #    'social_auth.backends.contrib.odnoklassniki.OdnoklassnikiBackend',
+    #     'social_auth.backends.google.GoogleOAuth2Backend',
     # 'social_auth.backends.contrib.yandex.YandexOAuth2Backend',
-#    'social_auth.backends.google.GoogleOAuthBackend',
-#     'social_auth.backends.google.GoogleBackend',
-#    'social_auth.backends.yahoo.YahooBackend',
-#    'social_auth.backends.contrib.linkedin.LinkedinBackend',
-#    'social_auth.backends.contrib.flickr.FlickrBackend',
-#     'social_auth.backends.OpenIDBackend',
+    #    'social_auth.backends.google.GoogleOAuthBackend',
+    #     'social_auth.backends.google.GoogleBackend',
+    #    'social_auth.backends.yahoo.YahooBackend',
+    #    'social_auth.backends.contrib.linkedin.LinkedinBackend',
+    #    'social_auth.backends.contrib.flickr.FlickrBackend',
+    #     'social_auth.backends.OpenIDBackend',
     # 'social_auth.backends.contrib.livejournal.LiveJournalBackend',
-#    'social_auth.backends.contrib.vkontakte.VKontakteBackend',
-#     'social_auth.backends.contrib.yandex.YandexBackend',
+    #    'social_auth.backends.contrib.vkontakte.VKontakteBackend',
+    #     'social_auth.backends.contrib.yandex.YandexBackend',
 
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
 )
-
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -135,7 +131,7 @@ INSTALLED_APPS = (
     'mptt',
     'guardian',
     # 'debug_toolbar',
-    'django_sorting',
+    # 'django_sorting',
     # cms apps
     'core',
     'accounts',
@@ -171,7 +167,6 @@ INSTALLED_APPS = (
     'attacher',
 )
 
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
@@ -181,21 +176,22 @@ KEY_PREFIX = 'libcms'
 # guardian settings
 ANONYMOUS_USER_ID = -1
 
-
 LOGIN_REDIRECT_URL = "/"
 
-DEBUG_TOOLBAR_PANELS = (
-    'debug_toolbar.panels.version.VersionDebugPanel',
-    'debug_toolbar.panels.timer.TimerDebugPanel',
-    'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
-    'debug_toolbar.panels.headers.HeaderDebugPanel',
-    'debug_toolbar.panels.request_vars.RequestVarsDebugPanel',
-    'debug_toolbar.panels.template.TemplateDebugPanel',
-    'debug_toolbar.panels.sql.SQLDebugPanel',
-    'debug_toolbar.panels.signals.SignalDebugPanel',
-    'debug_toolbar.panels.logger.LoggingPanel',
-)
-
+DEBUG_TOOLBAR_PANELS = [
+    # 'debug_toolbar.panels.versions.VersionsPanel',
+    # 'debug_toolbar.panels.timer.TimerPanel',
+    # 'debug_toolbar.panels.settings.SettingsPanel',
+    # 'debug_toolbar.panels.headers.HeadersPanel',
+    # 'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    # 'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    # 'debug_toolbar.panels.templates.TemplatesPanel',
+    # 'debug_toolbar.panels.cache.CachePanel',
+    # 'debug_toolbar.panels.signals.SignalsPanel',
+    # 'debug_toolbar.panels.logging.LoggingPanel',
+    # 'debug_toolbar.panels.redirects.RedirectsPanel',
+]
 
 LOCALE_INDEPENDENT_PATHS = (
     r'^/statistics/api/',

@@ -1,0 +1,56 @@
+{% extends 'participants/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    <li>
+        <a href="{% url 'participants:administration:index' %}">Библиотеки</a>
+        <span class="divider">/</span>
+    </li>
+    <li class="active">Добавление пользователя библиотеки</li>
+
+{% endblock %}
+
+{% block action_content %}
+
+    <form class="form-horizontal" method="post">
+
+        {% csrf_token %}
+        <fieldset>
+            <input id="id_slf-library" type="hidden" name="slf-library" value=""/>
+            {#        {{ select_district_form }}#}
+            {% include 'administration/base_form_fields.html' with form=select_district_form %}
+            <div class="control-group">
+                <label class="control-label" for="id_slf-library">Выберите библиотеку <span
+                        title="Обязательное поле">*</span></label>
+
+                <div class="controls">
+                    <div class="lib_select"></div>
+                    <div class="current_library well well-small" style="margin: 10px 0 0 0">Организация не выбрана</div>
+                </div>
+
+            </div>
+            {#        {% include 'administration/base_form_fields.html' with form=select_library_form  %}#}
+            {% include 'administration/base_form_fields.html' with form=user_form %}
+            {% include 'administration/base_form_fields.html' with form=user_library_form %}
+
+            <div class="form-actions">
+                <button class="btn" type="submit">Создать</button>
+            </div>
+        </fieldset>
+    </form>
+    <script>
+        $(function () {
+            var $passwordField = $('#id_uf-password');
+            var $generateButton = $('<a href="#gen_pass"> Сгенерировать пароль</a>');
+            $passwordField.after($generateButton);
+            $generateButton.on('click', function () {
+                var randomstring = Math.random().toString(36).slice(-8);
+                $passwordField.val(randomstring);
+            });
+        });
+    </script>
+
+    {% include 'participants/administration/lib_select_js.html' %}
+{% endblock %}

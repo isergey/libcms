@@ -1,0 +1,81 @@
+{% extends 'participants/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    <li>
+        <a href="{% url 'participants:administration:index' %}">Библиотеки</a>
+        <span class="divider">/</span>
+    </li>
+    <li class="active">Сотрудники библиотек РТ</li>
+
+{% endblock %}
+
+{% block action_content %}
+    <div class="well well-small">
+        <form style="margin: 0">
+            <input id="id_slf-library" type="hidden" name="slf-library" value=""/>
+            <div class="row">
+                <div class="span6">
+                    <div class="row">
+                        <div class="span3">
+                            <label>Атрибуты пользователя</label>
+                            {{ user_attr_form }}
+                        </div>
+                        <div class="span3">
+                            {{ role_form }}
+                            {{ position_form }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="span6">
+                            <a class="btn" href="{% url 'participants:administration:library_user_list' %}">Очистить фильтр</a>
+                            <button class="btn btn-success" type="submit">Найти</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span3">
+                    {{ districts_form }}
+                    <label>Выберите организацию:</label>
+
+                    <div class="lib_select"></div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <table class="table">
+        <tr>
+            <th>#</th>
+            <th>Район</th>
+            <th>Организация</th>
+            <th>ФИО</th>
+            <th>Должность</th>
+            <th>Логин</th>
+            <th><span title="Дата последней авторизации">ДПА</span></th>
+        </tr>
+        {% for lib_user in library_user_page.object_list %}
+            <tr>
+                <td>
+                    <a href="{% url 'participants:administration:edit_library_user' lib_user.id %}"></a>{{ lib_user.id }}
+                </td>
+                <td><span title="{{ lib_user.library.district.name }}">{{ lib_user.library.district.name }}</span></td>
+                <td><span title="{{ lib_user.library.name }}">{{ lib_user.library.name }}</span></td>
+                <td>
+                    <span title="{{ lib_user.user.last_name }} {{ lib_user.user.first_name }} {{ lib_user.middle_name }}">
+                    {{ lib_user.user.last_name }} {{ lib_user.user.first_name }} {{ lib_user.middle_name }}
+                    </span>
+                </td>
+                <td><span title="{{ lib_user.position }}">{{ lib_user.position }}</span></td>
+                <td><span title="{{ lib_user.user.username }}">{{ lib_user.user.username }}</span></td>
+                <td style="width: 100px">
+                    <span title="{{ lib_user.user.last_login }}">{{ lib_user.user.last_login }}</span>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% admin_pagination library_user_page %}
+    {% include 'participants/administration/lib_select_js.html' %}
+{% endblock %}

@@ -1,28 +1,24 @@
+from __future__ import absolute_import, unicode_literals
+
 from django.utils.translation import ugettext_lazy as _
-from debug_toolbar.panels import DebugPanel
+
+from debug_toolbar.compat import OrderedDict
+from debug_toolbar.panels import Panel
 
 
-class HeaderDebugPanel(DebugPanel):
+class HeadersPanel(Panel):
     """
     A panel to display HTTP headers.
     """
-    name = 'Header'
-    template = 'debug_toolbar/panels/headers.html'
-    has_content = True
-    # List of headers we want to display
-    header_filter = (
+    # List of environment variables we want to display
+    ENVIRON_FILTER = set((
+        'CONTENT_LENGTH',
         'CONTENT_TYPE',
-        'HTTP_ACCEPT',
-        'HTTP_ACCEPT_CHARSET',
-        'HTTP_ACCEPT_ENCODING',
-        'HTTP_ACCEPT_LANGUAGE',
-        'HTTP_CACHE_CONTROL',
-        'HTTP_CONNECTION',
-        'HTTP_HOST',
-        'HTTP_KEEP_ALIVE',
-        'HTTP_REFERER',
-        'HTTP_USER_AGENT',
+        'DJANGO_SETTINGS_MODULE',
+        'GATEWAY_INTERFACE',
         'QUERY_STRING',
+        'PATH_INFO',
+        'PYTHONPATH',
         'REMOTE_ADDR',
         'REMOTE_HOST',
         'REQUEST_METHOD',
@@ -31,23 +27,38 @@ class HeaderDebugPanel(DebugPanel):
         'SERVER_PORT',
         'SERVER_PROTOCOL',
         'SERVER_SOFTWARE',
-    )
+        'TZ',
+    ))
 
-    def nav_title(self):
-        return _('HTTP Headers')
+    title = _("Headers")
 
-    def title(self):
-        return _('HTTP Headers')
-
-    def url(self):
-        return ''
+    template = 'debug_toolbar/panels/headers.html'
 
     def process_request(self, request):
-        self.headers = dict(
-            [(k, request.META[k]) for k in self.header_filter if k in request.META]
-        )
+        wsgi_env = list(sorted(request.META.items()))
+        self.request_headers = OrderedDict(
+            (unmangle(k), v) for (k, v) in wsgi_env if is_http_header(k))
+        if 'Cookie' in self.request_headers:
+            self.request_headers['Cookie'] = '=> see Request panel'
+        self.environ = OrderedDict(
+            (k, v) for (k, v) in wsgi_env if k in self.ENVIRON_FILTER)
+        self.record_stats({
+            'request_headers': self.request_headers,
+            'environ': self.environ,
+        })
 
     def process_response(self, request, response):
+        self.response_headers = OrderedDict(sorted(response.items()))
         self.record_stats({
-            'headers': self.headers
+            'response_headers': self.response_headers,
         })
+
+
+def is_http_header(wsgi_key):
+    # The WSGI spec says that keys should be str objects in the environ dict,
+    # but this isn't true in practice. See issues #449 and #482.
+    return isinstance(wsgi_key, str) and wsgi_key.startswith('HTTP_')
+
+
+def unmangle(wsgi_key):
+    return wsgi_key[5:].replace('_', '-').title()
