@@ -8,11 +8,14 @@
         <a href="{% url 'participants:administration:index' %}">Библиотеки</a>
         <span class="divider">/</span>
     </li>
-    <li class="active">Сотрудники библиотек РТ</li>
+    <li class="active">Сотрудники библиотек</li>
 
 {% endblock %}
 
 {% block action_content %}
+    <div class="well well-small">
+        <a class="btn btn-success" href="{% url 'participants:administration:add_library_user' %}"><i class="icon-plus icon-white"></i> Добавить сотрудника</a>
+    </div>
     <div class="well well-small">
         <form style="margin: 0">
             <input id="id_slf-library" type="hidden" name="slf-library" value=""/>
@@ -59,7 +62,7 @@
         {% for lib_user in library_user_page.object_list %}
             <tr>
                 <td>
-                    <a href="{% url 'participants:administration:edit_library_user' lib_user.id %}"></a>{{ lib_user.id }}
+                    <a href="{% url 'participants:administration:edit_library_user' lib_user.id %}">{{ lib_user.id }}</a>
                 </td>
                 <td><span title="{{ lib_user.library.district.name }}">{{ lib_user.library.district.name }}</span></td>
                 <td><span title="{{ lib_user.library.name }}">{{ lib_user.library.name }}</span></td>

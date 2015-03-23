@@ -8,7 +8,11 @@
         <a href="{% url 'participants:administration:index' %}">Библиотеки</a>
         <span class="divider">/</span>
     </li>
-    <li class="active">Редактирование пользователя библиотеки</li>
+        <li>
+        <a href="{% url 'participants:administration:library_user_list' %}">Сотрудники библиотек</a>
+        <span class="divider">/</span>
+    </li>
+    <li class="active">Редактирование данных о сотруднике</li>
 
 {% endblock %}
 
@@ -17,7 +21,7 @@
 
         {% csrf_token %}
         <fieldset>
-            <input id="id_slf-library" type="hidden" name="slf-library" value=""/>
+            <input id="id_slf-library" type="hidden" name="slf-library" value="{{ library_user.library_id }}"/>
             {#        {{ select_district_form }}#}
             {% include 'administration/base_form_fields.html' with form=select_district_form %}
             <div class="control-group">

@@ -8,7 +8,12 @@
         <a href="{% url 'participants:administration:index' %}">Библиотеки</a>
         <span class="divider">/</span>
     </li>
-    <li class="active">Добавление пользователя библиотеки</li>
+        <li>
+        <a href="{% url 'participants:administration:library_user_list' %}">Сотрудники библиотек</a>
+        <span class="divider">/</span>
+    </li>
+
+    <li class="active">Добавление сотрудника библиотеки</li>
 
 {% endblock %}
 

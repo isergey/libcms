@@ -7,6 +7,16 @@
 </ul>
 <hr/>
 <ul class="nav nav-list">
+    <li class="nav-header">Сотрудники</li>
+    <li class="{% active 'participants:administration:library_user_list' %}">
+        <a href="{% url 'participants:administration:library_user_list' %}">Список</a>
+    </li>
+    <li class="{% active 'participants:administration:add_library_user' %}">
+        <a href="{% url 'participants:administration:add_library_user' %}">Добавить</a>
+    </li>
+</ul>
+<hr/>
+<ul class="nav nav-list">
     <li class="nav-header">Районы</li>
     <li class="{% active 'participants:administration:district_list' %}">
         <a class="disabled" href="{% url 'participants:administration:district_list' %}">Список</a>

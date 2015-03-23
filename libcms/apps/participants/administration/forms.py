@@ -36,7 +36,7 @@ class UserForm(forms.ModelForm):
         # raise forms.ValidationError(u'Адрес электронной почты должен заканчиваться на @tatar.ru')
         if self.instance.email != email:
             if User.objects.filter(email=email).exists():
-                raise forms.ValidationError(u'Такой адрес1 уже зарегистрирован')
+                raise forms.ValidationError(u'Такой адрес уже зарегистрирован')
         return email
 
     def clean_password(self):
