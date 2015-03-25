@@ -427,7 +427,7 @@ def add_library_user(request, managed_libraries=[]):
     SelectLibraryForm = forms.get_add_user_library_form(select_libraries_qs)
     if request.method == 'POST':
         all_valid = True
-        select_library_form = SelectLibraryForm()(request.POST, prefix='slf')
+        select_library_form = SelectLibraryForm(request.POST, prefix='slf')
 
         if not select_library_form.is_valid():
             all_valid = False
