@@ -32,9 +32,7 @@ class ContentManager(models.Model):
     class Meta:
         verbose_name = u'Менеджер контента библиотеки'
         verbose_name_plural = u'Менеджеры контента библиотек'
-        unique_together = (('library','user'))
-
-
+        unique_together = (('library', 'user'))
 
 
 def get_managers(user, library):
@@ -51,11 +49,10 @@ def get_managers(user, library):
     return ContentManager.objects.filter(user=user, library__in=ancestors, can_manage_children=True).exists()
 
 
-
 def get_avatar_file_name(instance, arg_filename):
-    filename= arg_filename.lower()
+    filename = arg_filename.lower()
     filename_hash = str(binascii.crc32(filename.encode('utf-8')) & 0xffffffff)
-    return  os.path.join(AVATAR_MEDIA_SUFFIX, filename_hash[0:2], filename_hash + '.jpg')
+    return os.path.join(AVATAR_MEDIA_SUFFIX, filename_hash[0:2], filename_hash + '.jpg')
 
 
 class LibraryAvatar(models.Model):
@@ -71,8 +68,6 @@ class LibraryAvatar(models.Model):
     height = models.IntegerField(default=0, verbose_name=u'Высота изображения аватарки')
 
 
-
-
 @receiver(models.signals.post_save, sender=LibraryAvatar)
 def resize_avatar(sender, **kwargs):
     instance = kwargs['instance']
@@ -80,7 +75,6 @@ def resize_avatar(sender, **kwargs):
     im = Image.open(image_path)
     im.thumbnail(AVATAR_THUMBNAIL_SIZE)
     im.save(image_path, "JPEG", quality=90, optimize=True, progressive=True)
-
 
 
 @receiver(models.signals.post_delete, sender=LibraryAvatar)

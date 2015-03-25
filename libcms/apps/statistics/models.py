@@ -3,6 +3,14 @@ from collections import OrderedDict
 from django.db import models, connection
 
 
+class Statistics(models.Model):
+    class Meta:
+        permissions = [
+            ['view_org_statistic', u'Can view org statistic reports'],
+            ['view_all_statistic', u'Can view all statistic reports']
+        ]
+
+
 class PageView(models.Model):
     path = models.CharField(max_length=1024, blank=True)
     query = models.CharField(max_length=1024, blank=True)
@@ -52,7 +60,6 @@ def get_view_count_stats(from_date, to_date, period, visit_type='view' ,url_filt
     for row in _dictfetchall(cursor):
         row_hash[row['date']] = row['count']
 
-
     results = []
     for date in date_range:
         results.append({
@@ -61,6 +68,7 @@ def get_view_count_stats(from_date, to_date, period, visit_type='view' ,url_filt
         })
 
     return results
+
 
 def _dictfetchall(cursor):
     "Returns all rows from a cursor as a dict"

@@ -7,6 +7,8 @@ import json
 from django.core.cache import caches
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, HttpResponse, urlresolvers
+from guardian.decorators import permission_required_or_403
+from participants.decorators import must_be_org_user
 from . import forms
 
 cache = caches['default']
@@ -38,7 +40,13 @@ def _check_for_error(response_dict):
 
 
 @login_required
-def index(request):
+@permission_required_or_403('statistics.view_statistic')
+@must_be_org_user
+def index(request, managed_libraries=[]):
+    if not request.user.has_perm('statistics.view_org_statistic') or \
+            not request.user.has_perm('statistics.view_all_statistic'):
+        return HttpResponse(u'Доступ запрещен', status=403)
+
     response, error = _make_request('get', url=REPORT_SERVER + 'reports', params={
         'token': TOKEN,
         'format': 'json'
@@ -59,7 +67,19 @@ def index(request):
     })
 
 @login_required
-def report(request):
+@must_be_org_user
+def report(request, managed_libraries=[]):
+    security = u'Организация=Total,00000000'
+    access = False
+    if request.user.has_perm('statistics.view_all_statistic'):
+        access = True
+    else:
+        if managed_libraries:
+            access = True
+            security = u'Организация=Total,' + managed_libraries[0].library.code
+
+    if not access:
+        return HttpResponse(u'Доступ запрещен', status=403)
 
     report_form = forms.ReportForm(request.GET)
     parameters = request.GET.get('parameters', '')
@@ -70,7 +90,7 @@ def report(request):
             'token': TOKEN,
             'view': 'modern2',
             'code': report_form.cleaned_data['code'],
-            'security': u'Организация=Total,00000000',
+            'security': security,
             'parameters': parameters
         }
         cache_key = hashlib.md5(json.dumps(params, ensure_ascii=False).encode('utf-8')).hexdigest()
@@ -81,12 +101,6 @@ def report(request):
 
             if not error:
                 report_body = response.content #unicode(template(etree.fromstring(response.content)))
-                #cache.set(cache_key, report_body, 60 * 5)
-            # report_body = response.text
-            #
-            # root = html.fromstring(report_body)
-            # print root.xpath('//div[class=')
-            # print report_body.decode('cp1251')
     else:
         error = unicode(report_form.errors)
     return render(request, 'statistics/frontend/reports.html', {

@@ -47,6 +47,7 @@
             $('.current_library').text('Выбрана организация: ' + label);
             $('#id_slf-library').val(itemId);
         } else {
+            $('#id_slf-library').val(itemId);
             $('.current_library').text('Организация не выбрана');
         }
 
@@ -65,7 +66,7 @@
                 items: data
             });
             treeView.on('select:item', function (itemId, label) {
-                setCurrentOrg(itemId, label);
+               setCurrentOrg(itemId, label);
             });
             $libSelect.append(treeView.render().el);
         }

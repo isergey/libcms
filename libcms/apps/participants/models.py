@@ -1,7 +1,7 @@
 # encoding: utf-8
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from mptt.models import MPTTModel, TreeForeignKey
 
 #
@@ -13,10 +13,10 @@ from mptt.models import MPTTModel, TreeForeignKey
 #
 # class Meta:
 # verbose_name = u"Страна"
-#        verbose_name_plural = u"Страны"
+# verbose_name_plural = u"Страны"
 #
 #
-#class City(models.Model):
+# class City(models.Model):
 #    country = models.ForeignKey(Country, verbose_name=u'Страна')
 #    name = models.CharField(verbose_name=u'Город', max_length=32, unique=True, db_index=True)
 #
@@ -105,19 +105,6 @@ class Library(MPTTModel):
         order_insertion_by = ['weight']
 
 
-class UserRole(models.Model):
-    code = models.CharField(verbose_name=u'Код роли', max_length=32, unique=True, editable=False)
-    name = models.CharField(verbose_name=u'Название', max_length=64, unique=True, editable=False)
-
-    def __unicode__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = u'Роль сотрудника'
-        verbose_name_plural = u'Роли сотрудников'
-        ordering = ['name']
-
-
 class UserLibraryPosition(models.Model):
     name = models.CharField(max_length=255, verbose_name=u'Должность')
 
@@ -135,9 +122,12 @@ class UserLibrary(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     middle_name = models.CharField(verbose_name=u'Отчество', max_length=255, blank=True)
     branch = models.CharField(verbose_name=u'Отдел', max_length=255)
-    position = models.CharField(verbose_name=u'Должность', max_length=255)
+    position = models.ForeignKey(UserLibraryPosition, verbose_name=u'Должность', null=True, blank=True)
     phone = models.CharField(verbose_name=u'Телефон', max_length=32)
-    roles = models.ManyToManyField(UserRole, verbose_name=u'Роли')
+    is_active = models.BooleanField(
+        verbose_name=u'Активен', default=True,
+        help_text=u'Активизация полномочий ролей'
+    )
 
     def __unicode__(self):
         return self.user.username
@@ -172,3 +162,7 @@ class LibraryContentEditor(models.Model):
         unique_together = ('library', 'user')
 
 
+def get_role_groups(user=None):
+    if user:
+        return user.groups.filter(name__startswith='role_')
+    return Group.objects.filter(name__startswith='role_')

@@ -13,6 +13,22 @@
 {% endblock %}
 
 {% block action_content %}
+    <div class="alert alert-warning">
+        {% if managed_libraries %}
+            Вы можете управлять сотрудниками организаций:
+            <ul>
+                {% for managed_library in managed_libraries %}
+                    <li>{% for ancestor in managed_library.library.get_ancestors %}
+                        <b>{{ ancestor.name }}</b> /
+                    {% endfor %}
+                        <b>{{ managed_library.library.name }}</b>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            Вы можете управлять сотрудниками любой организации
+        {% endif %}
+    </div>
     <div class="well well-small">
         <a class="btn btn-success" href="{% url 'participants:administration:add_library_user' %}"><i class="icon-plus icon-white"></i> Добавить сотрудника</a>
     </div>
@@ -71,7 +87,7 @@
                     {{ lib_user.user.last_name }} {{ lib_user.user.first_name }} {{ lib_user.middle_name }}
                     </span>
                 </td>
-                <td><span title="{{ lib_user.position }}">{{ lib_user.position }}</span></td>
+                <td><span title="{{ lib_user.position }}">{{ lib_user.position|default:'---' }}</span></td>
                 <td><span title="{{ lib_user.user.username }}">{{ lib_user.user.username }}</span></td>
                 <td style="width: 100px">
                     <span title="{{ lib_user.user.last_login }}">{{ lib_user.user.last_login }}</span>

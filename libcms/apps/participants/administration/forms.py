@@ -3,7 +3,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User, Group
 
-from ..models import Library, LibraryType, District, UserLibrary, UserRole, UserLibraryPosition
+from ..models import Library, LibraryType, District, UserLibrary, UserLibraryPosition, get_role_groups
 
 
 class LibraryForm(forms.ModelForm):
@@ -23,8 +23,10 @@ class DistrictForm(forms.ModelForm):
 
 
 class UserForm(forms.ModelForm):
-    password = forms.CharField(max_length=64, label=u'Пароль', required=False)
+    password = forms.CharField(max_length=64, label=u'Пароль *', required=False)
     email = forms.EmailField(label=u'Адрес электронной почты', help_text=u'Только в домене @tatar.ru ')
+    last_name = forms.CharField(label=u'Фамилия', max_length=30)
+    first_name = forms.CharField(label=u'Имя', max_length=30)
 
     class Meta:
         model = User
@@ -32,8 +34,8 @@ class UserForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data['email'].strip()
-        # if not email.endswith('@tatar.ru'):
-        # raise forms.ValidationError(u'Адрес электронной почты должен заканчиваться на @tatar.ru')
+        if not email.endswith('@tatar.ru'):
+            raise forms.ValidationError(u'Адрес электронной почты должен заканчиваться на @tatar.ru')
         if self.instance.email != email:
             if User.objects.filter(email=email).exists():
                 raise forms.ValidationError(u'Такой адрес уже зарегистрирован')
@@ -47,6 +49,7 @@ class UserForm(forms.ModelForm):
 
 
 class UserLibraryForm(forms.ModelForm):
+
     class Meta:
         model = UserLibrary
         exclude = ('library', 'user')
@@ -55,16 +58,31 @@ class UserLibraryForm(forms.ModelForm):
         }
 
 
-class SelectDistrictForm(forms.Form):
-    district = forms.ModelChoiceField(queryset=District.objects.all(), label=u'Выберите район', required=False)
+class UserLibraryGroupsFrom(forms.Form):
+    groups = forms.ModelMultipleChoiceField(label=u'Группы',
+        queryset=get_role_groups(),
+        widget=forms.CheckboxSelectMultiple()
+    )
+
+
+def get_district_form(districts=None):
+    if not districts:
+        queryset = District.objects.all()
+    else:
+        queryset = District.objects.filter(id__in=districts)
+
+    class SelectDistrictForm(forms.Form):
+        district = forms.ModelChoiceField(queryset=queryset, label=u'Выберите район', required=False)
+
+    return SelectDistrictForm
 
 
 class SelectUserRoleForm(forms.Form):
-    role = forms.ModelChoiceField(queryset=UserRole.objects.all(), label=u'Роль', required=False)
+    role = forms.ModelChoiceField(queryset=Group.objects.filter(name__startswith='role_'), label=u'Роль', required=False)
 
 
 class SelectUserPositionForm(forms.Form):
-    role = forms.ModelChoiceField(queryset=UserLibraryPosition.objects.all(), label=u'Должность', required=False)
+    position = forms.ModelChoiceField(queryset=UserLibraryPosition.objects.all(), label=u'Должность', required=False)
 
 
 class UserAttrForm(forms.Form):
@@ -88,14 +106,19 @@ class UserAttrForm(forms.Form):
     )
 
 
-def get_add_user_library_form():
+def get_add_user_library_form(queryset=None):
+    if not queryset:
+        queryset = Library.objects.all()
+
     class AddUserDistrictForm(forms.Form):
         library = forms.ModelChoiceField(
-            queryset=Library.objects.all(),
+            queryset=queryset,
             label=u'Выберите библиотеку'
         )
 
     return AddUserDistrictForm
+
+
 
 
 # class UserLibrary(forms.ModelForm):

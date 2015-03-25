@@ -3,6 +3,7 @@ import json
 from django.shortcuts import resolve_url
 from django.core.cache import cache
 from django.core import serializers
+
 json_serializer = serializers.get_serializer("json")()
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse, Http404
 from django.utils import translation
@@ -22,7 +23,7 @@ def make_library_dict(library):
         'http_service': getattr(library, 'http_service', u"не указан"),
         'latitude': library.latitude,
         'longitude': library.longitude,
-        }
+    }
 
 
 def index(request):
@@ -32,7 +33,7 @@ def index(request):
         js_orgs.append(make_library_dict(org))
 
     js_orgs = json.dumps(js_orgs, encoding='utf-8', ensure_ascii=False)
-    return render(request, 'participants/frontend/cbs_list.html',{
+    return render(request, 'participants/frontend/cbs_list.html', {
         'cbs_list': cbs_list,
         'js_orgs': js_orgs
     })
@@ -41,7 +42,7 @@ def index(request):
 def branches(request, code=None):
     if request.method == "POST":
         code = request.POST.get('code', None)
-    library=None
+    library = None
     if code:
         library = get_object_or_404(Library, code=code)
     libraries = Library.objects.filter(parent=library).order_by('weight')
@@ -55,7 +56,7 @@ def branches(request, code=None):
     if request.is_ajax():
         return HttpResponse(js_orgs)
 
-    return render(request, 'participants/frontend/branch_list.html',{
+    return render(request, 'participants/frontend/branch_list.html', {
         'library': library,
         'libraries': libraries,
         'js_orgs': js_orgs
@@ -69,7 +70,7 @@ def detail(request, code):
 
     js_orgs = json.dumps(js_orgs, encoding='utf-8', ensure_ascii=False)
 
-    return render(request, 'participants/frontend/detail.html',{
+    return render(request, 'participants/frontend/detail.html', {
         'library': library,
         'js_orgs': js_orgs
     })
@@ -77,6 +78,7 @@ def detail(request, code):
 
 def geosearch(request):
     return render(request, 'participants/frontend/geosearch.html')
+
 
 def geo_nearest(request):
     page = int(request.GET.get('page', 1))
@@ -93,7 +95,7 @@ def geo_nearest(request):
 
     libraries = json.loads(cached_libraies.decode('zlib'))
 
-    #print len(json.dumps(libraries, ensure_ascii=False).encode('utf-8').encode('zlib'))
+    # print len(json.dumps(libraries, ensure_ascii=False).encode('utf-8').encode('zlib'))
     geo_libraries = []
     for library in libraries:
         latitude = library.get('latitude', 0)
@@ -110,7 +112,7 @@ def geo_nearest(request):
 
     per_page = 10
     # objects_page = get_page(request, geo_libraries, per_page)
-    offset = (page -1) * per_page
+    offset = (page - 1) * per_page
 
     result = {
         'page': page,
@@ -126,7 +128,9 @@ def geo_nearest(request):
     #     'objects': objects_page.paginator.object_list[offset::per_page]
     # })
 
+
 from math import radians, sqrt, sin, cos, atan2
+
 
 def geodistance(lat1, lon1, lat2, lon2):
     lat1 = radians(lat1)
@@ -141,9 +145,9 @@ def geodistance(lat1, lon1, lat2, lon2):
     y = sqrt(
         (cos(lat2) * sin(dlon)) ** 2
         + (cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dlon)) ** 2
-        )
+    )
     x = sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(dlon)
     c = atan2(y, x)
     return EARTH_R * c
 
-#print geocalc(60.038349, 30.405864, 55.779945, 49.116242)
+    #print geocalc(60.038349, 30.405864, 55.779945, 49.116242)

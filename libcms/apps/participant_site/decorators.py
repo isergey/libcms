@@ -3,6 +3,7 @@ from django.shortcuts import HttpResponse, get_object_or_404
 from participants.models import Library
 import models
 
+
 def must_be_manager(function):
     def wrapper(request, *args, **kwargs):
         library_code = kwargs.get('library_code')
@@ -14,4 +15,5 @@ def must_be_manager(function):
             'library': library,
         }, **kwargs)
         return function(request, **nkwargs)
+
     return wrapper
