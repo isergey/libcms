@@ -131,7 +131,7 @@ INSTALLED_APPS = (
     'mptt',
     'guardian',
     # 'debug_toolbar',
-    # 'django_sorting',
+    'django_sorting',
     # cms apps
     'core',
     'accounts',

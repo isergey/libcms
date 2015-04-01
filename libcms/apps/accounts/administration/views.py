@@ -1,34 +1,42 @@
 # -*- coding: utf-8 -*-
-
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from guardian.decorators import permission_required_or_403
 from common.pagination import get_page
 from django.contrib.auth.models import User, Group
 from forms import UserForm, GroupForm
 
-
 from django.contrib.auth import login, REDIRECT_FIELD_NAME
 
-#@permission_required_or_403('accounts.view_users')
+# @permission_required_or_403('accounts.view_users')
 def index(request):
     return render(request, 'accounts/administration/index.html')
 
 
-
-
-
-
 @permission_required_or_403('accounts.view_users')
 def users_list(request):
-    users_qs = User.objects.all().exclude(id=-1).order_by('-date_joined')
-    users_page = get_page(request,  users_qs)
+    filter_q = request.GET.get('q', u'')
+    q = Q()
+    if filter_q:
+        fio_q = Q()
+        fio_parts = filter_q.split()
+        for fio_part in fio_parts:
+            fio_q = fio_q | Q(first_name__icontains=fio_part) \
+                    | Q(last_name__icontains=fio_part)
+        q = q | fio_q
+
+        q = q | Q(email__icontains=filter_q)
+
+        q = q | Q(username__icontains=filter_q)
+
+
+    users_qs = User.objects.filter(q).exclude(id=-1).order_by('-date_joined')
+    users_page = get_page(request, users_qs, 20)
 
     return render(request, 'accounts/administration/user_list.html', {
         'users_page': users_page,
         'users': users_qs
     })
-
-
 
 
 @permission_required_or_403('auth.add_user')
@@ -53,9 +61,6 @@ def create_user(request):
     return render(request, 'accounts/administration/create_user.html', {
         'form': form
     })
-
-
-
 
 
 @permission_required_or_403('auth.change_user')
@@ -89,18 +94,12 @@ def edit_user(request, id):
     })
 
 
-
-
-
 @permission_required_or_403('accounts.view_groups')
 def groups_list(request):
-    groups_page = get_page(request,  Group.objects.all())
+    groups_page = get_page(request, Group.objects.all())
     return render(request, 'accounts/administration/groups_list.html', {
         'groups_page': groups_page
     })
-
-
-
 
 
 @permission_required_or_403('auth.add_group')
@@ -115,9 +114,6 @@ def create_group(request):
     return render(request, 'accounts/administration/create_group.html', {
         'form': form
     })
-
-
-
 
 
 @permission_required_or_403('auth.change_group')

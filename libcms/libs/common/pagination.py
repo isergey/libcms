@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+
 def get_page(request, objects_qs, per_page=20):
     """
     request - объект запроса с параметром
