@@ -49,6 +49,7 @@ urlpatterns = patterns('',
     url(r'^radmin/', include(admin.site.urls)),
     url(r'^jsi18n/$', site.i18n_javascript, name='jsi18n'),
     url(r'^sauth/', include('social_auth.urls')),
+    url(r'^captcha/', include('captcha.urls')),
 )
 
 

@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from common.pagination import get_page
 
 from ..models import Question,  Category, Recomendation
-from forms import QuestionForm, RecomendationForm, DateFilterForm
+from forms import get_question_form, RecomendationForm, DateFilterForm
 
 def index(request):
     id =  request.GET.get('id', None)
@@ -104,6 +104,7 @@ def printed_detail(request, id):
 
 @transaction.commit_on_success
 def ask(request):
+    QuestionForm = get_question_form(not request.user.is_authenticated())
     if request.method == 'POST':
         form = QuestionForm(request.POST)
         if form.is_valid():
