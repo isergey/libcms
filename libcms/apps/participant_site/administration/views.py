@@ -1,28 +1,36 @@
 # coding=utf-8
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from .. import decorators
+from participants import decorators, org_utils
 import forms
 from .. import models
 
 
+
 @login_required
-@decorators.must_be_manager
-def index(request, library_code, library):
+@decorators.must_be_org_user
+def index(request, library_code, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponse(u'Вы должны быть сотрудником организации', status=403)
+
     return render(request, 'participant_site/administration/backend_base.html', {
         'library': library
     })
 
 @login_required
-@decorators.must_be_manager
+@decorators.must_be_org_user
 @transaction.atomic
-def edit_info(request, library_code, library):
+def edit_info(request, library_code, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponse(u'Вы должны быть сотрудником организации', status=403)
+
     try:
         avatar = models.LibraryAvatar.objects.get(library=library)
     except models.LibraryAvatar.DoesNotExist:
         avatar = None
-
 
     if request.method == 'POST':
         avatar_from = forms.AvatarForm(request.POST, request.FILES, prefix='avatar_from', instance=avatar)

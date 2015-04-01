@@ -2,72 +2,92 @@
 from django.conf import settings
 from django.db import transaction
 from django.shortcuts import render, get_object_or_404, redirect
-from django.core.urlresolvers import reverse
-from django.utils.translation import get_language
+from django.http import HttpResponseForbidden
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
 from common.pagination import get_page
 
-from participant_site.decorators import must_be_manager
+from participants import decorators, org_utils
+
 from ..models import News, NewsImage
 from . import forms
 
+
 @login_required
-@permission_required_or_403('participant_news.add_news')
-@must_be_manager
-def index(request, library_code, library):
+@decorators.must_be_org_user
+def index(request, library_code, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
+    if not request.user.has_module_perms('participant_news'):
+        return HttpResponseForbidden(u'У вас нет доступа к разделу')
+
     return redirect('participant_news:administration:news_list', library_code=library_code)
 
 
 @login_required
-@permission_required_or_403('news.add_news')
-@must_be_manager
-def news_list(request, library_code, library):
+@decorators.must_be_org_user
+def news_list(request, library_code, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
+    if not request.user.has_module_perms('participant_news'):
+        return HttpResponseForbidden(u'У вас нет доступа к разделу')
+
     news_page = get_page(request, News.objects.filter(library=library).order_by('-order', '-create_date'))
     return render(request, 'participant_news/administration/news_list.html', {
         'library': library,
         'news_list': news_page.object_list,
         'news_page': news_page,
-        })
-
+    })
 
 
 @login_required
 @permission_required_or_403('participant_news.add_news')
 @transaction.atomic()
-@must_be_manager
-def create_news(request, library_code, library):
+@decorators.must_be_org_user
+def create_news(request, library_code, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
 
     if request.method == 'POST':
         news_form = forms.NewsForm(request.POST, prefix='news_form')
 
         if news_form.is_valid():
-                news = news_form.save(commit=False)
-                if 'news_form_avatar' in request.FILES:
-                    avatar_img_name = handle_uploaded_file(request.FILES['news_form_avatar'])
-                    news.avatar_img_name = avatar_img_name
-                news.library = library
-                news.save()
-                if 'save_edit' in request.POST:
-                    return redirect('participant_news:administration:edit_news', library_code=library_code, id=news.id)
-                else:
-                    return redirect('participant_news:administration:news_list', library_code=library_code)
+            news = news_form.save(commit=False)
+            if 'news_form_avatar' in request.FILES:
+                avatar_img_name = handle_uploaded_file(request.FILES['news_form_avatar'])
+                news.avatar_img_name = avatar_img_name
+            news.library = library
+            news.save()
+            if 'save_edit' in request.POST:
+                return redirect('participant_news:administration:edit_news', library_code=library_code, id=news.id)
+            else:
+                return redirect('participant_news:administration:news_list', library_code=library_code)
     else:
         news_form = forms.NewsForm(prefix="news_form")
 
     return render(request, 'participant_news/administration/create_news.html', {
         'library': library,
         'news_form': news_form,
-        })
+    })
+
 
 @login_required
 @permission_required_or_403('participant_news.change_news')
 @transaction.atomic()
-@must_be_manager
-def edit_news(request, library_code, library, id):
+@decorators.must_be_org_user
+def edit_news(request, library_code, id, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     news = get_object_or_404(News, library=library, id=id)
     if request.method == 'POST':
-        news_form = forms.NewsForm(request.POST,prefix='news_form', instance=news)
+        news_form = forms.NewsForm(request.POST, prefix='news_form', instance=news)
 
         if news_form.is_valid():
             news = news_form.save(commit=False)
@@ -90,27 +110,33 @@ def edit_news(request, library_code, library, id):
         'news_form': news_form,
         'content_type': 'participant_news_' + str(library.id),
         'content_id': unicode(news.id)
-        })
+    })
 
 
 @login_required
 @permission_required_or_403('participant_news.delete_news')
 @transaction.atomic()
-@must_be_manager
-def delete_news(request, library_code, library, id):
+@decorators.must_be_org_user
+def delete_news(request, library_code, id, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     news = get_object_or_404(News, library=library, id=id)
     news.delete()
     delete_avatar(news.avatar_img_name)
     return redirect('participant_news:administration:news_list', library_code=library_code)
 
 
-
-
 @login_required
 @permission_required_or_403('participant_news.change_news')
 @transaction.atomic()
-@must_be_manager
-def news_images(request, library_code, library, id):
+@decorators.must_be_org_user
+def news_images(request, library_code, id, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     news = get_object_or_404(News, library=library, id=id)
     news_images = NewsImage.objects.filter(news=news)
     return render(request, 'participant_news/administration/news_images.html', {
@@ -123,8 +149,12 @@ def news_images(request, library_code, library, id):
 @login_required
 @permission_required_or_403('participant_news.change_news')
 @transaction.atomic()
-@must_be_manager
-def create_news_image(request, library_code, library, id):
+@decorators.must_be_org_user
+def create_news_image(request, library_code, id, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     news = get_object_or_404(News, library=library, id=id)
 
     if request.method == 'POST':
@@ -143,18 +173,24 @@ def create_news_image(request, library_code, library, id):
         'form': form
     })
 
+
 @login_required
 @permission_required_or_403('participant_news.change_news')
 @transaction.atomic()
-@must_be_manager
-def edit_news_image(request, library_code, library, id, image_id):
+@decorators.must_be_org_user
+def edit_news_image(request, library_code, id, image_id, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     news_image = get_object_or_404(NewsImage, news_id=id, id=image_id)
 
     if request.method == 'POST':
         form = forms.NewsImageForm(request.POST, request.FILES, instance=news_image)
         if form.is_valid():
             form.save()
-            return redirect('participant_news:administration:news_images', library_code=library_code, id=news_image.news_id)
+            return redirect('participant_news:administration:news_images', library_code=library_code,
+                            id=news_image.news_id)
     else:
         form = forms.NewsImageForm(instance=news_image)
 
@@ -165,11 +201,16 @@ def edit_news_image(request, library_code, library, id, image_id):
         'form': form
     })
 
+
 @login_required
 @permission_required_or_403('participant_news.change_news')
 @transaction.atomic()
-@must_be_manager
-def delete_news_image(request, library_code, library, id, image_id):
+@decorators.must_be_org_user
+def delete_news_image(request, library_code, id, image_id, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     news_image = get_object_or_404(NewsImage, news_id=id, id=image_id)
     news_image.delete()
     return redirect('participant_news:administration:news_images', library_code=library_code, id=id)
@@ -180,15 +221,17 @@ from PIL import Image
 import uuid
 from datetime import datetime
 
-UPLOAD_DIR =  settings.MEDIA_ROOT + 'uploads/participant_news/newsavatars/'
+UPLOAD_DIR = settings.MEDIA_ROOT + 'uploads/participant_news/newsavatars/'
+
+
 def handle_uploaded_file(f, old_name=None):
     upload_dir = UPLOAD_DIR
     now = datetime.now()
     dirs = [
         upload_dir,
-        upload_dir  + str(now.year) + '/',
-        upload_dir  + str(now.year) + '/' + str(now.month) + '/',
-        ]
+        upload_dir + str(now.year) + '/',
+        upload_dir + str(now.year) + '/' + str(now.month) + '/',
+    ]
     for dir in dirs:
         if not os.path.isdir(dir):
             os.makedirs(dir, 0755)
@@ -237,8 +280,9 @@ def handle_uploaded_file(f, old_name=None):
     image_ratio = float(im.size[0]) / im.size[1]
     final_width = int((image_ratio * final_hight))
     im = im.resize((final_width, final_hight), Image.ANTIALIAS)
-    im.save(path, "JPEG",  quality=95)
+    im.save(path, "JPEG", quality=95)
     return name
+
 
 def delete_avatar(name):
     upload_dir = UPLOAD_DIR

@@ -2,6 +2,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User, Group
+from accounts.models import GroupTitle
 
 from ..models import Library, LibraryType, District, UserLibrary, UserLibraryPosition, get_role_groups
 
@@ -49,7 +50,6 @@ class UserForm(forms.ModelForm):
 
 
 class UserLibraryForm(forms.ModelForm):
-
     class Meta:
         model = UserLibrary
         exclude = ('library', 'user')
@@ -58,11 +58,31 @@ class UserLibraryForm(forms.ModelForm):
         }
 
 
+def get_role_choices():
+    groups = Group.objects.filter(name__startswith='role_')
+    group_titles = GroupTitle.objects.filter(group__in=groups)
+
+    group_titles_dict = {}
+
+    for group_title in group_titles:
+        group_titles_dict[group_title.group_id] = group_title.title
+    print group_titles_dict
+    choices = []
+    for group in groups:
+        choices.append(
+            (group.id, group_titles_dict.get(group.id, group.name))
+        )
+    return choices
+
+
 class UserLibraryGroupsFrom(forms.Form):
-    groups = forms.ModelMultipleChoiceField(label=u'Группы',
-        queryset=get_role_groups(),
-        widget=forms.CheckboxSelectMultiple()
-    )
+    def __init__(self, *args, **kwargs):
+        super(UserLibraryGroupsFrom, self).__init__(*args, **kwargs)
+        self.fields['groups'] = forms.MultipleChoiceField(
+            label=u'Группы',
+            choices=get_role_choices(),
+            widget=forms.CheckboxSelectMultiple
+        )
 
 
 def get_district_form(districts=None):
@@ -77,12 +97,13 @@ def get_district_form(districts=None):
     return SelectDistrictForm
 
 
+class SelectUserPositionForm(forms.Form):
+    position = forms.ModelChoiceField(queryset=UserLibraryPosition.objects.all(), label=u'Должность', required=False)
+
+
 class SelectUserRoleForm(forms.Form):
     role = forms.ModelChoiceField(queryset=Group.objects.filter(name__startswith='role_'), label=u'Роль', required=False)
 
-
-class SelectUserPositionForm(forms.Form):
-    position = forms.ModelChoiceField(queryset=UserLibraryPosition.objects.all(), label=u'Должность', required=False)
 
 
 class UserAttrForm(forms.Form):
@@ -119,8 +140,6 @@ def get_add_user_library_form(queryset=None):
     return AddUserDistrictForm
 
 
-
-
 # class UserLibrary(forms.ModelForm):
 # class Meta:
 # model = UserLibrary
@@ -131,7 +150,7 @@ def get_add_user_library_form(queryset=None):
 #
 # class PageForm(forms.ModelForm):
 # class Meta:
-#        model=Page
+# model=Page
 #        exclude = ('parent',)
 #
 #class ContentForm(forms.ModelForm):

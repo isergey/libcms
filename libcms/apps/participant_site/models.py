@@ -15,24 +15,30 @@ AVATAR_MEDIA_SUFFIX = 'participant_site/lib_avatars/'
 AVATAR_THUMBNAIL_SIZE = (320, 240)
 
 
-class ContentManager(models.Model):
-    user = models.ForeignKey(User)
-    library = models.ForeignKey(Library)
-    can_manage_children = models.BooleanField(
-        verbose_name=u'Может управлять дочерними организациями выбранно библиотеки',
-        default=False
-    )
-
-    def clean(self):
-        if self.library.parent_id:
-            ancestors = self.library.get_ancestors().values('id')
-            if ContentManager.objects.filter(user=self.user, library__in=ancestors, can_manage_children=True).exists():
-                raise ValidationError(u'Пользователь уже унаследовал роль менеджера от вышестоящих библиотек')
-
+class LibrarySiteCard(models.Model):
     class Meta:
-        verbose_name = u'Менеджер контента библиотеки'
-        verbose_name_plural = u'Менеджеры контента библиотек'
-        unique_together = (('library', 'user'))
+        permissions = [
+            ['view_library_card', u'Can view library site info card'],
+        ]
+
+# class ContentManager(models.Model):
+#     user = models.ForeignKey(User)
+#     library = models.ForeignKey(Library)
+#     can_manage_children = models.BooleanField(
+#         verbose_name=u'Может управлять дочерними организациями выбранно библиотеки',
+#         default=False
+#     )
+#
+#     def clean(self):
+#         if self.library.parent_id:
+#             ancestors = self.library.get_ancestors().values('id')
+#             if ContentManager.objects.filter(user=self.user, library__in=ancestors, can_manage_children=True).exists():
+#                 raise ValidationError(u'Пользователь уже унаследовал роль менеджера от вышестоящих библиотек')
+#
+#     class Meta:
+#         verbose_name = u'Менеджер контента библиотеки'
+#         verbose_name_plural = u'Менеджеры контента библиотек'
+#         unique_together = (('library', 'user'))
 
 
 def get_managers(user, library):

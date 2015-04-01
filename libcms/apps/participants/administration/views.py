@@ -462,7 +462,7 @@ def add_library_user(request, managed_libraries=[]):
             users_group = Group.objects.get(name='users')
             users_group.user_set.add(user)
 
-            selected_groups = set(user_library_group_form.cleaned_data['groups'])
+            selected_groups = set(Group.objects.filter(id__in=user_library_group_form.cleaned_data['groups']))
             for selected_group in selected_groups:
                 selected_group.user_set.add(user)
 
@@ -536,11 +536,10 @@ def edit_library_user(request, id, managed_libraries=[]):
             user.save()
 
             role_groups = set(get_role_groups())
-            selected_groups = set(user_library_group_form.cleaned_data['groups'])
+            selected_groups = set(Group.objects.filter(id__in=user_library_group_form.cleaned_data['groups']))
             remove_groups = role_groups - selected_groups
 
             for selected_group in selected_groups:
-                print 'add', selected_group
                 selected_group.user_set.add(user)
 
             for remove_group in remove_groups:
@@ -553,7 +552,7 @@ def edit_library_user(request, id, managed_libraries=[]):
             return redirect('participants:administration:library_user_list')
     else:
         user_library_group_form = forms.UserLibraryGroupsFrom(prefix='ulgp', initial={
-            'groups': get_role_groups(library_user.user)
+            'groups': [group.id for group in get_role_groups(library_user.user)]
         })
         select_library_form = forms.get_add_user_library_form(select_libraries_qs)(prefix='slf', initial={
             'library': library_user.library

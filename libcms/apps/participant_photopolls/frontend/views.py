@@ -10,7 +10,7 @@ from participants.models import Library
 from .. import models
 import forms
 
-SUBSCRIBE_PER_DAY_LIMIT = 1000
+
 
 def index(request, library_code):
     library = get_object_or_404(Library, code=library_code)

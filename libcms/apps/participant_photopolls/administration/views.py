@@ -9,23 +9,30 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import get_language
 
 from common.pagination import get_page
-from participant_site import decorators
+from participants import decorators, org_utils
 from ..models import Poll, PollContent, PollImage, PollImageContent
 from forms import PollForm, PollContentForm, PollImageForm, PollImageContentForm
 
 
 @login_required
-@permission_required_or_403('participant_photopolls.add_poll')
-@decorators.must_be_manager
-def index(request, library_code, library):
+@decorators.must_be_org_user
+def index(request, library_code, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     if not request.user.has_module_perms('participant_photopolls'):
         return HttpResponseForbidden()
     return redirect('participant_photopolls:administration:polls_list', library_code=library_code)
 
 
 @login_required
-@decorators.must_be_manager
-def polls_list(request, library_code, library):
+@decorators.must_be_org_user
+def polls_list(request, library_code, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     if not request.user.has_module_perms('participant_photopolls'):
         return HttpResponseForbidden()
     polls_page = get_page(request, Poll.objects.filter(library=library).order_by('-create_date'), 10)
@@ -46,8 +53,12 @@ def polls_list(request, library_code, library):
         })
 
 @login_required
-@decorators.must_be_manager
-def poll_detail(request, library_code, library, id):
+@decorators.must_be_org_user
+def poll_detail(request, library_code, id, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     if not request.user.has_module_perms('participant_photopolls'):
         return HttpResponseForbidden()
     poll = get_object_or_404(Poll, id=id)
@@ -61,8 +72,12 @@ def poll_detail(request, library_code, library, id):
 @login_required
 @permission_required_or_403('participant_photopolls.add_poll')
 @transaction.atomic()
-@decorators.must_be_manager
-def create_poll(request, library_code, library):
+@decorators.must_be_org_user
+def create_poll(request, library_code, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     if request.method == 'POST':
         poll_form = PollForm(request.POST,request.FILES, prefix='poll_form')
 
@@ -108,8 +123,12 @@ def create_poll(request, library_code, library):
 @login_required
 @permission_required_or_403('participant_photopolls.change_poll')
 @transaction.atomic()
-@decorators.must_be_manager
-def edit_poll(request, library_code, library, id):
+@decorators.must_be_org_user
+def edit_poll(request, library_code, id, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     poll = get_object_or_404(Poll, id=id)
     poll_contents = PollContent.objects.filter(poll=poll)
     poll_contents_langs = {}
@@ -182,8 +201,12 @@ def edit_poll(request, library_code, library, id):
 @login_required
 @permission_required_or_403('participant_photopolls.delete_poll')
 @transaction.atomic()
-@decorators.must_be_manager
-def delete_poll(request, id, library_code, library):
+@decorators.must_be_org_user
+def delete_poll(request, id, library_code, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     poll = get_object_or_404(Poll, id=id, library=library)
     poll.delete()
     return redirect('participant_photopolls:administration:polls_list', library_code=library_code)
@@ -194,8 +217,12 @@ def delete_poll(request, id, library_code, library):
 @login_required
 @permission_required_or_403('participant_photopoll.add_poll')
 @transaction.atomic()
-@decorators.must_be_manager
-def create_poll_image(request, library_code, library, id):
+@decorators.must_be_org_user
+def create_poll_image(request, library_code, id, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     poll = get_object_or_404(Poll, id=id, library=library)
     if request.method == 'POST':
         poll_image_form = PollImageForm(request.POST,request.FILES, prefix='poll_image_form')
@@ -243,8 +270,12 @@ def create_poll_image(request, library_code, library, id):
 @login_required
 @permission_required_or_403('participant_photopoll.change_poll')
 @transaction.atomic()
-@decorators.must_be_manager
-def edit_poll_image(request, library_code, library, id, image_id):
+@decorators.must_be_org_user
+def edit_poll_image(request, library_code, id, image_id, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     poll = get_object_or_404(Poll, id=id, library=library)
     poll_image = get_object_or_404(PollImage, poll=poll, id=image_id)
     poll_image_contents = PollImageContent.objects.filter(poll_image=poll_image)
@@ -319,8 +350,12 @@ def edit_poll_image(request, library_code, library, id, image_id):
 @login_required
 @permission_required_or_403('participant_photopoll.change_poll')
 @transaction.atomic()
-@decorators.must_be_manager
-def delete_poll_image(request, library_code, library, id, image_id):
+@decorators.must_be_org_user
+def delete_poll_image(request, library_code, id, image_id, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     poll = get_object_or_404(Poll, id=id, library=library)
     poll_image = get_object_or_404(PollImage, poll=poll, id=image_id)
     poll_image.delete()

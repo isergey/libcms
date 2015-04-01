@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 from django import template
-from ..models import Library
+from ..models import Library, UserLibrary
 register = template.Library()
 
 
@@ -30,3 +30,12 @@ def cbs_map():
         'cbs_list': cbs_list,
         'js_orgs': js_orgs
     }
+
+
+@register.assignment_tag
+def get_user_org(user):
+    user_libraies = UserLibrary.objects.filter(user=user)[:1]
+    if user_libraies:
+        return user_libraies[0].library
+    else:
+        return None

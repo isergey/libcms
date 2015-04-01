@@ -1,8 +1,17 @@
 # -*- coding: utf-8 -*-
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import models
 
-#
+
+class GroupTitle(models.Model):
+    group = models.OneToOneField(Group, unique=True)
+    title = models.CharField(
+        verbose_name=u'Название группы',
+        unique=True,
+        max_length=255,
+        help_text=u'Человекочитаемое название группы'
+    )
+
 # class Permissions(User):
 #     """
 #     Класс для создания прав достпа

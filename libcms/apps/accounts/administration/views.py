@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.db.models import Q
+from django.db import transaction
 from django.shortcuts import render, get_object_or_404, redirect
 from guardian.decorators import permission_required_or_403
 from common.pagination import get_page
 from django.contrib.auth.models import User, Group
-from forms import UserForm, GroupForm
-
+from forms import UserForm, GroupForm, GroupTitleForm
+from .. import models
 from django.contrib.auth import login, REDIRECT_FIELD_NAME
 
 # @permission_required_or_403('accounts.view_users')
@@ -29,7 +30,6 @@ def users_list(request):
 
         q = q | Q(username__icontains=filter_q)
 
-
     users_qs = User.objects.filter(q).exclude(id=-1).order_by('-date_joined')
     users_page = get_page(request, users_qs, 20)
 
@@ -39,6 +39,7 @@ def users_list(request):
     })
 
 
+@transaction.atomic()
 @permission_required_or_403('auth.add_user')
 def create_user(request):
     if request.method == 'POST':
@@ -63,6 +64,7 @@ def create_user(request):
     })
 
 
+@transaction.atomic()
 @permission_required_or_403('auth.change_user')
 def edit_user(request, id):
     user = get_object_or_404(User, id=id)
@@ -94,6 +96,7 @@ def edit_user(request, id):
     })
 
 
+@transaction.atomic()
 @permission_required_or_403('accounts.view_groups')
 def groups_list(request):
     groups_page = get_page(request, Group.objects.all())
@@ -102,26 +105,41 @@ def groups_list(request):
     })
 
 
+@transaction.atomic()
 @permission_required_or_403('auth.add_group')
 def create_group(request):
     if request.method == 'POST':
         form = GroupForm(request.POST)
-        if form.is_valid():
-            form.save()
+        group_title_form = GroupTitleForm(request.POST, prefix='gtf')
+        if form.is_valid() and group_title_form.is_valid():
+            group = form.save(commit=False)
+            group.save()
+            group_title = group_title_form.save(commit=False)
+            group_title.group = group
+            group_title.save()
             return redirect('accounts:administration:groups_list')
     else:
         form = GroupForm()
+        group_title_form = GroupTitleForm(prefix='gtf')
     return render(request, 'accounts/administration/create_group.html', {
-        'form': form
+        'form': form,
+        'group_title_form': group_title_form
     })
 
 
+@transaction.atomic()
 @permission_required_or_403('auth.change_group')
 def edit_group(request, id):
     group = get_object_or_404(Group, id=id)
+    try:
+        group_title = models.GroupTitle.objects.get(group=group)
+    except models.GroupTitle.DoesNotExist:
+        group_title = None
+
     if request.method == 'POST':
         form = GroupForm(request.POST, instance=group)
-        if form.is_valid():
+        group_title_form = GroupTitleForm(request.POST, prefix='gtf', instance=group_title)
+        if form.is_valid() and group_title_form.is_valid():
             group = form.save(commit=False)
 
             if form.cleaned_data['permissions']:
@@ -130,15 +148,24 @@ def edit_group(request, id):
                 group.permissions.clear()
 
             group.save()
+
+            if not group_title:
+                group_title = group_title_form.save(commit=False)
+                group_title.group = group
+                group_title.save()
+            else:
+                group_title_form.save()
             return redirect('accounts:administration:groups_list')
     else:
         form = GroupForm(instance=group)
-
+        group_title_form = GroupTitleForm(prefix='gtf', instance=group_title)
     return render(request, 'accounts/administration/edit_group.html', {
-        'form': form
+        'form': form,
+        'group_title_form': group_title_form
     })
 
 
+@transaction.atomic()
 @permission_required_or_403('auth.delete_group')
 def delete_group(request, id):
     group = get_object_or_404(Group, id=id)

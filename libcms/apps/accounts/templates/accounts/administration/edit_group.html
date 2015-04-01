@@ -14,6 +14,7 @@
     <form class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Редактирование группы</legend>
         <fieldset>
+            {% include 'administration/base_form_fields.html' with form=group_title_form %}
             {% include 'administration/base_form_fields.html' %}
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">{% trans "Save changes" %}</button>

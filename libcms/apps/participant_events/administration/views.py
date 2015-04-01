@@ -8,25 +8,34 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import get_language
 
 from common.pagination import get_page
-from participant_site import decorators
+from participants import decorators, org_utils
 from ..models import Event, EventContent
 from forms import EventForm, EventContentForm
 
 
 @login_required
-@permission_required_or_403('participant_events.add_event')
-@decorators.must_be_manager
-def index(request, library_code, library):
+@decorators.must_be_org_user
+def index(request, library_code, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     if not request.user.has_module_perms('participant_events'):
-        return HttpResponseForbidden()
+        return HttpResponseForbidden(u'У вас нет прав для доступа к разделу')
+
     return redirect('participant_events:administration:events_list', library_code=library_code)
 
 
 @login_required
-@decorators.must_be_manager
-def events_list(request, library_code, library):
+@decorators.must_be_org_user
+def events_list(request, library_code, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     if not request.user.has_module_perms('participant_events'):
-        return HttpResponseForbidden()
+        return HttpResponseForbidden(u'У вас нет прав для доступа к разделу')
+
     events_page = get_page(request, Event.objects.filter(library=library).order_by('-create_date'), 10)
 
     event_contents = list(EventContent.objects.filter(event__in=list(events_page.object_list), lang=get_language()[:2]))
@@ -42,23 +51,26 @@ def events_list(request, library_code, library):
         'library': library,
         'events_list': events_page.object_list,
         'events_page': events_page,
-        })
-
+    })
 
 
 @login_required
-@permission_required_or_403('events.add_event')
+@permission_required_or_403('participant_events.add_event')
 @transaction.atomic()
-@decorators.must_be_manager
-def create_event(request, library_code, library):
+@decorators.must_be_org_user
+def create_event(request, library_code, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     if request.method == 'POST':
-        event_form = EventForm(request.POST,request.FILES, prefix='event_form')
+        event_form = EventForm(request.POST, request.FILES, prefix='event_form')
 
         event_content_forms = []
         for lang in settings.LANGUAGES:
             event_content_forms.append({
-                'form':EventContentForm(request.POST,prefix='event_content' + lang[0]),
-                'lang':lang[0]
+                'form': EventContentForm(request.POST, prefix='event_content' + lang[0]),
+                'lang': lang[0]
             })
         if event_form.is_valid():
             valid = False
@@ -93,11 +105,16 @@ def create_event(request, library_code, library):
         'event_content_forms': event_content_forms,
     })
 
+
 @login_required
 @permission_required_or_403('participant_events.change_event')
 @transaction.atomic()
-@decorators.must_be_manager
-def edit_event(request, id, library_code, library):
+@decorators.must_be_org_user
+def edit_event(request, id, library_code, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     event = get_object_or_404(Event, id=id)
     event_contents = EventContent.objects.filter(event=event)
     event_contents_langs = {}
@@ -119,13 +136,14 @@ def edit_event(request, id, library_code, library):
                     lang = lang[0]
                     if lang in event_contents_langs:
                         event_content_forms.append({
-                            'form':EventContentForm(request.POST,prefix='event_content_' + lang, instance=event_contents_langs[lang]),
-                            'lang':lang
+                            'form': EventContentForm(request.POST, prefix='event_content_' + lang,
+                                                     instance=event_contents_langs[lang]),
+                            'lang': lang
                         })
                     else:
                         event_content_forms.append({
-                            'form':EventContentForm(request.POST,prefix='event_content_' + lang),
-                            'lang':lang
+                            'form': EventContentForm(request.POST, prefix='event_content_' + lang),
+                            'lang': lang
                         })
 
             valid = False
@@ -148,13 +166,13 @@ def edit_event(request, id, library_code, library):
             lang = lang[0]
             if lang in event_contents_langs:
                 event_content_forms.append({
-                    'form':EventContentForm(prefix='event_content_' + lang, instance=event_contents_langs[lang]),
-                    'lang':lang
+                    'form': EventContentForm(prefix='event_content_' + lang, instance=event_contents_langs[lang]),
+                    'lang': lang
                 })
             else:
                 event_content_forms.append({
-                    'form':EventContentForm(prefix='event_content_' + lang),
-                    'lang':lang
+                    'form': EventContentForm(prefix='event_content_' + lang),
+                    'lang': lang
                 })
 
     return render(request, 'participant_events/administration/edit_event.html', {
@@ -170,8 +188,12 @@ def edit_event(request, id, library_code, library):
 @login_required
 @permission_required_or_403('participant_events.delete_event')
 @transaction.atomic()
-@decorators.must_be_manager
-def delete_event(request, id, library_code, library):
+@decorators.must_be_org_user
+def delete_event(request, id, library_code, managed_libraries=[]):
+    library = org_utils.get_library(library_code, managed_libraries)
+    if not library:
+        return HttpResponseForbidden(u'Вы должны быть сотрудником этой организации')
+
     event = get_object_or_404(Event, id=id)
     event.delete()
     return redirect('participant_events:administration:events_list', library_code=library_code)

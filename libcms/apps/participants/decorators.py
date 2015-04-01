@@ -7,7 +7,9 @@ def must_be_org_user(function):
     def wrapper(request, *args, **kwargs):
         managed_libraries = []
         if not request.user.is_superuser:
-            managed_libraries = list(models.UserLibrary.objects.filter(user=request.user))
+            for user_library in models.UserLibrary.objects.filter(user=request.user):
+                if user_library.is_active:
+                    managed_libraries.append(user_library)
 
             if not managed_libraries:
                 return HttpResponse(u'Вы не являетесь сотрудиком организации', status=403)
@@ -18,3 +20,4 @@ def must_be_org_user(function):
         return function(request, **nkwargs)
 
     return wrapper
+

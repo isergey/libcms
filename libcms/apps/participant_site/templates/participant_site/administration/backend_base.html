@@ -22,13 +22,16 @@
                     <li id="fat-menu" class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Модули<b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{% url 'participant_news:administration:index' library.code %}">Новости</a></li>
-                            <li><a href="{% url 'participant_events:administration:index' library.code %}">Афиша</a></li>
-                            <li><a href="{% url 'participant_pages:administration:index' library.code %}">Страницы</a></li>
-                            <li><a href="{% url 'participant_photopolls:administration:index' library.code %}">Фотоголосования</a></li>
-                            <li><a href="{% url 'participant_menu:administration:index' library.code %}">Меню сайта</a></li>
-                            <hr class="divider"/>
-                            <li><a href="{% url 'participant_site:administration:edit_info' library.code %}">Карточка библиотеки</a></li>
+
+                            {% if perms.participant_news %}<li><a href="{% url 'participant_news:administration:index' library.code %}">Новости</a></li>{% endif %}
+                            {% if perms.participant_events %}<li><a href="{% url 'participant_events:administration:index' library.code %}">Афиша</a></li>{% endif %}
+                            {% if perms.participant_pages %}<li><a href="{% url 'participant_pages:administration:index' library.code %}">Страницы</a></li>{% endif %}
+                            {% if perms.participant_photopolls %}<li><a href="{% url 'participant_photopolls:administration:index' library.code %}">Фотоголосования</a></li>{% endif %}
+                            {% if perms.participant_menu %}<li><a href="{% url 'participant_menu:administration:index' library.code %}">Меню сайта</a></li>{% endif %}
+                            {% if perms.participant_site.change_librarysitecard %}
+                                <hr class="divider"/>
+                                <li><a href="{% url 'participant_site:administration:edit_info' library.code %}">Карточка библиотеки</a></li>
+                            {% endif %}
                         </ul>
                     </li>
                 </ul>

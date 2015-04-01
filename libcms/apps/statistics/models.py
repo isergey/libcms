@@ -6,7 +6,7 @@ from django.db import models, connection
 class Statistics(models.Model):
     class Meta:
         permissions = [
-            ['view_org_statistic', u'Can view org statistic reports'],
+            ['view_org_statistic', u'Can view self org statistic reports'],
             ['view_all_statistic', u'Can view all statistic reports']
         ]
 

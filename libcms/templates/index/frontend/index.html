@@ -14,9 +14,13 @@
         <div class="actions">
             <div class="row">
                 <div class="span3" style="font-family: Sans Sherif; font-size: 18px;">
-                    {% if LANGUAGE_CODE == 'ru' %}Поиск по электронному каталогу и
-                        коллекциям{% elif LANGUAGE_CODE == 'tt' %}Электрон каталог һәм коллекцияләр буенча
-                        эзләү{% else %}Search in e-catalog and e-collections{% endif %}
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Поиск по электронному каталогу и коллекциям
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Электрон каталог һәм коллекцияләр буенча эзләү
+                    {% else %}
+                        Search in e-catalog and e-collections
+                    {% endif %}
                 </div>
                 <div class="span8">
                     <form style="margin: 0" action="{% url 'ssearch:frontend:index' %}" class="form-search" method="get">
