@@ -43,7 +43,7 @@ def _check_for_error(response_dict):
 @must_be_org_user
 def index(request, managed_libraries=[]):
     if not request.user.has_perm('statistics.view_org_statistic') and \
-            not request.user.has_perm('statistics.view_all_statistic'):
+            not request.user.has_perm('statistics.view_all_statistic') and not managed_libraries:
         return HttpResponse(u'Доступ запрещен', status=403)
 
     response, error = _make_request('get', url=REPORT_SERVER + 'reports', params={
