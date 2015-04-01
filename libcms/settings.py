@@ -130,6 +130,7 @@ INSTALLED_APPS = (
     'localeurl',
     'mptt',
     'guardian',
+    'captcha',
     # 'debug_toolbar',
     'django_sorting',
     # cms apps
