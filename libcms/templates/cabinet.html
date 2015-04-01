@@ -19,7 +19,7 @@
     {#                {% ifusergroups role_site_admin or role_site_moderator %}#}
     {#                {% endifusergroups %}#}
                     {% ifusergroup role_mba_manager %}
-                        <li><a href="http://ill.kitap.tatar.ru">АРМ МБА</a></li>
+                        <li><a target="_blank" href="http://ill.kitap.tatar.ru">АРМ МБА</a></li>
                     {% endifusergroup %}
                     {% ifusergroup role_it_manager %}
                         <li><a href="{% url 'participants:administration:library_user_list' %}">Управление сотрудниками</a></li>

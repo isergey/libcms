@@ -14,7 +14,8 @@ from participants.models import Library, UserLibrary
 
 
 class ApiUser(object):
-    def __init__(self, id=None, username=None, first_name=None, last_name=None, email=None, phone=None, date_joined=None):
+    def __init__(self, id=None, username=None, first_name=None, last_name=None, email=None, phone=None,
+                 date_joined=None):
         self.id = id
         self.username = username
         self.first_name = first_name
@@ -33,7 +34,7 @@ class ApiUser(object):
             'phone': self.phone,
         }
         if self.date_joined:
-            dict['date_joined'] =  self.date_joined.isoformat()
+            dict['date_joined'] = self.date_joined.isoformat()
 
         return dict
 
@@ -41,23 +42,25 @@ class ApiUser(object):
     @classmethod
     def from_model(cls, model):
         api_user = cls(
-            id = model.id,
-            username = model.username,
-            first_name = model.first_name,
-            last_name = model.last_name,
-            email = model.email,
-            date_joined = model.date_joined
+            id=model.id,
+            username=model.username,
+            first_name=model.first_name,
+            last_name=model.last_name,
+            email=model.email,
+            date_joined=model.date_joined
         )
         return api_user
 
+
 class ApiLibrary(object):
-    def __init__(self,
+    def __init__(
+            self,
             id=None,
             parent_id=None,
             name=None,
             code=None,
-#            country=None,
-#            city=None,
+            # country=None,
+            #            city=None,
             district=None,
             phone=None,
             plans=None,
@@ -75,8 +78,8 @@ class ApiLibrary(object):
         self.name = name
         self.code = code
 
-#        self.country = country
-#        self.city = city
+        # self.country = country
+        #        self.city = city
         self.district = district
 
         self.phone = phone
@@ -98,8 +101,8 @@ class ApiLibrary(object):
             'parent_id': self.parent_id,
             'name': self.name,
             'code': self.code,
-#            'country': self.country,
-#            'city': self.city,
+            # 'country': self.country,
+            #            'city': self.city,
             'district': self.district,
             'phone': self.phone,
             'plans': self.plans,
@@ -135,16 +138,15 @@ class ApiLibrary(object):
         )
         if model.parent_id:
             api_library.parent_id = model.parent_id
-#
-#        if model.country_id:
-#            api_library.country=model.country.name
-#
-#        if model.city_id:
-#            api_library.city=model.city.name
+        #
+        # if model.country_id:
+        #            api_library.country=model.country.name
+        #
+        #        if model.city_id:
+        #            api_library.city=model.city.name
 
         if model.district_id:
-            api_library.district=model.district.name
-
+            api_library.district = model.district.name
 
         return api_library
 
@@ -152,8 +154,9 @@ class ApiLibrary(object):
 def index(request):
     return HttpResponse(u'Api ok')
 
+
 @api
-#@login_required_or_403
+# @login_required_or_403
 def auth_user(request):
     username = request.GET.get('username', None)
     password = request.GET.get('password', None)
@@ -172,7 +175,7 @@ def auth_user(request):
 
 
 @api
-#@login_required_or_403
+# @login_required_or_403
 def get_user_orgs(request):
     id = request.GET.get('id', None)
     lazy = request.GET.get('lazy', False)
@@ -211,11 +214,10 @@ def get_user_orgs(request):
 
 
 @api
-#@login_required_or_403
+# @login_required_or_403
 def get_org(request):
     id = request.GET.get('id', None)
     code = request.GET.get('code', None)
-
 
     if not id and not code:
         raise WrongArguments()
@@ -235,6 +237,7 @@ def get_org(request):
         return {}
 
     return ApiLibrary.from_model(library).to_dict()
+
 
 @api
 def find_orgs(request):
@@ -261,16 +264,15 @@ def find_orgs(request):
     for library in libraries:
         libraries_list.append(ApiLibrary.from_model(library).to_dict())
 
-    return  libraries_list
+    return libraries_list
 
 
 @api
-#@login_required_or_403
+# @login_required_or_403
 def get_user(request):
     id = request.GET.get('id', None)
 
     username = request.GET.get('username', None)
-
 
     if not id and not username:
         raise WrongArguments()
@@ -280,7 +282,6 @@ def get_user(request):
             id = int(id)
         except ValueError:
             raise ApiException(u'Wrong id value')
-
 
     try:
         if id:
