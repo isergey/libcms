@@ -59,14 +59,8 @@ class Source(models.Model):
         return self.title
 
 
-class ZippedTextField(models.TextField):
+class ZippedTextField(models.BinaryField):
     __metaclass__ = models.SubfieldBase
-
-    def db_type(self, connection):
-        if connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql_psycopg2' or connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql':
-            return 'bytea'
-        else:
-            return 'BLOB'
 
     def to_python(self, value):
         try:
@@ -76,17 +70,13 @@ class ZippedTextField(models.TextField):
             pass
         return value
 
-
     def get_db_prep_save(self, value, connection):
         if isinstance(value, unicode):
             value.encode('utf-8')
         value = zlib.compress(value)
         if value is None:
             return None
-        if connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql_psycopg2' or connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql':
-            return psycopg2.Binary(value)
-        else:
-            return value
+        return value
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
