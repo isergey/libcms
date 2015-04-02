@@ -68,7 +68,6 @@ def get_role_choices():
 
     for group_title in group_titles:
         group_titles_dict[group_title.group_id] = group_title.title
-    print group_titles_dict
     choices = []
     for group in groups:
         choices.append(

@@ -1,15 +1,16 @@
 # encoding: utf-8
 from datetime import datetime
 
+
 def get_income_date(record):
     income_date = None
-    print 'income_date', income_date
+
     f801 = record['801']
     if f801:
         sf_c = f801[0]['c']
         if sf_c:
             income_date = sf_c[0].get_data()
-    print income_date
+
     try:
         return datetime.strptime(income_date, '%Y%m%d')
     except:

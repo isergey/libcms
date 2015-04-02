@@ -121,7 +121,6 @@ def geo_nearest(request):
         'object_list': geo_libraries[offset:per_page],
 
     }
-    print geo_libraries[0]
     return HttpResponse(json.dumps(result, ensure_ascii=False), content_type='application/json')
     #
     # return render(request, 'participants/frontend/nearest_results.html', {

@@ -3,7 +3,6 @@ import json
 import hashlib
 import datetime
 from urlparse import urlparse
-import requests
 from localeurl import utils
 from django.views.decorators.cache import never_cache
 from django.shortcuts import render, HttpResponse
@@ -12,8 +11,7 @@ from . import forms
 from participants.models import Library
 from ssearch.models import request_group_by_date
 
-URL_TIMEOUT = 1 # mins
-
+URL_TIMEOUT = 1  # mins
 
 
 def index(request):
@@ -27,13 +25,14 @@ def index(request):
             period=period_form.cleaned_data['period'],
             url_filter=param_form.cleaned_data['url_filter'],
             visit_type=param_form.cleaned_data['visit_type'],
-            #url_filter='/site/[0-9]+/?$'
+            # url_filter='/site/[0-9]+/?$'
         )
     return render(request, 'statistics/api/index.html', {
         'period_form': period_form,
         'param_form': param_form,
         'results': results
     })
+
 
 def org_stats(request):
     org_code = request.GET.get('org_code', None)
@@ -55,10 +54,10 @@ def org_stats(request):
         url_filter = u'/site/%s/' % org_code
 
     if period_form.is_valid():
-        from_date=period_form.cleaned_data['from_date']
-        to_date=period_form.cleaned_data['to_date']
-        period=period_form.cleaned_data['period']
-        url_filter=url_filter
+        from_date = period_form.cleaned_data['from_date']
+        to_date = period_form.cleaned_data['to_date']
+        period = period_form.cleaned_data['period']
+        url_filter = url_filter
 
         results = models.get_view_count_stats(
             from_date=from_date,
@@ -85,26 +84,22 @@ def org_stats(request):
 
         responce_dict['search_requests'] = results
 
-        print 'search results', results
-
     else:
         return HttpResponse(u'Wrong pe params %s' % period_form.errors, status=400)
 
     return HttpResponse(json.dumps(responce_dict, ensure_ascii=False), content_type='application/json')
 
 
-
-
 def search_stats(request):
     period_form = forms.PeriodForm(request.GET, prefix='pe')
-    responce_dict= {
+    responce_dict = {
         'not_specified': [],
         'catalogs': {}
     }
     if period_form.is_valid():
-        from_date=period_form.cleaned_data['from_date']
-        to_date=period_form.cleaned_data['to_date']
-        period=period_form.cleaned_data['period']
+        from_date = period_form.cleaned_data['from_date']
+        to_date = period_form.cleaned_data['to_date']
+        period = period_form.cleaned_data['period']
 
         results = request_group_by_date(
             from_date=from_date,
@@ -124,9 +119,8 @@ def search_stats(request):
             )
             responce_dict['catalogs'][catalog] = results
 
-
-
     return HttpResponse(json.dumps(responce_dict, ensure_ascii=False), content_type='application/json')
+
 
 @never_cache
 def watch(request):
@@ -136,7 +130,6 @@ def watch(request):
     if not session:
         session = uuid.uuid4().hex
         response.set_cookie('_sc', session, max_age=60 * 60 * 24 * 365)
-
 
     http_referer = request.META.get('HTTP_REFERER', None)
     if not http_referer:

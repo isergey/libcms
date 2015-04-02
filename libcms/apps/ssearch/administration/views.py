@@ -368,7 +368,7 @@ def _indexing(slug, reset=False):
             if record_create_date:
                 doc['record-create-date_dts'] = record_create_date
         except Exception as e:
-            print 'Error record-create-date_dt', e.message
+            print 'Error record-create-date_dt'
 
 
         doc['system-add-date_dt'] = res[0]['add_date']

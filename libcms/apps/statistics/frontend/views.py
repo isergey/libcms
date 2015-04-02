@@ -17,6 +17,7 @@ TOKEN = '123'
 REPORT_SERVER = 'http://statat.ipq.co/reports/'
 template = etree.XSLT(etree.parse(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'modern.xsl')))
 
+
 def _make_request(method, **kwargs):
     request_method = getattr(requests, method)
     error = None
@@ -52,18 +53,19 @@ def index(request, managed_libraries=[]):
     })
     response_dict = {}
     if not error:
-        #response_dict = response.text
+        # response_dict = response.text
         try:
             response_dict = response.json()
             error = _check_for_error(response_dict)
         except ValueError:
             error = u'Неожиданный ответ от сервера статистики'
 
-
     return render(request, 'statistics/frontend/index.html', {
         'response_dict': response_dict,
-        'error': error
+        'error': error,
+        'managed_libraries': managed_libraries
     })
+
 
 @login_required
 @must_be_org_user
@@ -75,31 +77,26 @@ def report(request, managed_libraries=[]):
     else:
         if managed_libraries:
             access = True
-            security = u'Организация=Total,' + managed_libraries[0].library.code
+            security = u'Организация=' + managed_libraries[0].library.get_root().code
 
     if not access:
         return HttpResponse(u'Доступ запрещен', status=403)
-
     report_form = forms.ReportForm(request.GET)
     parameters = request.GET.get('parameters', '')
     error = None
     report_body = u''
     if report_form.is_valid():
-        params={
+        params = {
             'token': TOKEN,
             'view': 'modern2',
             'code': report_form.cleaned_data['code'],
             'security': security,
             'parameters': parameters
         }
-        cache_key = hashlib.md5(json.dumps(params, ensure_ascii=False).encode('utf-8')).hexdigest()
 
-        report_body = cache.get(cache_key)
-        if not report_body:
-            response, error = _make_request('get', url=REPORT_SERVER + 'report', params=params )
-
-            if not error:
-                report_body = response.content #unicode(template(etree.fromstring(response.content)))
+        response, error = _make_request('get', url=REPORT_SERVER + 'report', params=params)
+        if not error:
+            report_body = response.content  # unicode(template(etree.fromstring(response.content)))
     else:
         error = unicode(report_form.errors)
     return render(request, 'statistics/frontend/reports.html', {
