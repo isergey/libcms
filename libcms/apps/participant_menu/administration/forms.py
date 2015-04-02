@@ -7,19 +7,19 @@ from ..models import Menu, MenuItem, MenuItemTitle
 
 class MenuForm(forms.ModelForm):
     class Meta:
-        model=Menu
+        model = Menu
         exclude = ('root_item', 'library')
 
 
 class MenuItemTitleForm(forms.ModelForm):
     class Meta:
-        model=MenuItemTitle
+        model = MenuItemTitle
         exclude = ('item', 'lang')
 
 
 class MenuItemForm(forms.ModelForm):
     class Meta:
-        model=MenuItem
+        model = MenuItem
         exclude = ('parent',)
 
 
@@ -28,8 +28,7 @@ class MenuTitleForm(forms.Form):
     title = forms.CharField(label=u'Название', max_length=512)
 
 
-
-#def get_content_form(exclude_list = ('page',)):
+# def get_content_form(exclude_list = ('page',)):
 #    class ContentForm(forms.ModelForm):
 #        class Meta:
 #            model=Content

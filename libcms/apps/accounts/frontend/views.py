@@ -112,7 +112,7 @@ def login(request, template_name='registration/login.html',
     return render(request, template_name, context,
         current_app=current_app)
 
-@transaction.commit_on_success
+@transaction.atomic()
 def registration(request):
 
     if request.method == 'POST':
@@ -146,7 +146,7 @@ def registration(request):
     return render(request, 'accounts/frontend/registration.html', {
         'form':form
     })
-@transaction.commit_on_success
+@transaction.atomic
 def confirm_registration(request, hash):
     try:
         confirm = RegConfirm.objects.get(hash=hash)

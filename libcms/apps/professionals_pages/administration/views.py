@@ -207,7 +207,7 @@ def page_permissions(request, id):
 
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def assign_page_permissions(request, id):
     obj = get_object_or_404(Page, id=id)
     perm = 'view_page'

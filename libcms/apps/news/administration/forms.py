@@ -4,14 +4,16 @@ from django import forms
 
 from news.models import NewsContent, News
 
+
 class NewsForm(forms.ModelForm):
     class Meta:
-        model=News
+        model = News
+        exclude = []
 
 
 class NewsContentForm(forms.ModelForm):
     class Meta:
-        model=NewsContent
+        model = NewsContent
         exclude = ('news', 'lang')
 
 

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import os
 import sys
 
@@ -64,7 +65,6 @@ TEMPLATE_LOADERS = (
 #        )),
 #         'django.template.loaders.eggs.Loader',
 #    )
-
 
 
 TEMPLATE_CONTEXT_PROCESSORS = (

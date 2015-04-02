@@ -78,7 +78,7 @@ def detail(request, id):
     if request.method == 'POST':
         recomendation_form = RecomendationForm(request.POST, prefix='recomendation_form')
         if recomendation_form.is_valid():
-            with transaction.commit_on_success():
+            with transaction.atomic():
                 recomendation = recomendation_form.save(commit=False)
                 if request.user.is_authenticated():
                     recomendation.user = request.user
@@ -102,7 +102,7 @@ def printed_detail(request, id):
         'question': question,
         })
 
-@transaction.commit_on_success
+@transaction.atomic
 def ask(request):
     QuestionForm = get_question_form(not request.user.is_authenticated())
     if request.method == 'POST':

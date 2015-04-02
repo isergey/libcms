@@ -1,5 +1,5 @@
 from django import template
-from django.template import Node, Token, TemplateSyntaxError
+from django.template.base import Node, Token, TemplateSyntaxError
 from django.template import resolve_variable, defaulttags
 from django.template.defaultfilters import stringfilter
 from django.utils.functional import wraps

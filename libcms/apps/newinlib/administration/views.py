@@ -52,7 +52,7 @@ def items_list(request):
 
 @login_required
 @permission_required_or_403('newinlib.add_item')
-@transaction.commit_on_success
+@transaction.atomic
 def create_item(request):
 
     if request.method == 'POST':
@@ -103,7 +103,7 @@ def create_item(request):
 
 @login_required
 @permission_required_or_403('newinlib.change_item')
-@transaction.commit_on_success
+@transaction.atomic
 def edit_item(request, id):
     item = get_object_or_404(Item, id=id)
     items_contents = ItemContent.objects.filter(item=item)
@@ -179,7 +179,7 @@ def edit_item(request, id):
 
 @login_required
 @permission_required_or_403('newinlib.delete_item')
-@transaction.commit_on_success
+@transaction.atomic
 def delete_item(request, id):
     item = get_object_or_404(Item, id=id)
     item.delete()

@@ -15,18 +15,17 @@ class PollForm(forms.ModelForm):
         }
 
 
-
 class PollContentForm(forms.ModelForm):
     class Meta:
         model = PollContent
         exclude = ('poll', 'lang')
 
 
-
 class PollImageForm(forms.ModelForm):
     class Meta:
         model = PollImage
         exclude = ('poll',)
+
 
 class PollImageContentForm(forms.ModelForm):
     class Meta:

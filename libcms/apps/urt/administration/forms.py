@@ -4,6 +4,7 @@ from django.core import validators
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User, Group
 
+
 class UserForm(forms.ModelForm):
     password = forms.CharField(
         label=_(u'Password'),
@@ -12,7 +13,7 @@ class UserForm(forms.ModelForm):
     )
 
     class Meta:
-        model=User
+        model = User
         exclude = [
             'password',
             'is_staff',
@@ -21,15 +22,17 @@ class UserForm(forms.ModelForm):
         ]
         widgets = {
             'groups': forms.CheckboxSelectMultiple(),
-            }
+        }
 
 
 class GroupForm(forms.ModelForm):
     class Meta:
-        model=Group
+        model = Group
+        exclude = []
+
     def __init__(self, *args, **kwargs):
         super(GroupForm, self).__init__(*args, **kwargs)
-        self.fields['name'].help_text=u"Может содержать только латинские буквы, цифры и знак подчеркивания"
+        self.fields['name'].help_text = u"Может содержать только латинские буквы, цифры и знак подчеркивания"
         self.fields['name'].validators = [validators.validate_slug]
         self.fields.keyOrder = ['name', 'permissions']
 

@@ -3,12 +3,12 @@ from django import forms
 
 from ..models import Page, Content
 
+
 def get_page_form(library, parent=None, ):
     class PageForm(forms.ModelForm):
         class Meta:
-            model=Page
+            model = Page
             exclude = ('parent', 'library', 'url_path')
-
 
         def clean_slug(self):
             slug = self.cleaned_data['slug']
@@ -18,21 +18,21 @@ def get_page_form(library, parent=None, ):
                 if Page.objects.filter(parent=parent, slug=slug, library=library).count():
                     raise forms.ValidationError(u'На этом уровне страницы с таким slug уже существует')
             return slug
-    return PageForm
 
+    return PageForm
 
 
 class ContentForm(forms.ModelForm):
     class Meta:
-        model=Content
+        model = Content
         exclude = ('page', 'meta')
 
 
-
-def get_content_form(exclude_list = ('page', 'meta')):
+def get_content_form(exclude_list=('page', 'meta')):
     class ContentForm(forms.ModelForm):
         class Meta:
-            model=Content
+            model = Content
             exclude = exclude_list
+
     return ContentForm
 

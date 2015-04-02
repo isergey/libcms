@@ -10,7 +10,6 @@ class UserOrderTimes(models.Model):
     """
     user = models.ForeignKey(User)
     order_time = models.DateTimeField(verbose_name=u"Время заказа",
-        auto_now=True,
         auto_now_add=True,
         db_index=True)
     order_manager_id = models.CharField(verbose_name=u'Идентификатор организации',

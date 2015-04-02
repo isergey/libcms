@@ -79,7 +79,7 @@ def forums(request):
 
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def forum_close(request, id):
     if not request.user.has_perms(['forum.can_close_forums']):
         return HttpResponseForbidden()
@@ -94,7 +94,7 @@ def forum_close(request, id):
         return redirect('forum:frontend:forums', slug=forum.slug)
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def forum_open(request, id):
     if not request.user.has_perms(['forum.can_close_forums']):
         return HttpResponseForbidden()
@@ -110,7 +110,7 @@ def forum_open(request, id):
 
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def forum_delete(request, id):
     if not request.user.has_perms(['forum.delete_forum']):
         return HttpResponseForbidden()
@@ -421,7 +421,7 @@ def forum_permissions(request, id):
 
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def assign_forum_permissions(request, id, gid):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -474,7 +474,7 @@ def topic_permissions(request, id):
 
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def assign_topic_permissions(request, id, gid):
     if not request.user.is_superuser:
         return HttpResponseForbidden()

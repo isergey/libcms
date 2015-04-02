@@ -99,7 +99,7 @@ def album_view(request, id):
     })
 
 
-@transaction.commit_on_success
+@transaction.atomic
 @csrf_exempt
 def album_upload(request, id):
     if request.user.is_authenticated():
@@ -133,7 +133,7 @@ def album_upload(request, id):
 
 @login_required
 @permission_required_or_403('gallery.change_album')
-@transaction.commit_on_success
+@transaction.atomic
 def image_edit(request, id):
     album_image = get_object_or_404(AlbumImage, id=id)
     if request.method == 'POST':
@@ -152,7 +152,7 @@ def image_edit(request, id):
 
 @login_required
 @permission_required_or_403('gallery.delete_album')
-@transaction.commit_on_success
+@transaction.atomic
 def image_delete(request, id):
     image = get_object_or_404(AlbumImage, id=id)
     image.delete()

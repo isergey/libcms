@@ -2,6 +2,7 @@
 from django import forms
 from ..models import Bookmarc
 
+
 class BookmarcForm(forms.ModelForm):
     gen_id = forms.CharField(widget=forms.HiddenInput, max_length=32)
     book_id = forms.CharField(widget=forms.HiddenInput, max_length=64)
@@ -9,6 +10,7 @@ class BookmarcForm(forms.ModelForm):
     page_number = forms.IntegerField(widget=forms.HiddenInput())
     position_x = forms.FloatField(widget=forms.HiddenInput())
     position_y = forms.FloatField(widget=forms.HiddenInput())
+
     class Meta:
         model = Bookmarc
         exclude = ['user']

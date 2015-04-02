@@ -196,7 +196,7 @@ def upload(request):
     return redirect('ssearch:administration:initial')
 
 
-@transaction.commit_on_success
+@transaction.atomic
 def pocess(request):
     uploaded_file = Upload.objects.filter(processed=False)[:1]
 
@@ -282,7 +282,7 @@ def indexing(request):
 re_t1_t2 = re.compile(ur"(?P<t1>\d+)\D+(?P<t2>\d+)" ,re.UNICODE)
 re_t1 = re.compile(ur"(?P<t1>\d+)" ,re.UNICODE)
 
-@transaction.commit_on_success
+@transaction.atomic
 def _indexing(slug, reset=False):
     try:
         solr_address = settings.SOLR['host']
@@ -434,7 +434,7 @@ def _indexing(slug, reset=False):
     return True
 
 
-@transaction.commit_on_success
+@transaction.atomic
 def local_records_indexing(request):
     slug = 'local_records'
     try:

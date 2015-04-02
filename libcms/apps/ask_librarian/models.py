@@ -67,7 +67,7 @@ QUESTION_STATUSES = (
 )
 
 class QuestionManager(models.Model):
-    user = models.ForeignKey(User, verbose_name=u'Пользователь', unique=True)
+    user = models.OneToOneField(User, verbose_name=u'Пользователь')
     available = models.BooleanField(verbose_name=u'Доступен?', default=False, db_index=True)
     class Meta:
         verbose_name = u"Менеджер вопросов"

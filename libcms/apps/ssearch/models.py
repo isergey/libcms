@@ -167,7 +167,7 @@ class SearchRequestLog(models.Model):
     search_id = models.CharField(max_length=32, verbose_name=u'Идентификатор запроса', db_index=True)
     use = models.CharField(max_length=32, verbose_name=u"Точка доступа", db_index=True)
     not_normalize = models.CharField(max_length=256, verbose_name=u'Ненормализованный терм', db_index=True)
-    datetime = models.DateTimeField(auto_now_add=True, auto_now=True, db_index=True)
+    datetime = models.DateTimeField(auto_now_add=True, db_index=True)
 
 
 DUBLET_STATUSES = (

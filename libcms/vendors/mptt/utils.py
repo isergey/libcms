@@ -2,11 +2,14 @@
 Utilities for working with lists of model instances which represent
 trees.
 """
-
+from __future__ import unicode_literals
 import copy
 import csv
 import itertools
 import sys
+
+from django.utils.six import next, text_type
+from django.utils.six.moves import zip
 
 __all__ = ('previous_current_next', 'tree_item_iterator',
            'drilldown_tree_for_node')
@@ -21,14 +24,15 @@ def previous_current_next(items):
     available.
     """
     extend = itertools.chain([None], items, [None])
-    previous, current, next = itertools.tee(extend, 3)
-    try:
-        current.next()
-        next.next()
-        next.next()
-    except StopIteration:
-        pass
-    return itertools.izip(previous, current, next)
+    prev, cur, nex = itertools.tee(extend, 3)
+    # Advancing an iterator twice when we know there are two items (the
+    # two Nones at the start and at the end) will never fail except if
+    # `items` is some funny StopIteration-raising generator. There's no point
+    # in swallowing this exception.
+    next(cur)
+    next(nex)
+    next(nex)
+    return zip(prev, cur, nex)
 
 
 def tree_item_iterator(items, ancestors=False):
@@ -67,7 +71,7 @@ def tree_item_iterator(items, ancestors=False):
     structure = {}
     opts = None
     first_item_level = 0
-    for previous, current, next in previous_current_next(items):
+    for previous, current, next_ in previous_current_next(items):
         if opts is None:
             opts = current._mptt_meta
 
@@ -85,7 +89,7 @@ def tree_item_iterator(items, ancestors=False):
                 # If the current node is the start of a new level, add its
                 # parent to the ancestors list.
                 if structure['new_level']:
-                    structure['ancestors'].append(unicode(previous))
+                    structure['ancestors'].append(text_type(previous))
         else:
             structure['new_level'] = True
             if ancestors:
@@ -93,13 +97,17 @@ def tree_item_iterator(items, ancestors=False):
                 structure['ancestors'] = []
 
             first_item_level = current_level
-        if next:
-            structure['closed_levels'] = range(current_level,
-                                               getattr(next,
-                                                       opts.level_attr), -1)
+        if next_:
+            structure['closed_levels'] = list(range(
+                current_level,
+                getattr(next_, opts.level_attr),
+                -1))
         else:
             # All remaining levels need to be closed
-            structure['closed_levels'] = range(current_level, first_item_level - 1, -1)
+            structure['closed_levels'] = list(range(
+                current_level,
+                first_item_level - 1,
+                -1))
 
         # Return a deep copy of the structure dict so this function can
         # be used in situations where the iterator is consumed
@@ -142,14 +150,14 @@ def drilldown_tree_for_node(node, rel_cls=None, rel_field=None, count_attr=None,
     return itertools.chain(node.get_ancestors(), [node], children)
 
 
-def print_debug_info(qs):
+def print_debug_info(qs, file=None):
     """
     Given an mptt queryset, prints some debug information to stdout.
     Use this when things go wrong.
     Please include the output from this method when filing bug issues.
     """
     opts = qs.model._mptt_meta
-    writer = csv.writer(sys.stdout)
+    writer = csv.writer(sys.stdout if file is None else file)
     header = (
         'pk',
         opts.level_attr,
@@ -165,5 +173,21 @@ def print_debug_info(qs):
         row = []
         for field in header[:-1]:
             row.append(getattr(n, field))
-        row.append('%s%s' % ('- ' * level, unicode(n).encode('utf-8')))
+        row.append('%s%s' % ('- ' * level, text_type(n).encode('utf-8')))
         writer.writerow(row)
+
+
+def _get_tree_model(model_class):
+    # Find the model that contains the tree fields.
+    # This is a weird way of going about it, but Django doesn't let us access
+    # the fields list to detect where the tree fields actually are,
+    # because the app cache hasn't been loaded yet.
+    # So, it *should* be the *last* concrete MPTTModel subclass in the mro().
+    bases = list(model_class.mro())
+    while bases:
+        b = bases.pop()
+        # NOTE can't use `issubclass(b, MPTTModel)` here because we can't import MPTTModel yet!
+        # So hasattr(b, '_mptt_meta') will have to do.
+        if hasattr(b, '_mptt_meta') and not (b._meta.abstract or b._meta.proxy):
+            return b
+    return None

@@ -20,14 +20,15 @@ ATTRIBUTES = {
     "31:1.2.840.10003.3.1": u"Год издания",
     "5:1.2.840.10003.3.1": u"Заглавие серии",
     "1076:1.2.840.10003.3.1": u"Географическая рубрика",
-    }
+}
+
 
 def dictfetchall(cursor):
     """Returns all rows from a cursor as a dict"""
     desc = cursor.description
     return [
-    dict(zip([col[0] for col in desc], row))
-    for row in cursor.fetchall()
+        dict(zip([col[0] for col in desc], row))
+        for row in cursor.fetchall()
     ]
 
 
@@ -60,7 +61,6 @@ def get_search_attributes_in_log():
     return choices
 
 
-
 def date_group(group):
     group_by = ['YEAR(datetime)']
 
@@ -73,8 +73,6 @@ def date_group(group):
     group_by = 'GROUP BY ' + ', '.join(group_by)
 
     return group_by
-
-
 
 
 def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list()):
@@ -111,9 +109,7 @@ def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list()):
         where.append(' AND zgate_searchrequestlog.catalog_id in (%s)' % catalog_ids)
 
     where = u' '.join(where)
-    results = execute( select + where + group_by, params)
-
-
+    results = execute(select + where + group_by, params)
 
     rows = []
     format = '%d.%m.%Y'
@@ -129,8 +125,6 @@ def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list()):
     return rows
 
 
-
-
 def requests_by_attributes(start_date=None, end_date=None, attributes=list(), catalogs=list()):
     if not start_date:
         start_date = datetime.datetime.now()
@@ -141,7 +135,6 @@ def requests_by_attributes(start_date=None, end_date=None, attributes=list(), ca
     start_date = start_date.strftime('%Y-%m-%d 00:00:00')
     end_date = end_date.strftime('%Y-%m-%d 23:59:59')
 
-
     select = u"""
         SELECT
             count(zgate_searchrequestlog.use) as count, zgate_searchrequestlog.use as attribute
@@ -150,13 +143,9 @@ def requests_by_attributes(start_date=None, end_date=None, attributes=list(), ca
     """
     params = []
 
-
-
-
     where = ['WHERE date(datetime) BETWEEN %s  AND  %s']
     params.append(start_date)
     params.append(end_date)
-
 
     if catalogs:
         catalog_ids = []
@@ -176,7 +165,6 @@ def requests_by_attributes(start_date=None, end_date=None, attributes=list(), ca
 
     where = u' '.join(where)
 
-
     results = execute(
         select + ' ' + where +
         u"""
@@ -194,6 +182,7 @@ def requests_by_attributes(start_date=None, end_date=None, attributes=list(), ca
         rows.append((ATTRIBUTES.get(row['attribute'], row['attribute']), row['count']))
     return rows
 
+
 def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs=list()):
     if not start_date:
         start_date = datetime.datetime.now()
@@ -204,7 +193,6 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
     start_date = start_date.strftime('%Y-%m-%d 00:00:00')
     end_date = end_date.strftime('%Y-%m-%d 23:59:59')
 
-
     select = u"""
         SELECT
             count(zgate_searchrequestlog.not_normalize) as count, zgate_searchrequestlog.not_normalize as normalize
@@ -213,13 +201,9 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
     """
     params = []
 
-
-
-
     where = [u'WHERE date(datetime) BETWEEN %s  AND  %s']
     params.append(start_date)
     params.append(end_date)
-
 
     if catalogs:
         catalog_ids = []
@@ -238,7 +222,6 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
         where.append(u'AND zgate_searchrequestlog.use in (%s)' % attributes_args)
 
     where = u' '.join(where)
-
 
     results = execute(
         'select normalize, count from (' + select + ' ' + where +
@@ -338,7 +321,7 @@ class ZCatalog(models.Model):
         verbose_name_plural = u"Каталоги (АРМ читателя)"
         permissions = (
             ('view_zcatalog', u'Доступ к каталогу'),
-            )
+        )
 
 
 class SavedRequest(models.Model):
@@ -353,7 +336,7 @@ class SavedRequest(models.Model):
 class SavedDocument(models.Model):
     zcatalog = models.ForeignKey(ZCatalog)
     owner_id = models.CharField(max_length=32, verbose_name=u"Идентификатор сессии (md5) или имя пользователя",
-        db_index=True)
+                                db_index=True)
     document = models.TextField(null=False, blank=False, verbose_name=u"Тело документа (xml rusmarc)")
     comments = models.CharField(max_length=2048, blank=True, verbose_name=u"Комментарий к документу")
     add_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=u"Дата добваления документа")
@@ -368,4 +351,4 @@ class SearchRequestLog(models.Model):
     use = models.CharField(max_length=32, verbose_name=u"Точка доступа", db_index=True)
     normalize = models.CharField(max_length=256, verbose_name=u'Нормализованный терм', db_index=True)
     not_normalize = models.CharField(max_length=256, verbose_name=u'Ненормализованный терм', db_index=True)
-    datetime = models.DateTimeField(auto_now_add=True, auto_now=True, db_index=True)
+    datetime = models.DateTimeField(auto_now_add=True, db_index=True)

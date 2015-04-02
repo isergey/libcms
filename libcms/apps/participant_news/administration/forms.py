@@ -6,7 +6,7 @@ from ..models import News, NewsImage
 
 class NewsForm(forms.ModelForm):
     class Meta:
-        model=News
+        model = News
         exclude = ('avatar_img_name', 'library')
 
 

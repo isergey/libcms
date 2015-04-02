@@ -16,11 +16,13 @@ class LibraryForm(forms.ModelForm):
 class LibraryTypeForm(forms.ModelForm):
     class Meta:
         model = LibraryType
+        exclude = []
 
 
 class DistrictForm(forms.ModelForm):
     class Meta:
         model = District
+        exclude = []
 
 
 class UserForm(forms.ModelForm):

@@ -11,9 +11,10 @@ class LibReaderForm(forms.ModelForm):
         help_text=u'Введите пароль, который Вы получили в библиотке',
         widget=forms.PasswordInput
     )
+
     class Meta:
         model = LibReader
-        exclude = ['user',]
+        exclude = ['user', ]
         widgets = {
             'lib_password': forms.PasswordInput
         }
@@ -24,11 +25,13 @@ class LibReaderForm(forms.ModelForm):
             raise forms.ValidationError(u'Читательский билет уже зарегистрирован')
         return lib_login
 
+
 class LibReaderAuthForm(forms.ModelForm):
     """
     Связь(аутентификация) с явным указанием библиотеки
     """
     lib_password = forms.CharField(widget=forms.PasswordInput, label=u'Пароль, выданный библиотекой')
+
     class Meta:
         model = LibReader
-        exclude = ['user','library']
+        exclude = ['user', 'library']

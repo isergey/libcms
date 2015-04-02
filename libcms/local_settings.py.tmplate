@@ -67,6 +67,11 @@ DATABASES = {
 
 }
 
+SOUTH_DATABASE_ADAPTERS = {
+    'default': "south.db.mysql"
+}
+
+
 CACHES = {
     'default': {
         #'BACKEND': 'django.core.cache.backends.dummy.DummyCache',

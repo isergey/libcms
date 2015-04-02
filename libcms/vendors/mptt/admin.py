@@ -1,34 +1,27 @@
+from __future__ import unicode_literals
 
 import django
 from django.conf import settings
-from django.contrib.admin.views.main import ChangeList
+from django.contrib.admin.actions import delete_selected
 from django.contrib.admin.options import ModelAdmin
+try:
+    from django.utils.encoding import force_text
+except ImportError:  # pragma: no cover (Django 1.4 compatibility)
+    from django.utils.encoding import force_unicode as force_text
 from django.utils.translation import ugettext as _
 
 from mptt.forms import MPTTAdminForm, TreeNodeChoiceField
+from mptt.models import MPTTModel, TreeForeignKey
 
-__all__ = ('MPTTChangeList', 'MPTTModelAdmin', 'MPTTAdminForm')
+__all__ = ('MPTTModelAdmin', 'MPTTAdminForm')
 IS_GRAPPELLI_INSTALLED = 'grappelli' in settings.INSTALLED_APPS
-
-
-class MPTTChangeList(ChangeList):
-    def get_query_set(self, request=None):
-        # request arg was added in django r16144 (after 1.3)
-        if request is not None and django.VERSION >= (1, 4):
-            qs = super(MPTTChangeList, self).get_query_set(request)
-        else:
-            qs = super(MPTTChangeList, self).get_query_set()
-
-        # always order by (tree_id, left)
-        tree_id = qs.model._mptt_meta.tree_id_attr
-        left = qs.model._mptt_meta.left_attr
-        return qs.order_by(tree_id, left)
 
 
 class MPTTModelAdmin(ModelAdmin):
     """
-    A basic admin class that displays tree items according to their position in the tree.
-    No extra editing functionality beyond what Django admin normally offers.
+    A basic admin class that displays tree items according to their position in
+    the tree.  No extra editing functionality beyond what Django admin normally
+    offers.
     """
 
     if IS_GRAPPELLI_INSTALLED:
@@ -39,80 +32,64 @@ class MPTTModelAdmin(ModelAdmin):
     form = MPTTAdminForm
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        from mptt.models import MPTTModel, TreeForeignKey
         if issubclass(db_field.rel.to, MPTTModel) \
                 and not isinstance(db_field, TreeForeignKey) \
-                and not db_field.name in self.raw_id_fields:
-            defaults = dict(form_class=TreeNodeChoiceField, queryset=db_field.rel.to.objects.all(), required=False)
+                and db_field.name not in self.raw_id_fields:
+            db = kwargs.get('using')
+
+            if django.VERSION >= (1, 7):
+                # This resolves callable values for db_field.rel.limit_choices_to,
+                # but isn't available/required on django < 1.7
+                limit_choices_to = db_field.get_limit_choices_to()
+            else:
+                limit_choices_to = db_field.rel.limit_choices_to
+
+            defaults = dict(
+                form_class=TreeNodeChoiceField,
+                queryset=db_field.rel.to._default_manager.using(db).complex_filter(limit_choices_to),
+                required=False)
             defaults.update(kwargs)
             kwargs = defaults
-        return super(MPTTModelAdmin, self).formfield_for_foreignkey(db_field,
-                                                                    request,
-                                                                    **kwargs)
+        return super(MPTTModelAdmin, self).formfield_for_foreignkey(
+            db_field, request, **kwargs)
 
-    def get_changelist(self, request, **kwargs):
+    def get_ordering(self, request):
         """
-        Returns the ChangeList class for use on the changelist page.
+        Changes the default ordering for changelists to tree-order.
         """
-        return MPTTChangeList
+        mptt_opts = self.model._mptt_meta
+        return self.ordering or (mptt_opts.tree_id_attr, mptt_opts.left_attr)
 
-
-if getattr(settings, 'MPTT_USE_FEINCMS', True):
-    _feincms_tree_editor = None
-    try:
-        from feincms.admin.tree_editor import TreeEditor as _feincms_tree_editor
-    except ImportError:
-        pass
-
-    if _feincms_tree_editor is not None:
-        __all__ = tuple(list(__all__) + ['FeinCMSModelAdmin'])
-
-        class FeinCMSModelAdmin(_feincms_tree_editor):
-            """
-            A ModelAdmin to add changelist tree view and editing capabilities.
-            Requires FeinCMS to be installed.
-            """
-
-            form = MPTTAdminForm
-
-            def _actions_column(self, obj):
-                actions = super(FeinCMSModelAdmin, self)._actions_column(obj)
-                # compatibility with Django 1.4 admin images (issue #191):
-                # https://docs.djangoproject.com/en/1.4/releases/1.4/#django-contrib-admin
-                if django.VERSION >= (1, 4):
-                    admin_img_prefix = "%sadmin/img/" % settings.STATIC_URL
-                else:
-                    admin_img_prefix = "%simg/admin/" % settings.ADMIN_MEDIA_PREFIX
-                actions.insert(0,
-                    u'<a href="add/?%s=%s" title="%s"><img src="%sicon_addlink.gif" alt="%s" /></a>' % (
-                        self.model._mptt_meta.parent_attr,
-                        obj.pk,
-                        _('Add child'),
-                        admin_img_prefix,
-                        _('Add child')))
-
-                if hasattr(obj, 'get_absolute_url'):
-                    actions.insert(0,
-                        u'<a href="%s" title="%s" target="_blank"><img src="%sselector-search.gif" alt="%s" /></a>' % (
-                            obj.get_absolute_url(),
-                            _('View on site'),
-                            admin_img_prefix,
-                            _('View on site')))
-                return actions
-
-            def delete_selected_tree(self, modeladmin, request, queryset):
-                """
-                Deletes multiple instances and makes sure the MPTT fields get recalculated properly.
-                (Because merely doing a bulk delete doesn't trigger the post_delete hooks.)
-                """
-                n = 0
+    def delete_selected_tree(self, modeladmin, request, queryset):
+        """
+        Deletes multiple instances and makes sure the MPTT fields get
+        recalculated properly. (Because merely doing a bulk delete doesn't
+        trigger the post_delete hooks.)
+        """
+        # If this is True, the confirmation page has been displayed
+        if request.POST.get('post'):
+            n = 0
+            with queryset.model.objects.delay_mptt_updates():
                 for obj in queryset:
-                    obj.delete()
-                    n += 1
-                self.message_user(request, _("Successfully deleted %s items.") % n)
+                    if self.has_delete_permission(request, obj):
+                        obj.delete()
+                        n += 1
+                        obj_display = force_text(obj)
+                        self.log_deletion(request, obj, obj_display)
+            self.message_user(
+                request,
+                _('Successfully deleted %(count)d items.') % {'count': n})
+            # Return None to display the change list page again
+            return None
+        else:
+            # (ab)using the built-in action to display the confirmation page
+            return delete_selected(self, request, queryset)
 
-            def get_actions(self, request):
-                actions = super(FeinCMSModelAdmin, self).get_actions(request)
-                if 'delete_selected' in actions:
-                    actions['delete_selected'] = (self.delete_selected_tree, 'delete_selected', _("Delete selected %(verbose_name_plural)s"))
-                return actions
+    def get_actions(self, request):
+        actions = super(MPTTModelAdmin, self).get_actions(request)
+        if 'delete_selected' in actions:
+            actions['delete_selected'] = (
+                self.delete_selected_tree,
+                'delete_selected',
+                _('Delete selected %(verbose_name_plural)s'))
+        return actions

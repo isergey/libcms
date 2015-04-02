@@ -1,31 +1,38 @@
 """
 Form components for working with trees.
 """
+from __future__ import unicode_literals
 from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
-from django.forms.util import ErrorList
-from django.utils.encoding import smart_unicode
+try:
+    from django.utils.encoding import smart_text
+except ImportError:  # pragma: no cover (Django 1.4 compatibility)
+    from django.utils.encoding import smart_unicode as smart_text
 from django.utils.html import conditional_escape, mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from mptt.exceptions import InvalidMove
+from mptt.settings import DEFAULT_LEVEL_INDICATOR
 
-__all__ = ('TreeNodeChoiceField', 'TreeNodeMultipleChoiceField', 'TreeNodePositionField', 'MoveNodeForm')
+
+__all__ = (
+    'TreeNodeChoiceField', 'TreeNodeMultipleChoiceField',
+    'TreeNodePositionField', 'MoveNodeForm',
+)
 
 # Fields ######################################################################
 
 
-class TreeNodeChoiceField(forms.ModelChoiceField):
-    """A ModelChoiceField for tree nodes."""
+class TreeNodeChoiceFieldMixin(object):
     def __init__(self, queryset, *args, **kwargs):
-        self.level_indicator = kwargs.pop('level_indicator', u'---')
+        self.level_indicator = kwargs.pop('level_indicator', DEFAULT_LEVEL_INDICATOR)
 
         # if a queryset is supplied, enforce ordering
         if hasattr(queryset, 'model'):
             mptt_opts = queryset.model._mptt_meta
             queryset = queryset.order_by(mptt_opts.tree_id_attr, mptt_opts.left_attr)
 
-        super(TreeNodeChoiceField, self).__init__(queryset, *args, **kwargs)
+        super(TreeNodeChoiceFieldMixin, self).__init__(queryset, *args, **kwargs)
 
     def _get_level_indicator(self, obj):
         level = getattr(obj, obj._mptt_meta.level_attr)
@@ -37,24 +44,15 @@ class TreeNodeChoiceField(forms.ModelChoiceField):
         generating option labels.
         """
         level_indicator = self._get_level_indicator(obj)
-        return mark_safe(level_indicator + ' ' + conditional_escape(smart_unicode(obj)))
+        return mark_safe(level_indicator + ' ' + conditional_escape(smart_text(obj)))
 
 
-class TreeNodeMultipleChoiceField(TreeNodeChoiceField, forms.ModelMultipleChoiceField):
+class TreeNodeChoiceField(TreeNodeChoiceFieldMixin, forms.ModelChoiceField):
+    """A ModelChoiceField for tree nodes."""
+
+
+class TreeNodeMultipleChoiceField(TreeNodeChoiceFieldMixin, forms.ModelMultipleChoiceField):
     """A ModelMultipleChoiceField for tree nodes."""
-
-    def __init__(self, queryset, *args, **kwargs):
-        self.level_indicator = kwargs.pop('level_indicator', u'---')
-
-        # if a queryset is supplied, enforce ordering
-        if hasattr(queryset, 'model'):
-            mptt_opts = queryset.model._mptt_meta
-            queryset = queryset.order_by(mptt_opts.tree_id_attr, mptt_opts.left_attr)
-
-        # For some reason ModelMultipleChoiceField constructor passes kwargs
-        # as args to its super(), which causes 'multiple values for keyword arg'
-        # error sometimes. So we skip it (that constructor does nothing anyway!)
-        forms.ModelChoiceField.__init__(self, queryset, *args, **kwargs)
 
 
 class TreeNodePositionField(forms.ChoiceField):
@@ -136,7 +134,7 @@ class MoveNodeForm(forms.Form):
         if level_indicator:
             self.fields['target'].level_indicator = level_indicator
         if position_choices:
-            self.fields['position_choices'].choices = position_choices
+            self.fields['position'].choices = position_choices
 
     def save(self):
         """
@@ -152,8 +150,8 @@ class MoveNodeForm(forms.Form):
             self.node.move_to(self.cleaned_data['target'],
                               self.cleaned_data['position'])
             return self.node
-        except InvalidMove, e:
-            self.errors[NON_FIELD_ERRORS] = ErrorList(e)
+        except InvalidMove as e:
+            self.errors[NON_FIELD_ERRORS] = self.error_class(e)
             raise
 
 
@@ -162,6 +160,22 @@ class MPTTAdminForm(forms.ModelForm):
     A form which validates that the chosen parent for a node isn't one of
     its descendants.
     """
+
+    def __init__(self, *args, **kwargs):
+        super(MPTTAdminForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            instance = self.instance
+            opts = self._meta.model._mptt_meta
+            parent_field = self.fields.get(opts.parent_attr)
+            if parent_field:
+                parent_qs = parent_field.queryset
+                parent_qs = parent_qs.exclude(
+                    pk__in=instance.get_descendants(
+                        include_self=True
+                    ).values_list('pk', flat=True)
+                )
+                parent_field.queryset = parent_qs
+
     def clean(self):
         cleaned_data = super(MPTTAdminForm, self).clean()
         opts = self._meta.model._mptt_meta
@@ -169,7 +183,7 @@ class MPTTAdminForm(forms.ModelForm):
         if self.instance and parent:
             if parent.is_descendant_of(self.instance, include_self=True):
                 if opts.parent_attr not in self._errors:
-                    self._errors[opts.parent_attr] = forms.util.ErrorList()
+                    self._errors[opts.parent_attr] = self.error_class()
                 self._errors[opts.parent_attr].append(_('Invalid parent'))
                 del self.cleaned_data[opts.parent_attr]
         return cleaned_data
