@@ -19,8 +19,9 @@
             </div>
         {% endif %}
         {% block index_content %}
-            <p class="alert alert-info">Ваша организация:
+            <p class="alert alert-info">
             {% if managed_libraries %}
+                Ваша организация:
                 {% for managed_library in managed_libraries %}
                     {% if managed_library.library.parent_id %}
                         {% for ancestor in managed_library.library.get_ancestors %}
