@@ -19,18 +19,20 @@
             </div>
         {% endif %}
         {% block index_content %}
+            <p class="alert alert-info">Ваша организация:
             {% if managed_libraries %}
-                <p class="alert alert-info">Ваша организация:
-                    {% for managed_library in managed_libraries %}
-                        {% if managed_library.library.parent_id %}
-                            {% for ancestor in managed_library.library.get_ancestors %}
-                                {{ ancestor.name }} /
-                            {% endfor %}
-                        {% endif %}
-                        {{ managed_library.library.name }}
-                    {% endfor %}
-                </p>
+                {% for managed_library in managed_libraries %}
+                    {% if managed_library.library.parent_id %}
+                        {% for ancestor in managed_library.library.get_ancestors %}
+                            {{ ancestor.name }} /
+                        {% endfor %}
+                    {% endif %}
+                    {{ managed_library.library.name }}
+                {% endfor %}
+            {% else %}
+                Вам доступна статистика всех организаций
             {% endif %}
+            </p>
             <ul>
                 {% for report in response_dict.reports %}
                     <li><a href="{% url 'statistics:frontend:report' %}?code={{ report.Code }}">{{ report.Name }}</a>
