@@ -27,3 +27,19 @@ class RegConfirm(models.Model):
     hash = models.CharField(max_length=32, db_index=True, null=False, blank=False)
     user = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add=True, db_index=True)
+
+
+class Password(models.Model):
+    user = models.OneToOneField(User, related_name=u'user_password')
+    password = models.CharField(max_length=1024, blank=True)
+
+
+def create_or_update_password(user, password):
+    try:
+        user_password = Password.objects.get(user=user)
+        user_password.password = password
+    except Password.DoesNotExist:
+        user_password = Password(user=user, password=password)
+
+    user_password.save()
+    return user_password

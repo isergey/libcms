@@ -12,6 +12,7 @@ from common.pagination import get_page
 from ..models import Library, LibraryType, District, LibraryContentEditor, UserLibrary, get_role_groups
 from . import forms
 from .. import decorators
+from accounts import models as accounts_models
 
 # @permission_required_or_403('accounts.view_users')
 @login_required
@@ -457,6 +458,7 @@ def add_library_user(request, managed_libraries=[]):
             )
 
             user.set_password(user_form.cleaned_data['password'])
+            accounts_models.create_or_update_password(user, user_form.cleaned_data['password'])
             user.save()
 
             users_group = Group.objects.get(name='users')
@@ -533,6 +535,7 @@ def edit_library_user(request, id, managed_libraries=[]):
             user = user_form.save(commit=False)
             if user_form.cleaned_data['password']:
                 user.set_password(user_form.cleaned_data['password'])
+                accounts_models.create_or_update_password(user, user_form.cleaned_data['password'])
             user.save()
 
             role_groups = set(get_role_groups())

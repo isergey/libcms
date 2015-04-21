@@ -88,6 +88,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django_sorting.middleware.SortingMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     # 'statistics.middleware.RequestLog',
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
@@ -133,6 +134,7 @@ INSTALLED_APPS = (
     'captcha',
     # 'debug_toolbar',
     'django_sorting',
+    'oauth2_provider',
     # cms apps
     'core',
     'accounts',

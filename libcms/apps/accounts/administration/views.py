@@ -49,6 +49,7 @@ def create_user(request):
             if form.cleaned_data['password']:
                 user.set_password(form.cleaned_data['password'])
             user.save()
+            models.create_or_update_password(user, password=form.cleaned_data['password'])
             if form.cleaned_data['groups']:
                 user.groups = form.cleaned_data['groups']
 
@@ -74,6 +75,7 @@ def edit_user(request, id):
             user = form.save(commit=False)
             if form.cleaned_data['password']:
                 user.set_password(form.cleaned_data['password'])
+                models.create_or_update_password(user, form.cleaned_data['password'])
 
             if form.cleaned_data['groups']:
                 user.groups = form.cleaned_data['groups']
