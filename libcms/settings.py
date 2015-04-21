@@ -88,7 +88,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django_sorting.middleware.SortingMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     # 'statistics.middleware.RequestLog',
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
