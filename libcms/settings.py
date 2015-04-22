@@ -133,7 +133,6 @@ INSTALLED_APPS = (
     'captcha',
     # 'debug_toolbar',
     'django_sorting',
-    'oauth2_provider',
     # cms apps
     'core',
     'accounts',
@@ -167,6 +166,7 @@ INSTALLED_APPS = (
     'guestbook',
     'newinlib',
     'attacher',
+    'oauth2_provider'
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

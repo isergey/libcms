@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
+from django.conf import settings
+from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
@@ -13,6 +15,8 @@ from ..models import Library, LibraryType, District, LibraryContentEditor, UserL
 from . import forms
 from .. import decorators
 from accounts import models as accounts_models
+
+SITE_DOMAIN = getattr('SITE_DOMAIN', 'http://localhost')
 
 # @permission_required_or_403('accounts.view_users')
 @login_required
@@ -473,6 +477,7 @@ def add_library_user(request, managed_libraries=[]):
             user_library.library = select_library_form.cleaned_data['library']
             user_library.save()
             user_library_form.save_m2m()
+            send_user_create_email(user, user_form.cleaned_data['password'])
             return redirect('participants:administration:library_user_list')
     else:
         select_library_form = SelectLibraryForm(request.POST, prefix='slf')
@@ -655,3 +660,12 @@ def load_libs(request, managed_libraries=[]):
         })
 
     return HttpResponse(json.dumps(nodes, ensure_ascii=False), content_type='application/json')
+
+
+def send_user_create_email(user, password):
+    message = u'Для Вас создана учетная запись сотрудника. Логин: %s , пароль: %s . Вход осуществляется на сайте %s' % (
+        user.username, password, u'http://' + SITE_DOMAIN
+    )
+
+    send_mail('Создана учетная запись сотрудника', message, 'system@' + SITE_DOMAIN,
+    [user.email], fail_silently=False)
