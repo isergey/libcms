@@ -667,5 +667,5 @@ def send_user_create_email(user, password):
         user.username, password, u'http://' + SITE_DOMAIN
     )
 
-    send_mail('Создана учетная запись сотрудника', message, 'system@' + SITE_DOMAIN,
+    send_mail(u'Создана учетная запись сотрудника', message, 'system@' + SITE_DOMAIN,
     [user.email], fail_silently=False)
