@@ -462,8 +462,8 @@ def add_library_user(request, managed_libraries=[]):
             )
 
             user.set_password(user_form.cleaned_data['password'])
-            accounts_models.create_or_update_password(user, user_form.cleaned_data['password'])
             user.save()
+            accounts_models.create_or_update_password(user, user_form.cleaned_data['password'])
 
             users_group = Group.objects.get(name='users')
             users_group.user_set.add(user)
