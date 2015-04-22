@@ -16,7 +16,7 @@ from . import forms
 from .. import decorators
 from accounts import models as accounts_models
 
-SITE_DOMAIN = getattr('SITE_DOMAIN', 'http://localhost')
+SITE_DOMAIN = getattr(settings, 'SITE_DOMAIN', 'http://localhost')
 
 # @permission_required_or_403('accounts.view_users')
 @login_required
