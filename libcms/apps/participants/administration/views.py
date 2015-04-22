@@ -583,6 +583,20 @@ def edit_library_user(request, id, managed_libraries=[]):
 
 @login_required
 @transaction.atomic()
+@permission_required_or_403('participants.delete_userlibrary')
+@decorators.must_be_org_user
+def delete_library_user(request, id, managed_libraries=[]):
+    districts = []
+    for managed_library in managed_libraries:
+        districts.append(managed_library.library.district_id)
+
+    library_user = get_object_or_404(UserLibrary, id=id)
+    library_user.delete()
+    return redirect('participants:administration:library_user_list')
+
+
+@login_required
+@transaction.atomic()
 @decorators.must_be_org_user
 def find_library_by_district(request, managed_libraries=[]):
 
