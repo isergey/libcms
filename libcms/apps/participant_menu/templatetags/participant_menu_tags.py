@@ -54,8 +54,11 @@ def drow_library_menu_default(context, library_id, menu_slug):
     #print nodes
     nodes = cache.get('menu_nodes' + menu_slug + lang, None)
     if not nodes:
-        menu = Menu.objects.get(slug=menu_slug, library_id=library_id, lang=lang)
-        nodes = list(menu.root_item.get_descendants().exclude(show=False))
+        try:
+            menu = Menu.objects.get(slug=menu_slug, library_id=library_id, lang=lang)
+            nodes = list(menu.root_item.get_descendants().exclude(show=False))
+        except Menu.DoesNotExist:
+            nodes = []
         cache.set('menu_nodes' + menu_slug + lang, nodes)
 
     return ({
