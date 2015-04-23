@@ -25,10 +25,10 @@ class Application(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.client_id:
-            self.client_id = _generate_uuid()
+            self.client_id = generate_uuid()
 
         if not self.client_secret:
-            self.client_secret = _generate_uuid()
+            self.client_secret = generate_uuid()
         super(Application, self).save(*args, **kwargs)
 
 
@@ -55,5 +55,5 @@ class AccessToken(models.Model):
         return u'%s: %s' % (self.application, self.token)
 
 
-def _generate_uuid():
+def generate_uuid():
     return unicode(uuid.uuid4())

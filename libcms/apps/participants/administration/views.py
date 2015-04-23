@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponse, resolve_url
 from django.http import HttpResponseForbidden
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
@@ -677,8 +677,14 @@ def load_libs(request, managed_libraries=[]):
 
 
 def send_user_create_email(user, password):
-    message = u'Для Вас создана учетная запись сотрудника. Логин: %s , пароль: %s . Вход осуществляется на сайте %s' % (
-        user.username, password, u'http://' + SITE_DOMAIN
+    message = u"\
+Уважаемый сотрудник библиотеки! \
+\nДоводим до Вашего сведения, что для работы в Государственной информационной системе \
+\n\"Национальная электронная библиотека Республики Татарстан\" для вас создана учетная запись. \
+\nЛогин: %s \
+\nПароль: %s \
+\nВход осуществляется на сайте %s" % (
+        user.username, password, u'http://' + SITE_DOMAIN + u'/' + resolve_url('accounts:frontend:login')
     )
 
     send_mail(u'Создана учетная запись сотрудника', message, 'system@' + SITE_DOMAIN,

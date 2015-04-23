@@ -2,7 +2,8 @@
 from django.conf.urls import *
 #from django.contrib.auth.views import  login, logout, password_reset, password_reset_done, password_reset_confirm, password_reset_complete
 from  views import done, error, home, login
-urlpatterns = patterns('accounts.frontend.views',
+urlpatterns = patterns(
+    'accounts.frontend.views',
     url(r'^$', 'index', name="index"),
     url(r'^registration/$', 'registration', name="registration"),
     url(r'^confirm/(?P<hash>[a-h0-9]{1,32})/$', 'confirm_registration', name="confirm_registration"),

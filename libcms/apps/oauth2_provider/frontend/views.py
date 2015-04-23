@@ -22,8 +22,11 @@ def authorize(request):
     except models.Application.DoesNotExist:
         return HttpResponse(u'Client id not found', status=401)
 
-    params = {}
-    params['code'] = models._generate_uuid()
+    code = models.generate_uuid()
+    params = {
+        'code': models.generate_uuid()
+    }
+
     if authorize_from.cleaned_data['state']:
         params['state'] = authorize_from.cleaned_data['state']
 
