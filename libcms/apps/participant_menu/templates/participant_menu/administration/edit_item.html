@@ -10,15 +10,9 @@
 
 {% block action_content %}
     <h3>
-        <a href="{% url 'participant_menu:administration:item_list' library.code menu.id %}">{{ menu.title }}</a> →
+        <a href="{% url 'participant_menu:administration:menu_detail' library.code menu.id %}">{{ menu.title }}</a>
         {% for ancestor in item.get_t_ancestors %}
-
-                {% if not ancestor %}
-                    {{ ancestor }}
-                {% else %}
-                    {{ ancestor }}
-                {% endif %}
-            →
+            {{ ancestor }} →
         {% endfor %}
         {% if not item %}
             {{ item }}

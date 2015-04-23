@@ -13,10 +13,6 @@
         <legend>Создание элемента меню</legend>
         <fieldset>
             {% include 'administration/base_form_fields.html' with form=item_form %}
-            {% for menu_item_title_form in menu_item_title_forms %}
-                <p>Название элемента на языке: <b>{{  menu_item_title_form.lang }}</b>↴</p>
-                {% include 'administration/base_form_fields.html' with form=menu_item_title_form.form %}
-            {% endfor %}
 {#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Создать</button>

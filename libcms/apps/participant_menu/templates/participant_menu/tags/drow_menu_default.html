@@ -3,8 +3,8 @@
     <ul class="library_menu">
         {% if nodes %}
             {% recursetree nodes %}
-                <li {% if path == node.item_title.url  %} class="active" {% endif %}>
-                    <a href="{{ node.item_title.url }}" {% if node.open_in_new %} target="_blank" {% endif %}>{{ node.item_title.title }}</a>
+                <li {% if path == node.url  %} class="active" {% endif %}>
+                    <a href="{{ node.url }}" {% if node.open_in_new %} target="_blank" {% endif %}>{{ node.title }}</a>
                 </li>
                 {% if not node.is_leaf_node %}
                     <li class="dir">

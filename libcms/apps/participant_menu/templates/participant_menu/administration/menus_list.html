@@ -12,21 +12,35 @@
 {% endblock %}
 
 {% block action_content %}
-
-    <ul class="list" style="list-style: none; padding: 0; margin: 0">
-    {% for menu in menus %}
-        <li><span class="title">
-            {% if not menu.menu_title.title %}
-                <a href="{% url 'participant_menu:administration:edit_menu' library.code menu.id %}">{{ menu.slug }}</a>
-            {% else %}
-                <a href="{% url 'participant_menu:administration:edit_menu' library.code menu.id %}">{{ menu.menu_title.title }} ({{ menu.slug }})</a>
-            {% endif %}
-        </span>
-            <a href="{% url 'participant_menu:administration:item_list' library.code menu.id  %}">Пункты</a>
-        </li>
+    <table class="table">
+    <tr>
+        <th style="width: 100px">slug</th>
+        <th>Название</th>
+        <th style="width: 70px">Язык</th>
+    </tr>
+    {% for menu in menu_list %}
+        <tr>
+            {% url 'participant_menu:administration:menu_detail' library.code menu.id as url_menu_detail  %}
+            <td><a href="{{ url_menu_detail }}">{{ menu.slug }}</a></td>
+            <td><a href="{{ url_menu_detail }}">{{ menu.title }}</a></td>
+            <td>{{ menu.get_lang_display }}</td>
+{#            <td><a href="{% url 'participant_menu:administration:menu_delete' library.code menu.id %}" class="btn btn-danger"><i class="icon-trash icon-white"></i></a></td>#}
+        </tr>
     {% endfor %}
-    </ul>
-    {% admin_pagination menus_page %}
+    </table>
+{#    <ul class="list" style="list-style: none; padding: 0; margin: 0">#}
+{#    {% for menu in menus %}#}
+{#        <li><span class="title">#}
+{#            {% if not menu.menu_title.title %}#}
+{#                <a href="{% url 'participant_menu:administration:edit_menu' library.code menu.id %}">{{ menu.slug }}</a>#}
+{#            {% else %}#}
+{#                <a href="{% url 'participant_menu:administration:edit_menu' library.code menu.id %}">{{ menu.menu_title.title }} ({{ menu.slug }})</a>#}
+{#            {% endif %}#}
+{#        </span>#}
+{#            <a href="{% url 'participant_menu:administration:item_list' library.code menu.id  %}">Пункты</a>#}
+{#        </li>#}
+{#    {% endfor %}#}
+{#    </ul>#}
 {% endblock %}
 
 

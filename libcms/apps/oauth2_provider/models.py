@@ -56,4 +56,4 @@ class AccessToken(models.Model):
 
 
 def generate_uuid():
-    return unicode(uuid.uuid4())
+    return unicode(uuid.uuid4()).replace(u'-', '')

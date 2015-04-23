@@ -18,7 +18,7 @@ class Page(MPTTModel):
     library = models.ForeignKey(Library)
     slug = models.SlugField(
         verbose_name=u'Slug',
-        max_length=255,
+        max_length=64,
         db_index=True,
         help_text=u'Внимание! Последующее редактирование поля slug невозможно!'
     )
@@ -27,7 +27,12 @@ class Page(MPTTModel):
         db_index=True,
     )
     show_children = models.BooleanField(verbose_name=u'Показывать ссылки на подстраницы', default=False)
-    public = models.BooleanField(verbose_name=u'Опубликована?', default=False, db_index=True, help_text=u'Публиковать страницу могут только пользователи с правами публикации страниц')
+    public = models.BooleanField(
+        verbose_name=u'Опубликована?',
+        default=False,
+        db_index=True,
+        help_text=u'Публиковать страницу могут только пользователи с правами публикации страниц'
+    )
     create_date = models.DateTimeField(verbose_name=u"Дата создания", auto_now_add=True, db_index=True)
 
     class Meta:
@@ -35,9 +40,10 @@ class Page(MPTTModel):
         permissions = (
             ("view_page", "Can view page"),
             ("public_page", "Can public page"),
-            )
+        )
+
     def __unicode__(self):
-        return  self.slug
+        return self.slug
 
     def get_cur_lang_content(self):
         cur_language = get_language()
@@ -52,7 +58,7 @@ class Page(MPTTModel):
         return translated ancestors
         """
         ancestors = list(self.get_ancestors())
-        lang=get_language()[:2]
+        lang = get_language()[:2]
         ad = {}
         for ancestor in ancestors:
             ad[ancestor.id] = ancestor
@@ -71,14 +77,14 @@ class Page(MPTTModel):
         else:
             url_pathes = []
             if self.parent:
-                for node in  self.parent.get_ancestors():
+                for node in self.parent.get_ancestors():
                     url_pathes.append(node.slug)
                 url_pathes.append(self.parent.slug)
                 url_pathes.append(self.slug)
             else:
                 url_pathes.append(self.slug)
 
-            self.url_path =  u'/'.join(url_pathes)
+            self.url_path = u'/'.join(url_pathes)
 
         return super(Page, self).save(*args, **kwargs)
 
@@ -99,19 +105,21 @@ class Page(MPTTModel):
 
     def to_first_child(self):
         ok = self.up()
-        while(ok):
+        while (ok):
             ok = self.up()
 
     def to_last_child(self):
         ok = self.down()
-        while(ok):
+        while (ok):
             ok = self.down()
+
 
 class Content(models.Model):
     page = models.ForeignKey(Page, verbose_name=u'Родительская страница')
     lang = models.CharField(verbose_name=u"Язык", db_index=True, max_length=2, choices=settings.LANGUAGES)
     title = models.CharField(verbose_name=u'Заглавие', max_length=512)
-    meta = models.CharField(verbose_name=u"SEO meta", max_length=512, blank=True, help_text=u'Укажите ключевые слова для страницы, желательно на языке контента')
+    meta = models.CharField(verbose_name=u"SEO meta", max_length=512, blank=True,
+                            help_text=u'Укажите ключевые слова для страницы, желательно на языке контента')
     content = models.TextField(verbose_name=u'Контент')
 
     class Meta:
@@ -125,13 +133,14 @@ class Content(models.Model):
         pass
 
 
-
 from django.db.models.signals import post_delete
 from attacher.frontend.views import delete_content_attaches
+
+
 def remove_attachments(sender, **kwargs):
     delete_content_attaches(
         'participant_pages',
-        str(kwargs['instance'].library_id) + '_' + str(kwargs['instance'].url_path.replace('/','_')))
+        str(kwargs['instance'].library_id) + '_' + str(kwargs['instance'].url_path.replace('/', '_')))
     pass
 
 

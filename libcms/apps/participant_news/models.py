@@ -31,6 +31,7 @@ class News(models.Model):
     title = models.CharField(verbose_name=u'Заглавие', max_length=512)
     teaser = models.CharField(verbose_name=u'Тизер', max_length=512, help_text=u'Краткое описание новости')
     content = models.TextField(verbose_name=u'Содержание новости')
+
     def get_absolute_url(self):
         return urlresolvers.reverse('participant_news:frontend:show', args=[self.library.code, self.id])
 

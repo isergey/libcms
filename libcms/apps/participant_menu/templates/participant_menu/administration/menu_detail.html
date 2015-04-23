@@ -15,7 +15,7 @@
             margin-bottom: 10px;
         }
     </style>
-    <h3>{{ menu.title }}</h3>
+    <h3>{{ menu.title }} ({{ menu.get_lang_display }})</h3>
     <hr/>
     <a class="btn" href="{% url 'participant_menu:administration:item_create' library.code menu.id %}">Создать пункт меню</a>
     <hr/>
@@ -25,7 +25,7 @@
                 {% if not node.show %}
                     <i class="icon-eye-close" title="Скрыто"></i>
                 {% endif %}
-                <a href="{% url 'participant_menu:administration:item_edit' library.code menu.id node.id %}">{{ node.t_title }}</a>
+                <a href="{% url 'participant_menu:administration:item_edit' library.code menu.id node.id %}">{{ node.title }}</a>
                 <a class="btn" href="{% url 'participant_menu:administration:item_create' library.code menu.id node.id %}"><i class="icon-plus" title="Добавить подпункт"></i></a>
                 <a class="btn" href="{% url 'participant_menu:administration:item_up' library.code menu.id node.id %}" title="передвинуть вверх">↑</a>
                 <a class="btn" href="{% url 'participant_menu:administration:item_down' library.code menu.id node.id %}" title="передвинуть вниз">↓</a>
