@@ -13,4 +13,4 @@ class AvatarForm(forms.ModelForm):
 class LibraryInfoForm(forms.ModelForm):
     class Meta:
         model = Library
-        fields = ['profile', 'phone', 'plans', 'postal_address', 'http_service', 'mail']
+        fields = ['profile', 'phone', 'plans', 'postal_address', 'http_service', 'mail', 'latitude', 'longitude']

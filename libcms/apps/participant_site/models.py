@@ -39,20 +39,20 @@ class LibrarySiteCard(models.Model):
 #         verbose_name = u'Менеджер контента библиотеки'
 #         verbose_name_plural = u'Менеджеры контента библиотек'
 #         unique_together = (('library', 'user'))
-
-
-def get_managers(user, library):
-    if user.is_superuser:
-        return True
-
-    if ContentManager.objects.filter(user=user, library=library).exists():
-        return True
-    # проверка случая, если пользователь унаследовал права менеджера от вышестоящей библиотеки
-    if not library.parent_id:
-        return False
-
-    ancestors = library.get_ancestors().values('id')
-    return ContentManager.objects.filter(user=user, library__in=ancestors, can_manage_children=True).exists()
+#
+#
+# def get_managers(user, library):
+#     if user.is_superuser:
+#         return True
+#
+#     if ContentManager.objects.filter(user=user, library=library).exists():
+#         return True
+#     # проверка случая, если пользователь унаследовал права менеджера от вышестоящей библиотеки
+#     if not library.parent_id:
+#         return False
+#
+#     ancestors = library.get_ancestors().values('id')
+#     return ContentManager.objects.filter(user=user, library__in=ancestors, can_manage_children=True).exists()
 
 
 def get_avatar_file_name(instance, arg_filename):
