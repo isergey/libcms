@@ -208,7 +208,7 @@ def personal_cabinet_links(request):
 
 
 def user_organizations(user):
-    user_libraries = models.UserLibrary.objects.filter(user=user)
+    user_libraries = UserLibrary.objects.filter(user=user)
 
     orgs = []
 
