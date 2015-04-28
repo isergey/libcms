@@ -100,7 +100,7 @@ def login(request, template_name='registration/login.html',
                 return HttpResponse(u'У вас не работают cookies. Пожалуйста, включите их в браузере или очистите кеш браузера.')
 
             if request.user.is_authenticated():
-                orgs = participants_models.user_organizations()
+                orgs = participants_models.user_organizations(request.user)
                 if orgs:
                     return redirect('http://help.kitap.tatar.ru')
 
