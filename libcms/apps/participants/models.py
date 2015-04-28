@@ -207,5 +207,30 @@ def personal_cabinet_links(request):
     return links
 
 
+def user_organizations(user):
+    user_libraries = models.UserLibrary.objects.filter(user=user)
+
+    orgs = []
+
+    def make_org_item(library):
+        return {
+            'id': library.id,
+            'code': library.code,
+            'sigla': library.sigla,
+            'name': library.name,
+            'ancestors': []
+        }
+
+    for user_library in user_libraries:
+        orgs_item = make_org_item(user_library.library)
+        if user_library.library.parent_id:
+            ancestors = user_library.library.get_ancestors()
+            for ancestor in ancestors:
+                orgs_item['ancestors'].append(make_org_item(ancestor))
+        orgs.append(orgs_item)
+
+    return orgs
+
+
 def _reverse(request, url, args=[]):
     return u'%s://%s%s' % (request.scheme, request.get_host(), reverse(url, args=args))

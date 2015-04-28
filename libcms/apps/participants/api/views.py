@@ -316,27 +316,7 @@ def export_orgs(request):
 
 @login_required_ajax
 def user_organizations(request):
-    user_libraries = models.UserLibrary.objects.filter(user=request.user)
-
-    orgs = []
-
-    def make_org_item(library):
-        return {
-            'id': library.id,
-            'code': library.code,
-            'sigla': library.sigla,
-            'name': library.name,
-            'ancestors': []
-        }
-
-    for user_library in user_libraries:
-        orgs_item = make_org_item(user_library.library)
-        if user_library.library.parent_id:
-            ancestors = user_library.library.get_ancestors()
-            for ancestor in ancestors:
-                orgs_item['ancestors'].append(make_org_item(ancestor))
-        orgs.append(orgs_item)
-
+    orgs = models.user_organizations(request.user)
     return HttpResponse(json.dumps(orgs, ensure_ascii=False), content_type='application/json')
 
 

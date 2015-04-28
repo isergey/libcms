@@ -11,6 +11,9 @@ from social_auth import __version__ as version
 from forms import RegistrationForm
 from accounts.models import RegConfirm
 
+from participants.models import participants_models
+
+
 def index(request):
     return render(request, 'accounts/frontend/index.html')
 
@@ -59,6 +62,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.models import get_current_site
+
 @sensitive_post_parameters()
 @csrf_protect
 @never_cache
@@ -88,10 +92,17 @@ def login(request, template_name='registration/login.html',
             # Okay, security checks complete. Log the user in.
             auth_login(request, form.get_user())
 
+
+
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
             else:
                 return HttpResponse(u'У вас не работают cookies. Пожалуйста, включите их в браузере или очистите кеш браузера.')
+
+            if request.user.is_authenticated():
+                orgs = participants_models.user_organizations()
+                if orgs:
+                    return redirect('http://help.kitap.tatar.ru')
 
             return redirect(redirect_to)
     else:
