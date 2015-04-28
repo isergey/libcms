@@ -11,7 +11,7 @@ from social_auth import __version__ as version
 from forms import RegistrationForm
 from accounts.models import RegConfirm
 
-from participants.models import models as participants_models
+from participants import models as participants_models
 
 
 def index(request):
