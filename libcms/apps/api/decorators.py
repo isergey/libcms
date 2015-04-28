@@ -1,4 +1,5 @@
 # encoding: utf-8
+import json
 import time
 from django.conf import settings
 from django.utils.cache import patch_vary_headers
@@ -81,14 +82,11 @@ def api(func):
 
     return wrapper
 
-import urlparse
+
 try:
     from functools import wraps
 except ImportError:
     from django.utils.functional import wraps  # Python 2.4 fallback.
-
-
-
 
 
 def user_passes_test(test_func):
@@ -114,6 +112,24 @@ def login_required_or_403(function=None):
     return actual_decorator
 
 
-def permission_required_or_403(perm):
+def login_required_ajax(function=None,redirect_field_name=None):
+    def _decorator(view_func):
+        def _wrapped_view(request, *args, **kwargs):
+            if request.user.is_authenticated():
+                return view_func(request, *args, **kwargs)
+            else:
+                return HttpResponse(json.dumps({
+                    'status': 'error',
+                    'code': 'auth_required',
+                    'message': 'You need logged in'
+                }), status=401)
+        return _wrapped_view
 
+    if function is None:
+        return _decorator
+    else:
+        return _decorator(function)
+
+
+def permission_required_or_403(perm):
     return user_passes_test(lambda u: u.has_perm(perm))

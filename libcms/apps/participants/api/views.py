@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import cStringIO as StringIO
 from django.conf import settings
 from django.forms.models import model_to_dict
@@ -8,9 +9,8 @@ from django.contrib.auth.models import User
 
 import unicodecsv
 from api.exceptions import WrongArguments, ApiException
-from api.decorators import api, login_required_or_403
-
-from participants.models import Library, UserLibrary
+from api.decorators import api, login_required_ajax
+from .. import models
 
 
 class ApiUser(object):
@@ -188,7 +188,7 @@ def get_user_orgs(request):
     except User.DoesNotExist:
         raise ApiException(u'unknown user id')
 
-    user_libraries = UserLibrary.objects.filter(user=user)
+    user_libraries = models.UserLibrary.objects.filter(user=user)
 
     libraries_ids = []
 
@@ -201,7 +201,7 @@ def get_user_orgs(request):
     libraries_list = []
 
     if not lazy:
-        libraries = Library.objects.select_related().filter(id__in=libraries_ids)
+        libraries = models.Library.objects.select_related().filter(id__in=libraries_ids)
 
         for library in libraries:
             api_library = ApiLibrary.from_model(library)
@@ -230,10 +230,10 @@ def get_org(request):
 
     try:
         if id:
-            library = Library.objects.get(id=id)
+            library = models.Library.objects.get(id=id)
         elif code:
-            library = Library.objects.get(code=code)
-    except Library.DoesNotExist:
+            library = models.Library.objects.get(code=code)
+    except models.Library.DoesNotExist:
         return {}
 
     return ApiLibrary.from_model(library).to_dict()
@@ -247,16 +247,16 @@ def find_orgs(request):
     mail = request.GET.get('mail', None)
 
     if name:
-        libraries = Library.objects.filter(name__iexact=name)
+        libraries = models.Library.objects.filter(name__iexact=name)
     elif ill_service:
         if ill_service == '*':
-            libraries = Library.objects.filter(ill_service__gt=0)
+            libraries = models.Library.objects.filter(ill_service__gt=0)
         else:
-            libraries = Library.objects.filter(ill_service__icontains=ill_service)
+            libraries = models.Library.objects.filter(ill_service__icontains=ill_service)
     elif edd_service:
-        libraries = Library.objects.filter(edd_service__icontains=edd_service)
+        libraries = models.Library.objects.filter(edd_service__icontains=edd_service)
     elif mail:
-        libraries = Library.objects.filter(mail__icontains=mail)
+        libraries = models.Library.objects.filter(mail__icontains=mail)
     else:
         raise WrongArguments()
 
@@ -294,10 +294,11 @@ def get_user(request):
     return ApiUser.from_model(user).to_dict()
 
 
+
 @api
 def export_orgs(request):
     scheme = request.GET.get('scheme', 'xml')
-    orgs = list(Library.objects.select_related('types', 'district').all())
+    orgs = list(models.Library.objects.select_related('types', 'district').all())
     data = u''
     if scheme == 'csv' and orgs:
         iodata = StringIO.StringIO()
@@ -311,3 +312,34 @@ def export_orgs(request):
         data = serializers.serialize(scheme, orgs)
 
     return HttpResponse(data, content_type='application/' + scheme)
+
+
+@login_required_ajax
+def user_organizations(request):
+    user_libraries = models.UserLibrary.objects.filter(user=request.user)
+
+    orgs = []
+
+    def make_org_item(library):
+        return {
+            'id': library.id,
+            'code': library.code,
+            'sigla': library.sigla,
+            'name': library.name,
+            'ancestors': []
+        }
+
+    for user_library in user_libraries:
+        orgs_item = make_org_item(user_library.library)
+        if user_library.library.parent_id:
+            ancestors = user_library.library.get_ancestors()
+            for ancestor in ancestors:
+                orgs_item['ancestors'].append(make_org_item(ancestor))
+        orgs.append(orgs_item)
+
+    return HttpResponse(json.dumps(orgs, ensure_ascii=False), content_type='application/json')
+
+
+@login_required_ajax
+def personal_cabinet_links(request):
+    return HttpResponse(json.dumps(models.personal_cabinet_links(request), ensure_ascii=False), content_type='application/json')

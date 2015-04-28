@@ -1,14 +1,12 @@
 # coding=utf-8
 import uuid
 from django.db import models
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
 
 from django.contrib.auth.models import User
 
 
 class Application(models.Model):
-    user = models.ForeignKey(User)
+    owner = models.ForeignKey(User)
     name = models.CharField(verbose_name=u'Название приложения', max_length=255)
     url = models.URLField(verbose_name=u'URL приложения', max_length=512)
     description = models.TextField(verbose_name=u'Описание', max_length=1024, blank=True)
@@ -18,7 +16,7 @@ class Application(models.Model):
     client_secret = models.CharField(verbose_name=u'Секретный ключ клиента', max_length=128, db_index=True, editable=False)
 
     class Meta:
-        unique_together = ('user', 'name')
+        unique_together = ('owner', 'name')
 
     def __unicode__(self):
         return self.name
@@ -34,6 +32,7 @@ class Application(models.Model):
 
 class AuthCode(models.Model):
     application = models.ForeignKey(Application)
+    auth_user = models.ForeignKey(User)
     code = models.CharField(max_length=128, unique=True)
     created = models.DateTimeField(auto_now=True)
     expired = models.DateTimeField()
@@ -47,6 +46,7 @@ class AuthCode(models.Model):
 
 class AccessToken(models.Model):
     application = models.ForeignKey(Application)
+    auth_user = models.ForeignKey(User)
     token = models.CharField(max_length=128, unique=True)
     created = models.DateTimeField(auto_now=True)
     expired = models.DateTimeField(null=True)
@@ -54,6 +54,8 @@ class AccessToken(models.Model):
     def __unicode__(self):
         return u'%s: %s' % (self.application, self.token)
 
+    class Meta:
+        unique_together = ('application', 'auth_user')
 
 def generate_uuid():
     return unicode(uuid.uuid4()).replace(u'-', '')

@@ -1,5 +1,6 @@
 # encoding: utf-8
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User, Group
 from mptt.models import MPTTModel, TreeForeignKey
@@ -166,3 +167,45 @@ def get_role_groups(user=None):
     if user:
         return user.groups.filter(name__startswith='role_')
     return Group.objects.filter(name__startswith='role_')
+
+
+def personal_cabinet_links(request):
+    links = []
+
+    if not request.user.is_authenticated():
+        return links
+
+    user_orgs = UserLibrary.objects.filter(user=request.user)
+
+    user_groups = [group.name for group in request.user.groups.all()]
+
+    if 'role_mba_manager' in user_groups:
+        links.append({
+            'title': u'АРМ МБА',
+            'href': u'http://ill.kitap.tatar.ru',
+            'target': u'_blank'
+        })
+
+    if 'role_it_manager' in user_groups:
+        links.append({
+            'title': u'Управление сотрудниками',
+            'href': _reverse(request, 'participants:administration:library_user_list')
+        })
+
+    if request.user.has_module_perms('participant_site') and user_orgs:
+        links.append({
+            'title': u'Управление сайтом',
+            'href': _reverse(request, 'participant_site:administration:index', args=[user_orgs[0].library.code])
+        })
+
+    if request.user.has_perms('statistics.view_all_statistic') or user_orgs:
+        links.append({
+            'title': u'Статистика',
+            'href': _reverse(request, 'statistics:frontend:index')
+        })
+
+    return links
+
+
+def _reverse(request, url, args=[]):
+    return u'%s://%s%s' % (request.scheme, request.get_host(), reverse(url, args=args))
