@@ -123,7 +123,6 @@ def access_token(request):
         session['oauth'] = 'session_oauth'
         session.set_expiry(expired)
         session.save()
-        print session.session_key
         access_token_model = models.AccessToken(
             auth_user_id=auth_code.auth_user_id,
             token=session.session_key,

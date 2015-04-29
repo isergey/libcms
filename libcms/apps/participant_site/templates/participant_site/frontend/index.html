@@ -3,6 +3,7 @@
 {% load participant_news_tags %}
 {% load participant_events_tags %}
 {% load ssearch_tags %}
+{% load participant_banners_tags %}
 {#{% load news_tags %}#}
 {#{% load events_tags %}#}
 {#{% load ssearch_tags %}#}
@@ -36,6 +37,10 @@
 
     <div class="span3">
         {% include 'participant_site/frontend/site_menu.html' %}
+        <hr>
+        <div>
+            {% show_banners library.id %}
+        </div>
     </div>
     <div class="span9">
         <div class="row">

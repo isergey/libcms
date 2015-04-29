@@ -136,6 +136,7 @@ INSTALLED_APPS = (
     'participant_site',
     'participant_menu',
     'participant_photopolls',
+    'participant_banners',
     'professionals_pages',
     'professionals_news',
     'professionals',
@@ -152,7 +153,7 @@ INSTALLED_APPS = (
     'guestbook',
     'newinlib',
     'attacher',
-    'oauth2_provider'
+    'oauth2_provider',
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

@@ -1,0 +1,8 @@
+{% for banner in banners %}
+    {% if banner.url %}
+        <a href="{{ banner.url|safe }}" {% if banner.target_blank %}target="_blank" {% endif %}><img src="{{ MEDIA_URL }}{{ banner.image }}"></a>
+    {% else %}
+        <img src="{{ MEDIA_URL }}{{ banner.image }}">
+    {% endif %}
+    {% if not forloop.last %}<hr/>{% endif %}
+{% endfor %}
