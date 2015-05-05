@@ -1,0 +1,90 @@
+{% extends 'participant_site/administration/backend_base.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% block module_title %}Банеры{% endblock %}
+{% block module_menu %}
+    {% include 'participant_banners/administration/module_menu.html' %}
+{% endblock %}
+{% block module_content %}
+    {#    {% active_path 'accounts:administration:index' %}#}
+    {#    <a class="{% active 'accounts:administration:index' %}" href="{% url accounts:administration:index %}">wedwed</a>#}
+    <ul class="breadcrumb">
+        {% block breadcrumb %}
+            {% breadcrumb "Банеры" %}
+        {% endblock %}
+    </ul>
+    {% block action_content %}
+        <div class="well well-small">
+            <a href="{% url 'participant_banners:administration:create' library.code %}" class="btn btn-success"><i class="icon-plus icon-white"></i> Добавить банер</a>
+        </div>
+        <ul class="nav nav-tabs">
+        {% for lang in languages %}
+            <li title="Банеры на языке {{ lang.1 }}" {% if lang.0 == current_lang %}class="active" {% endif %}><a href="{% url 'participant_banners:administration:index' library.code  lang.0 %}">{{ lang.1 }}</a></li>
+        {% endfor %}
+        </ul>
+        <table class="table">
+            <tr>
+                <th style="width: 100px">Изображение</th>
+                <th>Название</th>
+                <th style="width: 100px">Начало показа</th>
+                <th style="width: 100px">Окончание показа</th>
+                <th style="width: 50px">Порядок</th>
+                <th style="width: 100px">Действия</th>
+            </tr>
+            {% for banner in banners_page.object_list %}
+                <tr {% if not banner.active or banner.end_date < now or banner.start_date > now  %}
+                    class="alert alert-warning"
+                    title="Банер неактивен"
+                {% endif %}>
+                    <td>
+                        {% if banner.library_creator_id == library.id %}
+                            <a href="{% url 'participant_banners:administration:edit' library.code banner.id %}"><img src="{{ MEDIA_URL }}{{ banner.image }}"></a>
+                        {% else %}
+                            <img src="{{ MEDIA_URL }}{{ banner.image }}">
+                        {% endif %}
+                    </td>
+                    <td>{{ banner.title }}</td>
+                    <td>{{ banner.start_date }}</td>
+                    <td>{{ banner.end_date }}</td>
+                    <td>{{ banner.order }}</td>
+                    <td>
+                    {% if banner.library_creator_id == library.id %}
+                        {% if perms.participant_banners.delete_banner %}
+                            <a title="Удалить" href="{% url 'participant_banners:administration:delete' library.code banner.id %}" class="delete btn btn-danger btn-small"><i class="icon-trash icon-white"></i></a>
+                        {% endif %}
+                        {% if perms.participant_banners.change_banner %}
+                            {% if banner.active %}
+                                <a title="Деактивировать" href="{% url 'participant_banners:administration:toggle_active' library.code banner.id %}" class="btn btn-warning btn-small"><i class="icon-eye-close icon-white"></i></a>
+                            {% else %}
+                                <a title="Активировать" href="{% url 'participant_banners:administration:toggle_active' library.code banner.id %}" class="btn btn-success btn-small"><i class="icon-eye-open icon-white"></i></a>
+                            {% endif %}
+                        {% endif %}
+                        {% if perms.participant_banners.bind_to_descendants %}
+                            {% if not banner.in_descendants  %}
+                                <a title="Отобразить банер в дочерних ораганизациях"
+                                   href="{% url 'participant_banners:administration:bind_to_children_orgs' library.code banner.id %}"
+                                   class="btn btn-small">
+                                    <i class="icon-chevron-down"></i>
+                                </a>
+                            {% else %}
+                                <a title="Убрать банер из дочерних ораганизаций"
+                                   href="{% url 'participant_banners:administration:unbind_to_children_orgs' library.code banner.id %}"
+                                   class="btn btn-small">
+                                    <i class="icon-chevron-up"></i>
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% admin_pagination banners_page %}
+    <script type="text/javascript">
+        $("a.delete").click(function () {
+            if (!confirm('Вы уверены, что хотите удалить?')) return false;
+        });
+    </script>
+    {% endblock %}
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'participant_banners/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% block breadcrumb %}
+    <li><a href="{% url 'participant_banners:administration:index' library.code 'ru' %}">Банеры</a><span class="divider">/</span></li>
+    {% breadcrumb "Создание банера" %}
+
+{% endblock %}
+
+{% block action_content %}
+
+    <script type="text/javascript" src="{% url 'jsi18n' %}"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/calendar.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/DateTimeShortcuts.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css"/>
+
+    <script type="text/javascript">
+        window.__admin_media_prefix__ = "{{ STATIC_URL }}admin/";
+    </script>
+    <style>
+    form input[type=text], textarea{
+        width: 95%;
+    }
+    </style>
+
+    <form class="" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <legend>Создание банера</legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=banner_form %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Создать</button>
+                <button type="reset" class="btn">Отмена</button>
+            </div>
+        </fieldset>
+    </form>
+    <script type="text/javascript">
+        (function($) {
+            var field;
+        })(django.jQuery);
+    </script>
+{% endblock %}

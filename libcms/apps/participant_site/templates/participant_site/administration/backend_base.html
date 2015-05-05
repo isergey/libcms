@@ -26,8 +26,10 @@
                             {% if perms.participant_news %}<li><a href="{% url 'participant_news:administration:index' library.code %}">Новости</a></li>{% endif %}
                             {% if perms.participant_events %}<li><a href="{% url 'participant_events:administration:index' library.code %}">Афиша</a></li>{% endif %}
                             {% if perms.participant_pages %}<li><a href="{% url 'participant_pages:administration:index' library.code %}">Страницы</a></li>{% endif %}
+                            {% if perms.participant_menu %}<li><a href="{% url 'participant_banners:administration:index' library.code %}">Банеры</a></li>{% endif %}
                             {% if perms.participant_photopolls %}<li><a href="{% url 'participant_photopolls:administration:index' library.code %}">Фотоголосования</a></li>{% endif %}
                             {% if perms.participant_menu %}<li><a href="{% url 'participant_menu:administration:index' library.code %}">Меню сайта</a></li>{% endif %}
+
                             {% if perms.participant_site.change_librarysitecard %}
                                 <hr class="divider"/>
                                 <li><a href="{% url 'participant_site:administration:edit_info' library.code %}">Карточка библиотеки</a></li>
