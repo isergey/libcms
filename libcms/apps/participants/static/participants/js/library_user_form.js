@@ -103,10 +103,7 @@
       };
     },
     onChangeHandle: function (event) {
-      this.props.onChange({
-        name: this.props.name,
-        value: event.target.value
-      });
+      this.props.onChange(event.target.value);
     },
     render: function () {
       var options = this.props.choices.map(function (choice) {
@@ -122,6 +119,8 @@
       );
     }
   });
+
+  
 
   var TreeSelect = React.createClass({
     getDefaultProps: function () {
@@ -142,14 +141,13 @@
       var child = this.state.childChoices.length > 0 ? <TreeSelect name={this.props.name} onChange={this.props.onChange} key={this.state.value} choices={this.state.childChoices } /> : null;
       return (
         <div>
-          <Select name={this.props.name} onChange={this.onChangeHandle} choices={this.props.choices} />
+          <Select onChange={this.changeHandle} choices={this.props.choices} />
           {child}
         </div>
       );
     },
-    onChangeHandle: function (event) {
+    changeHandle: function (value) {
       var _this = this;
-      var value = event.value;
       if (value !== '') {
         API.getLibraries({
           'parent_id': value
@@ -166,26 +164,70 @@
           childChoices: []
         });
       }
-      this.props.onChange(event);
+      this.props.onChange(value);
     }
   });
 
 
-  //var TextInput = React.createClass({
-  //  render: function () {
-  //
-  //  }
-  //});
-
+  var TextInput = React.createClass({
+    getDefaultProps: function () {
+      return {
+        placeholder: '',
+        value: '',
+        onChange: function () {
+        }
+      };
+    },
+    changeHandle: function (event) {
+      this.props.onChange(event.target.value);
+    },
+    render: function () {
+      return (
+        <input onChange={this.changeHandle} defaultValue={this.props.value} placeholder={this.props.placeholder} />
+      );
+    }
+  });
 
   var Field = React.createClass({
+    getDefaultProps: function () {
+      return {
+        label: '',
+        errors: [],
+        input: TextInput,
+        inputProps: {},
+        onChange: function () {}
+      };
+    },
+    changeHandle: function (value) {
+      this.props.onChange({
+        name: this.props.name,
+        value: value
+      });
+    },
     render: function () {
       var label = this.props.label ? <label className="control-label">{ this.props.label }</label> : null;
+      var helpBlock = this.props.help ? <p className="help-block">{this.props.help}</p> : null;
+      var errors = this.props.errors.map(function (error) {
+        return (
+          <p className="help-block">{error}</p>
+        );
+      });
+      var cx = React.addons.classSet;
+      var classes = cx({
+        'control-group': true,
+        'error': this.props.errors.length > 0
+      });
+
+      var inputProps = this.props.inputProps;
+      inputProps.onChange = this.changeHandle;
+
       return (
-        <div className="control-group">
+        <div className={classes}>
           {label}
-          <div class="controls">
-          {this.props.children}
+          <div className="controls">
+          {React.createFactory(this.props.input)(inputProps)}
+          {helpBlock}
+          {errors}
           </div>
         </div>
       );
@@ -199,7 +241,8 @@
         loaded: false,
         values: {},
         libraries: [],
-        departments: []
+        departments: [],
+        errors: {}
       };
     },
     componentDidMount: function () {
@@ -216,6 +259,7 @@
       });
     },
     libraryChangeHandle: function (event) {
+      console.log('libraryChangeHandle', event);
       var _this = this;
       if (event.value !== '') {
         API.getDepartments({
@@ -254,19 +298,61 @@
         });
       });
     },
+    changeHandle: function (event) {
+      var values = this.state.values;
+      values[event.name] = event.value;
+      this.setState({
+        values: values
+      });
+      console.log(event);
+    },
+    submitHandle: function (event) {
+      event.preventDefault();
+      console.log(this.state.values);
+    },
     render: function () {
       var loader = (<div>Форма загружается...</div>);
       var form = (
-        <form className="form">
-          <Field label="Район">
-            <Select name='districts' onChange={this.districtsChangeHandle} choices={this.state.districts} />
-          </Field>
-          <Field label="Организация">
-            <TreeSelect key={this.state.values.district} name='libraries'  onChange={this.libraryChangeHandle} choices={this.state.libraries} />
-          </Field>
-          <Field label="Отдел">
-            <Select key={this.state.values.library} name='departments' choices={this.state.departments} />
-          </Field>
+        <form onSubmit={this.submitHandle} className="form">
+          <Field name="district"
+            onChange={this.districtsChangeHandle}
+            input={Select}
+            inputProps={{
+              choices: this.state.districts
+            }}
+          />
+          <Field name="library"
+            key={this.state.values.district}
+            onChange={this.libraryChangeHandle}
+            input={TreeSelect}
+            inputProps={{
+              choices: this.state.libraries
+            }}
+          />
+          <Field name="department"
+            key={this.state.values.library}
+            input={TreeSelect}
+            inputProps={{
+              choices: this.state.departments
+            }}
+          />
+          <Field name='email'
+            onChange={this.changeHandle}
+            label="Email"
+            help="Только в домене @tatar.ru"
+            input={TextInput}
+            inputProps={{
+              placeholder: 'Только в домене @tatar.ru'
+            }}/>
+          <Field name='first_name'
+            label='Имя'
+            onChange={this.changeHandle}/>
+          <Field name='second_name'
+            label='Отчество'
+            onChange={this.changeHandle}/>
+          <Field name='last_name'
+            label='Фамилия'
+            onChange={this.changeHandle}/>
         </form>
       );
       return this.state.loaded ? form : loader;
