@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+from django.core import serializers
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import transaction
@@ -11,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 
 from common.pagination import get_page
-from ..models import Library, LibraryType, District, LibraryContentEditor, UserLibrary, get_role_groups
+from .. import models
 from . import forms
 from .. import decorators
 from accounts import models as accounts_models
@@ -24,7 +25,7 @@ def check_owning(user, library):
     if user.is_superuser:
         return True
     else:
-        if LibraryContentEditor.objects.filter(user=user, library=library).count():
+        if models.LibraryContentEditor.objects.filter(user=user, library=library).count():
             return True
         else:
             return False
@@ -45,42 +46,75 @@ def index(request):
 
 @login_required
 def detail(request, id):
-    org = get_object_or_404(Library, id=id)
-    branches = Library.objects.filter(parent=org)
-    users = UserLibrary.objects.select_related('user').filter(library=org)
+    org = get_object_or_404(models.Library, id=id)
+    branches = models.Library.objects.filter(parent=org)
+    departments = models.Department.objects.filter(library=org)
     return render(request, 'participants/administration/detail.html', {
         'org': org,
         'branches': branches,
-        'users': users
+        'departments': departments
     })
+
+
+
 
 
 @login_required
 @transaction.atomic()
-def add_lib_user(request, id):
-    org = get_object_or_404(Library, id=id)
+@permission_required_or_403('participants.add_departament')
+def get_departments(request):
+    library_id = request.GET.get('library_id', '0')
+    library = get_object_or_404(models.Library, id=library_id)
+    departments = models.Department.objects.filter(library=library)
+    data = serializers.serialize("json", departments)
+    return HttpResponse(data, content_type=u'application/json')
+
+
+@login_required
+@transaction.atomic()
+@permission_required_or_403('participants.add_departament')
+def create_departament(request, library_id):
+    library = get_object_or_404(models.Library, id=library_id)
     if request.method == 'POST':
-        form = forms.UserLibraryForm(request.POST)
+        form = forms.DepartamentForm(request.POST)
         if form.is_valid():
-            ul = form.save(commit=False)
-            ul.library = org
-            ul.save()
-            return redirect('participants:administration:detail', id=org.id)
+            departament = form.save(commit=False)
+            departament.library = library
+            departament.save()
+            return redirect('participants:administration:detail', id=library_id)
     else:
-        form = forms.UserLibraryForm()
-
-    return render(request, 'participants/administration/add_user.html', {
-        'org': org,
-        'form': form
+        form = forms.DepartamentForm()
+    return render(request, 'participants/administration/create_departament.html', {
+        'form': form,
+        'library': library
     })
 
 
 @login_required
 @transaction.atomic()
-def remove_lib_user(request, id):
-    ul = get_object_or_404(UserLibrary, id=id)
-    ul.delete()
-    return redirect('participants:administration:detail', id=ul.library_id)
+@permission_required_or_403('participants.change_departament')
+def edit_departament(request, id):
+    departament = get_object_or_404(models.Department, id=id)
+    if request.method == 'POST':
+        form = forms.DepartamentForm(request.POST, instance=departament)
+        if form.is_valid():
+            form.save()
+            return redirect('participants:administration:detail', id=departament.library_id)
+    else:
+        form = forms.DepartamentForm(instance=departament)
+    return render(request, 'participants/administration/edit_departament.html', {
+        'form': form,
+        'library': departament.library
+    })
+
+
+@login_required
+@transaction.atomic()
+@permission_required_or_403('participants.delete_departament')
+def delete_departament(request, id):
+    departament = get_object_or_404(models.Department, id=id)
+    departament.delete()
+    return redirect('participants:administration:detail', id=departament.library_id)
 
 
 # @permission_required_or_403('participants.add_library')
@@ -90,17 +124,17 @@ def list(request, parent=None):
         return HttpResponseForbidden()
 
     if parent:
-        parent = get_object_or_404(Library, id=parent)
-        libraries_page = get_page(request, Library.objects.filter(parent=parent))
+        parent = get_object_or_404(models.Library, id=parent)
+        libraries_page = get_page(request, models.Library.objects.filter(parent=parent))
     else:
         if not request.user.is_superuser:
             cbses = []
-            library_content_editors = LibraryContentEditor.objects.filter(user=request.user)
+            library_content_editors = models.LibraryContentEditor.objects.filter(user=request.user)
             for lce in library_content_editors:
                 cbses.append(lce.library_id)
-            libraries_page = get_page(request, Library.objects.filter(id__in=cbses))
+            libraries_page = get_page(request, models.Library.objects.filter(id__in=cbses))
         else:
-            libraries_page = get_page(request, Library.objects.filter(parent=None))
+            libraries_page = get_page(request, models.Library.objects.filter(parent=None))
 
     return render(request, 'participants/administration/libraries_list.html', {
         'parent': parent,
@@ -108,7 +142,7 @@ def list(request, parent=None):
     })
 
 
-# @permission_required_or_403('participants.add_library')
+@permission_required_or_403('participants.add_library')
 @login_required
 @transaction.atomic()
 def create(request, parent=None):
@@ -129,7 +163,7 @@ def create(request, parent=None):
     #         return HttpResponse(u'У Вас нет прав на создание ЦБС')
     parent_org = None
     if parent:
-        parent_org = get_object_or_404(Library, id=parent)
+        parent_org = get_object_or_404(models.Library, id=parent)
     if request.method == 'POST':
         library_form = forms.LibraryForm(request.POST, prefix='library_form')
 
@@ -154,11 +188,11 @@ def create(request, parent=None):
     })
 
 
-# @permission_required_or_403('participants.change_library')
+@permission_required_or_403('participants.change_library')
 @login_required
 @transaction.atomic()
 def edit(request, id):
-    library = get_object_or_404(Library, id=id)
+    library = get_object_or_404(models.Library, id=id)
     parent = library.parent
     # if not parent:
     # if not check_owning(request.user, library) or not request.user.has_perm('participants.change_cbs'):
@@ -189,11 +223,11 @@ def edit(request, id):
     })
 
 
-# @permission_required_or_403('participants.delete_library')
+@permission_required_or_403('participants.delete_library')
 @login_required
 @transaction.atomic()
 def delete(request, id):
-    library = get_object_or_404(Library, id=id)
+    library = get_object_or_404(models.Library, id=id)
     parent = library.parent
     if not parent:
         if not check_owning(request.user, library) or not request.user.has_perm('participants.delete_cbs'):
@@ -216,7 +250,7 @@ def library_types_list(request):
     if not request.user.has_module_perms('participants'):
         return HttpResponseForbidden()
 
-    library_types_page = get_page(request, LibraryType.objects.all())
+    library_types_page = get_page(request, models.LibraryType.objects.all())
 
     return render(request, 'participants/administration/library_types_list.html', {
         'library_types_page': library_types_page,
@@ -243,7 +277,7 @@ def library_type_create(request):
 @permission_required_or_403('participants.change_library_type')
 @transaction.atomic()
 def library_type_edit(request, id):
-    library_type = get_object_or_404(LibraryType, id=id)
+    library_type = get_object_or_404(models.LibraryType, id=id)
     if request.method == 'POST':
         library_types_form = forms.LibraryTypeForm(request.POST, instance=library_type)
 
@@ -261,7 +295,7 @@ def library_type_edit(request, id):
 @permission_required_or_403('participants.delete_library_type')
 @transaction.atomic()
 def library_type_delete(request, id):
-    library_type = get_object_or_404(LibraryType, id=id)
+    library_type = get_object_or_404(models.LibraryType, id=id)
     library_type.delete()
     return redirect('participants:administration:library_types_list')
 
@@ -270,7 +304,7 @@ def library_type_delete(request, id):
 def district_list(request):
     if not request.user.has_module_perms('participants'):
         return HttpResponseForbidden()
-    districts_page = get_page(request, District.objects.all())
+    districts_page = get_page(request, models.District.objects.all())
 
     return render(request, 'participants/administration/district_list.html', {
         'districts_page': districts_page,
@@ -298,7 +332,7 @@ def district_create(request):
 @permission_required_or_403('participants.change_district')
 @transaction.atomic()
 def district_edit(request, id):
-    district = get_object_or_404(District, id=id)
+    district = get_object_or_404(models.District, id=id)
     if request.method == 'POST':
         district_form = forms.DistrictForm(request.POST, instance=district)
 
@@ -317,7 +351,7 @@ def district_edit(request, id):
 @permission_required_or_403('participants.delete_district')
 @transaction.atomic()
 def district_delete(request, id):
-    district = get_object_or_404(District, id=id)
+    district = get_object_or_404(models.District, id=id)
     district.delete()
     return redirect('participants:administration:district_list')
 
@@ -334,9 +368,9 @@ def _get_user_manager_orgs_qs(managed_libraries):
             for descendant in managed_org.get_descendants():
                 libs_for_qs.append(descendant.id)
 
-        select_libraries_qs = Library.objects.filter(id__in=libs_for_qs)
+        select_libraries_qs = models.Library.objects.filter(id__in=libs_for_qs)
     else:
-        select_libraries_qs = Library.objects.all()
+        select_libraries_qs = models.Library.objects.all()
     return select_libraries_qs
 
 
@@ -401,9 +435,11 @@ def library_user_list(request, managed_libraries=[]):
         if login:
             q = q & Q(user__username__icontains=login)
 
-    library_user_page = get_page(request,
-                                 UserLibrary.objects.select_related('user', 'library','position', 'library__district').filter(q),
-                                 20)
+    library_user_page = get_page(
+        request,
+        models.UserLibrary.objects.select_related('user', 'library','position', 'library__district').filter(q),
+        20
+    )
     return render(request, 'participants/administration/library_user_list.html', {
         'library_user_page': library_user_page,
         'districts_form': districts_form,
@@ -513,7 +549,7 @@ def edit_library_user(request, id, managed_libraries=[]):
 
     select_district_form = forms.get_district_form(districts)(prefix='sdf')
 
-    library_user = get_object_or_404(UserLibrary, id=id)
+    library_user = get_object_or_404(models.UserLibrary, id=id)
 
     errors = []
     if request.method == 'POST':
@@ -543,7 +579,7 @@ def edit_library_user(request, id, managed_libraries=[]):
                 accounts_models.create_or_update_password(user, user_form.cleaned_data['password'])
             user.save()
 
-            role_groups = set(get_role_groups())
+            role_groups = set(models.get_role_groups())
             selected_groups = set(Group.objects.filter(id__in=user_library_group_form.cleaned_data['groups']))
             remove_groups = role_groups - selected_groups
 
@@ -560,7 +596,7 @@ def edit_library_user(request, id, managed_libraries=[]):
             return redirect('participants:administration:library_user_list')
     else:
         user_library_group_form = forms.UserLibraryGroupsFrom(prefix='ulgp', initial={
-            'groups': [group.id for group in get_role_groups(library_user.user)]
+            'groups': [group.id for group in models.get_role_groups(library_user.user)]
         })
         select_library_form = forms.get_add_user_library_form(select_libraries_qs)(prefix='slf', initial={
             'library': library_user.library
@@ -590,7 +626,7 @@ def delete_library_user(request, id, managed_libraries=[]):
     for managed_library in managed_libraries:
         districts.append(managed_library.library.district_id)
 
-    library_user = get_object_or_404(UserLibrary, id=id)
+    library_user = get_object_or_404(models.UserLibrary, id=id)
     library_user.delete()
     return redirect('participants:administration:library_user_list')
 
@@ -607,11 +643,12 @@ def find_library_by_district(request, managed_libraries=[]):
     parent_id = request.GET.get('parent_id', None)
 
     if district_id:
-        district = get_object_or_404(District, id=district_id)
+        district = get_object_or_404(models.District, id=district_id)
+        q = Q(district_id=district_id, parent=parent_id)
     else:
-        district = None
+        q = Q(parent=parent_id)
 
-    libraries = Library.objects.values('id', 'name').filter(district=district, parent=parent_id)
+    libraries = models.Library.objects.values('id', 'name').filter(q)
     lib_list = []
 
     for library in libraries:
@@ -657,23 +694,39 @@ def load_libs(request, managed_libraries=[]):
 
 
     if district_id:
-        district = get_object_or_404(District, id=district_id)
+        district = get_object_or_404(models.District, id=district_id)
         q = q & Q(district=district)
 
 
-    libraries = Library.objects.filter(q)
+    libraries = models.Library.objects.filter(q)
     nodes = []
     for lib in libraries:
         children = []
-        if not lib.is_leaf_node():
-            children = _get_children(lib)
+        # if not lib.is_leaf_node():
+        #     children = _get_children(lib)
         nodes.append({
             'id': lib.id,
             'name': lib.name,
-            'children': children
+            # 'children': children
         })
 
     return HttpResponse(json.dumps(nodes, ensure_ascii=False), content_type='application/json')
+
+
+@login_required
+@transaction.atomic()
+@decorators.must_be_org_user
+def managed_districts(request, managed_libraries=[]):
+
+    districts_id = []
+    for managed_library in managed_libraries:
+        districts_id.append(managed_library.library.district_id)
+    q = Q()
+    if districts_id:
+        q = Q(id__in=districts_id)
+    districts = serializers.serialize("json", models.District.objects.filter(q))
+    return HttpResponse(districts, content_type='application/json')
+
 
 
 def send_user_create_email(user, password):

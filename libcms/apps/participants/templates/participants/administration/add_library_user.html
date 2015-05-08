@@ -18,84 +18,16 @@
 {% endblock %}
 
 {% block action_content %}
-    <div class="alert alert-warning">
-        {% if managed_libraries %}
-            Вы можете управлять сотрудниками организаций:
-            <ul>
-                {% for managed_library in managed_libraries %}
-                    <li>{% for ancestor in managed_library.library.get_ancestors %}
-                        <b>{{ ancestor.name }}</b> /
-                    {% endfor %}
-                        <b>{{ managed_library.library.name }}</b>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            Вы можете управлять сотрудниками любой организации
-        {% endif %}
-    </div>
-    {% if errors %}
-        <div class="alert alert-error">
-            {% for error in errors %}
-                <p>{{ error.message }}</p>
-            {% endfor %}
-        </div>
-    {% endif %}
 
-    <form class="form-horizontal" method="post">
-
-        {% csrf_token %}
-        <fieldset>
-            <input id="id_slf-library" type="hidden" name="slf-library" value="{{ library.id }}"/>
-            {#        {{ select_district_form }}#}
-            {% include 'administration/base_form_fields.html' with form=select_district_form %}
-            <div class="control-group">
-                <label class="control-label" for="id_slf-library">Выберите библиотеку <span
-                        title="Обязательное поле">*</span></label>
-
-                <div class="controls">
-                    <div class="lib_select"></div>
-                    <div class="current_library well well-small" style="margin: 10px 0 0 0">
-                        {% if not library %}
-                            Организация не выбрана
-                        {% else %}
-                            {% if library.name %}Текущая организация:
-                                {% if library.parent_id %}
-                                    {% for ancestor in library.parent.get_ancestors %}
-                                        {{ ancestor.name }} <span class="divider">/</span>
-
-                                    {% endfor %}
-                                    {{ library.parent.name }}
-                                    <span class="divider">/</span>
-                                {% endif %}
-                                {{ library.name }}
-                            {% endif %}
-                        {% endif %}
-
-                    </div>
-                </div>
-
-            </div>
-            {#        {% include 'administration/base_form_fields.html' with form=select_library_form  %}#}
-            {% include 'administration/base_form_fields.html' with form=user_form %}
-            {% include 'administration/base_form_fields.html' with form=user_library_form %}
-            {% include 'administration/base_form_fields.html' with form=user_library_group_form %}
-            <div class="form-actions">
-                <button class="btn" type="submit">Создать</button>
-            </div>
-        </fieldset>
-    </form>
+    <div class="library_user_app"></div>
     <script>
-        $(function () {
-            var $passwordField = $('#id_uf-password');
-            var $generateButton = $('<a href="#gen_pass"> Сгенерировать пароль</a>');
-            $passwordField.after($generateButton);
-            $generateButton.on('click', function () {
-                var randomstring = Math.random().toString(36).slice(-8);
-                $passwordField.val(randomstring);
-            });
-        });
+        var libraryUserAppConfig = {
+            districtsUrl: '{% url 'participants:administration:managed_districts' %}',
+            librariesURL: '{% url 'participants:administration:find_library_by_district' %}',
+            departmentsURL: '{% url 'participants:administration:get_departments' %}'
+        };
     </script>
-
-    {% include 'participants/administration/lib_select_js.html' %}
+    <script src="{{ STATIC_URL }}js/JSXTransformer.min.js"></script>
+    <script src="{{ STATIC_URL }}js/react-with-addons.min.js"></script>
+    <script type="text/jsx" src="{{ STATIC_URL }}participants/js/library_user_form.js"></script>
 {% endblock %}

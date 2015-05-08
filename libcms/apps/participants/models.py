@@ -106,6 +106,16 @@ class Library(MPTTModel):
         order_insertion_by = ['weight']
 
 
+class Department(models.Model):
+    library = models.ForeignKey(Library, on_delete=models.CASCADE)
+    name = models.CharField(verbose_name=u'Название', max_length=255)
+
+    class Meta:
+        unique_together = ('library', 'name')
+
+    def __unicode__(self):
+        return self.name
+
 class UserLibraryPosition(models.Model):
     name = models.CharField(max_length=255, verbose_name=u'Должность')
 
@@ -122,7 +132,7 @@ class UserLibrary(models.Model):
     library = models.ForeignKey(Library)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     middle_name = models.CharField(verbose_name=u'Отчество', max_length=255)
-    # branch = models.CharField(verbose_name=u'Отдел', max_length=255)
+    departament = models.ForeignKey(Department, verbose_name=u'Отдел', null=True)
     position = models.ForeignKey(UserLibraryPosition, verbose_name=u'Должность', null=True, blank=True)
     phone = models.CharField(verbose_name=u'Телефон', max_length=32)
     is_active = models.BooleanField(

@@ -1,27 +1,32 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User, Group
 from accounts.models import GroupTitle
 
-from ..models import Library, LibraryType, District, UserLibrary, UserLibraryPosition, get_role_groups
+from .. import models
 
 
 class LibraryForm(forms.ModelForm):
     class Meta:
-        model = Library
+        model = models.Library
         exclude = ('parent',)
+
+
+class DepartamentForm(forms.ModelForm):
+    class Meta:
+        model = models.Department
+        exclude = ('library',)
 
 
 class LibraryTypeForm(forms.ModelForm):
     class Meta:
-        model = LibraryType
+        model = models.LibraryType
         exclude = []
 
 
 class DistrictForm(forms.ModelForm):
     class Meta:
-        model = District
+        model = models.District
         exclude = []
 
 
@@ -53,8 +58,8 @@ class UserForm(forms.ModelForm):
 
 class UserLibraryForm(forms.ModelForm):
     class Meta:
-        model = UserLibrary
-        exclude = ('library', 'user')
+        model = models.UserLibrary
+        exclude = ('library', 'user', 'departament')
         widgets = {
             'roles': forms.CheckboxSelectMultiple()
         }
@@ -88,9 +93,9 @@ class UserLibraryGroupsFrom(forms.Form):
 
 def get_district_form(districts=None):
     if not districts:
-        queryset = District.objects.all()
+        queryset = models.District.objects.all()
     else:
-        queryset = District.objects.filter(id__in=districts)
+        queryset = models.District.objects.filter(id__in=districts)
 
     class SelectDistrictForm(forms.Form):
         district = forms.ModelChoiceField(queryset=queryset, label=u'Выберите район', required=False)
@@ -99,7 +104,7 @@ def get_district_form(districts=None):
 
 
 class SelectUserPositionForm(forms.Form):
-    position = forms.ModelChoiceField(queryset=UserLibraryPosition.objects.all(), label=u'Должность', required=False)
+    position = forms.ModelChoiceField(queryset=models.UserLibraryPosition.objects.all(), label=u'Должность', required=False)
 
 
 class SelectUserRoleForm(forms.Form):
@@ -130,7 +135,7 @@ class UserAttrForm(forms.Form):
 
 def get_add_user_library_form(queryset=None):
     if not queryset:
-        queryset = Library.objects.all()
+        queryset = models.Library.objects.all()
 
     class AddUserDistrictForm(forms.Form):
         library = forms.ModelChoiceField(
@@ -139,32 +144,4 @@ def get_add_user_library_form(queryset=None):
         )
 
     return AddUserDistrictForm
-
-
-# class UserLibrary(forms.ModelForm):
-# class Meta:
-# model = UserLibrary
-# exclude = ('library',)
-
-
-# from pages.models import Page, Content
-#
-# class PageForm(forms.ModelForm):
-# class Meta:
-# model=Page
-#        exclude = ('parent',)
-#
-#class ContentForm(forms.ModelForm):
-#    class Meta:
-#        model=Content
-#        exclude = ('page',)
-#
-#
-#
-#def get_content_form(exclude_list = ('page',)):
-#    class ContentForm(forms.ModelForm):
-#        class Meta:
-#            model=Content
-#            exclude = exclude_list
-#    return ContentForm
 
