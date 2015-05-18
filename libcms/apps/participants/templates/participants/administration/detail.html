@@ -19,7 +19,8 @@
 
 {% block action_content %}
     <div class="well well-small">
-        <a title="Просмотр и редактирование информации об организации" class="btn" href="{% url 'participants:administration:edit' org.id %}">
+        <a title="Просмотр и редактирование информации об организации" class="btn"
+           href="{% url 'participants:administration:edit' org.id %}">
             <i class="icon-pencil"></i>
             Редактировать
         </a>
@@ -27,6 +28,7 @@
     <ul class="nav nav-tabs" id="myTab">
         <li title="Филиалы организации" class="active"><a href="#home">Филиалы</a></li>
         <li title="Отделы"><a href="#departments">Отделы</a></li>
+        <li title="Сотрудники"><a href="#users">Сотрудники</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="home">
@@ -75,7 +77,7 @@
                 {% recursetree departments %}
                     <li>
                         <a href="{% url 'participants:administration:edit_department' node.id %}">
-                        {{ node.name }}
+                            {{ node.name }}
                         </a>
                         <a title="Удалить отдел и подотделы"
                            class="btn btn-danger btn-mini"
@@ -91,11 +93,37 @@
                 {% endrecursetree %}
             </ul>
         </div>
+        <div class="tab-pane" id="users">
+            <div class="well well-small">
+                <a class="btn btn-success" href="{% url 'participants:administration:add_library_user' org.id %}">
+                    <i class="icon-plus icon-white"></i> Добавить сотрудника
+                </a>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>email</th>
+                    <th>ФИО</th>
+                    <th>Должность</th>
+                    <th>Отдел</th>
+                    <th></th>
+                </tr>
+                {% for library_user in library_users %}
+                    <tr>
+                        <td>{{ library_user.user.email }}</td>
+                        <td>{{ library_user.user.last_name }} {{ library_user.middle_name }} {{ library_user.user.first_name }}</td>
+                        <td>{{ library_user.position }}</td>
+                        <td>{{ library_user.department }}</td>
+                        <td><a href="{% url 'participants:administration:edit_library_user' library_user.id %}" class="btn btn-small">редактировать</a></td>
+                        <td><a href="{% url 'participants:administration:delete_library_user' library_user.id %}" class="btn btn-small btn-danger">удалить</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
     </div>
     <script>
-    $('#myTab a').click(function (e) {
-      e.preventDefault();
-      $(this).tab('show');
-    })
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
     </script>
 {% endblock %}

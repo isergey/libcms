@@ -1,0 +1,34 @@
+{% extends 'participants/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    <li>
+        <a href="{% url 'participants:administration:index' %}">Библиотеки</a>
+        <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{% url 'participants:administration:library_user_list' %}">Сотрудники библиотек</a>
+        <span class="divider">/</span>
+    </li>
+
+    <li class="active">Добавление сотрудника библиотеки</li>
+
+{% endblock %}
+
+{% block action_content %}
+
+    <div class="library_user_app"></div>
+    <script>
+        var libraryUserAppConfig = {
+            districtsUrl: '{% url 'participants:administration:managed_districts' %}',
+            librariesURL: '{% url 'participants:administration:find_library_by_district' %}',
+            departmentsURL: '{% url 'participants:administration:get_departments' %}'
+        };
+    </script>
+    <script src="{{ STATIC_URL }}js/JSXTransformer.min.js"></script>
+    <script src="{{ STATIC_URL }}js/react-with-addons.min.js"></script>
+    <script src="{{ STATIC_URL }}js/validator.min.js"></script>
+    <script type="text/jsx" src="{{ STATIC_URL }}participants/js/library_user_form.js"></script>
+{% endblock %}

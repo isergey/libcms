@@ -49,10 +49,12 @@ def detail(request, id):
     org = get_object_or_404(models.Library, id=id)
     branches = models.Library.objects.filter(parent=org)
     departments = models.Department.objects.filter(library=org)
+    library_users = models.UserLibrary.objects.filter(library=org)
     return render(request, 'participants/administration/detail.html', {
         'org': org,
         'branches': branches,
-        'departments': departments
+        'departments': departments,
+        'library_users': library_users
     })
 
 
@@ -464,185 +466,277 @@ def library_user_list(request, managed_libraries=[]):
     })
 
 
-
-@login_required
 @transaction.atomic()
-@permission_required_or_403('participants.add_userlibrary')
-@decorators.must_be_org_user
-def add_library_user(request, managed_libraries=[]):
-    districts = []
-    for managed_library in managed_libraries:
-        districts.append(managed_library.library.district_id)
-
-    select_libraries_qs = _get_user_manager_orgs_qs(managed_libraries)
-
-    select_district_form = forms.get_district_form(districts)(prefix='sdf')
-    library = None
-    errors = []
-    SelectLibraryForm = forms.get_add_user_library_form(select_libraries_qs)
+def add_library_user(request, library_id, managed_libraries=[]):
+    library = get_object_or_404(models.Library, id=library_id)
+    roles_queryset =  Group.objects.filter(name__startswith='role_')
     if request.method == 'POST':
-        all_valid = True
-        select_library_form = SelectLibraryForm(request.POST, prefix='slf')
+        user_form = forms.UserForm(request.POST, prefix='user_form')
 
-        if not select_library_form.is_valid():
-            all_valid = False
-            errors.append({'message': 'Выберите организацию'})
-        else:
-            library = select_library_form.cleaned_data['library']
+        user_library_form = forms.UserLibraryForm(request.POST, prefix='user_library_form')
+        user_library_form.fields['department'].queryset = models.Department.objects.filter(library=library)
+        user_roles_from = forms.UserLibraryGroupsFrom(request.POST, prefix='user_roles_from')
+        user_roles_from.fields['groups'].queryset = roles_queryset
 
-        user_library_form = forms.UserLibraryForm(request.POST, prefix='ulf')
-        if not user_library_form.is_valid():
-            all_valid = False
-
-        user_form = forms.UserForm(request.POST, prefix='uf')
-        if not user_form.is_valid():
-            all_valid = False
-
-        user_library_group_form = forms.UserLibraryGroupsFrom(request.POST, prefix='ulgp')
-        if not user_library_group_form.is_valid():
-            all_valid = False
-
-        if all_valid:
-            user = User(
-                username=user_form.cleaned_data['email'],
-                email=user_form.cleaned_data['email'],
-                first_name=user_form.cleaned_data['first_name'],
-                last_name=user_form.cleaned_data['last_name'],
-                is_active=True
-            )
-
+        if user_form.is_valid() and user_library_form.is_valid() and user_roles_from.is_valid():
+            user = user_form.save(commit=False)
+            user.username = user_form.cleaned_data['email']
             user.set_password(user_form.cleaned_data['password'])
             user.save()
             accounts_models.create_or_update_password(user, user_form.cleaned_data['password'])
 
-            users_group = Group.objects.get(name='users')
-            users_group.user_set.add(user)
-
-            selected_groups = set(Group.objects.filter(id__in=user_library_group_form.cleaned_data['groups']))
-            for selected_group in selected_groups:
-                selected_group.user_set.add(user)
-
             user_library = user_library_form.save(commit=False)
             user_library.user = user
-            user_library.library = select_library_form.cleaned_data['library']
+            user_library.library = library
             user_library.save()
-            user_library_form.save_m2m()
-            send_user_create_email(user, user_form.cleaned_data['password'])
-            return redirect('participants:administration:library_user_list')
-    else:
-        select_library_form = SelectLibraryForm(request.POST, prefix='slf')
-        user_library_group_form = forms.UserLibraryGroupsFrom(prefix='ulgp')
-        select_district_form = forms.get_district_form(districts)(prefix='sdf')
-        user_library_form = forms.UserLibraryForm(prefix='ulf')
-        user_form = forms.UserForm(prefix='uf')
 
+            user_roles_from = forms.UserLibraryGroupsFrom(request.POST, prefix='user_roles_from', instance=user)
+            user_roles_from.fields['groups'].queryset = roles_queryset
+            if user_roles_from.is_valid():
+                user_roles_from.save()
+            send_user_create_email(user, user_form.cleaned_data['password'])
+
+            return redirect('participants:administration:detail', id=library.id)
+    else:
+        user_form = forms.UserForm(prefix='user_form')
+        user_library_form = forms.UserLibraryForm(prefix='user_library_form')
+        user_library_form.fields['department'].queryset = models.Department.objects.filter(library=library)
+        user_roles_from = forms.UserLibraryGroupsFrom(prefix='user_roles_from')
+        user_roles_from.fields['groups'].queryset = roles_queryset
     return render(request, 'participants/administration/add_library_user.html', {
-        'select_district_form': select_district_form,
-        'select_library_form': select_library_form,
-        'user_library_form': user_library_form,
         'user_form': user_form,
-        'user_library_group_form':user_library_group_form,
-        'library': library,
-        'errors': errors,
-        'managed_libraries': managed_libraries
+        'user_library_form': user_library_form,
+        'user_roles_from': user_roles_from
     })
 
-
-
-
-@login_required
 @transaction.atomic()
-@permission_required_or_403('participants.change_userlibrary')
-@decorators.must_be_org_user
 def edit_library_user(request, id, managed_libraries=[]):
-    districts = []
-    for managed_library in managed_libraries:
-        districts.append(managed_library.library.district_id)
-
-    select_libraries_qs = _get_user_manager_orgs_qs(managed_libraries)
-
-    select_district_form = forms.get_district_form(districts)(prefix='sdf')
-
-    library_user = get_object_or_404(models.UserLibrary, id=id)
-
-    errors = []
+    # library = get_object_or_404(models.Library, id=library_id)
+    user_library = models.UserLibrary.objects.get(id=id)
+    library = user_library.library
     if request.method == 'POST':
-        all_valid = True
-        select_library_form = forms.get_add_user_library_form(select_libraries_qs)(request.POST, prefix='slf', )
+        user_form = forms.UserForm(request.POST, prefix='user_form', instance=user_library.user)
 
-        if not select_library_form.is_valid():
-            all_valid = False
-            errors.append({'message': 'Выберите организацию'})
+        user_library_form = forms.UserLibraryForm(request.POST, prefix='user_library_form', instance=user_library)
+        user_library_form.fields['department'].queryset = models.Department.objects.filter(library=library)
 
-        user_library_form = forms.UserLibraryForm(request.POST, prefix='ulf', instance=library_user)
-        if not user_library_form.is_valid():
-            all_valid = False
+        user_roles_from = forms.UserLibraryGroupsFrom(request.POST, prefix='user_roles_from', instance=user_library.user)
+        user_roles_from.fields['groups'].queryset = Group.objects.filter(name__startswith='role_')
 
-        user_form = forms.UserForm(request.POST, prefix='uf', instance=library_user.user)
-        if not user_form.is_valid():
-            all_valid = False
-
-        user_library_group_form = forms.UserLibraryGroupsFrom(request.POST, prefix='ulgp')
-        if not user_library_group_form.is_valid():
-            all_valid = False
-
-        if all_valid:
+        if user_form.is_valid() and user_library_form.is_valid() and user_roles_from.is_valid():
             user = user_form.save(commit=False)
+            user.username = user_form.cleaned_data['email']
             if user_form.cleaned_data['password']:
                 user.set_password(user_form.cleaned_data['password'])
                 accounts_models.create_or_update_password(user, user_form.cleaned_data['password'])
             user.save()
 
-            role_groups = set(models.get_role_groups())
-            selected_groups = set(Group.objects.filter(id__in=user_library_group_form.cleaned_data['groups']))
-            remove_groups = role_groups - selected_groups
-
-            for selected_group in selected_groups:
-                selected_group.user_set.add(user)
-
-            for remove_group in remove_groups:
-                remove_group.user_set.remove(user)
-
             user_library = user_library_form.save(commit=False)
-            user_library.library = select_library_form.cleaned_data['library']
+            user_library.user = user
+            user_library.library = library
             user_library.save()
-            user_library_form.save_m2m()
-            return redirect('participants:administration:library_user_list')
-    else:
-        user_library_group_form = forms.UserLibraryGroupsFrom(prefix='ulgp', initial={
-            'groups': [group.id for group in models.get_role_groups(library_user.user)]
-        })
-        select_library_form = forms.get_add_user_library_form(select_libraries_qs)(prefix='slf', initial={
-            'library': library_user.library
-        })
-        user_library_form = forms.UserLibraryForm(prefix='ulf', instance=library_user)
-        user_form = forms.UserForm(prefix='uf', instance=library_user.user, initial={
-            'password': ''
-        })
 
-    return render(request, 'participants/administration/edit_library_user.html', {
-        'select_district_form': select_district_form,
-        'select_library_form': select_library_form,
-        'user_library_form': user_library_form,
-        'user_library_group_form': user_library_group_form,
+            user_roles_from.save()
+            return redirect('participants:administration:detail', id=library.id)
+    else:
+        user_form = forms.UserForm(prefix='user_form', instance=user_library.user)
+        user_library_form = forms.UserLibraryForm(prefix='user_library_form', instance=user_library)
+        user_library_form.fields['department'].queryset = models.Department.objects.filter(library=library)
+        user_roles_from = forms.UserLibraryGroupsFrom(prefix='user_roles_from', instance=user_library.user)
+        user_roles_from.fields['groups'].queryset = Group.objects.filter(name__startswith='role_')
+
+    return render(request, 'participants/administration/add_library_user.html', {
         'user_form': user_form,
-        'library_user': library_user,
-        'managed_libraries': managed_libraries
+        'user_library_form': user_library_form,
+        'user_roles_from': user_roles_from
     })
 
-
-@login_required
 @transaction.atomic()
-@permission_required_or_403('participants.delete_userlibrary')
-@decorators.must_be_org_user
-def delete_library_user(request, id, managed_libraries=[]):
-    districts = []
-    for managed_library in managed_libraries:
-        districts.append(managed_library.library.district_id)
+def delete_library_user(request, id):
+    user_library = models.UserLibrary.objects.get(id=id)
+    user_library.user.delete()
+    user_library.delete()
+    return redirect('participants:administration:detail', id=user_library.library_id)
 
-    library_user = get_object_or_404(models.UserLibrary, id=id)
-    library_user.delete()
-    return redirect('participants:administration:library_user_list')
+#
+# @login_required
+# @transaction.atomic()
+# @permission_required_or_403('participants.add_userlibrary')
+# @decorators.must_be_org_user
+# def add_library_user(request, managed_libraries=[]):
+#     districts = []
+#     for managed_library in managed_libraries:
+#         districts.append(managed_library.library.district_id)
+#
+#     select_libraries_qs = _get_user_manager_orgs_qs(managed_libraries)
+#
+#     select_district_form = forms.get_district_form(districts)(prefix='sdf')
+#     library = None
+#     errors = []
+#     SelectLibraryForm = forms.get_add_user_library_form(select_libraries_qs)
+#     if request.method == 'POST':
+#         all_valid = True
+#         select_library_form = SelectLibraryForm(request.POST, prefix='slf')
+#
+#         if not select_library_form.is_valid():
+#             all_valid = False
+#             errors.append({'message': 'Выберите организацию'})
+#         else:
+#             library = select_library_form.cleaned_data['library']
+#
+#         user_library_form = forms.UserLibraryForm(request.POST, prefix='ulf')
+#         if not user_library_form.is_valid():
+#             all_valid = False
+#
+#         user_form = forms.UserForm(request.POST, prefix='uf')
+#         if not user_form.is_valid():
+#             all_valid = False
+#
+#         user_library_group_form = forms.UserLibraryGroupsFrom(request.POST, prefix='ulgp')
+#         if not user_library_group_form.is_valid():
+#             all_valid = False
+#
+#         if all_valid:
+#             user = User(
+#                 username=user_form.cleaned_data['email'],
+#                 email=user_form.cleaned_data['email'],
+#                 first_name=user_form.cleaned_data['first_name'],
+#                 last_name=user_form.cleaned_data['last_name'],
+#                 is_active=True
+#             )
+#
+#             user.set_password(user_form.cleaned_data['password'])
+#             user.save()
+#             accounts_models.create_or_update_password(user, user_form.cleaned_data['password'])
+#
+#             users_group = Group.objects.get(name='users')
+#             users_group.user_set.add(user)
+#
+#             selected_groups = set(Group.objects.filter(id__in=user_library_group_form.cleaned_data['groups']))
+#             for selected_group in selected_groups:
+#                 selected_group.user_set.add(user)
+#
+#             user_library = user_library_form.save(commit=False)
+#             user_library.user = user
+#             user_library.library = select_library_form.cleaned_data['library']
+#             user_library.save()
+#             user_library_form.save_m2m()
+#             send_user_create_email(user, user_form.cleaned_data['password'])
+#             return redirect('participants:administration:library_user_list')
+#     else:
+#         select_library_form = SelectLibraryForm(request.POST, prefix='slf')
+#         user_library_group_form = forms.UserLibraryGroupsFrom(prefix='ulgp')
+#         select_district_form = forms.get_district_form(districts)(prefix='sdf')
+#         user_library_form = forms.UserLibraryForm(prefix='ulf')
+#         user_form = forms.UserForm(prefix='uf')
+#
+#     return render(request, 'participants/administration/add_library_user.html', {
+#         'select_district_form': select_district_form,
+#         'select_library_form': select_library_form,
+#         'user_library_form': user_library_form,
+#         'user_form': user_form,
+#         'user_library_group_form':user_library_group_form,
+#         'library': library,
+#         'errors': errors,
+#         'managed_libraries': managed_libraries
+#     })
+#
+#
+#
+#
+# @login_required
+# @transaction.atomic()
+# @permission_required_or_403('participants.change_userlibrary')
+# @decorators.must_be_org_user
+# def edit_library_user(request, id, managed_libraries=[]):
+#     districts = []
+#     for managed_library in managed_libraries:
+#         districts.append(managed_library.library.district_id)
+#
+#     select_libraries_qs = _get_user_manager_orgs_qs(managed_libraries)
+#
+#     select_district_form = forms.get_district_form(districts)(prefix='sdf')
+#
+#     library_user = get_object_or_404(models.UserLibrary, id=id)
+#
+#     errors = []
+#     if request.method == 'POST':
+#         all_valid = True
+#         select_library_form = forms.get_add_user_library_form(select_libraries_qs)(request.POST, prefix='slf', )
+#
+#         if not select_library_form.is_valid():
+#             all_valid = False
+#             errors.append({'message': 'Выберите организацию'})
+#
+#         user_library_form = forms.UserLibraryForm(request.POST, prefix='ulf', instance=library_user)
+#         if not user_library_form.is_valid():
+#             all_valid = False
+#
+#         user_form = forms.UserForm(request.POST, prefix='uf', instance=library_user.user)
+#         if not user_form.is_valid():
+#             all_valid = False
+#
+#         user_library_group_form = forms.UserLibraryGroupsFrom(request.POST, prefix='ulgp')
+#         if not user_library_group_form.is_valid():
+#             all_valid = False
+#
+#         if all_valid:
+#             user = user_form.save(commit=False)
+#             if user_form.cleaned_data['password']:
+#                 user.set_password(user_form.cleaned_data['password'])
+#                 accounts_models.create_or_update_password(user, user_form.cleaned_data['password'])
+#             user.save()
+#
+#             role_groups = set(models.get_role_groups())
+#             selected_groups = set(Group.objects.filter(id__in=user_library_group_form.cleaned_data['groups']))
+#             remove_groups = role_groups - selected_groups
+#
+#             for selected_group in selected_groups:
+#                 selected_group.user_set.add(user)
+#
+#             for remove_group in remove_groups:
+#                 remove_group.user_set.remove(user)
+#
+#             user_library = user_library_form.save(commit=False)
+#             user_library.library = select_library_form.cleaned_data['library']
+#             user_library.save()
+#             user_library_form.save_m2m()
+#             return redirect('participants:administration:library_user_list')
+#     else:
+#         user_library_group_form = forms.UserLibraryGroupsFrom(prefix='ulgp', initial={
+#             'groups': [group.id for group in models.get_role_groups(library_user.user)]
+#         })
+#         select_library_form = forms.get_add_user_library_form(select_libraries_qs)(prefix='slf', initial={
+#             'library': library_user.library
+#         })
+#         user_library_form = forms.UserLibraryForm(prefix='ulf', instance=library_user)
+#         user_form = forms.UserForm(prefix='uf', instance=library_user.user, initial={
+#             'password': ''
+#         })
+#
+#     return render(request, 'participants/administration/edit_library_user.html', {
+#         'select_district_form': select_district_form,
+#         'select_library_form': select_library_form,
+#         'user_library_form': user_library_form,
+#         'user_library_group_form': user_library_group_form,
+#         'user_form': user_form,
+#         'library_user': library_user,
+#         'managed_libraries': managed_libraries
+#     })
+#
+#
+# @login_required
+# @transaction.atomic()
+# @permission_required_or_403('participants.delete_userlibrary')
+# @decorators.must_be_org_user
+# def delete_library_user(request, id, managed_libraries=[]):
+#     districts = []
+#     for managed_library in managed_libraries:
+#         districts.append(managed_library.library.district_id)
+#
+#     library_user = get_object_or_404(models.UserLibrary, id=id)
+#     library_user.delete()
+#     return redirect('participants:administration:library_user_list')
 
 
 @login_required

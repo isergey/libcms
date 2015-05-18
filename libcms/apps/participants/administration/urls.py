@@ -30,7 +30,7 @@ urlpatterns = patterns('',
 
 
     url(r'^lib_users/$', views.library_user_list, name="library_user_list"),
-    url(r'^lib_users/create/$', views.add_library_user, name="add_library_user"),
+    url(r'^lib_users/(?P<library_id>\d+)/create/$', views.add_library_user, name="add_library_user"),
     url(r'^lib_users/edit/(?P<id>\d+)/$', views.edit_library_user, name="edit_library_user"),
     url(r'^lib_users/delete/(?P<id>\d+)/$', views.delete_library_user, name="delete_library_user"),
     url(r'^find_library_by_district/$', views.find_library_by_district, name="find_library_by_district"),

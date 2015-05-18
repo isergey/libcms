@@ -59,7 +59,7 @@ class UserForm(forms.ModelForm):
 class UserLibraryForm(forms.ModelForm):
     class Meta:
         model = models.UserLibrary
-        exclude = ('library', 'user', 'department')
+        exclude = ('library', 'user')
         widgets = {
             'roles': forms.CheckboxSelectMultiple()
         }
@@ -81,14 +81,14 @@ def get_role_choices():
     return choices
 
 
-class UserLibraryGroupsFrom(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super(UserLibraryGroupsFrom, self).__init__(*args, **kwargs)
-        self.fields['groups'] = forms.MultipleChoiceField(
-            label=u'Группы',
-            choices=get_role_choices(),
-            widget=forms.CheckboxSelectMultiple
-        )
+class UserLibraryGroupsFrom(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['groups']
+        widgets = {
+            'groups': forms.CheckboxSelectMultiple
+        }
+
 
 
 def get_district_form(districts=None):
@@ -109,6 +109,7 @@ class SelectUserPositionForm(forms.Form):
 
 class SelectUserRoleForm(forms.Form):
     role = forms.ModelChoiceField(queryset=Group.objects.filter(name__startswith='role_'), label=u'Роль', required=False)
+
 
 
 

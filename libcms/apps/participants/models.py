@@ -143,8 +143,8 @@ class UserLibrary(models.Model):
     library = models.ForeignKey(Library)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     middle_name = models.CharField(verbose_name=u'Отчество', max_length=255)
-    department = models.ForeignKey(Department, verbose_name=u'Отдел', null=True)
-    position = models.ForeignKey(UserLibraryPosition, verbose_name=u'Должность', null=True, blank=True)
+    department = TreeForeignKey(Department, verbose_name=u'Отдел')
+    position = models.ForeignKey(UserLibraryPosition, verbose_name=u'Должность')
     phone = models.CharField(verbose_name=u'Телефон', max_length=32)
     is_active = models.BooleanField(
         verbose_name=u'Активен', default=True,
