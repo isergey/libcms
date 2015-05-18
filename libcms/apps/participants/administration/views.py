@@ -510,6 +510,7 @@ def add_library_user(request, library_id, managed_libraries=[]):
         user_roles_from = forms.UserLibraryGroupsFrom(prefix='user_roles_from')
         user_roles_from.fields['groups'].queryset = roles_queryset
     return render(request, 'participants/administration/add_library_user.html', {
+        'library': library,
         'user_form': user_form,
         'user_library_form': user_library_form,
         'user_roles_from': user_roles_from
@@ -522,6 +523,7 @@ def add_library_user(request, library_id, managed_libraries=[]):
 def edit_library_user(request, id, managed_libraries=[]):
     # library = get_object_or_404(models.Library, id=library_id)
     user_library = get_object_or_404(models.UserLibrary, id=id)
+    library = user_library.library
     managed_libray_ids = [managed_library.id for managed_library in managed_libraries]
     if managed_libray_ids and user_library.library_id not in managed_libray_ids:
         raise HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
@@ -551,13 +553,14 @@ def edit_library_user(request, id, managed_libraries=[]):
             user_roles_from.save()
             return redirect('participants:administration:detail', id=library.id)
     else:
-        user_form = forms.UserForm(prefix='user_form', instance=user_library.user)
+        user_form = forms.UserForm(initial={'password': ''}, prefix='user_form', instance=user_library.user)
         user_library_form = forms.UserLibraryForm(prefix='user_library_form', instance=user_library)
         user_library_form.fields['department'].queryset = models.Department.objects.filter(library=library)
         user_roles_from = forms.UserLibraryGroupsFrom(prefix='user_roles_from', instance=user_library.user)
         user_roles_from.fields['groups'].queryset = Group.objects.filter(name__startswith='role_')
 
-    return render(request, 'participants/administration/add_library_user.html', {
+    return render(request, 'participants/administration/edit_library_user.html', {
+        'library': library,
         'user_form': user_form,
         'user_library_form': user_library_form,
         'user_roles_from': user_roles_from

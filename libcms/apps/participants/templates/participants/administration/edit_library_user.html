@@ -8,11 +8,17 @@
         <a href="{% url 'participants:administration:index' %}">Библиотеки</a>
         <span class="divider">/</span>
     </li>
+    {% for ancestor in library.get_ancestors %}
+        <li>
+            <a href="{% url 'participants:administration:detail' ancestor.id %}">{{ ancestor.name }}</a>
+            <span class="divider">/</span>
+        </li>
+    {% endfor %}
     <li>
-        <a href="{% url 'participants:administration:library_user_list' %}">Сотрудники библиотек</a>
+        <a href="{% url 'participants:administration:detail' library.id %}">{{ library.name }}</a>
         <span class="divider">/</span>
     </li>
-    <li class="active">Редактирование данных о сотруднике</li>
+    <li class="active">Редактирование сотрудника библиотеки</li>
 
 {% endblock %}
 
@@ -33,7 +39,6 @@
             Вы можете управлять сотрудниками любой организации
         {% endif %}
     </div>
-
     {% if errors %}
         <div class="alert alert-error">
             {% for error in errors %}
@@ -43,63 +48,20 @@
     {% endif %}
 
     <form class="form-horizontal" method="post">
+
         {% csrf_token %}
         <fieldset>
-            <input id="id_slf-library" type="hidden" name="slf-library" value="{{ library_user.library_id }}"/>
-            {#        {{ select_district_form }}#}
-            {% include 'administration/base_form_fields.html' with form=select_district_form %}
-            <div class="control-group">
-                <label class="control-label" for="id_slf-library">Выберите библиотеку <span
-                        title="Обязательное поле">*</span></label>
-
-                <div class="controls">
-                    <div class="lib_select"></div>
-                    <div class="current_library well well-small" style="margin: 10px 0 0 0">
-                        {% if library_user.library.name %}Текущая организация:
-                            {% if library_user.library.parent_id %}
-                                {% for ancestor in library_user.library.parent.get_ancestors %}
-                                    {{ ancestor.name }} <span class="divider">/</span>
-
-                                {% endfor %}
-                                {{ library_user.library.parent.name }}
-                                <span class="divider">/</span>
-                            {% endif %}
-                            {{ library_user.library.name }}
-                        {% endif %}
-                    </div>
-                </div>
-
-            </div>
-            {#                            {% include 'administration/base_form_fields.html' with form=select_library_form  %}#}
-
             {% include 'administration/base_form_fields.html' with form=user_form %}
             {% include 'administration/base_form_fields.html' with form=user_library_form %}
-            {% include 'administration/base_form_fields.html' with form=user_library_group_form %}
-
+            {% include 'administration/base_form_fields.html' with form=user_roles_from %}
             <div class="form-actions">
-                <button class="btn" type="submit">Сохранить</button>
+                <button class="btn" type="submit">Редактировать</button>
             </div>
         </fieldset>
     </form>
     <script>
         $(function () {
-            {#            $('#id_sdf-district').on('change', function () {#}
-            {#                $.get('{% url 'participants:administration:find_library_by_district' %}', {#}
-            {#                    district_id: $(this).val()#}
-            {#                }).done(function (data) {#}
-            {#                    var $libraryChoice = $('#id_slf-library');#}
-            {#                    $libraryChoice.empty();#}
-            {#                    $libraryChoice.append($('<option>-----</option>'));#}
-            {#                    data.forEach(function (item) {#}
-            {#                        $libraryChoice.append($('<option value="' + item.id + '">' + item.name + '</option>'));#}
-            {#                    });#}
-            {#                }).fail(function (error) {#}
-            {#                    alert('При запросе возникла ошибка');#}
-            {#                    console.log(error);#}
-            {#                });#}
-            {#            });#}
-
-            var $passwordField = $('#id_uf-password');
+            var $passwordField = $('#id_user_form-password');
             var $generateButton = $('<a href="#gen_pass"> Сгенерировать пароль</a>');
             $passwordField.after($generateButton);
             $generateButton.on('click', function () {
@@ -109,5 +71,5 @@
         });
     </script>
 
-    {% include 'participants/administration/lib_select_js.html' %}
+{#    {% include 'participants/administration/lib_select_js.html' %}#}
 {% endblock %}

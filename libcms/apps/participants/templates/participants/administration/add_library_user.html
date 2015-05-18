@@ -8,10 +8,16 @@
         <a href="{% url 'participants:administration:index' %}">Библиотеки</a>
         <span class="divider">/</span>
     </li>
-    <li>
-        <a href="{% url 'participants:administration:library_user_list' %}">Сотрудники библиотек</a>
-        <span class="divider">/</span>
-    </li>
+    {% for ancestor in library.get_ancestors %}
+        <li>
+            <a href="{% url 'participants:administration:detail' ancestor.id %}">{{ ancestor.name }}</a>
+            <span class="divider">/</span>
+        </li>
+    {% endfor %}
+        <li>
+            <a href="{% url 'participants:administration:detail' library.id %}">{{ library.name }}</a>
+            <span class="divider">/</span>
+        </li>
 
     <li class="active">Добавление сотрудника библиотеки</li>
 
@@ -50,7 +56,7 @@
             {% include 'administration/base_form_fields.html' with form=user_library_form %}
             {% include 'administration/base_form_fields.html' with form=user_roles_from %}
             <div class="form-actions">
-                <button class="btn" type="submit">Создать</button>
+                <button class="btn" type="submit">Редактировать</button>
             </div>
         </fieldset>
     </form>
