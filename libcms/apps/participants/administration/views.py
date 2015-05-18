@@ -58,9 +58,6 @@ def detail(request, id):
     })
 
 
-
-
-
 @login_required
 @transaction.atomic()
 @permission_required_or_403('participants.add_department')
@@ -143,14 +140,7 @@ def list(request, parent=None):
         parent = get_object_or_404(models.Library, id=parent)
         libraries_page = get_page(request, models.Library.objects.filter(parent=parent))
     else:
-        if not request.user.is_superuser:
-            cbses = []
-            library_content_editors = models.LibraryContentEditor.objects.filter(user=request.user)
-            for lce in library_content_editors:
-                cbses.append(lce.library_id)
-            libraries_page = get_page(request, models.Library.objects.filter(id__in=cbses))
-        else:
-            libraries_page = get_page(request, models.Library.objects.filter(parent=None))
+        libraries_page = get_page(request, models.Library.objects.filter(parent=None))
 
     return render(request, 'participants/administration/libraries_list.html', {
         'parent': parent,
