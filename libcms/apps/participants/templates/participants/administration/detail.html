@@ -74,7 +74,9 @@
             <ul class="root">
                 {% recursetree departments %}
                     <li>
+                        <a href="{% url 'participants:administration:edit_department' node.id %}">
                         {{ node.name }}
+                        </a>
                         <a title="Удалить отдел и подотделы"
                            class="btn btn-danger btn-mini"
                            href="{% url 'participants:administration:delete_department' node.id %}">
