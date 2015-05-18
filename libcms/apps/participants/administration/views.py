@@ -61,7 +61,7 @@ def detail(request, id):
 
 @login_required
 @transaction.atomic()
-@permission_required_or_403('participants.add_departament')
+@permission_required_or_403('participants.add_department')
 def get_departments(request):
     library_id = request.GET.get('library_id', '0')
     library = get_object_or_404(models.Library, id=library_id)
@@ -72,19 +72,31 @@ def get_departments(request):
 
 @login_required
 @transaction.atomic()
-@permission_required_or_403('participants.add_departament')
-def create_departament(request, library_id):
+@permission_required_or_403('participants.change_department')
+def department_detail(request, id):
+    department = get_object_or_404(models.Department, id=id)
+    return render(request, 'participants/administration/department_detail.html', {
+        'department': department,
+    })
+
+
+@login_required
+@transaction.atomic()
+@permission_required_or_403('participants.add_department')
+def create_department(request, library_id):
     library = get_object_or_404(models.Library, id=library_id)
     if request.method == 'POST':
         form = forms.DepartamentForm(request.POST)
+        form.fields['parent'].queryset = models.Department.objects.filter(library_id=library_id)
         if form.is_valid():
-            departament = form.save(commit=False)
-            departament.library = library
-            departament.save()
+            department = form.save(commit=False)
+            department.library = library
+            department.save()
             return redirect('participants:administration:detail', id=library_id)
     else:
         form = forms.DepartamentForm()
-    return render(request, 'participants/administration/create_departament.html', {
+        form.fields['parent'].queryset = models.Department.objects.filter(library_id=library_id)
+    return render(request, 'participants/administration/create_department.html', {
         'form': form,
         'library': library
     })
@@ -92,29 +104,31 @@ def create_departament(request, library_id):
 
 @login_required
 @transaction.atomic()
-@permission_required_or_403('participants.change_departament')
-def edit_departament(request, id):
-    departament = get_object_or_404(models.Department, id=id)
+@permission_required_or_403('participants.change_department')
+def edit_department(request, id):
+    department = get_object_or_404(models.Department, id=id)
     if request.method == 'POST':
-        form = forms.DepartamentForm(request.POST, instance=departament)
+        form = forms.DepartamentForm(request.POST, instance=department)
+        form.fields['parent'].queryset = models.Department.objects.filter(library_id=department.library_id)
         if form.is_valid():
             form.save()
-            return redirect('participants:administration:detail', id=departament.library_id)
+            return redirect('participants:administration:detail', id=department.library_id)
     else:
-        form = forms.DepartamentForm(instance=departament)
-    return render(request, 'participants/administration/edit_departament.html', {
+        form = forms.DepartamentForm(instance=department)
+        form.fields['parent'].queryset = models.Department.objects.filter(library_id=department.library_id)
+    return render(request, 'participants/administration/edit_department.html', {
         'form': form,
-        'library': departament.library
+        'library': department.library
     })
 
 
 @login_required
 @transaction.atomic()
-@permission_required_or_403('participants.delete_departament')
-def delete_departament(request, id):
-    departament = get_object_or_404(models.Department, id=id)
-    departament.delete()
-    return redirect('participants:administration:detail', id=departament.library_id)
+@permission_required_or_403('participants.delete_department')
+def delete_department(request, id):
+    department = get_object_or_404(models.Department, id=id)
+    department.delete()
+    return redirect('participants:administration:detail', id=department.library_id)
 
 
 # @permission_required_or_403('participants.add_library')

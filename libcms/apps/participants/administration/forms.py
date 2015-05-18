@@ -59,7 +59,7 @@ class UserForm(forms.ModelForm):
 class UserLibraryForm(forms.ModelForm):
     class Meta:
         model = models.UserLibrary
-        exclude = ('library', 'user', 'departament')
+        exclude = ('library', 'user', 'department')
         widgets = {
             'roles': forms.CheckboxSelectMultiple()
         }

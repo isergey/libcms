@@ -26,7 +26,7 @@
     </div>
     <ul class="nav nav-tabs" id="myTab">
         <li title="Филиалы организации" class="active"><a href="#home">Филиалы</a></li>
-        <li title="Отделы"><a href="#departaments">Отделы</a></li>
+        <li title="Отделы"><a href="#departments">Отделы</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="home">
@@ -65,30 +65,29 @@
                 Филиалов нет
             {% endif %}
         </div>
-        <div class="tab-pane" id="departaments">
+        <div class="tab-pane" id="departments">
             <div class="well well-small">
-                <a class="btn btn-success" href="{% url 'participants:administration:create_departament' org.id %}">
+                <a class="btn btn-success" href="{% url 'participants:administration:create_department' org.id %}">
                     <i class="icon-plus icon-white"></i> Добавить отдел
                 </a>
             </div>
-            <table class="table">
-                <tr>
-                    <th>Название</th>
-                    <th>Действия</th>
-                </tr>
-                {% for department in departments %}
-                    <tr>
-                        <td><a href="{% url 'participants:administration:edit_departament' department.id %}">{{ department.name }}</a></td>
-                        <td style="width: 100px">
-                            <a title="Отвязать пользователя от организации"
-                               class="btn btn-danger btn-mini"
-                               href="{% url 'participants:administration:delete_departament' department.id %}">
-                                <i class="icon-trash icon-white"></i>
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
+            <ul class="root">
+                {% recursetree departments %}
+                    <li>
+                        {{ node.name }}
+                        <a title="Удалить отдел и подотделы"
+                           class="btn btn-danger btn-mini"
+                           href="{% url 'participants:administration:delete_department' node.id %}">
+                            <i class="icon-trash icon-white"></i>
+                        </a>
+                        {% if not node.is_leaf_node %}
+                            <ul class="children">
+                                {{ children }}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endrecursetree %}
+            </ul>
         </div>
     </div>
     <script>

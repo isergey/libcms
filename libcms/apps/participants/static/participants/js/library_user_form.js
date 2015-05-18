@@ -264,8 +264,8 @@
       if (event.value !== '') {
         API.getDepartments({
           'library_id': event.value
-        }).done(function (departamentList) {
-          var choices = departamentList.map(function (item) {
+        }).done(function (departmentList) {
+          var choices = departmentList.map(function (item) {
             return [item.pk, item.fields.name];
           });
           var values = _this.state.values;

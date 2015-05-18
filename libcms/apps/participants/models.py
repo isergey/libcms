@@ -18,7 +18,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 #
 #
 # class City(models.Model):
-#    country = models.ForeignKey(Country, verbose_name=u'Страна')
+# country = models.ForeignKey(Country, verbose_name=u'Страна')
 #    name = models.CharField(verbose_name=u'Город', max_length=32, unique=True, db_index=True)
 #
 #    def __unicode__(self):
@@ -106,15 +106,26 @@ class Library(MPTTModel):
         order_insertion_by = ['weight']
 
 
-class Department(models.Model):
+class Department(MPTTModel):
     library = models.ForeignKey(Library, on_delete=models.CASCADE)
+    parent = TreeForeignKey(
+        'self',
+        verbose_name=u'Отдел верхнего уровня',
+        null=True,
+        blank=True,
+        related_name='children',
+    )
     name = models.CharField(verbose_name=u'Название', max_length=255)
 
     class Meta:
-        unique_together = ('library', 'name')
+        unique_together = ('parent', 'name')
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
 
     def __unicode__(self):
         return self.name
+
 
 class UserLibraryPosition(models.Model):
     name = models.CharField(max_length=255, verbose_name=u'Должность')
@@ -132,7 +143,7 @@ class UserLibrary(models.Model):
     library = models.ForeignKey(Library)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     middle_name = models.CharField(verbose_name=u'Отчество', max_length=255)
-    departament = models.ForeignKey(Department, verbose_name=u'Отдел', null=True)
+    department = models.ForeignKey(Department, verbose_name=u'Отдел', null=True)
     position = models.ForeignKey(UserLibraryPosition, verbose_name=u'Должность', null=True, blank=True)
     phone = models.CharField(verbose_name=u'Телефон', max_length=32)
     is_active = models.BooleanField(
