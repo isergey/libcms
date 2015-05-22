@@ -19,7 +19,7 @@
     <a href="{% url 'participant_pages:administration:index' library.code %}">Страницы</a> →
     {% if page.parent_id %}
             {% for ancestor in page.parent.get_ancestors %}
-                <a href="{% url 'participant_pages:administration:pages_list' ibrary.code ancestor.id %}">
+                <a href="{% url 'participant_pages:administration:pages_list' library.code ancestor.id %}">
                     {% if not ancestor.get_cur_lang_content %}
                         {{ ancestor }}
                     {% else %}

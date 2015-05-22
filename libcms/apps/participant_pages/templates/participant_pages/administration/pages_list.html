@@ -6,72 +6,132 @@
 {% load pages_tags %}
 
 {% block breadcrumb %}
-    <li class="active">Страницы</li>
+    <li><a href="{% url 'participant_pages:administration:pages_list' library.code %}"> Страницы <span
+            class="divider">/</span></a></li>
+    {% if parent %}
+        {% for ancestor in parent.get_ancestors %}
+            {% with ancestor.get_cur_lang_content as cur_lang_content %}
+                <li>
+                    <a href="{% url 'participant_pages:administration:pages_list' library.code ancestor.id %}">
+                        {% if not cur_lang_content %}
+                            {{ ancestor }}
+                        {% else %}
+                            {{ cur_lang_content }}
+                        {% endif %}
+                    </a><span class="divider">/</span>
+                </li>
+            {% endwith %}
+        {% endfor %}
+        <li class="active">
+            {% with parent.get_cur_lang_content as cur_lang_content %}
+                {% if not cur_lang_content %}
+                    {{ ancestor }}
+                {% else %}
+                    {{ cur_lang_content }}
+                {% endif %}
+            {% endwith %}
+        </li>
+    {% endif %}
 {% endblock %}
 
 {% block action_content %}
 
-    {% if parent %}
-        <h3>
-        {% for ancestor in parent.get_ancestors %}
-            <a href="{% url 'participant_pages:administration:pages_list' library.code ancestor.id %}">
-                {% if not ancestor.get_cur_lang_content %}
-                    {{ ancestor }}
-                {% else %}
-                    {{ ancestor.get_cur_lang_content }}
-                {% endif %}
-            </a> →
-        {% endfor %}
-        {% if not parent.get_cur_lang_content %}
-            {{ parent }}
-        {% else %}
-            {{ parent.get_cur_lang_content }}
-        {% endif %}
-        </h3>
-    {% else %}
-    {% endif %}
-    <hr/>
     <style type="text/css">
-        .not_public a{
+        .not_public a {
             color: #ff4500;
         }
     </style>
-    <ul class="list" style="list-style: none; padding: 0; margin: 0">
-    {% for page in pages %}
-        <li>
-
-
-            {% if not page.public %}
-                <span class="title not_public">
-                <i class="icon-eye-close" title="Не опубликовано"></i>
-            {% else %}
-                <span class="title">
-            {% endif %}
-                {% if not page.content.title %}
-                    <a href="{% url 'participant_pages:administration:edit_page' library.code page.id %}">{{ page.slug }}</a>
-                {% else %}
-                    <a href="{% url 'participant_pages:administration:edit_page' library.code page.id %}">{{ page.content.title }} ({{ page.slug }})</a>
-                {% endif %}
-
-            </span>
-            <br/>
-            <a class="btn btn-warning" title="Настройка прав доступа" href="{% url 'participant_pages:administration:page_permissions' library.code page.id %}"><i class="icon-lock"></i></a>
-            {% if not page.is_leaf_node %}
-            <a class="btn" href="{% url 'participant_pages:administration:pages_list' library.code page.id %}">Подстраницы</a>
-            {% endif %}
-{#            <a href="{% url pages:administration:create_page page.id %}">{% trans 'Add subpage' %}</a>#}
-            <span class="buttons">
-                <a class="btn" href="{% url 'participant_pages:administration:create_page' library.code page.id %}"><i class="icon-plus"></i>Создать подстраницу</a>
-                <a class="btn" href="{% url 'participant_pages:administration:page_up' library.code page.id %}" title="передвинуть вверх">↑</a>
-                <a class="btn" href="{% url 'participant_pages:administration:page_down' library.code page.id %}" title="передвинуть вниз">↓</a>
-                <a class="btn" href="{% url 'participant_pages:administration:page_to_first' library.code page.id %}" title="передвинуть в начало">↑↑</a>
-                <a class="btn" href="{% url 'participant_pages:administration:page_to_last' library.code page.id %}" title="передвинуть в конец">↓↓</a>
-                <a style="margin-left: 20px" class="btn btn-danger delete" href="{% url 'participant_pages:administration:delete_page' library.code page.id %}"><i class="icon-trash icon-white"></i></a>
-            </span>
-        <hr/>
-        </li>
-    {% endfor %}
-    </ul>
+    <table class="table">
+        <tr>
+            <th>Страница</th>
+            <th style="width: 370px">Действия</th>
+        </tr>
+        {% for page in pages %}
+            <tr>
+                <td>
+                    {% if not page.public %}
+                        <span class="title not_public">
+                        <i class="icon-eye-close" title="Не опубликовано"></i>
+                    {% else %}
+                        <span class="title">
+                    {% endif %}
+                    {% if not page.content.title %}
+                        <a href="{% url 'participant_pages:administration:edit_page' library.code page.id %}">{{ page.slug }}</a>
+                    {% else %}
+                        <a href="{% url 'participant_pages:administration:edit_page' library.code page.id %}">{{ page.content.title }}
+                            ({{ page.slug }})</a>
+                    {% endif %}
+                    </span>
+                    {% if not page.is_leaf_node %}
+                        <a class="btn"
+                           href="{% url 'participant_pages:administration:pages_list' library.code page.id %}">Подстраницы</a>
+                    {% endif %}
+                </td>
+                <td>
+                    <a class="btn" href="{% url 'participant_pages:administration:create_page' library.code page.id %}"><i
+                            class="icon-plus"></i>Создать подстраницу</a>
+                    <a class="btn" href="{% url 'participant_pages:administration:page_up' library.code page.id %}"
+                       title="передвинуть вверх">↑</a>
+                    <a class="btn" href="{% url 'participant_pages:administration:page_down' library.code page.id %}"
+                       title="передвинуть вниз">↓</a>
+                    <a class="btn"
+                       href="{% url 'participant_pages:administration:page_to_first' library.code page.id %}"
+                       title="передвинуть в начало">↑↑</a>
+                    <a class="btn" href="{% url 'participant_pages:administration:page_to_last' library.code page.id %}"
+                       title="передвинуть в конец">↓↓</a>
+                    <a style="margin-left: 20px" class="btn btn-danger delete"
+                       href="{% url 'participant_pages:administration:delete_page' library.code page.id %}"><i
+                            class="icon-trash icon-white"></i></a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{#    <ul class="list" style="list-style: none; padding: 0; margin: 0">#}
+{#        {% for page in pages %}#}
+{#            <li>#}
+{##}
+{##}
+{#                {% if not page.public %}#}
+{#                    <span class="title not_public">#}
+{#                    <i class="icon-eye-close" title="Не опубликовано"></i>#}
+{#                {% else %}#}
+{#                    <span class="title">#}
+{#                {% endif %}#}
+{#                {% if not page.content.title %}#}
+{#                    <a href="{% url 'participant_pages:administration:edit_page' library.code page.id %}">{{ page.slug }}</a>#}
+{#                {% else %}#}
+{#                    <a href="{% url 'participant_pages:administration:edit_page' library.code page.id %}">{{ page.content.title }}#}
+{#                        ({{ page.slug }})</a>#}
+{#                {% endif %}#}
+{##}
+{#                </span>#}
+{#                <br/>#}
+                {#                <a class="btn btn-warning" title="Настройка прав доступа"#}
+                {#                   href="{% url 'participant_pages:administration:page_permissions' library.code page.id %}"><i#}
+                {#                        class="icon-lock"></i></a>#}
+{#                {% if not page.is_leaf_node %}#}
+{#                    <a class="btn" href="{% url 'participant_pages:administration:pages_list' library.code page.id %}">Подстраницы</a>#}
+{#                {% endif %}#}
+                {#            <a href="{% url pages:administration:create_page page.id %}">{% trans 'Add subpage' %}</a>#}
+{#            <span class="buttons">#}
+{#                <a class="btn" href="{% url 'participant_pages:administration:create_page' library.code page.id %}"><i#}
+{#                        class="icon-plus"></i>Создать подстраницу</a>#}
+{#                <a class="btn" href="{% url 'participant_pages:administration:page_up' library.code page.id %}"#}
+{#                   title="передвинуть вверх">↑</a>#}
+{#                <a class="btn" href="{% url 'participant_pages:administration:page_down' library.code page.id %}"#}
+{#                   title="передвинуть вниз">↓</a>#}
+{#                <a class="btn" href="{% url 'participant_pages:administration:page_to_first' library.code page.id %}"#}
+{#                   title="передвинуть в начало">↑↑</a>#}
+{#                <a class="btn" href="{% url 'participant_pages:administration:page_to_last' library.code page.id %}"#}
+{#                   title="передвинуть в конец">↓↓</a>#}
+{#                <a style="margin-left: 20px" class="btn btn-danger delete"#}
+{#                   href="{% url 'participant_pages:administration:delete_page' library.code page.id %}"><i#}
+{#                        class="icon-trash icon-white"></i></a>#}
+{#            </span>#}
+{#                <hr/>#}
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
     {% admin_pagination pages_page %}
     <script type="text/javascript">
         $("a.delete").click(function () {

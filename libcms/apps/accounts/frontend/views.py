@@ -74,7 +74,7 @@ def login(request, template_name='registration/login.html',
     Displays the login form and handles the login action.
     """
     redirect_to = request.REQUEST.get(redirect_field_name, '')
-
+    print 'login'
     if request.method == "POST":
         form = authentication_form(data=request.POST)
         if form.is_valid():
@@ -107,7 +107,7 @@ def login(request, template_name='registration/login.html',
             return redirect(redirect_to)
     else:
         form = authentication_form(request)
-
+    print form.errors
     request.session.set_test_cookie()
 
     current_site = get_current_site(request)

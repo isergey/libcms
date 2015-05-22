@@ -30,13 +30,13 @@ def show(request, library_code, slug):
     cur_language = translation.get_language()
     page = get_object_or_404(Page, url_path=slug, library=library)
 
-    if not request.user.is_authenticated():
-        anaons = Group.objects.get(name='anonymouses')
-        if 'view_page' not in  get_perms(anaons, page):
-            raise PermissionDenied()
-    else:
-        if not request.user.has_perm('view_page', page):
-            raise PermissionDenied()
+    # if not request.user.is_authenticated():
+    #     anaons = Group.objects.get(name='anonymouses')
+    #     if 'view_page' not in  get_perms(anaons, page):
+    #         raise PermissionDenied()
+    # else:
+    #     if not request.user.has_perm('view_page', page):
+    #         raise PermissionDenied()
 
     try:
         content = Content.objects.get(page=page, lang=cur_language[:2])
