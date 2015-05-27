@@ -463,7 +463,7 @@ def library_user_list(request, managed_libraries=[]):
 def add_library_user(request, library_id, managed_libraries=[]):
     managed_libray_ids = [managed_library.id for managed_library in managed_libraries]
     if managed_libray_ids and library_id not in managed_libray_ids:
-        raise HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
+        return HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
     library = get_object_or_404(models.Library, id=library_id)
     roles_queryset =  Group.objects.filter(name__startswith='role_')
     if request.method == 'POST':
