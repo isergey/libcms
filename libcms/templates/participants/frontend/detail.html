@@ -13,8 +13,14 @@
 
         <div class="participants">
             <h3>{{ library.name }}</h3>
-            Сайт: {% if library.http_service  %}<a href="{{ library.http_service }}" target="_blank"> {{ library.http_service }}</a>
-                            {% else %} <a href="{% url 'participants:frontend:detail' library.code %}" target="_blank"> {{ request.META.HTTP_HOST }}{% url 'participants:frontend:detail' library.code %}</a>{% endif %}<br/>
+            Сайт:
+            {% if library.http_service  %}
+                <a href="{{ library.http_service }}" target="_blank"> {{ library.http_service }}</a>
+            {% else %}
+                <a href="{% url 'participants:frontend:detail' library.code %}" target="_blank">
+                    {{ request.META.HTTP_HOST }}{% url 'participants:frontend:detail' library.code %}
+                </a>{% endif %}
+            <br/>
             Адрес: {{ library.postal_address }}
 
         </div>
