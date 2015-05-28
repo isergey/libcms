@@ -461,9 +461,11 @@ def library_user_list(request, managed_libraries=[]):
 @permission_required_or_403('participants.add_userlibrary')
 @decorators.must_be_org_user
 def add_library_user(request, library_id, managed_libraries=[]):
-    managed_libray_ids = [managed_library.id for managed_library in managed_libraries]
+    managed_libray_ids = [unicode(managed_library.library_id) for managed_library in managed_libraries]
+
     if managed_libray_ids and library_id not in managed_libray_ids:
         return HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
+
     library = get_object_or_404(models.Library, id=library_id)
     roles_queryset =  Group.objects.filter(name__startswith='role_')
     if request.method == 'POST':
@@ -511,12 +513,12 @@ def add_library_user(request, library_id, managed_libraries=[]):
 @permission_required_or_403('participants.change_userlibrary')
 @decorators.must_be_org_user
 def edit_library_user(request, id, managed_libraries=[]):
-    # library = get_object_or_404(models.Library, id=library_id)
     user_library = get_object_or_404(models.UserLibrary, id=id)
-    library = user_library.library
-    managed_libray_ids = [managed_library.id for managed_library in managed_libraries]
+    managed_libray_ids = [managed_library.library_id for managed_library in managed_libraries]
+
     if managed_libray_ids and user_library.library_id not in managed_libray_ids:
-        raise HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
+        return HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
+
     library = user_library.library
     if request.method == 'POST':
         user_form = forms.UserForm(request.POST, prefix='user_form', instance=user_library.user)
@@ -562,9 +564,11 @@ def edit_library_user(request, id, managed_libraries=[]):
 @decorators.must_be_org_user
 def delete_library_user(request, id, managed_libraries=[]):
     user_library = get_object_or_404(models.UserLibrary, id=id)
-    managed_libray_ids = [managed_library.id for managed_library in managed_libraries]
+    managed_libray_ids = [managed_library.library_id for managed_library in managed_libraries]
+
     if managed_libray_ids and user_library.library_id not in managed_libray_ids:
-        raise HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
+        return HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
+
     user_library.user.delete()
     user_library.delete()
     return redirect('participants:administration:detail', id=user_library.library_id)
