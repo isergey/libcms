@@ -106,7 +106,7 @@ def login(request, template_name='registration/login.html',
                     u'У вас не работают cookies. Пожалуйста, включите их в браузере или очистите кеш браузера.')
 
             if request.user.is_authenticated():
-                if remote_addr.startswith('10.') or remote_addr.startswith('127.') and wifi:
+                if wifi:
                     return render(request, 'accounts/frontend/to_wifi.html', {
                         'username': form.cleaned_data['username'],
                         'password': form.cleaned_data['password']
