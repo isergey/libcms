@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import *
 #from django.contrib.auth.views import  login, logout, password_reset, password_reset_done, password_reset_confirm, password_reset_complete
-from  views import done, error, home, login
+from views import done, error, home, login, from_wifi
 urlpatterns = patterns(
     'accounts.frontend.views',
     url(r'^$', 'index', name="index"),
@@ -10,7 +10,7 @@ urlpatterns = patterns(
 )
 
 urlpatterns += patterns('',
-
+    url(r'^from_wifi/$', from_wifi, name='from_wifi'),
     url(r'^login/$', login, {'template_name': 'accounts/frontend/login.html'}, name='login'),
     url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
     url(r'^password/change/$', 'django.contrib.auth.views.password_change', name='password_change'),
@@ -48,6 +48,7 @@ urlpatterns += patterns('',
 
 urlpatterns += patterns('',
     url(r'^$', home, name='home'),
+
     url(r'^login/done/$', done, name='done'),
     url(r'^login/error/$', error, name='error'),
 )

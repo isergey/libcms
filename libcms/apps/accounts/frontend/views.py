@@ -18,15 +18,17 @@ def index(request):
     return render(request, 'accounts/frontend/index.html')
 
 
-#def login(request):
+# def login(request):
 #    if request
 #    return render(request, 'frontend/login.html')
 
 def logout(request):
     pass
 
+
 def register(request):
     pass
+
 
 def home(request):
     """Home view, displays login mechanism"""
@@ -36,6 +38,7 @@ def home(request):
         return render(request, 'accounts/frontend/oauth/home.html', {
             'version': version
         })
+
 
 @login_required
 def done(request):
@@ -55,6 +58,7 @@ def error(request):
         'messages': messages
     })
 
+
 import urlparse
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
@@ -62,6 +66,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.models import get_current_site
+
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -73,8 +78,9 @@ def login(request, template_name='registration/login.html',
     """
     Displays the login form and handles the login action.
     """
+    remote_addr = request.META.get('REMOTE_ADDR', '')
     redirect_to = request.REQUEST.get(redirect_field_name, '')
-    print 'login'
+
     if request.method == "POST":
         form = authentication_form(data=request.POST)
         if form.is_valid():
@@ -92,14 +98,16 @@ def login(request, template_name='registration/login.html',
             # Okay, security checks complete. Log the user in.
             auth_login(request, form.get_user())
 
-
-
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
             else:
-                return HttpResponse(u'У вас не работают cookies. Пожалуйста, включите их в браузере или очистите кеш браузера.')
+                return HttpResponse(
+                    u'У вас не работают cookies. Пожалуйста, включите их в браузере или очистите кеш браузера.')
 
             if request.user.is_authenticated():
+                if remote_addr.startswith('10.') or remote_addr.startswith('127.'):
+                    return render(request, 'accounts/frontend/to_wifi.html')
+
                 orgs = participants_models.user_organizations(request.user)
                 if orgs:
                     return redirect('http://help.kitap.tatar.ru')
@@ -107,7 +115,7 @@ def login(request, template_name='registration/login.html',
             return redirect(redirect_to)
     else:
         form = authentication_form(request)
-    print form.errors
+
     request.session.set_test_cookie()
 
     current_site = get_current_site(request)
@@ -117,15 +125,23 @@ def login(request, template_name='registration/login.html',
         redirect_field_name: redirect_to,
         'site': current_site,
         'site_name': current_site.name,
-        }
+    }
     if extra_context is not None:
         context.update(extra_context)
-    return render(request, template_name, context,
-        current_app=current_app)
+    return render(request, template_name, context, current_app=current_app)
+
+
+def from_wifi(request):
+    if request.user.is_authenticated():
+        orgs = participants_models.user_organizations(request.user)
+        if orgs:
+            return redirect('http://help.kitap.tatar.ru')
+    else:
+        return redirect('index:frontend:index')
+
 
 @transaction.atomic()
 def registration(request):
-
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
@@ -140,23 +156,25 @@ def registration(request):
             user.save()
             group = Group.objects.get(name='users')
             user.groups.add(group)
-#            hash = md5_constructor(str(user.id) + form.cleaned_data['username']).hexdigest()
-#            confirm = RegConfirm(hash=hash, user_id=user.id)
-#            confirm.save()
-#            current_site = Site.objects.get(id=1)
-#            message = u'Поздравляем! Вы зарегистрировались на %s . Пожалуйста, пройдите по адресу %s для активации учетной записи.' % \
-#                      (current_site.domain, "http://" + current_site.domain + "/accounts/confirm/" + hash, )
-#
-#
-#            send_mail(u'Активация учетной записи ' + current_site.domain, message, 'system@'+current_site.domain,
-#                [form.cleaned_data['email']])
+            #            hash = md5_constructor(str(user.id) + form.cleaned_data['username']).hexdigest()
+            #            confirm = RegConfirm(hash=hash, user_id=user.id)
+            #            confirm.save()
+            #            current_site = Site.objects.get(id=1)
+            #            message = u'Поздравляем! Вы зарегистрировались на %s . Пожалуйста, пройдите по адресу %s для активации учетной записи.' % \
+            #                      (current_site.domain, "http://" + current_site.domain + "/accounts/confirm/" + hash, )
+            #
+            #
+            #            send_mail(u'Активация учетной записи ' + current_site.domain, message, 'system@'+current_site.domain,
+            #                [form.cleaned_data['email']])
 
             return render(request, 'accounts/frontend/registration_done.html')
     else:
         form = RegistrationForm()
     return render(request, 'accounts/frontend/registration.html', {
-        'form':form
+        'form': form
     })
+
+
 @transaction.atomic
 def confirm_registration(request, hash):
     try:
@@ -169,11 +187,10 @@ def confirm_registration(request, hash):
         return HttpResponse(u'Код подтверждения не верен')
 
     if user.is_active == False:
-        #тут надо создать пользователя в лдапе
+        # тут надо создать пользователя в лдапе
         user.is_active = True
         group = Group.objects.get(name='users')
         user.groups.add(group)
         user.save()
         confirm.delete()
-    return render(request,  'accounts/frontend/registration_confirm.html')
-
+    return render(request, 'accounts/frontend/registration_confirm.html')
