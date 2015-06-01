@@ -21,9 +21,11 @@
     <div class="well well-small">
         <a title="Просмотр и редактирование информации об организации" class="btn"
            href="{% url 'participants:administration:edit' org.id %}">
-            <i class="icon-pencil"></i>
-            Редактировать
+            <i class="icon-pencil"></i> Редактировать
         </a>
+        {% if perms.participant_site and can_manage %}
+            <a class="btn btn-info" href="{% url 'participant_site:administration:index' org.code %}">Управление сайтом организации</a>
+        {% endif %}
     </div>
     <ul class="nav nav-tabs" id="myTab">
         <li title="Филиалы организации" class="active"><a href="#home">Филиалы</a></li>

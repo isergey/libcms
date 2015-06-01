@@ -45,7 +45,13 @@ def index(request):
 
 
 @login_required
-def detail(request, id):
+@decorators.must_be_org_user
+def detail(request, id, managed_libraries=[]):
+    managed_libraries_id = [managed_library.library_id for managed_library in managed_libraries]
+    can_manage = False
+    if int(id) in managed_libraries_id:
+        can_manage = True
+
     org = get_object_or_404(models.Library, id=id)
     branches = models.Library.objects.filter(parent=org)
     departments = models.Department.objects.filter(library=org)
@@ -54,7 +60,8 @@ def detail(request, id):
         'org': org,
         'branches': branches,
         'departments': departments,
-        'library_users': library_users
+        'library_users': library_users,
+        'can_manage': can_manage
     })
 
 
