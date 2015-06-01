@@ -3,8 +3,8 @@
     <input name="buttonClicked" size="16" maxlength="15" value="4" type="hidden">
     <input name="redirect_url" size="255" maxlength="255" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'accounts:frontend:from_wifi' %}" type="hidden">
     <input name="err_flag" size="16" maxlength="15" value="0" type="hidden">
-    <input name="username" size="25" maxlength="63" type="text" value="">
-    <input name="password" size="25" maxlength="63" type="password" value="">
+    <input name="username" size="25" maxlength="63" type="text" value="{{ username }}">
+    <input name="password" size="25" maxlength="63" type="password" value="{{ password }}">
 </form>
 <script>
 document.wifiform.submit();

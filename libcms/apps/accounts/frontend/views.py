@@ -78,6 +78,7 @@ def login(request, template_name='registration/login.html',
     """
     Displays the login form and handles the login action.
     """
+    wifi = request.GET.get('wifi', '')
     remote_addr = request.META.get('REMOTE_ADDR', '')
     redirect_to = request.REQUEST.get(redirect_field_name, '')
 
@@ -105,8 +106,11 @@ def login(request, template_name='registration/login.html',
                     u'У вас не работают cookies. Пожалуйста, включите их в браузере или очистите кеш браузера.')
 
             if request.user.is_authenticated():
-                if remote_addr.startswith('10.') or remote_addr.startswith('127.'):
-                    return render(request, 'accounts/frontend/to_wifi.html')
+                if remote_addr.startswith('10.') or remote_addr.startswith('127.') and wifi:
+                    return render(request, 'accounts/frontend/to_wifi.html', {
+                        'username': form.cleaned_data['username'],
+                        'password': form.cleaned_data['password']
+                    })
 
                 orgs = participants_models.user_organizations(request.user)
                 if orgs:
