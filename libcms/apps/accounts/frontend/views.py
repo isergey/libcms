@@ -107,8 +107,12 @@ def login(request, template_name='registration/login.html',
 
             if request.user.is_authenticated():
                 if wifi:
+                    username = form.cleaned_data['username']
+                    suffix = '@tatar.ru'
+                    if username.endswith(suffix):
+                        username = 'EDU\\' + ''.replace(suffix, '')
                     return render(request, 'accounts/frontend/to_wifi.html', {
-                        'username': form.cleaned_data['username'],
+                        'username': username,
                         'password': form.cleaned_data['password']
                     })
 
@@ -135,7 +139,8 @@ def login(request, template_name='registration/login.html',
     return render(request, template_name, context, current_app=current_app)
 
 
-def from_wifi(request):
+def wifi(request):
+
     if request.user.is_authenticated():
         orgs = participants_models.user_organizations(request.user)
         if orgs:
