@@ -146,6 +146,10 @@ class UserLibrary(models.Model):
     department = TreeForeignKey(Department, verbose_name=u'Отдел')
     position = models.ForeignKey(UserLibraryPosition, verbose_name=u'Должность')
     phone = models.CharField(verbose_name=u'Телефон', max_length=32)
+    descendants_rights = models.BooleanField(
+        verbose_name=u'Может управлять дочерними организациями',
+        default=False
+    )
     is_active = models.BooleanField(
         verbose_name=u'Активен', default=True,
         help_text=u'Активизация полномочий ролей'

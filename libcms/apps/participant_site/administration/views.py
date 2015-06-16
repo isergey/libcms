@@ -15,8 +15,10 @@ def index(request, library_code, managed_libraries=[]):
     if not library:
         return HttpResponse(u'Вы должны быть сотрудником организации', status=403)
 
+    # branches = library.get_descendants()
     return render(request, 'participant_site/administration/backend_base.html', {
-        'library': library
+        'library': library,
+        'managed_libraries': managed_libraries
     })
 
 @login_required

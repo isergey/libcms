@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load mptt_tags %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
@@ -15,7 +16,8 @@
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <a class="brand" href="{% url 'participant_site:administration:index' library.code %}">{% block module_title %}Администрирование сайта библиотеки{% endblock %}</a>
+            <a class="brand" href="{% url 'participant_site:administration:index' library.code %}">
+                {% block module_title %}Администрирование сайта библиотеки{% endblock %}</a>
 
             <div class="nav-collapse">
                 <ul class="nav pull-right">
@@ -23,28 +25,46 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Модули<b class="caret"></b></a>
                         <ul class="dropdown-menu">
 
-                            {% if perms.participant_news %}<li><a href="{% url 'participant_news:administration:index' library.code %}">Новости</a></li>{% endif %}
-                            {% if perms.participant_events %}<li><a href="{% url 'participant_events:administration:index' library.code %}">Афиша</a></li>{% endif %}
-                            {% if perms.participant_pages %}<li><a href="{% url 'participant_pages:administration:index' library.code %}">Страницы</a></li>{% endif %}
-                            {% if perms.participant_menu %}<li><a href="{% url 'participant_banners:administration:index' library.code %}">Банеры</a></li>{% endif %}
-                            {% if perms.participant_photopolls %}<li><a href="{% url 'participant_photopolls:administration:index' library.code %}">Фотоголосования</a></li>{% endif %}
-                            {% if perms.participant_menu %}<li><a href="{% url 'participant_menu:administration:index' library.code %}">Меню сайта</a></li>{% endif %}
+                            {% if perms.participant_news %}
+                                <li><a href="{% url 'participant_news:administration:index' library.code %}">Новости</a>
+                                </li>{% endif %}
+                            {% if perms.participant_events %}
+                                <li><a href="{% url 'participant_events:administration:index' library.code %}">Афиша</a>
+                                </li>{% endif %}
+                            {% if perms.participant_pages %}
+                                <li>
+                                    <a href="{% url 'participant_pages:administration:index' library.code %}">Страницы</a>
+                                </li>{% endif %}
+                            {% if perms.participant_menu %}
+                                <li>
+                                    <a href="{% url 'participant_banners:administration:index' library.code %}">Банеры</a>
+                                </li>{% endif %}
+                            {% if perms.participant_photopolls %}
+                                <li><a href="{% url 'participant_photopolls:administration:index' library.code %}">Фотоголосования</a>
+                                </li>{% endif %}
+                            {% if perms.participant_menu %}
+                                <li><a href="{% url 'participant_menu:administration:index' library.code %}">Меню
+                                    сайта</a></li>{% endif %}
 
                             {% if perms.participant_site.change_librarysitecard %}
                                 <hr class="divider"/>
-                                <li><a href="{% url 'participant_site:administration:edit_info' library.code %}">Карточка библиотеки</a></li>
+                                <li><a href="{% url 'participant_site:administration:edit_info' library.code %}">Карточка
+                                    библиотеки</a></li>
                             {% endif %}
                         </ul>
                     </li>
                 </ul>
-            </div><!--/.nav-collapse -->
+            </div>
+            <!--/.nav-collapse -->
         </div>
     </div>
 </div>
 
 <div class="container" style="margin-top: 39px;">
     <div class="row">
-        <div class="span12"><div class="alert alert-info">{{ library.name }}</div></div>
+        <div class="span12">
+            <div class="alert alert-info">{{ library.name }}</div>
+        </div>
     </div>
     <div class="row">
         <div class="span2">
@@ -55,6 +75,22 @@
         <div class="span10">
             {% block module_content %}
                 Выберите модуль для администрирования
+                {% if managed_libraries %}
+                    <hr/>
+                    <p class="alert alert-success">Вы так же можете управлять сайтами следующих организаций</p>
+                    <ul class="root">
+                        {% recursetree managed_libraries %}
+                            <li>
+                                <a href="{% url 'participant_site:administration:index' node.code %}">{{ node.name }}</a>
+                                {% if not node.is_leaf_node %}
+                                    <ul class="children">
+                                        {{ children }}
+                                    </ul>
+                                {% endif %}
+                            </li>
+                        {% endrecursetree %}
+                    </ul>
+                {% endif %}
             {% endblock %}
         </div>
     </div>
@@ -63,11 +99,11 @@
 
 </body>
 <script type="text/javascript">
-//    $('#topbar').dropdown();
+    //    $('#topbar').dropdown();
 </script>
 
 <script type="text/javascript">
-    jQuery(document).ajaxSend(function(event, xhr, settings) {
+    jQuery(document).ajaxSend(function (event, xhr, settings) {
         function getCookie(name) {
             var cookieValue = null;
             if (document.cookie && document.cookie != '') {
@@ -83,6 +119,7 @@
             }
             return cookieValue;
         }
+
         function sameOrigin(url) {
             // url could be relative or scheme relative or absolute
             var host = document.location.host; // host + port
@@ -92,9 +129,10 @@
             // Allow absolute or scheme relative URLs to same origin
             return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
                     (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-                // or any other URL that isn't scheme relative or absolute i.e relative.
+                        // or any other URL that isn't scheme relative or absolute i.e relative.
                     !(/^(\/\/|http:|https:).*/.test(url));
         }
+
         function safeMethod(method) {
             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
         }
