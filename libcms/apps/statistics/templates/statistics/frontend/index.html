@@ -1,4 +1,5 @@
 {% extends 'theme_frontend_base.html' %}
+{% load mptt_tags %}
 {% block styles %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}statistics/report.css"/>
 {% endblock %}
@@ -20,19 +21,31 @@
         {% endif %}
         {% block index_content %}
             <p class="alert alert-info">
-            {% if managed_libraries %}
-                Ваша организация:
-                {% for managed_library in managed_libraries %}
-                    {% if managed_library.library.parent_id %}
-                        {% for ancestor in managed_library.library.get_ancestors %}
-                            {{ ancestor.name }} /
-                        {% endfor %}
-                    {% endif %}
-                    {{ managed_library.library.name }}
-                {% endfor %}
-            {% else %}
-                Вам доступна статистика всех организаций
-            {% endif %}
+                {% if managed_libraries %}
+                    Вам доступны отчеты по:
+                    <ul>
+                        {% recursetree managed_libraries %}
+                            <li>
+                                <span>{{ node.name }}</span>
+                                {% if not node.is_leaf_node %}
+                                    <ul class="children">
+                                        {{ children }}
+                                    </ul>
+                                {% endif %}
+                            </li>
+                        {% endrecursetree %}
+                    </ul>
+{#                    {% for managed_library in managed_libraries %}#}
+{#                        {% if managed_library.parent_id %}#}
+{#                            {% for ancestor in managed_library.get_ancestors %}#}
+{#                                {{ ancestor.name }} /#}
+{#                            {% endfor %}#}
+{#                        {% endif %}#}
+{#                        {{ managed_library.name }}#}
+{#                    {% endfor %}#}
+                {% else %}
+                    Вам доступна статистика всех организаций
+                {% endif %}
             </p>
             <ul>
                 {% for report in response_dict.reports %}

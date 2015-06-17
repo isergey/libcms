@@ -77,7 +77,12 @@ def report(request, managed_libraries=[]):
     else:
         if managed_libraries:
             access = True
-            security = u'Организация=' + managed_libraries[0].library.get_root().code
+            root_code = ''
+            if managed_libraries[0].is_root_node():
+                root_code = managed_libraries[0].code
+            else:
+                root_code = managed_libraries[0].get_root().code
+            security = u'Организация=' + root_code
 
     if not access:
         return HttpResponse(u'Доступ запрещен', status=403)

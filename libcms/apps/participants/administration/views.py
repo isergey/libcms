@@ -47,7 +47,7 @@ def index(request):
 @login_required
 @decorators.must_be_org_user
 def detail(request, id, managed_libraries=[]):
-    managed_libraries_id = [managed_library.library_id for managed_library in managed_libraries]
+    managed_libraries_id = [managed_library.id for managed_library in managed_libraries]
     can_manage = False
     if int(id) in managed_libraries_id:
         can_manage = True
@@ -372,7 +372,7 @@ def district_delete(request, id):
 def _get_user_manager_orgs_qs(managed_libraries):
     managed_orgs = []
     for managed_library in managed_libraries:
-        managed_orgs.append(managed_library.library)
+        managed_orgs.append(managed_library)
 
     if managed_orgs:
         libs_for_qs = []
@@ -395,7 +395,7 @@ def library_user_list(request, managed_libraries=[]):
 
     districts = []
     for managed_library in managed_libraries:
-        districts.append(managed_library.library.district_id)
+        districts.append(managed_library.district_id)
     districts_form = forms.get_district_form(districts)(request.GET, prefix='sdf')
 
     role_form = forms.SelectUserRoleForm(request.GET, prefix='sur')
@@ -468,7 +468,7 @@ def library_user_list(request, managed_libraries=[]):
 @permission_required_or_403('participants.add_userlibrary')
 @decorators.must_be_org_user
 def add_library_user(request, library_id, managed_libraries=[]):
-    managed_libray_ids = [unicode(managed_library.library_id) for managed_library in managed_libraries]
+    managed_libray_ids = [unicode(managed_library.id) for managed_library in managed_libraries]
 
     if managed_libray_ids and library_id not in managed_libray_ids:
         return HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
@@ -521,7 +521,7 @@ def add_library_user(request, library_id, managed_libraries=[]):
 @decorators.must_be_org_user
 def edit_library_user(request, id, managed_libraries=[]):
     user_library = get_object_or_404(models.UserLibrary, id=id)
-    managed_libray_ids = [managed_library.library_id for managed_library in managed_libraries]
+    managed_libray_ids = [managed_library.id for managed_library in managed_libraries]
 
     if managed_libray_ids and user_library.library_id not in managed_libray_ids:
         return HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
@@ -571,7 +571,7 @@ def edit_library_user(request, id, managed_libraries=[]):
 @decorators.must_be_org_user
 def delete_library_user(request, id, managed_libraries=[]):
     user_library = get_object_or_404(models.UserLibrary, id=id)
-    managed_libray_ids = [managed_library.library_id for managed_library in managed_libraries]
+    managed_libray_ids = [managed_library.id for managed_library in managed_libraries]
 
     if managed_libray_ids and user_library.library_id not in managed_libray_ids:
         return HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
@@ -819,7 +819,7 @@ def load_libs(request, managed_libraries=[]):
     if managed_libraries:
         lib_ids = []
         for managed_library in managed_libraries:
-            lib_ids.append(managed_library.library_id)
+            lib_ids.append(managed_library.id)
         q = q = Q(id__in=lib_ids)
 
 
@@ -850,7 +850,7 @@ def managed_districts(request, managed_libraries=[]):
 
     districts_id = []
     for managed_library in managed_libraries:
-        districts_id.append(managed_library.library.district_id)
+        districts_id.append(managed_library.district_id)
     q = Q()
     if districts_id:
         q = Q(id__in=districts_id)
