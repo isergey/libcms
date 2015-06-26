@@ -23,10 +23,11 @@ def drow_library_menu(context, library_id, menu_slug):
 
     path = context['request'].META['PATH_INFO']
 
-    nodes = cache.get('menu_nodes' + menu_slug + lang, None)
+    cache_key = 'menu_nodes' + unicode(library_id)  + menu_slug + lang
+    nodes = cache.get(cache_key, None)
     if not nodes:
         nodes = list(menu.root_item.get_descendants().exclude(show=False))
-        cache.set('menu_nodes' + menu_slug + lang, nodes)
+        cache.set(cache_key, nodes)
 
     return ({
         'nodes': nodes,
@@ -52,14 +53,15 @@ def drow_library_menu_default(context, library_id, menu_slug):
     path = context['request'].META['PATH_INFO']
     #nodes = list(menu.root_item.get_descendants().exclude(show=False))
     #print nodes
-    nodes = cache.get('menu_nodes' + menu_slug + lang, None)
+    cache_key = 'def_menu_nodes' + unicode(library_id)  + menu_slug + lang
+    nodes = cache.get(cache_key, None)
     if not nodes:
         try:
             menu = Menu.objects.get(slug=menu_slug, library_id=library_id, lang=lang)
             nodes = list(menu.root_item.get_descendants().exclude(show=False))
         except Menu.DoesNotExist:
             nodes = []
-        cache.set('menu_nodes' + menu_slug + lang, nodes)
+        cache.set(cache_key, nodes)
 
     return ({
         'nodes': nodes,
