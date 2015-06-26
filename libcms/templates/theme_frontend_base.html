@@ -314,5 +314,25 @@ style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" tit
         $.get('{% url 'statistics:api:watch' %}');
     });
 </script>
+
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//ua.tatar.ru/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 22]);
+
+    <!-- "a0a0a0a0a0a0a0a0" should be replaced by a hash user id from your system -->
+    _paq.push(['setUserId', "a0a0a0a0a0a0a0a0");
+
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//ua.tatar.ru/piwik.php?idsite=22" style="border:0;" alt="" /></p></noscript>
+<!-- End Piwik Code -->
 </body>
 </html>
