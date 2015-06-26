@@ -1,5 +1,6 @@
 # encoding: utf-8
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User, Group
@@ -57,9 +58,17 @@ class Library(MPTTModel):
         related_name='children',
     )
     name = models.CharField(max_length=255, verbose_name=u'Название')
-    code = models.CharField(verbose_name=u'Сигла', max_length=32, db_index=True, unique=True)
-    sigla = models.CharField(verbose_name=u'Сигла из подполя 999b', max_length=32, db_index=True, blank=True,
-                             unique=True)
+    code = models.CharField(
+        verbose_name=u'Сигла',
+        max_length=32,
+        db_index=True,
+        unique=True,
+        validators=[RegexValidator(regex=r'^[/_\-0-9A-Za-z]+$', message=u'Допускаются цифры, _, -, латинские буквы')]
+    )
+    sigla = models.CharField(
+        verbose_name=u'Сигла из подполя 999b',
+        max_length=32, db_index=True, blank=True,
+        unique=True)
     republican = models.BooleanField(verbose_name=u'Руспубликанская библиотека', default=False, db_index=True)
     types = models.ManyToManyField(LibraryType, verbose_name=u'Тип библиотеки', blank=True)
 
