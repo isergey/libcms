@@ -34,7 +34,10 @@ class Banner(models.Model):
         default=BANNER_PLACES[0][0],
         verbose_name=u'Место размещения'
     )
-    image = models.ImageField(upload_to=u'participant_banners/%Y/%m/%d')
+    image = models.ImageField(
+        upload_to=u'participant_banners/%Y/%m/%d',
+        verbose_name=u'Картинка для банера', help_text=u'Загружайте файлы JPG и PNG с латинскими названиями'
+    )
     title = models.CharField(
         max_length=500,
         blank=True,
