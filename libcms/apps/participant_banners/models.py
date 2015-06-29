@@ -1,5 +1,4 @@
 # coding=utf-8
-import re
 from django.conf import settings
 from django.db import models
 from participants.models import Library
