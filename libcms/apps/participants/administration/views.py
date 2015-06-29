@@ -19,8 +19,6 @@ from accounts import models as accounts_models
 
 SITE_DOMAIN = getattr(settings, 'SITE_DOMAIN', 'http://localhost')
 
-# @permission_required_or_403('accounts.view_users')
-@login_required
 def check_owning(user, library):
     if user.is_superuser:
         return True
@@ -31,7 +29,6 @@ def check_owning(user, library):
             return False
 
 
-@login_required
 def get_cbs(library_node):
     if library_node.parent_id:
         return library_node.get_root()
