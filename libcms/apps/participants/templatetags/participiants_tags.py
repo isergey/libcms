@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 from django import template
-from ..models import Library, UserLibrary
+from .. import models
 register = template.Library()
 
 
@@ -20,7 +20,7 @@ def make_library_dict(library):
 
 @register.inclusion_tag('participants/tags/cbs_list.html')
 def cbs_map():
-    cbs_list = Library.objects.filter(parent=None).order_by('weight')
+    cbs_list = models.Library.objects.filter(parent=None).order_by('weight')
     js_orgs = []
     for org in cbs_list:
         js_orgs.append(make_library_dict(org))
@@ -34,8 +34,15 @@ def cbs_map():
 
 @register.assignment_tag
 def get_user_org(user):
-    user_libraies = UserLibrary.objects.filter(user=user)[:1]
+    user_libraies = models.UserLibrary.objects.filter(user=user)[:1]
     if user_libraies:
         return user_libraies[0].library
     else:
         return None
+
+
+@register.assignment_tag(takes_context=True)
+def personal_cabinet_links(context):
+    if context.request.user.is_authenticated():
+        return models.personal_cabinet_links(context.request)
+    return []

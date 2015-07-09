@@ -226,7 +226,24 @@ def personal_cabinet_links(request):
             'href': _reverse(request, 'participants:administration:library_user_list')
         })
 
-    if request.user.has_module_perms('participant_site') and user_orgs:
+    def can_manage_site():
+        site_manage_modules = [
+            'participant_site',
+            'participant_banners',
+            'participant_events',
+            'participant_menu',
+            'participant_news',
+            'participant_pages',
+            'participant_photopolls',
+            'participant_site'
+        ]
+        for site_manage_module in site_manage_modules:
+            if request.user.has_module_perms(site_manage_module):
+                return True
+
+        return False
+
+    if can_manage_site() and user_orgs:
         links.append({
             'title': u'Управление сайтом',
             'href': _reverse(request, 'participant_site:administration:index', args=[user_orgs[0].library.code])

@@ -5,10 +5,12 @@
 <div style="clear: both;">
     <div style="float: right;">
         <div class="btn-group">
-            <a class="btn btn btn-large" href="{% url 'personal:frontend:index' %}"><i class="icon-user"></i> Личный кабинет</a>
+            <a class="btn btn btn-large" href="{% url 'personal:frontend:index' %}"><i class="icon-user"></i> Личный
+                кабинет</a>
             <a class="btn dropdown-toggle btn btn-large" data-toggle="dropdown" href="#"><span
                     class="caret"></span></a>
-            <ul class="dropdown-menu"><li><a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a></li>
+            <ul class="dropdown-menu">
+                <li><a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a></li>
                 <li><a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a></li>
                 <li><a href="{% url 'orders:frontend:reservations' %}">Заказы на бронирование</a></li>
                 <li><a href="{% url 'mydocs:frontend:index' %}">Мои документы</a></li>
@@ -16,21 +18,11 @@
                 <li><a href="{% url 'ssearch:frontend:saved_search_requests' %}">Поисковые запросы</a></li>
                 <li class="divider"></li>
                 {% cache 600 user_org request.user.id %}
-    {#                {% ifusergroups role_site_admin or role_site_moderator %}#}
-    {#                {% endifusergroups %}#}
-                    {% ifusergroup role_mba_manager %}
-                        <li><a target="_blank" href="http://ill.kitap.tatar.ru">АРМ МБА</a></li>
-                    {% endifusergroup %}
-                    {% ifusergroup role_it_manager %}
-                        <li><a href="{% url 'participants:administration:library_user_list' %}">Управление сотрудниками</a></li>
-                    {% endifusergroup %}
-                    {% if perms.participant_site and user_org %}
-                        <li><a href="{% url 'participant_site:administration:index' user_org.code %}">Управление сайтом</a></li>
-                    {% endif %}
-                    {% if user_org or perms.statistics.view_all_statistic %}
-                        <li><a href="{% url 'statistics:frontend:index' %}">Статистика</a></li>
-                    {% endif %}
-                    {% if user_org %}
+                    {% personal_cabinet_links as cabinet_links %}
+                    {% for cabinet_link in cabinet_links %}
+                        <li><a href="{{ cabinet_link.href|safe }}">{{ cabinet_link.title }}</a></li>
+                    {% endfor %}
+                     {% if cabinet_links %}
                         <li class="divider"></li>
                     {% endif %}
                 {% endcache %}

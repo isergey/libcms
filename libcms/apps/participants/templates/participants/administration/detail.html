@@ -112,7 +112,7 @@
                 {% for library_user in library_users %}
                     <tr>
                         <td>{{ library_user.user.email }}</td>
-                        <td>{{ library_user.user.last_name }} {{ library_user.middle_name }} {{ library_user.user.first_name }}</td>
+                        <td>{{ library_user.user.last_name }} {{ library_user.user.first_name }} {{ library_user.middle_name }}</td>
                         <td>{{ library_user.position }}</td>
                         <td>{{ library_user.department }}</td>
                         <td><a href="{% url 'participants:administration:edit_library_user' library_user.id %}" class="btn btn-small">редактировать</a></td>
