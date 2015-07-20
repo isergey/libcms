@@ -6,6 +6,7 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from mptt.models import MPTTModel, TreeForeignKey
 
+
 #
 # class Country(models.Model):
 # name = models.CharField(verbose_name=u'Страна', max_length=32, unique=True, db_index=True)

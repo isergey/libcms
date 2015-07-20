@@ -25,6 +25,7 @@ def index(request, library_code, managed_libraries=[]):
 @decorators.must_be_org_user
 @transaction.atomic
 def edit_info(request, library_code, managed_libraries=[]):
+    error = ''
     library = org_utils.get_library(library_code, managed_libraries)
     if not library:
         return HttpResponse(u'Вы должны быть сотрудником организации', status=403)
@@ -40,7 +41,10 @@ def edit_info(request, library_code, managed_libraries=[]):
         if avatar_from.is_valid() and library_form.is_valid():
             avatar = avatar_from.save(commit=False)
             avatar.library = library
-            avatar.save()
+            try:
+                avatar.save()
+            except IOError as e:
+                error = u'Ошибка при сохранении изображения %s' % e.message
             library_form.save()
     else:
         avatar_from = forms.AvatarForm(prefix='avatar_from', instance=avatar)
@@ -48,6 +52,7 @@ def edit_info(request, library_code, managed_libraries=[]):
     return render(request, 'participant_site/administration/edit_info.html', {
         'avatar_from': avatar_from,
         'library_form': library_form,
-        'library': library
+        'library': library,
+        'error': error
     })
 

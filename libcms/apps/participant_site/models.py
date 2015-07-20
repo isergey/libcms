@@ -65,6 +65,7 @@ class LibraryAvatar(models.Model):
     library = models.OneToOneField(Library, unique=True)
     avatar = models.ImageField(
         verbose_name=u'Изображение библиотеки',
+        help_text=u'Используйте изображения только в формата JPG или PNG',
         upload_to=get_avatar_file_name,
         width_field='width',
         height_field='height',
@@ -80,7 +81,7 @@ def resize_avatar(sender, **kwargs):
     image_path = MEDIA_ROOT + unicode(instance.avatar)
     im = Image.open(image_path)
     im.thumbnail(AVATAR_THUMBNAIL_SIZE)
-    im.save(image_path, "JPEG", quality=90, optimize=True, progressive=True)
+    im.convert('RGB').save(image_path, "JPEG", quality=90, optimize=True, progressive=True)
 
 
 @receiver(models.signals.post_delete, sender=LibraryAvatar)

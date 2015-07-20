@@ -10,6 +10,9 @@
             width: 95%;
         }
     </style>
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
     <form class="info_form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <fieldset>
