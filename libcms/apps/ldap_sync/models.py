@@ -42,33 +42,40 @@ def _truncate_username(username):
     return username
 
 
-@receiver(post_save, sender=accounts_models.Password)
-def pre_save_password_callback(sender, **kwargs):
-    inst = kwargs['instance']
-    user = inst.user
-    password = inst.password
+def sync_account(password_model, already_ldap_session=None):
+    user = password_model.user
+    password = password_model.password
 
     username = _truncate_username(user.username)
     try:
-        password_sync = PasswordSync.objects.get(password=inst)
+        password_sync = PasswordSync.objects.get(password=password_model)
     except PasswordSync.DoesNotExist:
-        password_sync = PasswordSync(password=inst)
+        password_sync = PasswordSync(password=password_model)
         password_sync.save()
 
-    api_client = ldap_api.Client(ldap_server=LDAP_SERVER, bind_dn=BIND_DN, bind_password=BIND_PASS)
-
-    ldap_session = None
     user_already_exist = False
+    api_client = None
+
+    if not already_ldap_session:
+        api_client = ldap_api.Client(ldap_server=LDAP_SERVER, bind_dn=BIND_DN, bind_password=BIND_PASS)
+        try:
+            ldap_session = api_client.connect()
+        except ldap_api.LdapApiError as e:
+            password_sync.synchronized = False
+            password_sync.last_error = e.message[:1024]
+            password_sync.save()
+            api_client.disconnect()
+            return
+    else:
+        ldap_session = already_ldap_session
+
     try:
-        ldap_session = api_client.connect()
         if ldap_session.search_user(username, BASE_DN):
             user_already_exist = True
     except ldap_api.LdapApiError as e:
         password_sync.synchronized = False
         password_sync.last_error = e.message[:1024]
         password_sync.save()
-        api_client.disconnect()
-        return
 
     if not user_already_exist:
         try:
@@ -102,9 +109,32 @@ def pre_save_password_callback(sender, **kwargs):
         except ldap_api.LdapApiError as e:
             password_sync.synchronized = False
             password_sync.last_error = e.message[:1024]
-    api_client.disconnect()
+
+    if not already_ldap_session:
+        api_client.disconnect()
     password_sync.save()
 
+
+def sync_all_passwords():
+    api_client = ldap_api.Client(ldap_server=LDAP_SERVER, bind_dn=BIND_DN, bind_password=BIND_PASS)
+    try:
+        ldap_session = api_client.connect()
+    except ldap_api.LdapApiError as e:
+        print u'Error of connection to LDAP: %s' % e.message
+        return
+
+    for i, password_model in enumerate(accounts_models.Password.objects.select_related('user').all()):
+        sync_account(password_model, ldap_session)
+        print u'%s %s' % (i, password_model.user.username)
+
+    api_client.disconnect()
+    print 'All passwords synchronized'
+
+
+@receiver(post_save, sender=accounts_models.Password)
+def pre_save_password_callback(sender, **kwargs):
+    password_model = kwargs['instance']
+    sync_account(password_model)
 
 
 @receiver(post_delete, sender=accounts_models.Password)
