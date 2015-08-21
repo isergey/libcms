@@ -122,8 +122,9 @@ def sync_all_passwords():
     except ldap_api.LdapApiError as e:
         print u'Error of connection to LDAP: %s' % e.message
         return
-
-    for i, password_model in enumerate(accounts_models.Password.objects.select_related('user').all()):
+    i = 0
+    for password_model in accounts_models.Password.objects.select_related('user').all().iterator():
+        i += 1
         sync_account(password_model, ldap_session)
         print u'%s %s' % (i, password_model.user.username)
 
