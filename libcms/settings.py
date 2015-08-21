@@ -129,6 +129,7 @@ INSTALLED_APPS = (
     'pages',
     'news',
     'events',
+    'ldap_sync',
     'participants',
     'participant_news',
     'participant_events',

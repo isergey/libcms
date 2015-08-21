@@ -31,8 +31,11 @@ class DistrictForm(forms.ModelForm):
         exclude = []
 
 
+
 class UserForm(forms.ModelForm):
-    password = forms.CharField(max_length=64, label=u'Пароль *', required=False)
+    password = forms.CharField(
+        max_length=64, label=u'Пароль *', required=False,
+        help_text=u'Длина пароля от 6-ти символов, должны присутвовать A-Z, a-z, 0-9 и (или) !#$%&?')
     email = forms.EmailField(label=u'Адрес электронной почты', help_text=u'Только в домене @tatar.ru ')
     last_name = forms.CharField(label=u'Фамилия', max_length=30)
     first_name = forms.CharField(label=u'Имя', max_length=30)
@@ -52,9 +55,28 @@ class UserForm(forms.ModelForm):
 
     def clean_password(self):
         password = self.cleaned_data['password']
+        email = self.cleaned_data['email']
+        email_parts = email.split('@')
+        email_check = email
+        if len(email_parts) > 1:
+            email_check = email_parts[0]
+
+        if password.lower().find(email_check.lower()) > -1:
+            raise forms.ValidationError(u'В пароле не должно содержаться часть логина')
+
+        if not self.check_psw(password):
+            raise forms.ValidationError(
+                u'Длина пароля от 6-ти символов, должны присутвовать A-Z, a-z, 0-9 и (или) !#$%&?')
+
         if not self.instance.pk and not password:
             raise forms.ValidationError(u'Укажите или сгенерируйте пароль')
         return password
+
+    def check_psw(self, psw):
+        return len(psw) >= 6 and \
+               bool(re.match("^.*[A-Z]+.*$", psw) and \
+                    re.match("^.*[a-z]+.*$", psw) and \
+                    (re.match("^.*[0-9]+.*$", psw)) or re.match("^.*[\W]+.*$", psw))
 
 
 class UserLibraryForm(forms.ModelForm):
@@ -91,7 +113,6 @@ class UserLibraryGroupsFrom(forms.ModelForm):
         }
 
 
-
 def get_district_form(districts=None):
     if not districts:
         queryset = models.District.objects.all()
@@ -105,13 +126,13 @@ def get_district_form(districts=None):
 
 
 class SelectUserPositionForm(forms.Form):
-    position = forms.ModelChoiceField(queryset=models.UserLibraryPosition.objects.all(), label=u'Должность', required=False)
+    position = forms.ModelChoiceField(queryset=models.UserLibraryPosition.objects.all(), label=u'Должность',
+                                      required=False)
 
 
 class SelectUserRoleForm(forms.Form):
-    role = forms.ModelChoiceField(queryset=Group.objects.filter(name__startswith='role_'), label=u'Роль', required=False)
-
-
+    role = forms.ModelChoiceField(queryset=Group.objects.filter(name__startswith='role_'), label=u'Роль',
+                                  required=False)
 
 
 class UserAttrForm(forms.Form):
@@ -146,4 +167,3 @@ def get_add_user_library_form(queryset=None):
         )
 
     return AddUserDistrictForm
-

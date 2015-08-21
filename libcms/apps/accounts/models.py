@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, Group
 from django.db import models
 
 
+
 class GroupTitle(models.Model):
     group = models.OneToOneField(Group, unique=True)
     title = models.CharField(
@@ -43,3 +44,4 @@ def create_or_update_password(user, password):
 
     user_password.save()
     return user_password
+

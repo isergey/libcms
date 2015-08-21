@@ -214,6 +214,14 @@ RUSLAN_ORDER_URLS = {
     'books': 'http://cgi.kitap.tatar.ru/cgi-bin/zurlcirc?z39.50r://%s:%s@%s/ir-extend-1?%s'
 }
 
+LDAP_SYNC = {
+    'ldap_server': 'ldaps://192.168.12.128:636',
+    'bind_dn': 'admin@local.com',
+    'bind_pass': 'Qwerty12345',
+    'base_dn': 'CN=Users,DC=local,DC=com',
+    'domain': 'local.com'
+}
+
 PYMORPHY_CDB_DICTS = '/var/www/portal/libcms/var/data/pymorphy/ru/cdb'
 
 TWITTER_CONSUMER_KEY              = '110125937-qqZsC46x3xqKQCrUu3aafxkg3mGzIOUQh3L7hL6c'

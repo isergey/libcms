@@ -60,17 +60,7 @@
             </div>
         </fieldset>
     </form>
-    <script>
-        $(function () {
-            var $passwordField = $('#id_user_form-password');
-            var $generateButton = $('<a href="#gen_pass"> Сгенерировать пароль</a>');
-            $passwordField.after($generateButton);
-            $generateButton.on('click', function () {
-                var randomstring = Math.random().toString(36).slice(-8);
-                $passwordField.val(randomstring);
-            });
-        });
-    </script>
+    {% include 'participants/administration/password_generator.html' %}
 
 {#    {% include 'participants/administration/lib_select_js.html' %}#}
 {% endblock %}
