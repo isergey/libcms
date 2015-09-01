@@ -58,16 +58,6 @@ class UserForm(forms.ModelForm):
         if not password:
             return password
 
-        email = self.cleaned_data['email']
-        email_parts = email.split('@')
-        email_check = email
-
-        if len(email_parts) > 1:
-            email_check = email_parts[0]
-
-        if password.lower().find(email_check.lower()) > -1:
-            raise forms.ValidationError(u'В пароле не должно содержаться часть логина')
-
         if not self.check_psw(password):
             raise forms.ValidationError(
                 u'Длина пароля от 6-ти символов, должны присутвовать A-Z, a-z, 0-9 и (или) !#$%&?')
@@ -75,6 +65,15 @@ class UserForm(forms.ModelForm):
         if not self.instance.pk and not password:
             raise forms.ValidationError(u'Укажите или сгенерируйте пароль')
         return password
+
+    def clean(self):
+        password = self.cleaned_data['password']
+        email = self.cleaned_data['email']
+        email_parts = email.split('@')
+        email_check = email
+        if password.lower().find(email_check.lower()) > -1:
+            raise forms.ValidationError(u'В пароле не должно содержаться часть логина')
+
 
     def check_psw(self, psw):
         return len(psw) >= 6 and \
