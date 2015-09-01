@@ -70,6 +70,7 @@ class UserForm(forms.ModelForm):
         password = cleaned_data['password']
         email = cleaned_data['email']
         email_check = email
+
         if password.lower().find(email_check.lower()) > -1:
             raise forms.ValidationError(u'В пароле не должно содержаться часть логина')
 

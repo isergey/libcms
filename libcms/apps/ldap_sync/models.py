@@ -151,14 +151,11 @@ def post_delete_password_callback(sender, **kwargs):
     # except accounts_models.Password.DoesNotExist:
     #     pass
     #
-    # try:
-    ldap_session = api_client.connect()
-    ldap_session.delete_user(
-        username=_truncate_username(user.username),
-        base_dn=BASE_DN,
-    )
-    # except ldap_api.LdapApiError as e:
-    #     if password_sync:
-    #         password_sync.need_to_delete = True
-    #         password_sync.last_error = e.message
-    #         password_sync.save()
+    try:
+        ldap_session = api_client.connect()
+        ldap_session.delete_user(
+            username=_truncate_username(user.username),
+            base_dn=BASE_DN,
+        )
+    except ldap_api.LdapApiError as e:
+        pass
