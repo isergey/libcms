@@ -55,7 +55,10 @@ class UserForm(forms.ModelForm):
     def clean_password(self):
         password = self.cleaned_data['password']
         if not password:
-            return password
+            if not self.instance.pk:
+                raise forms.ValidationError(u'Поле обязательно для заполнения')
+            else:
+                return password
 
         if not self.check_psw(password):
             raise forms.ValidationError(
@@ -67,12 +70,15 @@ class UserForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(UserForm, self).clean()
-        password = cleaned_data['password']
-        email = cleaned_data['email']
+        password = cleaned_data.get('password', '')
+        email = cleaned_data.get('email', '')
+        if not password or not email:
+            return
         email_check = email
 
-        if password.lower().find(email_check.lower()) > -1:
-            raise forms.ValidationError(u'В пароле не должно содержаться часть логина')
+        if email_check.lower().find(password.lower()) > -1:
+            self.add_error('password', u'В пароле не должно содержаться часть логина')
+
 
     def check_psw(self, psw):
         return len(psw) >= 6 and \
