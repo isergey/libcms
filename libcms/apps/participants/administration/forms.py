@@ -31,7 +31,6 @@ class DistrictForm(forms.ModelForm):
         exclude = []
 
 
-
 class UserForm(forms.ModelForm):
     password = forms.CharField(
         max_length=64, label=u'Пароль *', required=False,
@@ -67,13 +66,12 @@ class UserForm(forms.ModelForm):
         return password
 
     def clean(self):
-        password = self.cleaned_data['password']
-        email = self.cleaned_data['email']
-        email_parts = email.split('@')
+        cleaned_data = super(UserForm, self).clean()
+        password = cleaned_data['password']
+        email = cleaned_data['email']
         email_check = email
         if password.lower().find(email_check.lower()) > -1:
             raise forms.ValidationError(u'В пароле не должно содержаться часть логина')
-
 
     def check_psw(self, psw):
         return len(psw) >= 6 and \
