@@ -1,4 +1,5 @@
 # coding=utf-8
+import ldap
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save, post_delete
@@ -14,6 +15,7 @@ BIND_DN = LDAP_SYNC_SETTINGS.get('bind_dn', '')
 BIND_PASS = LDAP_SYNC_SETTINGS.get('bind_pass', '')
 BASE_DN = LDAP_SYNC_SETTINGS.get('base_dn', '')
 DOMAIN = LDAP_SYNC_SETTINGS.get('domain', '')
+ADD_TO_GROUP = LDAP_SYNC_SETTINGS.get('add_to_group', '')
 
 
 class SyncStatus(models.Model):
@@ -86,7 +88,8 @@ def sync_account(password_model, already_ldap_session=None):
                 domain=DOMAIN,
                 first_name=user.first_name,
                 last_name=user.last_name,
-                email=user.email
+                email=user.email,
+                group=ADD_TO_GROUP
             )
             password_sync.synchronized = True
             password_sync.last_error = ''
@@ -102,7 +105,8 @@ def sync_account(password_model, already_ldap_session=None):
                 domain=DOMAIN,
                 first_name=user.first_name,
                 last_name=user.last_name,
-                email=user.email
+                email=user.email,
+                group=ADD_TO_GROUP
             )
             password_sync.synchronized = True
             password_sync.last_error = ''
@@ -151,14 +155,16 @@ def post_delete_password_callback(sender, **kwargs):
     # except accounts_models.Password.DoesNotExist:
     #     pass
     #
-    # try:
-    ldap_session = api_client.connect()
-    ldap_session.delete_user(
-        username=_truncate_username(user.username),
-        base_dn=BASE_DN,
-    )
-    # except ldap_api.LdapApiError as e:
-    #     if password_sync:
-    #         password_sync.need_to_delete = True
-    #         password_sync.last_error = e.message
-    #         password_sync.save()
+    try:
+        ldap_session = api_client.connect()
+        ldap_session.delete_user(
+            username=_truncate_username(user.username),
+            base_dn=BASE_DN,
+        )
+    except ldap_api.LdapApiError as e:
+        if isinstance(e.message, ldap.NO_SUCH_OBJECT):
+            pass
+        # if password_sync:
+        #     password_sync.need_to_delete = True
+        #     password_sync.last_error = e.message
+        #     password_sync.save()

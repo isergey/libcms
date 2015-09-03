@@ -54,7 +54,7 @@ class Session(object):
 
         return results
 
-    def create_user(self, username, base_dn, domain, password='', first_name='', last_name='', email=''):
+    def create_user(self, username, base_dn, domain, password='', first_name='', last_name='', email='', group=''):
         """
         Create a new user account in Active Directory.
         """
@@ -63,6 +63,7 @@ class Session(object):
         lname = last_name.encode('utf-8')
         domain = domain.encode('utf-8')
         email = email.encode('utf-8')
+        group = group.encode('utf-8')
 
         user_dn = 'cn=%s,%s' % (username, base_dn)
 
@@ -73,12 +74,14 @@ class Session(object):
             'sAMAccountName': username,
             'givenName': fname,
             'sn': lname,
+            # 'member': 'CN=%s,CN=Users,DC=tatar,DC=local' % (group,),
             'displayName': '%s %s' % (fname, lname),
             'unicodePwd': (u'\"%s\"' % password).encode('utf-16-le'),
-            'userAccountControl': '512'
+            'userAccountControl': '66048'
         }
         if email:
             user_attrs['mail'] = email
+
 
         user_ldif = modlist.addModlist(user_attrs)
 
@@ -87,7 +90,19 @@ class Session(object):
         except ldap.LDAPError, error_message:
             raise LdapApiError(error_message)
 
-    def update_user(self, username, base_dn, domain='', password='', first_name='', last_name='', email=''):
+        # if group:
+        #     # user_attrs['member'] = 'CN=%s,CN=Users,DC=tatar,DC=local' % [group]
+        #     user_ldif = modlist.addModlist({
+        #         'member': 'CN=%s,CN=Users,DC=tatar,DC=local' % (group,),
+        #     })
+        #     print user_ldif
+        #     try:
+        #         self._connection.add_s(user_dn, user_ldif)
+        #     except ldap.LDAPError, error_message:
+        #         raise LdapApiError(error_message)
+
+
+    def update_user(self, username, base_dn, domain='', password='', first_name='', last_name='', email='', group=''):
         """
         Create a new user account in Active Directory.
         """
@@ -96,6 +111,7 @@ class Session(object):
         lname = last_name.encode('utf-8')
         domain = domain.encode('utf-8')
         mail = email.encode('utf-8')
+        group = group.encode('utf-8')
 
         user_dn = 'cn=%s,%s' % (username, base_dn)
 
@@ -121,13 +137,13 @@ class Session(object):
                 ldap.MOD_REPLACE, 'mail', mail
             ))
 
+
         if password:
             modifs.append((
                 ldap.MOD_REPLACE, 'unicodePwd', (u'\"%s\"' % password).encode('utf-16-le')
             ))
 
         if modifs:
-
             try:
                 self._connection.modify_s(user_dn, [(
                     ldap.MOD_REPLACE, 'userAccountControl', '514'
@@ -142,7 +158,7 @@ class Session(object):
 
             try:
                 self._connection.modify_s(user_dn, [(
-                    ldap.MOD_REPLACE, 'userAccountControl', '512'
+                    ldap.MOD_REPLACE, 'userAccountControl', '66048'
                 )])
             except ldap.LDAPError, error_message:
                 raise LdapApiError(error_message)
