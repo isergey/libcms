@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import json
 import cStringIO as StringIO
-from django.conf import settings
-from django.forms.models import model_to_dict
-from django.core import serializers
-from django.shortcuts import HttpResponse
-from django.contrib.auth.models import User
 
+from django.forms.models import model_to_dict
+from django.shortcuts import HttpResponse, resolve_url
+
+from django.contrib.auth.models import User
 import unicodecsv
+
 from api.exceptions import WrongArguments, ApiException
 from api.decorators import api, login_required_ajax
 from .. import models
@@ -37,7 +37,6 @@ class ApiUser(object):
             dict['date_joined'] = self.date_joined.isoformat()
 
         return dict
-
 
     @classmethod
     def from_model(cls, model):
@@ -116,7 +115,6 @@ class ApiLibrary(object):
             'longitude': self.longitude,
         }
         return dict
-
 
     @classmethod
     def from_model(cls, model):
@@ -294,27 +292,91 @@ def get_user(request):
     return ApiUser.from_model(user).to_dict()
 
 
+from collections import OrderedDict
+from django.core.serializers import xml_serializer
+from django.core.serializers import json as json_serializer
+
+
+def _get_org_site(org, host=''):
+    return host + resolve_url('participant_site:frontend:index', library_code=org.code)
+
+
+class XmlSerializer(xml_serializer.Serializer):
+    def __init__(self, host='', *args, **kwargs):
+        self.__host = host
+        super(XmlSerializer, self).__init__(*args, **kwargs)
+
+    def end_object(self, obj):
+        """
+        Called after handling all fields for an object.
+        """
+        self.indent(2)
+        self.xml.startElement("field", OrderedDict([
+            ("name", 'site'),
+            ("type", 'CharField'),
+        ]))
+        self.xml.characters(_get_org_site(obj, host=self.__host))
+        self.xml.endElement("field")
+        self.indent(1)
+        self.xml.endElement("object")
+
+
+class JsonSerializer(json_serializer.Serializer):
+    def __init__(self, host='', *args, **kwargs):
+        self.__host = host
+        super(JsonSerializer, self).__init__(*args, **kwargs)
+
+    def end_object(self, obj):
+        # self._current has the field data
+        indent = self.options.get("indent")
+        if not self.first:
+            self.stream.write(",")
+            if not indent:
+                self.stream.write(" ")
+        if indent:
+            self.stream.write("\n")
+        dumped_obj = self.get_dump_object(obj)
+        dumped_obj.get('fields', {})['site'] = _get_org_site(obj, host=self.__host)
+        json.dump(
+            dumped_obj, self.stream,
+            cls=json_serializer.DjangoJSONEncoder, **self.json_kwargs)
+        self._current = None
+
 
 @api
 def export_orgs(request):
+    host = request.META.get('HTTP_HOST', '')
+
+    if request.is_secure():
+        host = 'https://' + host
+    else:
+        host = 'http://' + host
+
     scheme = request.GET.get('scheme', 'xml')
     schemes = ['xml', 'json', 'csv']
 
     if scheme not in schemes:
         scheme = 'xml'
 
-    orgs = list(models.Library.objects.prefetch_related('types', 'district').all())
+    orgs = list(models.Library.objects.all())
     data = u''
+
     if scheme == 'csv' and orgs:
         iodata = StringIO.StringIO()
-        fieldnames = model_to_dict(orgs[0]).keys()
+        fieldnames = model_to_dict(orgs[0]).keys() + ['site']
         writer = unicodecsv.DictWriter(iodata, fieldnames=fieldnames)
         writer.writeheader()
         for org in orgs:
-            writer.writerow(model_to_dict(org))
+            org_dict = model_to_dict(org)
+            org_dict['site'] = _get_org_site(org, host=host)
+            writer.writerow(org_dict)
         data = iodata.getvalue()
+    elif scheme == 'json':
+        ser = JsonSerializer(host=host)
+        data = ser.serialize(orgs)
     else:
-        data = serializers.serialize(scheme, orgs)
+        ser = XmlSerializer(host=host)
+        data = ser.serialize(orgs)
 
     return HttpResponse(data, content_type='application/' + scheme)
 
@@ -327,4 +389,5 @@ def user_organizations(request):
 
 @login_required_ajax
 def personal_cabinet_links(request):
-    return HttpResponse(json.dumps(models.personal_cabinet_links(request), ensure_ascii=False), content_type='application/json')
+    return HttpResponse(json.dumps(models.personal_cabinet_links(request), ensure_ascii=False),
+                        content_type='application/json')

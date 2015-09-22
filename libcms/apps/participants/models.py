@@ -96,6 +96,7 @@ class Library(MPTTModel):
 
     weight = models.IntegerField(verbose_name=u'Порядок вывода в списке', default=100, db_index=True)
 
+
     def __unicode__(self):
         return self.name
 

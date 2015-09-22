@@ -4,9 +4,11 @@ from django.contrib.admin.sites import site
 from django.conf.urls.static import static
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     (r'^', include('index.urls', namespace='index')),
     (r'^core/', include('core.urls', namespace='core')),
     (r'^accounts/', include('accounts.urls', namespace='accounts')),
@@ -17,7 +19,7 @@ urlpatterns = patterns('',
     (r'^news/', include('news.urls', namespace='news')),
     (r'^events/', include('events.urls', namespace='events')),
     (r'^statistics/', include('statistics.urls', namespace='statistics')),
-    #(r'^participants/(?P<library_id>\d+)/pages/', include('participants_pages.urls', namespace='participants_pages')),
+    # (r'^participants/(?P<library_id>\d+)/pages/', include('participants_pages.urls', namespace='participants_pages')),
     (r'^participants/', include('participants.urls', namespace='participants')),
     (r'^professionals/pages/', include('professionals_pages.urls', namespace='professionals_pages')),
     (r'^professionals/news/', include('professionals_news.urls', namespace='professionals_news')),
@@ -38,14 +40,18 @@ urlpatterns = patterns('',
 
     (r'^participants/news/', include('participant_news.all_frontend.urls', namespace='participant_all_news')),
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/news/', include('participant_news.urls', namespace='participant_news')),
-    (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/pages/', include('participant_pages.urls', namespace='participant_pages')),
-    (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/events/', include('participant_events.urls', namespace='participant_events')),
-    (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/photopolls/', include('participant_photopolls.urls', namespace='participant_photopolls')),
+    (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/pages/',
+     include('participant_pages.urls', namespace='participant_pages')),
+    (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/events/',
+     include('participant_events.urls', namespace='participant_events')),
+    (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/photopolls/',
+     include('participant_photopolls.urls', namespace='participant_photopolls')),
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/menu/', include('participant_menu.urls', namespace='participant_menu')),
-    (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/banners/', include('participant_banners.urls', namespace='participant_banners')),
+    (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/banners/',
+     include('participant_banners.urls', namespace='participant_banners')),
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/', include('participant_site.urls', namespace='participant_site')),
 
-#    (r'^mydocs/', include('mydocs.urls',)),
+    #    (r'^mydocs/', include('mydocs.urls',)),
     # Uncomment the next line to enable the admin:
     url(r'^radmin/', include(admin.site.urls)),
     url(r'^jsi18n/$', site.i18n_javascript, name='jsi18n'),
@@ -53,7 +59,6 @@ urlpatterns = patterns('',
     url(r'^captcha/', include('captcha.urls')),
     url(r'^oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 )
-
 
 from django.conf import settings
 

@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import *
 import views
-urlpatterns = patterns('',
+
+
+urlpatterns = patterns(
+    '',
     url(r'^$', views.index, name="index"),
     # url(r'^site/$', views.site, name="site"),
     # url(r'^site/news/$', views.site_news_list, name="site_news_list"),
