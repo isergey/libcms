@@ -298,6 +298,11 @@ def get_user(request):
 @api
 def export_orgs(request):
     scheme = request.GET.get('scheme', 'xml')
+    schemes = ['xml', 'json', 'csv']
+
+    if scheme not in schemes:
+        scheme = 'xml'
+
     orgs = list(models.Library.objects.prefetch_related('types', 'district').all())
     data = u''
     if scheme == 'csv' and orgs:
