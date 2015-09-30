@@ -2,69 +2,41 @@
 {% block title %}Прикрепление к библиотеке{% endblock %}
 {% block content %}
     <style>
-        ul.links .link_info {
-            padding: 10px;
-        }
-
-        ul.links .thumbnail {
-            margin-bottom: 10px;
-        }
+    ul.links .link_info{
+        padding: 10px;
+    }
+    ul.links .thumbnail{
+        margin-bottom: 10px;
+    }
     </style>
     <div class="span12">
-        <div class="row">
-            <div class="span12">
-                <ul class="breadcrumb">
-                    <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-                    <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span>
-                    </li>
-                    <li class="active">Мой читательский билет</li>
-                </ul>
-            </div>
-        </div>
-        {% if lib_reader %}
-            <div class="row">
-
-                <div class="span12">
-                    <div class="alert alert-success">
-                        Ваш читательский билет зарегистрирован. № читательского билета: <b>{{ lib_reader.reader_id  }}</b>
-                </div>
-            </div>
-        {% else %}
-            <div class="row">
-
-                <div class="span12">
-                    <div class="well well-small">
-                        <p>
-                            Здесь Вы сможете привязать уже существующий читательский билет или зарегистрировать новый.
-                            Читательский билет действителен в любой библиотеке РТ предствленной в разделе
-                            <a href="{% url 'participants:frontend:index' %}">Библиотеки</a>.
-                        </p>
+    <ul class="breadcrumb">
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>
+        <li class="active">Мои библиотеки</li>
+    </ul>
+    <p><a href="{% url 'urt:frontend:link' %}" class="btn">Добавить связь</a></p>
+    <hr/>
+    {% if links %}
+    <h3>Установлена связь со следующими библиотеками:</h3>
+        <ul class="links" style="list-style: none; margin: 0">
+        {% for link in links %}
+            <li>
+                <div class="thumbnail">
+                    <div class="link_info">
+                        <b>{{ link.library.name }}</b> (идентификатор: <b>{{ link.lib_login }}</b>)
+                    </div>
+                    <div class="actions">
+                        <a href="{% url 'urt:frontend:edit_link' link.id %}">редактировать</a>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <style>
-                    .action_btn {
-                        display: table-cell;
-                        vertical-align: middle;
-                        height: 50px;
-                        font-size: 20px;
-                        width: 440px;;
-                    }
-                </style>
-                <div class="span6">
-                    <h3 style="text-align: center">У меня уже есть читательский билет</h3>
-
-                    <p><a href="{% url 'urt:frontend:link' %}" class="action_btn btn btn-success">Привязать к учетной
-                        записи</a></p>
-                </div>
-                <div class="span6">
-                    <h3 style="text-align: center">У меня нет читательского билета</h3>
-
-                    <p><a href="{% url 'urt:frontend:link' %}" class="action_btn btn btn-info">Зарегистрировать
-                        новый</a></p>
-                </div>
-            </div>
-        {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert">
+        В настоящий момент Вы не связали свой аккаунт с какой-либо ЦБС
+        </div>
+    {% endif %}
     </div>
 {% endblock %}

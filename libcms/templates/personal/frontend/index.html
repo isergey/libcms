@@ -24,17 +24,17 @@
             <li class="active">Личный кабинет</li>
         </ul>
         <div class="row personal">
-{#            <div class="span6">#}
-{#                {% if not lib_reader %}#}
-{#                    <div class="thumbnail"  style="background-color: #d9edf7; border-color: #bce8f1;">#}
-{#                        <a  style="color: #3a87ad"  href="{% url 'urt:frontend:index' %}">Привязать или зарегистрировать читательский билет</a>#}
-{#                    </div>#}
-{#                {% else %}#}
-{#                    <div class="thumbnail"  style="background-color: #dff0d8; border-color: #d6e9c6;">#}
-{#                        <a  style="color: #468847">№ читательского билета: <b>{{ lib_reader.reader_id }}</b></a>#}
-{#                    </div>#}
-{#                {% endif %}#}
-{#            </div>#}
+            <div class="span6">
+                {% if not lib_reader %}
+                    <div class="thumbnail"  style="background-color: #d9edf7; border-color: #bce8f1;">
+                        <a  style="color: #3a87ad"  href="{% url 'urt:frontend:index' %}">Привязать или зарегистрировать читательский билет</a>
+                    </div>
+                {% else %}
+                    <div class="thumbnail"  style="background-color: #dff0d8; border-color: #d6e9c6;">
+                        <a  style="color: #468847">№ читательского билета: <b>{{ lib_reader.reader_id }}</b></a>
+                    </div>
+                {% endif %}
+            </div>
 
             <div class="span6">
                 <div class="thumbnail">
