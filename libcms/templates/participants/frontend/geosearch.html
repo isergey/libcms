@@ -199,7 +199,7 @@
             };
 
             var renderMyPosition = function (position) {
-                $.get('http://geocode-maps.yandex.ru/1.x/', {
+                $.get('//geocode-maps.yandex.ru/1.x/', {
                     'format': 'json',
                     'geocode': position[1] + ',' + position[0]
                 }).done(function (data) {
@@ -236,7 +236,7 @@
 
             var typeheadSource = function (query, cb) {
 
-                $.get('http://geocode-maps.yandex.ru/1.x/', {
+                $.get('//geocode-maps.yandex.ru/1.x/', {
                     'format': 'json',
                     'geocode': query,
                     'll': myPosition[1] + ',' + myPosition[0],

@@ -17,7 +17,7 @@
         vertical-align: top
     }
 </style>
-<h2 style="text-align: center">Новые поступления в <a href="http://{{ SITE_DOMAIN }}">Библиотеку</a></h2>
+<h2 style="text-align: center">Новые поступления в <a href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ SITE_DOMAIN }}">Библиотеку</a></h2>
 <table>
     <tr>
         <th>Тема рссылки:</th>
@@ -36,7 +36,7 @@
             </td>
             <td class="record-content">
                 <div>{{ record.libcard|safe }}</div>
-                <div><a target="_blank" href="http://{{ SITE_DOMAIN }}{% url 'search:frontend:detail' %}?id={{ record.model.record_id }}">Подробнее</a></div>
+                <div><a target="_blank" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ SITE_DOMAIN }}{% url 'search:frontend:detail' %}?id={{ record.model.record_id }}">Подробнее</a></div>
             </td>
         </tr>
     {% endfor %}

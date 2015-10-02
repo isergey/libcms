@@ -29,21 +29,21 @@
   </ul>
 {% endif %}
 
-  <h3>Associate new <a href="http://oauth.net/" title="OAuth">OAuth</a> credentials:</h3>
+  <h3>Associate new <a href="//oauth.net/" title="OAuth">OAuth</a> credentials:</h3>
   <ul>
   {% for name in social_auth.backends.oauth %}
     <li><a rel="nofollow" href="{% url 'socialauth_associate_begin' name %}">{{ name|title }}</a></li>
   {% endfor %}
   </ul>
 
-  <h3>Associate new <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-10" title="OAuth2">OAuth2</a> credentials:</h3>
+  <h3>Associate new <a href="//tools.ietf.org/html/draft-ietf-oauth-v2-10" title="OAuth2">OAuth2</a> credentials:</h3>
   <ul>
   {% for name in social_auth.backends.oauth2 %}
     <li><a rel="nofollow" href="{% url 'socialauth_associate_begin' name %}">{{ name|title }}</a></li>
   {% endfor %}
   </ul>
 
-  <h3>Associate new <a href="http://openid.net/" title="OpenId">OpenId</a> credentials:</h3>
+  <h3>Associate new <a href="//openid.net/" title="OpenId">OpenId</a> credentials:</h3>
   <ul>
   {% for name in social_auth.backends.openid %}
     <li>

@@ -164,7 +164,7 @@
                                         <a class="btn btn-mini" href="{% url 'search:frontend:detail' %}?id={{ record.model.record_id }}&print=1">
                                             <i class="icon-print"></i>
                                         </a>
-                                        <a class="btn btn-mini" href="mailto:?subject={{ record.title.parts_of|urlencode }}%20{{ record.title.title|urlencode }}&body=http://{{ request.META.HTTP_HOST }}{% url 'search:frontend:detail' %}?id={{ record.model.record_id }}">
+                                        <a class="btn btn-mini" href="mailto:?subject={{ record.title.parts_of|urlencode }}%20{{ record.title.title|urlencode }}&body={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'search:frontend:detail' %}?id={{ record.model.record_id }}">
                                             <i class="icon-envelope"></i>
                                         </a>
                                     </div>

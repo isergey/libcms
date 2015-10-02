@@ -130,7 +130,7 @@
             {% drow_save_doc request.user record.model.record_id %}
 
             <a style="display: block; text-align: left" class="btn" href="{% url 'search:frontend:detail' %}?id={{ record.model.record_id }}&print=1"><i class="icon-print"></i> печать</a>
-            <a style="display: block; text-align: left" class="btn" href="mailto:?subject={{ record.title.parts_of|urlencode }}%20{{ record.title.title|urlencode }}&body=http://{{ request.META.HTTP_HOST }}{% url 'search:frontend:detail' %}?id={{ record.model.record_id }}"><i class="icon-envelope"></i> отправить ссылку</a>
+            <a style="display: block; text-align: left" class="btn" href="mailto:?subject={{ record.title.parts_of|urlencode }}%20{{ record.title.title|urlencode }}&body={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'search:frontend:detail' %}?id={{ record.model.record_id }}"><i class="icon-envelope"></i> отправить ссылку</a>
         </div>
         <div class="info">
             Количество обращений: {{ access_count }} <br/>
