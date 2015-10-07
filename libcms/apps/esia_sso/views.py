@@ -21,7 +21,7 @@ SCOPE = unicode(ESIA_SSO.get('scope', 'http://esia.gosuslugi.ru/usr_inf'))
 ACCESS_TOKEN_URL = ESIA_SSO.get('access_token_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/ac')
 ACCESS_MARKER_URL = ESIA_SSO.get('access_marker_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/te')
 RESPONSE_TYPE = 'code'
-
+REDIRECT_URI = 'https://kitap.tatar.ru/esia_sso/redirect'
 
 # KITAP_TATAR_API_BASE_ADDRESS = getattr(settings, 'KITAP_TATAR_API_BASE_ADDRESS', 'http://127.0.0.1')
 
@@ -71,11 +71,15 @@ def _get_access_marker(code):
         'client_secret': client_secret,
         'grant_type': 'authorization_code',
         'state': state,
+        'scope': SCOPE,
+        'refresh_token': state,
+        'redirect_uri': REDIRECT_URI,
         'token_type': 'Bearer',
+        'timestamp': timestamp
 
     }, verify=False)
     if response.status_code != 200:
-        raise Exception(response.text)
+        raise Exception(response.content)
     response_dict = response.json()
     return {
         'id_token': response_dict.get('id_token', ''),
