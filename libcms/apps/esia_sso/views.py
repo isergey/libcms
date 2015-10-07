@@ -58,6 +58,7 @@ def redirect(request):
     code = request.GET.get('code')
     state = request.GET.get('state')
     access_marker = _get_access_marker(code)
+    
     return HttpResponse(json.dumps(access_marker, ensure_ascii=False).decode('utf-8'))
 
 
