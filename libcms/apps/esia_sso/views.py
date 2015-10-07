@@ -58,7 +58,7 @@ def redirect(request):
     code = request.GET.get('code')
     state = request.GET.get('state')
     access_marker = _get_access_marker(code)
-    
+
     return HttpResponse(json.dumps(access_marker, ensure_ascii=False).decode('utf-8'))
 
 
@@ -83,13 +83,7 @@ def _get_access_marker(code):
     response.raise_for_status()
 
     response_dict = response.json()
-    return {
-        'id_token': response_dict.get('id_token', ''),
-        'access_token': response_dict.get('access_token', ''),
-        'expires_in': response_dict.get('expires_in', ''),
-        'state': response_dict.get('state', ''),
-        'token_type': response_dict.get('token_type', '')
-    }
+    return response_dict
 
 
 def _get_client_secret(scope, timestamp, client_id, state):
