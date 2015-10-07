@@ -71,15 +71,16 @@ def _get_access_marker(code):
         'client_secret': client_secret,
         'grant_type': 'authorization_code',
         'state': state,
-        'scope': SCOPE,
-        'refresh_token': state,
-        'redirect_uri': REDIRECT_URI,
+        # 'scope': SCOPE,
+        #'refresh_token': state,
+        # 'redirect_uri': REDIRECT_URI,
         'token_type': 'Bearer',
         'timestamp': timestamp
 
     }, verify=False)
-    if response.status_code != 200:
-        raise Exception(response.content)
+
+    response.raise_for_status()
+
     response_dict = response.json()
     return {
         'id_token': response_dict.get('id_token', ''),
