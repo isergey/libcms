@@ -72,7 +72,7 @@ def _get_access_marker(code):
         'grant_type': 'authorization_code',
         'state': state,
         # 'scope': SCOPE,
-        #'refresh_token': state,
+        'refresh_token': state,
         'redirect_uri': REDIRECT_URI,
         'token_type': 'Bearer',
         'timestamp': timestamp
