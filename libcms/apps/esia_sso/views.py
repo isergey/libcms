@@ -16,8 +16,7 @@ CERT_ALIAS = ESIA_SSO.get('cert_alias', 'RaUser-561d2f13-c72b-4018-a473-48017a46
 CERT_PASSWORD= ESIA_SSO.get('cert_password', '1234567890')
 
 CLIENT_ID = unicode(ESIA_SSO.get('client_id', ''))
-# SCOPE = unicode(ESIA_SSO.get('scope', 'http://esia.gosuslugi.ru/usr_inf'))
-SCOPE = unicode(ESIA_SSO.get('scope', 'http://esia.gosuslugi.ru/openid'))
+SCOPE = unicode(ESIA_SSO.get('scope', 'http://esia.gosuslugi.ru/usr_brf'))
 ACCESS_TOKEN_URL = ESIA_SSO.get('access_token_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/ac')
 RESPONSE_TYPE = 'code'
 # KITAP_TATAR_API_BASE_ADDRESS = getattr(settings, 'KITAP_TATAR_API_BASE_ADDRESS', 'http://127.0.0.1')
