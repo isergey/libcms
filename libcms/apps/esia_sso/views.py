@@ -74,7 +74,8 @@ def _get_access_marker(code):
         'token_type': 'Bearer',
 
     }, verify=False)
-    response.raise_for_status()
+    if response.status_code != 200:
+        raise Exception(response.text)
     response_dict = response.json()
     return {
         'id_token': response_dict.get('id_token', ''),
