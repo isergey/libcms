@@ -155,6 +155,7 @@ INSTALLED_APPS = (
     'newinlib',
     'attacher',
     'oauth2_provider',
+    'esia_sso',
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -184,6 +185,7 @@ DEBUG_TOOLBAR_PANELS = [
 ]
 
 LOCALE_INDEPENDENT_PATHS = (
+    r'^/esia_sso/redirect',
     r'^/statistics/api/',
     r'^/participants/api/',
     r'^/robots.txt/',
