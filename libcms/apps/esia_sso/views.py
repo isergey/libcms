@@ -33,7 +33,8 @@ def index(request):
         'response_type': RESPONSE_TYPE,
         'timestamp': timestamp,
         'state': state,
-        'client_secret': client_secret
+        'client_secret': client_secret,
+        'access_token_url': ACCESS_TOKEN_URL
     })
 
 

@@ -19,7 +19,7 @@
                 {% if request.method == 'POST' %}
                     <div>
                         <span>Войти через ЕСИА</span>
-                        <a href="?state={{ state }}&timestamp={{ timestamp }}&response_type=code&redirect_uri=https://{{ request.META.HTTP_HOST }}{{ redirect_url }}&client_id={{ client_id }}&scope={{ scope }}&client_secret={{ request.POST.cs }}"><img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>
+                        <a href="{{ access_token_url|safe }}?state={{ state }}&timestamp={{ timestamp }}&response_type=code&redirect_uri=https://{{ request.META.HTTP_HOST }}{{ redirect_url }}&client_id={{ client_id }}&scope={{ scope }}&client_secret={{ request.POST.cs }}"><img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>
                     </div>
                     {% else %}
                     <div>Введите секретный ключ</div>
