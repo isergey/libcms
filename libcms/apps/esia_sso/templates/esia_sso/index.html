@@ -19,7 +19,7 @@
 
                 <div>
                     <span>Войти через ЕСИА</span>
-                    <a href="{{ access_token_url|safe }}?access_type={{ access_type }}&state={{ state }}&timestamp={{ timestamp }}&response_type=code&redirect_uri=https://{{ request.META.HTTP_HOST }}{{ redirect_url }}&client_id={{ client_id }}&scope={{ scope }}&client_secret={{ client_secret }}"><img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>
+                    <a href="{{ access_token_url|safe }}?access_type={{ access_type|urlencode }}&state={{ state|urlencode }}&timestamp={{ timestamp|urlencode }}&response_type=code&redirect_uri=https://{{ request.META.HTTP_HOST }}{{ redirect_url }}&client_id={{ client_id|urlencode }}&scope={{ scope|urlencode }}&client_secret={{ client_secret|urlencode }}"><img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>
                 </div>
 
 
