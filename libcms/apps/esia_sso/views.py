@@ -40,9 +40,16 @@ def index(request):
 
 
 def redirect(request):
-
-    return HttpResponse(u'Ok')
-
+    error = request.GET.get('error')
+    state = request.GET.get('state')
+    error_description = request.GET.get('error_description')
+    if error:
+        return render(request, 'esia_sso/error.html', {
+            'error': error,
+            'state': state,
+            'error_description': error_description
+        })
+    return HttpResponse(u'Ок')
 
 def _get_client_secret(scope, timestamp, client_id, state):
     signed_data = (scope + timestamp + client_id + state).encode('utf-8')
