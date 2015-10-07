@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+import json
 import uuid
 from datetime import datetime
 import requests
@@ -18,6 +19,7 @@ CERT_PASSWORD = ESIA_SSO.get('cert_password', '1234567890')
 CLIENT_ID = unicode(ESIA_SSO.get('client_id', ''))
 SCOPE = unicode(ESIA_SSO.get('scope', 'http://esia.gosuslugi.ru/usr_inf'))
 ACCESS_TOKEN_URL = ESIA_SSO.get('access_token_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/ac')
+ACCESS_MARKER_URL = ESIA_SSO.get('access_marker_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/te')
 RESPONSE_TYPE = 'code'
 
 
@@ -45,13 +47,42 @@ def redirect(request):
     error = request.GET.get('error')
     state = request.GET.get('state')
     error_description = request.GET.get('error_description')
+
     if error:
         return render(request, 'esia_sso/error.html', {
             'error': error,
             'state': state,
             'error_description': error_description
         })
-    return HttpResponse(u'Ок')
+
+    code = request.GET.get('code')
+    state = request.GET.get('state')
+    access_marker = _get_access_marker(code)
+    return HttpResponse(json.dumps(access_marker, ensure_ascii=False).decode('utf-8'))
+
+
+def _get_access_marker(code):
+    timestamp = unicode(datetime.now().strftime('%Y.%m.%d %H:%M:%S +0300'))
+    state = unicode(uuid.uuid4())
+    client_secret = _get_client_secret(SCOPE, timestamp, CLIENT_ID, state)
+    response = requests.post(ACCESS_MARKER_URL, data={
+        'code': code,
+        'client_id': CLIENT_ID,
+        'client_secret': client_secret,
+        'grant_type': 'authorization_code',
+        'state': state,
+        'token_type': 'Bearer',
+
+    }, verify=False)
+    response.raise_for_status()
+    response_dict = response.json()
+    return {
+        'id_token': response_dict.get('id_token', ''),
+        'access_token': response_dict.get('access_token', ''),
+        'expires_in': response_dict.get('expires_in', ''),
+        'state': response_dict.get('state', ''),
+        'token_type': response_dict.get('token_type', '')
+    }
 
 
 def _get_client_secret(scope, timestamp, client_id, state):
