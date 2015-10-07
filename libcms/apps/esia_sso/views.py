@@ -28,6 +28,7 @@ def index(request):
     state = unicode(uuid.uuid4())
     client_secret = _get_client_secret(SCOPE, timestamp, CLIENT_ID, state)
     return render(request, 'esia_sso/index.html', {
+        'access_type': 'offline',
         'client_id': CLIENT_ID,
         'scope': SCOPE,
         'response_type': RESPONSE_TYPE,
