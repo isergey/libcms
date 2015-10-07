@@ -76,8 +76,8 @@ def redirect(request):
             'state': state,
             'error_description': 'Токен доступа имеет неправильный формат'
         })
-
-    access_token_params = json.loads(base64.urlsafe_b64decode(access_token_parts[1]))
+    access_token_json = base64.urlsafe_b64decode(access_token_parts[1])
+    access_token_params = json.loads(access_token_json)
     access_token_scope = access_token_params.get('scope', '')
     oid_prefix = 'oid='
     oid_index = access_token_scope.find(oid_prefix)
