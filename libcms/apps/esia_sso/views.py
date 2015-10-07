@@ -4,6 +4,7 @@ import json
 import uuid
 from datetime import datetime
 import requests
+import base64
 from django.conf import settings
 from django.db import transaction
 from django.shortcuts import render, redirect, resolve_url, HttpResponse
@@ -22,6 +23,7 @@ ACCESS_TOKEN_URL = ESIA_SSO.get('access_token_url', 'https://esia-portal1.test.g
 ACCESS_MARKER_URL = ESIA_SSO.get('access_marker_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/te')
 RESPONSE_TYPE = 'code'
 REDIRECT_URI = 'https://kitap.tatar.ru/esia_sso/redirect'
+
 
 # KITAP_TATAR_API_BASE_ADDRESS = getattr(settings, 'KITAP_TATAR_API_BASE_ADDRESS', 'http://127.0.0.1')
 
@@ -58,8 +60,37 @@ def redirect(request):
     code = request.GET.get('code')
     state = request.GET.get('state')
     access_marker = _get_access_marker(code)
+    access_token = access_marker.get('access_token', '')
 
-    return HttpResponse(json.dumps(access_marker, ensure_ascii=False).decode('utf-8'))
+    if not access_token:
+        return render(request, 'esia_sso/error.html', {
+            'error': 'access_token',
+            'state': state,
+            'error_description': 'Отсутствует тоукен доступа'
+        })
+
+    access_token_parts = access_token.split('.')
+    if len(access_token_parts) < 3:
+        return render(request, 'esia_sso/error.html', {
+            'error': 'access_token',
+            'state': state,
+            'error_description': 'Токен доступа имеет неправильный формат'
+        })
+
+    access_token_params = json.loads(base64.urlsafe_b64decode(access_token_parts[1]))
+    access_token_scope = access_token_params.get('scope', '')
+    oid_prefix = 'oid='
+    oid_index = access_token_scope.find(oid_prefix)
+    if oid_index < 0:
+        return render(request, 'esia_sso/error.html', {
+            'error': 'access_token_scope',
+            'state': state,
+            'error_description': 'Не найден oid'
+        })
+
+    oid = access_token_scope[oid_index + len(oid_prefix):]
+
+    return HttpResponse(oid)
 
 
 def _get_access_marker(code):
