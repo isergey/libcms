@@ -71,8 +71,8 @@ def _get_access_marker(code):
         'client_secret': client_secret,
         'grant_type': 'authorization_code',
         'state': state,
-        'scope': SCOPE,
-        'refresh_token': state,
+        # 'scope': SCOPE,
+        #'refresh_token': state,
         'redirect_uri': REDIRECT_URI,
         'token_type': 'Bearer',
         'timestamp': timestamp
