@@ -16,24 +16,22 @@
         </div>
         <div class="row">
             <div class="span6">
-                {% if request.method == 'POST' %}
-                    <div>
-                        <span>Войти через ЕСИА</span>
-                        <a href="{{ access_token_url|safe }}?state={{ state }}&timestamp={{ timestamp }}&response_type=code&redirect_uri=https://{{ request.META.HTTP_HOST }}{{ redirect_url }}&client_id={{ client_id }}&scope={{ scope }}&client_secret={{ request.POST.cs }}"><img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>
-                    </div>
-                    {% else %}
-                    <div>Введите секретный ключ</div>
-                {% endif %}
 
-                <form method="post">
-                    {% csrf_token %}
-                    <input name="cs" placeholder="client_secret" value="{{ client_secret }}"/><br/>
-                    <input name="state" placeholder="state" value="{{ client_id }}" /><br/>
-                    <input name="state" placeholder="state" value="{{ state }}" /><br/>
-                    <input name="timestamp" placeholder="timestamp" value="{{ timestamp }}" /><br/>
-                    <input name="scope" placeholder="scope" value="{{ scope }}" /><br/>
-                    <input type="submit" />
-                </form>
+                <div>
+                    <span>Войти через ЕСИА</span>
+                    <a href="{{ access_token_url|safe }}?state={{ state }}&timestamp={{ timestamp }}&response_type=code&redirect_uri=https://{{ request.META.HTTP_HOST }}{{ redirect_url }}&client_id={{ client_id }}&scope={{ scope }}&client_secret={{ client_secret }}"><img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>
+                </div>
+
+
+{#                <form method="post">#}
+{#                    {% csrf_token %}#}
+{#                    <input name="cs" placeholder="client_secret" value="{{ client_secret }}"/><br/>#}
+{#                    <input name="state" placeholder="state" value="{{ client_id }}" /><br/>#}
+{#                    <input name="state" placeholder="state" value="{{ state }}" /><br/>#}
+{#                    <input name="timestamp" placeholder="timestamp" value="{{ timestamp }}" /><br/>#}
+{#                    <input name="scope" placeholder="scope" value="{{ scope }}" /><br/>#}
+{#                    <input type="submit" />#}
+{#                </form>#}
             </div>
         </div>
     </div>

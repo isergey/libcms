@@ -24,8 +24,8 @@ RESPONSE_TYPE = 'code'
 
 
 def index(request):
-    timestamp = unicode(request.POST.get('timestamp', datetime.now().strftime('%Y.%m.%d %H:%M:%S +0300')))
-    state = request.POST.get('state', unicode(uuid.uuid4()))
+    timestamp = unicode(datetime.now().strftime('%Y.%m.%d %H:%M:%S +0300'))
+    state = unicode(uuid.uuid4())
     client_secret = _get_client_secret(SCOPE, timestamp, CLIENT_ID, state)
     return render(request, 'esia_sso/index.html', {
         'client_id': CLIENT_ID,
