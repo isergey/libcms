@@ -93,8 +93,9 @@ def redirect(request):
     oid = access_token_scope[oid_index + len(oid_prefix):]
 
     person_response = requests.get(PERSON_URL + '/' + oid, headers={
-        'Authorization': 'Bearer' + access_token
+        'Authorization': 'Bearer ' + access_token
     })
+    person_response.raise_for_status()
 
     return HttpResponse(json.dumps(person_response.json(), ensure_ascii=False))
 
