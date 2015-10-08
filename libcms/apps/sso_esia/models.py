@@ -16,7 +16,7 @@ def create_or_update_esia_user(oid, user_attrs, trusted=False, deleted=False, ac
     user_attrs_json = user_attrs
 
     if isinstance(user_attrs, object):
-        user_attrs_json = json.dumps(user_attrs, ensure_ascii=False).decode('utf-8')
+        user_attrs_json = json.dumps(user_attrs, ensure_ascii=False, encoding='utf-8').decode('utf-8')
 
     try:
         esia_user = EsiaUser.objects.get(oid=oid)
