@@ -145,3 +145,4 @@ def geodistance(lat1, lon1, lat2, lon2, unit='K'):
     else:
         dist = dist * 0.8684
     return dist
+
