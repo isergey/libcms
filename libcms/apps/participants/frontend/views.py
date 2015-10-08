@@ -132,10 +132,8 @@ import math
 
 
 def geodistance(lat1, lon1, lat2, lon2, unit='K'):
-    rlat1 = math.pi * lat1 / 180.0
-    rlat2 = math.pi * lat2 / 180.0
-    rlon1 = math.pi * lon1 / 180.0
-    rlon2 = math.pi * lon2 / 180.0
+    rlat1 = math.pi * float(lat1) / 180.0
+    rlat2 = math.pi * float(lat2) / 180.0
     theta = lon1 - lon2
     rtheta = math.pi * theta / 180.0
     dist = math.sin(rlat1) * math.sin(rlat2) + math.cos(rlat1) * math.cos(rlat2) * math.cos(rtheta)
