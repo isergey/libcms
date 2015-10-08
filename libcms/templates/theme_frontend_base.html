@@ -286,19 +286,6 @@ style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" tit
 </script>
 
 <div style="float: left">
-    <!-- Rating@Mail.ru counter -->
-    <script type="text/javascript">//<![CDATA[
-    (function(w,n,d,r,s){d.write('<p><a href="'+ (document.location.protocol == "https:" ? "https:" : "http:") +'//top.mail.ru/jump?from=2275577">'+
-            '<img src="'+ (document.location.protocol == "https:" ? "https:" : "http:") +'//d8.cb.b2.a2.top.mail.ru/counter?id=2275577;t=130;js=13'+
-            ((r=d.referrer)?';r='+escape(r):'')+((s=w.screen)?';s='+s.width+'*'+s.height:'')+';_='+Math.random()+
-            '" style="border:0;" height="40" width="88" alt="Рейтинг@Mail.ru" /><\/a><\/p>');})(window,navigator,document);//]]>
-    </script>
-{#    <noscript><p><a href="{% if request.is_secure %}https{% else %}http{% endif %}://top.mail.ru/jump?from=2275577">#}
-{#    <img src="//d8.cb.b2.a2.top.mail.ru/counter?id=2275577;t=130;js=na"#}
-{#         style="border:0;" height="40" width="88" alt="Рейтинг@Mail.ru" /></a></p></noscript>#}
-    <!-- //Rating@Mail.ru counter -->
-</div>
-<div style="float: left">
     <!-- begin of Top100 code -->
 
     <script id="top100Counter" type="text/javascript" src="//counter.rambler.ru/top100.jcn?2811425"></script>
@@ -327,7 +314,7 @@ style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" tit
     _paq.push(['setSiteId', 22]);
 
     <!-- "a0a0a0a0a0a0a0a0" should be replaced by a hash user id from your system -->
-    _paq.push(['setUserId', "a0a0a0a0a0a0a0a0"]);
+    _paq.push(['setUserId', "{{ request.user.pk }}"]);
 
     var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
     g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
