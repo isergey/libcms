@@ -98,6 +98,7 @@ WSGI_APPLICATION = 'libcms.wsgi.application'
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'sso.backend.SSOBackend',
+    'sso_esia.backends.OauthUserBackend',
     #'sso_ruslan.backend.RuslanAuthBackend',
     #'oauth2_provider.backend.OauthUserBackend',
     'guardian.backends.ObjectPermissionBackend',
