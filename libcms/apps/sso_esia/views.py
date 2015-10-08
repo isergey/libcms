@@ -160,7 +160,7 @@ def redirect_from_ip(request):
     )
 
     user = authenticate(user_model=external_user.user)
-
+    print user
     if user:
         if user.is_active:
             login(request, user)
