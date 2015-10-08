@@ -5,6 +5,7 @@ import uuid
 from datetime import datetime
 import requests
 import base64
+import logging
 from django.conf import settings
 from django.db import transaction
 from django.shortcuts import render, redirect, resolve_url, HttpResponse
@@ -22,6 +23,7 @@ SCOPE = unicode(ESIA_SSO.get('scope', 'http://esia.gosuslugi.ru/usr_inf'))
 ACCESS_TOKEN_URL = ESIA_SSO.get('access_token_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/ac')
 ACCESS_MARKER_URL = ESIA_SSO.get('access_marker_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/te')
 PERSON_URL = ESIA_SSO.get('person_url', 'https://esia-portal1.test.gosuslugi.ru/rs/prns')
+PERSON_CONTACTS_URL_SUFFIX = 'ctts'
 
 RESPONSE_TYPE = 'code'
 REDIRECT_URI = 'https://kitap.tatar.ru/esia_sso/redirect'
@@ -29,6 +31,8 @@ REDIRECT_URI = 'https://kitap.tatar.ru/esia_sso/redirect'
 
 # KITAP_TATAR_API_BASE_ADDRESS = getattr(settings, 'KITAP_TATAR_API_BASE_ADDRESS', 'http://127.0.0.1')
 
+
+logger = logging.getLogger('django.request')
 
 
 def index(request):
@@ -47,57 +51,155 @@ def index(request):
     })
 
 
+def _error_response(request, error, state, error_description, exception=None):
+    if exception:
+        logger.exception(exception)
+    else:
+        logger.error(u'%s: %s' % (error, error_description))
+
+    return render(request, 'esia_sso/error.html', {
+        'error': error,
+        'state': state,
+        'error_description': error_description
+    })
+
+
 def redirect(request):
     error = request.GET.get('error')
     state = request.GET.get('state')
     error_description = request.GET.get('error_description')
-
     if error:
-        return render(request, 'esia_sso/error.html', {
-            'error': error,
-            'state': state,
-            'error_description': error_description
-        })
+        return _error_response(
+            request=request,
+            error=error,
+            state=state,
+            error_description=error_description
+        )
 
     code = request.GET.get('code')
     state = request.GET.get('state')
-    access_marker = _get_access_marker(code)
+
+    try:
+        access_marker = _get_access_marker(code)
+    except Exception as e:
+        return _error_response(
+            request=request,
+            error='get_access_marker',
+            state=state,
+            error_description=u'При получении маркера возникла ошибка',
+            exception=e
+        )
+
     access_token = access_marker.get('access_token', '')
 
     if not access_token:
-        return render(request, 'esia_sso/error.html', {
-            'error': 'access_token',
-            'state': state,
-            'error_description': 'Отсутствует тоукен доступа'
-        })
+        return _error_response(
+            request=request,
+            error='no_access_toke',
+            state=state,
+            error_description='No access token in access_marker'
+        )
 
+    try:
+        oid = _get_oid(access_token)
+    except Exception as e:
+        return _error_response(
+            request=request,
+            error='get_oid',
+            state=state,
+            error_description=u'Error while get oid',
+            exception=e
+        )
+
+    if not oid:
+        return _error_response(
+            request=request,
+            error='no_oid',
+            state=state,
+            error_description='No oid in access token'
+        )
+
+    person_info = _get_person_info(oid, access_token)
+    person_contacts = _get_person_contact(oid, access_token)
+
+    resp = {
+        'person_info': person_info,
+        'person_contacts': person_contacts
+    }
+    return HttpResponse(json.dumps(resp, ensure_ascii=False))
+
+
+def _get_person_info(oid, access_token):
+    """
+    :param oid:
+    :param access_token:
+    :return: {
+        "status": "REGISTERED",
+        "birthPlace": "",
+        "citizenship": "",
+        "firstName": "",
+        "updatedOn": 1438692792,
+        "middleName": "",
+        "lastName": "",
+        "birthDate": "07.01.1994",
+        "eTag": "42D905D3CBEF2F2DC9FF85CCFC91ED82FCEFA723",
+        "snils": "000-000-600 01",
+        "stateFacts": ["EntityRoot"],
+        "gender": "F|M",
+        "trusted": False
+    }
+    """
+    person_response = requests.get(PERSON_URL + '/' + oid, headers={
+        'Authorization': 'Bearer ' + access_token
+    })
+    person_response.raise_for_status()
+    return person_response.json()
+
+
+def _get_person_contact(oid, access_token):
+    """
+    :param oid:
+    :param access_token:
+    :return: {
+        "status": "REGISTERED",
+        "birthPlace": "",
+        "citizenship": "",
+        "firstName": "",
+        "updatedOn": 1438692792,
+        "middleName": "",
+        "lastName": "",
+        "birthDate": "07.01.1994",
+        "eTag": "42D905D3CBEF2F2DC9FF85CCFC91ED82FCEFA723",
+        "snils": "000-000-600 01",
+        "stateFacts": ["EntityRoot"],
+        "gender": "F|M",
+        "trusted": False
+    }
+    """
+    response = requests.get('%s/%s/%s' % (PERSON_URL, oid, PERSON_CONTACTS_URL_SUFFIX), headers={
+        'Authorization': 'Bearer ' + access_token
+    })
+    response.raise_for_status()
+    return response.json()
+
+
+def _get_oid(access_token):
     access_token_parts = access_token.split('.')
+
     if len(access_token_parts) < 3:
-        return render(request, 'esia_sso/error.html', {
-            'error': 'access_token',
-            'state': state,
-            'error_description': 'Токен доступа имеет неправильный формат'
-        })
+        return ''
+
     access_token_json = base64.urlsafe_b64decode(access_token_parts[1].encode('utf-8'))
     access_token_params = json.loads(access_token_json)
     access_token_scope = access_token_params.get('scope', '')
     oid_prefix = 'oid='
     oid_index = access_token_scope.find(oid_prefix)
+
     if oid_index < 0:
-        return render(request, 'esia_sso/error.html', {
-            'error': 'access_token_scope',
-            'state': state,
-            'error_description': 'Не найден oid'
-        })
+        return ''
 
     oid = access_token_scope[oid_index + len(oid_prefix):]
-
-    person_response = requests.get(PERSON_URL + '/' + oid, headers={
-        'Authorization': 'Bearer ' + access_token
-    })
-    person_response.raise_for_status()
-
-    return HttpResponse(json.dumps(person_response.json(), ensure_ascii=False))
+    return oid
 
 
 def _get_access_marker(code):
@@ -119,9 +221,7 @@ def _get_access_marker(code):
     }, verify=False)
 
     response.raise_for_status()
-
-    response_dict = response.json()
-    return response_dict
+    return response.json()
 
 
 def _get_client_secret(scope, timestamp, client_id, state):
