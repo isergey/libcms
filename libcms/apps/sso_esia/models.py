@@ -6,7 +6,7 @@ class EsiaUser(models.Model):
     oid = models.CharField(max_length=32, db_index=True, unique=True)
     user_attrs = models.TextField(max_length=101024)
     trusted = models.BooleanField(default=False)
-    active = models.BooleanField(deleted=True)
+    active = models.BooleanField(default=True)
     deleted = models.BooleanField(default=False)
     create_data = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
