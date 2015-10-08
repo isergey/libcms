@@ -27,6 +27,7 @@ PERSON_ADDRESS_URL_SUFFIX = 'addrs'
 RESPONSE_TYPE = 'code'
 REDIRECT_URI = 'https://kitap.tatar.ru/esia_sso/redirect'
 
+VERIFY_REQUESTS = False
 
 # KITAP_TATAR_API_BASE_ADDRESS = getattr(settings, 'KITAP_TATAR_API_BASE_ADDRESS', 'http://127.0.0.1')
 
@@ -212,7 +213,7 @@ def _get_person_info(oid, access_token):
     """
     person_response = requests.get(PERSON_URL + '/' + oid, headers={
         'Authorization': 'Bearer ' + access_token
-    })
+    }, verify=VERIFY_REQUESTS)
     person_response.raise_for_status()
     return person_response.json()
 
@@ -235,7 +236,7 @@ def _get_person_contacts(oid, access_token):
     """
     response = requests.get('%s/%s/%s' % (PERSON_URL, oid, PERSON_CONTACTS_URL_SUFFIX), headers={
         'Authorization': 'Bearer ' + access_token
-    })
+    }, verify=VERIFY_REQUESTS)
     response.raise_for_status()
 
     response_dict = response.json()
@@ -244,7 +245,7 @@ def _get_person_contacts(oid, access_token):
     for element in response_dict['elements']:
         response = requests.get(element, headers={
             'Authorization': 'Bearer ' + access_token
-        })
+        }, verify=VERIFY_REQUESTS)
         response.raise_for_status()
         contact.append(response.json())
     return contact
@@ -274,7 +275,7 @@ def _get_person_addresses(oid, access_token):
     """
     response = requests.get('%s/%s/%s' % (PERSON_URL, oid, PERSON_ADDRESS_URL_SUFFIX), headers={
         'Authorization': 'Bearer ' + access_token
-    })
+    }, verify=VERIFY_REQUESTS)
     response.raise_for_status()
     response_dict = response.json()
 
@@ -282,7 +283,7 @@ def _get_person_addresses(oid, access_token):
     for element in response_dict['elements']:
         response = requests.get(element, headers={
             'Authorization': 'Bearer ' + access_token
-        })
+        }, verify=VERIFY_REQUESTS)
         response.raise_for_status()
         adresses.append(response.json())
 
@@ -305,7 +306,7 @@ def _get_access_marker(code):
         'token_type': 'Bearer',
         'timestamp': timestamp
 
-    }, verify=False)
+    }, verify=VERIFY_REQUESTS)
 
     response.raise_for_status()
     return response.json()

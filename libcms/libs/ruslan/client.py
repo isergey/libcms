@@ -14,7 +14,8 @@ class HttpClient(object):
             principal_path='/principal',
             ncip_path='/ncip',
             auto_close=True,
-            timeout=60
+            timeout=60,
+            verify_requests=False
     ):
         self._base_url = base_url.strip('/') + '/'
         self._auth_path = auth_path.strip('/')
@@ -27,6 +28,7 @@ class HttpClient(object):
         self._timeout = timeout
         self._auto_close = auto_close
         self._session = None
+        self._verify_requests = verify_requests
 
     def search(self, database, query, start_record='', maximum_records='', query_type='pqf', accept='application/json'):
         params = {
@@ -52,8 +54,8 @@ class HttpClient(object):
         response.raise_for_status()
         return response.json()
 
-    def get_user(self, username):
-        return self.search('allusers', query='@attrset bib-1 @attr 1=100 "%s"' % '\\\\'.join(username.split('\\')))
+    def get_user(self, username, database='allusers'):
+        return self.search(database, query='@attrset bib-1 @attr 1=100 "%s"' % '\\\\'.join(username.split('\\')))
 
     def principal(self):
         response = self._make_request(
@@ -93,7 +95,7 @@ class HttpClient(object):
             headers={
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-            })
+            }, verify=self._verify_requests)
 
         response.raise_for_status()
         return response

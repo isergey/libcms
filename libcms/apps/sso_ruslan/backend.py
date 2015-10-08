@@ -12,6 +12,7 @@ RUSLAN = getattr(settings, 'RUSLAN', {})
 API_ADDRESS = RUSLAN.get('api_address', 'http://localhost/')
 API_USERNAME = RUSLAN.get('username')
 API_PASSWORD = RUSLAN.get('password')
+RUSLAN_USERS_DATABASE = RUSLAN.get('users_database', 'allusers')
 
 AUTH_SOURCE = 'ruslan'
 
@@ -33,7 +34,7 @@ class RuslanAuthBackend(object):
             logger.exception(e)
             return None
 
-        sru_reps = portal_client.get_user(username)
+        sru_reps = portal_client.get_user(username, database=RUSLAN_USERS_DATABASE)
         records = humanize.get_records(sru_reps)
         if not records:
             return None

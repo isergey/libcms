@@ -128,25 +128,22 @@ def geo_nearest(request):
     # })
 
 
-from math import radians, sqrt, sin, cos, atan2
+import math
 
 
-def geodistance(lat1, lon1, lat2, lon2):
-    lat1 = radians(lat1)
-    lon1 = radians(lon1)
-    lat2 = radians(lat2)
-    lon2 = radians(lon2)
-
-    dlon = lon1 - lon2
-
-    EARTH_R = 6372.8
-
-    y = sqrt(
-        (cos(lat2) * sin(dlon)) ** 2
-        + (cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dlon)) ** 2
-    )
-    x = sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(dlon)
-    c = atan2(y, x)
-    return EARTH_R * c
-
-    #print geocalc(60.038349, 30.405864, 55.779945, 49.116242)
+def geodistance(lat1, lon1, lat2, lon2, unit='K'):
+    rlat1 = math.pi * lat1 / 180.0
+    rlat2 = math.pi * lat2 / 180.0
+    rlon1 = math.pi * lon1 / 180.0
+    rlon2 = math.pi * lon2 / 180.0
+    theta = lon1 - lon2
+    rtheta = math.pi * theta / 180.0
+    dist = math.sin(rlat1) * math.sin(rlat2) + math.cos(rlat1) * math.cos(rlat2) * math.cos(rtheta)
+    dist = math.acos(dist)
+    dist = dist * 180 / math.pi
+    dist = dist * 60 * 1.1515
+    if unit == "K":
+        dist = dist * 1.609344
+    else:
+        dist = dist * 0.8684
+    return dist

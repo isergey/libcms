@@ -37,7 +37,7 @@ urlpatterns = patterns(
     (r'^guestbook/', include('guestbook.urls', namespace='guestbook')),
     (r'^newinlib/', include('newinlib.urls', namespace='newinlib')),
     (r'^attacher/', include('attacher.urls', namespace='attacher')),
-    (r'^esia_sso/', include('esia_sso.urls', namespace='esia_sso')),
+    (r'^esia_sso/', include('sso_esia.urls', namespace='sso_esia')),
     (r'^participants/news/', include('participant_news.all_frontend.urls', namespace='participant_all_news')),
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/news/', include('participant_news.urls', namespace='participant_news')),
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/pages/',
