@@ -8,7 +8,12 @@ import logging
 
 import requests
 from django.conf import settings
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
+from django.contrib.auth import authenticate, login
+from sso import models as sso_models
+from . import models
+
+AUTH_SOURCE = 'esia'
 
 ESIA_SSO = getattr(settings, 'ESIA_SSO', {})
 TMP_DIR = ESIA_SSO.get('tmp_dir', '/tmp')
@@ -33,38 +38,6 @@ VERIFY_REQUESTS = False
 
 
 logger = logging.getLogger('django.request')
-
-a = {
-    "person_info": {
-        "status": "REGISTERED",
-        "birthPlace": "!Общая тестовая УЗ! ПОЖАЛУЙСТА, не изменяйте данные УЗ!\r\nПОЖАЛУЙСТА!!!!!!!",
-        "citizenship": "TJK", "firstName": "Имя001", "updatedOn": 1438692792, "middleName": "Отчество001",
-        "lastName": "Фамилия0012", "birthDate": "07.01.1994",
-        "eTag": "42D905D3CBEF2F2DC9FF85CCFC91ED82FCEFA723", "snils": "000-000-600 01",
-        "stateFacts": ["EntityRoot"], "gender": "F", "trusted": False},
-    "person_contacts": {
-        "vrfStu": "VERIFIED",
-        "value": "EsiaTest001@yandex.ru",
-        "eTag": "EC3E57C01CFEC3C3AE0847005F1A39228C088700",
-        "stateFacts": ["Identifiable"],
-        "type": "EML",
-        "id": 14239100
-    },
-    "person_address": {
-        "city": "Воронеж Город",
-        "countryId": "RUS",
-        "fiasCode": "36-0-000-001-000-000-0856-0000-000",
-        "house": "23 \"a\"",
-        "region": "Воронежская Область",
-        "zipCode": "369000",
-        "addressStr": "Воронежская область, Воронеж город, Станкевича улица",
-        "eTag": "A476F27783D0A6DA3B4E270CF3B71701BE5E57FA",
-        "street": "Станкевича Улица",
-        "stateFacts": ["Identifiable"],
-        "type": "PLV",
-        "id": 15842
-    }
-}
 
 
 def index(request):
@@ -96,7 +69,7 @@ def _error_response(request, error, state, error_description, exception=None):
     })
 
 
-def redirect(request):
+def redirect_from_ip(request):
     error = request.GET.get('error')
     state = request.GET.get('state')
     error_description = request.GET.get('error_description')
@@ -164,12 +137,61 @@ def redirect(request):
             exception=e
         )
 
-    resp = {
+    user_attrs = {
         'person_info': person_info,
         'person_contacts': person_contacts,
         'person_addresses': person_addresses
     }
-    return HttpResponse(json.dumps(resp, ensure_ascii=False))
+
+    esia_user = models.create_or_update_esia_user(
+        oid,
+        user_attrs=user_attrs,
+        trusted=person_info.get('trusted', False),
+        active=(person_info.get('status', '') == 'REGISTERED')
+    )
+
+    external_user = sso_models.create_or_update_external_user(
+        external_username=esia_user.oid,
+        auth_source=AUTH_SOURCE,
+        first_name=person_info.get('firstName', ''),
+        last_name=person_info.get('lastName', ''),
+        email=(_find_contacts_attr('EML', person_contacts) or [''])[0],
+        is_active=esia_user.active
+    )
+
+    user = authenticate(external_user=external_user, auth_source=AUTH_SOURCE)
+
+    if user:
+        if user.is_active:
+            login(request, user)
+            return redirect('index:frontend:index')
+        else:
+            return _error_response(
+                request=request,
+                error='no_access_toke',
+                state=state,
+                error_description=u'Ваша учетная запись не активна'
+            )
+    else:
+        return _error_response(
+            request=request,
+            error='no_user',
+            state=state,
+            error_description=u'Система не может сопоставить вашу учетную запись ЕСИА'
+        )
+
+
+def _find_contacts_attr(type_name, contacts, only_verified=False):
+    values = []
+    for contact in contacts:
+        contact_type = contact.get('type', '')
+        contact_value = contact.get('value', '')
+        contact_vrfsu = contact.get('vrfStu', '')
+        if contact_type and contact_type == type_name and contact_value:
+            if only_verified and contact_vrfsu != 'VERIFIED':
+                continue
+            values.append(contact_value)
+    return values
 
 
 def _get_oid(access_token):
@@ -224,7 +246,7 @@ def _get_person_contacts(oid, access_token):
     :param access_token:
     :return:
     [
-            {
+        {
         "vrfStu": "VERIFIED",
         "value": "EsiaTest001@yandex.ru",
         "eTag": "EC3E57C01CFEC3C3AE0847005F1A39228C088700",

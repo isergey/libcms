@@ -4,7 +4,7 @@
     {% trans 'Login' %}
 {% endblock %}
 {% block content %}
-    {% url 'esia_sso:redirect' as redirect_url %}
+    {% url 'esia_sso:redirect_from_ip' as redirect_url %}
     <div class="span12">
         <div class="row">
             <div class="span12">
