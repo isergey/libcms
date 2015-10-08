@@ -3,14 +3,12 @@ import os
 import json
 import uuid
 from datetime import datetime
-import requests
 import base64
 import logging
+
+import requests
 from django.conf import settings
-from django.db import transaction
-from django.shortcuts import render, redirect, resolve_url, HttpResponse
-from django.contrib import auth
-from django.contrib.auth.models import User, Group
+from django.shortcuts import render, HttpResponse
 
 ESIA_SSO = getattr(settings, 'ESIA_SSO', {})
 TMP_DIR = ESIA_SSO.get('tmp_dir', '/tmp')
@@ -191,7 +189,15 @@ def _get_person_contacts(oid, access_token):
         'Authorization': 'Bearer ' + access_token
     })
     response.raise_for_status()
-    return response.json()
+
+    response_dict = response.json()
+
+    response = requests.get(response_dict['elements'][0], headers={
+        'Authorization': 'Bearer ' + access_token
+    })
+    response.raise_for_status()
+    response_dict = response.json()
+    return response_dict
 
 
 def _get_person_address(oid, access_token):
@@ -200,7 +206,7 @@ def _get_person_address(oid, access_token):
     :param access_token:
     :return: {
         "eTag": "B076BF422E5B25C4401BCBE33645BF49FD38BFD3",
-        "elements": ["https://esia-portal1.test.gosuslugi.ru:443/rs/prns/1000321854/ctts/14239100"],
+        "elements": ["https://esia-portal1.test.gosuslugi.ru:443/rs/prns/1000321854/addrs/15842"],
         "stateFacts": ["hasSize"], "size": 1
     }
     """
@@ -208,7 +214,14 @@ def _get_person_address(oid, access_token):
         'Authorization': 'Bearer ' + access_token
     })
     response.raise_for_status()
-    return response.json()
+    response_dict = response.json()
+
+    response = requests.get(response_dict['elements'][0], headers={
+        'Authorization': 'Bearer ' + access_token
+    })
+    response.raise_for_status()
+    response_dict = response.json()
+    return response_dict
 
 
 def _get_access_marker(code):
