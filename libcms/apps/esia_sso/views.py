@@ -24,6 +24,7 @@ ACCESS_TOKEN_URL = ESIA_SSO.get('access_token_url', 'https://esia-portal1.test.g
 ACCESS_MARKER_URL = ESIA_SSO.get('access_marker_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/te')
 PERSON_URL = ESIA_SSO.get('person_url', 'https://esia-portal1.test.gosuslugi.ru/rs/prns')
 PERSON_CONTACTS_URL_SUFFIX = 'ctts'
+PERSON_ADDRESS_URL_SUFFIX = 'addrs'
 
 RESPONSE_TYPE = 'code'
 REDIRECT_URI = 'https://kitap.tatar.ru/esia_sso/redirect'
@@ -120,13 +121,33 @@ def redirect(request):
         )
 
     person_info = _get_person_info(oid, access_token)
-    person_contacts = _get_person_contact(oid, access_token)
-
+    person_contacts = _get_person_contacts(oid, access_token)
+    person_address = _get_person_address(oid, access_token)
     resp = {
         'person_info': person_info,
-        'person_contacts': person_contacts
+        'person_contacts': person_contacts,
+        'person_address': person_address
     }
     return HttpResponse(json.dumps(resp, ensure_ascii=False))
+
+
+def _get_oid(access_token):
+    access_token_parts = access_token.split('.')
+
+    if len(access_token_parts) < 3:
+        return ''
+
+    access_token_json = base64.urlsafe_b64decode(access_token_parts[1].encode('utf-8'))
+    access_token_params = json.loads(access_token_json)
+    access_token_scope = access_token_params.get('scope', '')
+    oid_prefix = 'oid='
+    oid_index = access_token_scope.find(oid_prefix)
+
+    if oid_index < 0:
+        return ''
+
+    oid = access_token_scope[oid_index + len(oid_prefix):]
+    return oid
 
 
 def _get_person_info(oid, access_token):
@@ -156,24 +177,14 @@ def _get_person_info(oid, access_token):
     return person_response.json()
 
 
-def _get_person_contact(oid, access_token):
+def _get_person_contacts(oid, access_token):
     """
     :param oid:
     :param access_token:
     :return: {
-        "status": "REGISTERED",
-        "birthPlace": "",
-        "citizenship": "",
-        "firstName": "",
-        "updatedOn": 1438692792,
-        "middleName": "",
-        "lastName": "",
-        "birthDate": "07.01.1994",
-        "eTag": "42D905D3CBEF2F2DC9FF85CCFC91ED82FCEFA723",
-        "snils": "000-000-600 01",
-        "stateFacts": ["EntityRoot"],
-        "gender": "F|M",
-        "trusted": False
+        "eTag": "B076BF422E5B25C4401BCBE33645BF49FD38BFD3",
+        "elements": ["https://esia-portal1.test.gosuslugi.ru:443/rs/prns/1000321854/ctts/14239100"],
+        "stateFacts": ["hasSize"], "size": 1
     }
     """
     response = requests.get('%s/%s/%s' % (PERSON_URL, oid, PERSON_CONTACTS_URL_SUFFIX), headers={
@@ -183,23 +194,21 @@ def _get_person_contact(oid, access_token):
     return response.json()
 
 
-def _get_oid(access_token):
-    access_token_parts = access_token.split('.')
-
-    if len(access_token_parts) < 3:
-        return ''
-
-    access_token_json = base64.urlsafe_b64decode(access_token_parts[1].encode('utf-8'))
-    access_token_params = json.loads(access_token_json)
-    access_token_scope = access_token_params.get('scope', '')
-    oid_prefix = 'oid='
-    oid_index = access_token_scope.find(oid_prefix)
-
-    if oid_index < 0:
-        return ''
-
-    oid = access_token_scope[oid_index + len(oid_prefix):]
-    return oid
+def _get_person_address(oid, access_token):
+    """
+    :param oid:
+    :param access_token:
+    :return: {
+        "eTag": "B076BF422E5B25C4401BCBE33645BF49FD38BFD3",
+        "elements": ["https://esia-portal1.test.gosuslugi.ru:443/rs/prns/1000321854/ctts/14239100"],
+        "stateFacts": ["hasSize"], "size": 1
+    }
+    """
+    response = requests.get('%s/%s/%s' % (PERSON_URL, oid, PERSON_ADDRESS_URL_SUFFIX), headers={
+        'Authorization': 'Bearer ' + access_token
+    })
+    response.raise_for_status()
+    return response.json()
 
 
 def _get_access_marker(code):
