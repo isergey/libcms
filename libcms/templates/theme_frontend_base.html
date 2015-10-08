@@ -6,7 +6,7 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <link rel="icon" type="image/ico" href="{{ STATIC_URL }}theme/favicon.ico" />
+    <link rel="icon" type="image/ico" href="{{ STATIC_URL }}theme/favicon.ico"/>
     <title>{% block title %}НЭБ РТ{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}theme/style.css"/>
@@ -30,9 +30,14 @@
                 </div>
                 <div class="span7">
                     <div style="position: absolute;">
-                        <a class="language" href="/ru{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Рус</a> |
-                        <a class="language" href="/tt{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Тат</a> |
-                        <a class="language" href="/en{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Eng</a>
+                        <a class="language" href="/ru
+                                {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Рус</a>
+                        |
+                        <a class="language" href="/tt
+                                {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Тат</a>
+                        |
+                        <a class="language" href="/en
+                                {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Eng</a>
                     </div>
 
                     {% if request.user.is_authenticated %}
@@ -52,22 +57,22 @@
 
                     {% endif %}
 
-{#                    <div style="clear: both;">#}
-{#                        <div id="search_panel" style="float: right;">#}
-{#                            <div class="left"></div>#}
-{#                            <div class="middle">#}
-{#                                <form action="{%   url ssearch:frontend:index %}">#}
-{#                                    <div id="search-elements">#}
-{#                                        <input type="text" id="search-input" placeholder="Поиск по каталогу и коллекциям" name="q"/>#}
-{#                                        <input type="hidden" name="attr" value="text">#}
-{#                                        <input type="submit" value="" id="search-submit">#}
-{#                                    </div>#}
-{#                                </form>#}
-{#                            </div>#}
-{#                            <div class="right">#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
+                    {#                    <div style="clear: both;">#}
+                    {#                        <div id="search_panel" style="float: right;">#}
+                    {#                            <div class="left"></div>#}
+                    {#                            <div class="middle">#}
+                    {#                                <form action="{%   url ssearch:frontend:index %}">#}
+                    {#                                    <div id="search-elements">#}
+                    {#                                        <input type="text" id="search-input" placeholder="Поиск по каталогу и коллекциям" name="q"/>#}
+                    {#                                        <input type="hidden" name="attr" value="text">#}
+                    {#                                        <input type="submit" value="" id="search-submit">#}
+                    {#                                    </div>#}
+                    {#                                </form>#}
+                    {#                            </div>#}
+                    {#                            <div class="right">#}
+                    {#                            </div>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
                 </div>
             </div>
             <div class="row">
@@ -97,7 +102,8 @@
             line-height: 20px;
             margin: 0;
         }
-        #map_canvas img{
+
+        #map_canvas img {
             max-width: none;
         }
     </style>
@@ -124,8 +130,7 @@
             <style>
                 #footer-links .column a {
                     display: block;
-                    border-bottom: 1px solid
-                    #848484;
+                    border-bottom: 1px solid #848484;
                     padding-top: 10px;
                     padding-bottom: 10px;
                     padding-left: 18px;
@@ -133,7 +138,8 @@
                     text-decoration: none;
                     background: url('{{ STATIC_URL }}theme/images/link-arrow.png') no-repeat 0 50%;
                 }
-                #footer-links .column{
+
+                #footer-links .column {
                     float: left;
                     padding-left: 10px;
                     width: 23%;
@@ -142,20 +148,32 @@
             <div class="span9" id="footer-links">
 
                 <div class="column">
-                    <a href="/{{ LANGUAGE_CODE }}">{% if LANGUAGE_CODE == 'ru' %}Главная{% elif LANGUAGE_CODE == 'tt' %}Главная{% else %}Main{% endif %}</a><br/>
-                    <a href="{% url 'pages:frontend:show' 'index' %}">{% if LANGUAGE_CODE == 'ru' %}О проекте{% elif LANGUAGE_CODE == 'tt' %}Проект турында{% else %}About{% endif %}</a>
+                    <a href="/{{ LANGUAGE_CODE }}">{% if LANGUAGE_CODE == 'ru' %}Главная{% elif LANGUAGE_CODE == 'tt' %}
+                        Главная{% else %}Main{% endif %}</a><br/>
+                    <a href="{% url 'pages:frontend:show' 'index' %}">{% if LANGUAGE_CODE == 'ru' %}О
+                        проекте{% elif LANGUAGE_CODE == 'tt' %}Проект турында{% else %}About{% endif %}</a>
                 </div>
                 <div class="column">
-                    <a href="{% url 'ask_librarian:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Спроси библиотекаря{% elif LANGUAGE_CODE == 'tt' %}Китапханәчедән сора{% else %}Ask librarian{% endif %}</a><br/>
-                    <a href="{% url 'ssearch:frontend:ecatalog' %}">{% if LANGUAGE_CODE == 'ru' %}Электронный каталог{% elif LANGUAGE_CODE == 'tt' %}Электрон каталог{% else %}Electronic catalogue{% endif %}</a>
+                    <a href="{% url 'ask_librarian:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Спроси
+                        библиотекаря{% elif LANGUAGE_CODE == 'tt' %}Китапханәчедән сора{% else %}Ask
+                        librarian{% endif %}</a><br/>
+                    <a href="{% url 'ssearch:frontend:ecatalog' %}">{% if LANGUAGE_CODE == 'ru' %}Электронный
+                        каталог{% elif LANGUAGE_CODE == 'tt' %}Электрон каталог{% else %}Electronic
+                        catalogue{% endif %}</a>
                 </div>
                 <div class="column">
-                    <a href="{% url 'ssearch:frontend:ecollection' %}">{% if LANGUAGE_CODE == 'ru' %}Электронные коллекции{% elif LANGUAGE_CODE == 'tt' %}Электрон коллекцияләр{% else %}Electronic collections{% endif %}</a><br/>
-                    <a href="{% url 'guestbook:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Отзывы{% elif LANGUAGE_CODE == 'tt' %}Фикерләр{% else %}Feedbacks{% endif %}</a>
+                    <a href="{% url 'ssearch:frontend:ecollection' %}">{% if LANGUAGE_CODE == 'ru' %}Электронные
+                        коллекции{% elif LANGUAGE_CODE == 'tt' %}Электрон коллекцияләр{% else %}Electronic
+                        collections{% endif %}</a><br/>
+                    <a href="{% url 'guestbook:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}
+                        Отзывы{% elif LANGUAGE_CODE == 'tt' %}Фикерләр{% else %}Feedbacks{% endif %}</a>
                 </div>
                 <div class="column">
-                    <a href="{% url 'news:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}Яңалыклар{% else %}News{% endif %}</a><br/>
-                    <a href="{% url 'pages:frontend:show' 'for_professional' %}">{% if LANGUAGE_CODE == 'ru' %}Профессионалам {% elif LANGUAGE_CODE == 'tt' %}Профессионалларга{% else %} Professionals {% endif %}</a>
+                    <a href="{% url 'news:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}
+                        Новости{% elif LANGUAGE_CODE == 'tt' %}Яңалыклар{% else %}News{% endif %}</a><br/>
+                    <a href="{% url 'pages:frontend:show' 'for_professional' %}">{% if LANGUAGE_CODE == 'ru' %}
+                        Профессионалам {% elif LANGUAGE_CODE == 'tt' %}Профессионалларга{% else %}
+                        Professionals {% endif %}</a>
                 </div>
             </div>
         </div>
@@ -163,12 +181,12 @@
 </div>
 
 <script type="text/javascript">
-    if ($(window).height() - $('body').height() > 0){
-        $('#footer').css('margin-top',$(window).height() - $('body').height() + 'px');
+    if ($(window).height() - $('body').height() > 0) {
+        $('#footer').css('margin-top', $(window).height() - $('body').height() + 'px');
     }
 </script>
 <script type="text/javascript">
-    jQuery(document).ajaxSend(function(event, xhr, settings) {
+    jQuery(document).ajaxSend(function (event, xhr, settings) {
         function getCookie(name) {
             var cookieValue = null;
             if (document.cookie && document.cookie != '') {
@@ -184,6 +202,7 @@
             }
             return cookieValue;
         }
+
         function sameOrigin(url) {
             // url could be relative or scheme relative or absolute
             var host = document.location.host; // host + port
@@ -193,9 +212,10 @@
             // Allow absolute or scheme relative URLs to same origin
             return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
                     (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-                // or any other URL that isn't scheme relative or absolute i.e relative.
+                        // or any other URL that isn't scheme relative or absolute i.e relative.
                     !(/^(\/\/|http:|https:).*/.test(url));
         }
+
         function safeMethod(method) {
             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
         }
@@ -205,10 +225,10 @@
         }
     });
 
-    (function(){
+    (function () {
         var cache = {};
 
-        this.tmpl = function tmpl(str, data){
+        this.tmpl = function tmpl(str, data) {
             // Figure out if we're getting a template, or if we need to
             // load the template - and be sure to cache the result.
             var fn = !/\W/.test(str) ?
@@ -221,67 +241,104 @@
                             "var p=[],print=function(){p.push.apply(p,arguments);};" +
 
                                 // Introduce the data as local variables using with(){}
-                                    "with(obj){p.push('" +
+                            "with(obj){p.push('" +
 
                                 // Convert the template into pure JavaScript
-                                    str
-                                            .replace(/[\r\t\n]/g, " ")
-                                            .split("<%").join("\t")
-                                            .replace(/((^|%>)[^\t]*)'/g, "$1\r")
-                                            .replace(/\t=(.*?)%>/g, "',$1,'")
-                                            .split("\t").join("');")
-                                            .split("%>").join("p.push('")
-                                            .split("\r").join("\\'")
-                                    + "');}return p.join('');");
+                            str
+                                    .replace(/[\r\t\n]/g, " ")
+                                    .split("<%").join("\t")
+                                    .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+                                    .replace(/\t=(.*?)%>/g, "',$1,'")
+                                    .split("\t").join("');")
+                                    .split("%>").join("p.push('")
+                                    .split("\r").join("\\'")
+                            + "');}return p.join('');");
 
             // Provide some basic currying to the user
-            return data ? fn( data ) : fn;
+            return data ? fn(data) : fn;
         };
     })();
 
 </script>
-<!-- Yandex.Metrika counter --><script type="text/javascript">(function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter17301607 = new Ya.Metrika({id:17301607, enableAll: true, webvisor:true}); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="//mc.yandex.ru/watch/17301607" style="position:absolute; left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">(function (d, w, c) {
+    (w[c] = w[c] || []).push(function () {
+        try {
+            w.yaCounter17301607 = new Ya.Metrika({id: 17301607, enableAll: true, webvisor: true});
+        } catch (e) {
+        }
+    });
+    var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () {
+        n.parentNode.insertBefore(s, n);
+    };
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+    if (w.opera == "[object Opera]") {
+        d.addEventListener("DOMContentLoaded", f);
+    } else {
+        f();
+    }
+})(document, window, "yandex_metrika_callbacks");</script>
+<noscript>
+    <div><img src="//mc.yandex.ru/watch/17301607" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
+<!-- /Yandex.Metrika counter -->
 <!-- Yandex.Metrika informer -->
 <a href="https://metrika.yandex.ru/stat/?id=28345621&amp;from=informer"
-target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/28345621/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
-style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" onclick="try{Ya.Metrika.informer({i:this,id:28345621,lang:'ru'});return false}catch(e){}"/></a>
+   target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/28345621/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
+                                       style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика"
+                                       title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)"
+                                       onclick="try{Ya.Metrika.informer({i:this,id:28345621,lang:'ru'});return false}catch(e){}"/></a>
 <!-- /Yandex.Metrika informer -->
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
-(function (d, w, c) {
-    (w[c] = w[c] || []).push(function() {
-        try {
-            w.yaCounter28345621 = new Ya.Metrika({id:28345621,
-                    clickmap:true,
-                    trackLinks:true,
-                    accurateTrackBounce:true});
-        } catch(e) { }
-    });
+    (function (d, w, c) {
+        (w[c] = w[c] || []).push(function () {
+            try {
+                w.yaCounter28345621 = new Ya.Metrika({
+                    id: 28345621,
+                    clickmap: true,
+                    trackLinks: true,
+                    accurateTrackBounce: true
+                });
+            } catch (e) {
+            }
+        });
 
-    var n = d.getElementsByTagName("script")[0],
-        s = d.createElement("script"),
-        f = function () { n.parentNode.insertBefore(s, n); };
-    s.type = "text/javascript";
-    s.async = true;
-    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+        var n = d.getElementsByTagName("script")[0],
+                s = d.createElement("script"),
+                f = function () {
+                    n.parentNode.insertBefore(s, n);
+                };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
 
-    if (w.opera == "[object Opera]") {
-        d.addEventListener("DOMContentLoaded", f, false);
-    } else { f(); }
-})(document, window, "yandex_metrika_callbacks");
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        } else {
+            f();
+        }
+    })(document, window, "yandex_metrika_callbacks");
 </script>
-<noscript><div><img src="//mc.yandex.ru/watch/28345621" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<noscript>
+    <div><img src="//mc.yandex.ru/watch/28345621" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
 <!-- /Yandex.Metrika counter -->
 <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-36488484-1']);
     _gaq.push(['_trackPageview']);
 
-    (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
     })();
 </script>
 
@@ -291,7 +348,7 @@ style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" tit
     <script id="top100Counter" type="text/javascript" src="//counter.rambler.ru/top100.jcn?2811425"></script>
     <noscript>
         <a href="//top100.rambler.ru/navi/2811425/">
-            <img src="//counter.rambler.ru/top100.cnt?2811425" alt="Rambler's Top100" border="0" />
+            <img src="//counter.rambler.ru/top100.cnt?2811425" alt="Rambler's Top100" border="0"/>
         </a>
 
     </noscript>
@@ -305,22 +362,26 @@ style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" tit
 
 <!-- Piwik -->
 <script type="text/javascript">
-  var _paq = _paq || [];
-  _paq.push(['trackPageView']);
-  _paq.push(['enableLinkTracking']);
-  (function() {
-    var u="//ua.tatar.ru/";
-    _paq.push(['setTrackerUrl', u+'piwik.php']);
-    _paq.push(['setSiteId', 22]);
+    var _paq = _paq || [];
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function () {
+        var u = "//ua.tatar.ru/";
+        _paq.push(['setTrackerUrl', u + 'piwik.php']);
+        _paq.push(['setSiteId', 22]);
 
-    <!-- "a0a0a0a0a0a0a0a0" should be replaced by a hash user id from your system -->
-    _paq.push(['setUserId', "{{ request.user.pk }}"]);
+        <!-- "a0a0a0a0a0a0a0a0" should be replaced by a hash user id from your system -->
+        _paq.push(['setUserId', "{{ request.user.pk }}"]);
 
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-  })();
+        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+        g.type = 'text/javascript';
+        g.async = true;
+        g.defer = true;
+        g.src = u + 'piwik.js';
+        s.parentNode.insertBefore(g, s);
+    })();
 </script>
-<noscript><p><img src="//ua.tatar.ru/piwik.php?idsite=22" style="border:0;" alt="" /></p></noscript>
+<noscript><p><img src="//ua.tatar.ru/piwik.php?idsite=22" style="border:0;" alt=""/></p></noscript>
 <!-- End Piwik Code -->
 </body>
 </html>

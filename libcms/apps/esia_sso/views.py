@@ -21,6 +21,8 @@ CLIENT_ID = unicode(ESIA_SSO.get('client_id', ''))
 SCOPE = unicode(ESIA_SSO.get('scope', 'http://esia.gosuslugi.ru/usr_inf'))
 ACCESS_TOKEN_URL = ESIA_SSO.get('access_token_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/ac')
 ACCESS_MARKER_URL = ESIA_SSO.get('access_marker_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/te')
+PERSON_URL = ESIA_SSO.get('person_url', 'https://esia-portal1.test.gosuslugi.ru/rs/prns')
+
 RESPONSE_TYPE = 'code'
 REDIRECT_URI = 'https://kitap.tatar.ru/esia_sso/redirect'
 
@@ -90,7 +92,11 @@ def redirect(request):
 
     oid = access_token_scope[oid_index + len(oid_prefix):]
 
-    return HttpResponse(oid)
+    person_response = requests.get(PERSON_URL + '/' + oid, headers={
+        'Authorization': 'Bearer' + access_token
+    })
+
+    return HttpResponse(json.dumps(person_response.json(), ensure_ascii=False))
 
 
 def _get_access_marker(code):
