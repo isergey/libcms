@@ -33,6 +33,38 @@ REDIRECT_URI = 'https://kitap.tatar.ru/esia_sso/redirect'
 
 logger = logging.getLogger('django.request')
 
+a = {
+    "person_info": {
+        "status": "REGISTERED",
+        "birthPlace": "!Общая тестовая УЗ! ПОЖАЛУЙСТА, не изменяйте данные УЗ!\r\nПОЖАЛУЙСТА!!!!!!!",
+        "citizenship": "TJK", "firstName": "Имя001", "updatedOn": 1438692792, "middleName": "Отчество001",
+        "lastName": "Фамилия0012", "birthDate": "07.01.1994",
+        "eTag": "42D905D3CBEF2F2DC9FF85CCFC91ED82FCEFA723", "snils": "000-000-600 01",
+        "stateFacts": ["EntityRoot"], "gender": "F", "trusted": False},
+    "person_contacts": {
+        "vrfStu": "VERIFIED",
+        "value": "EsiaTest001@yandex.ru",
+        "eTag": "EC3E57C01CFEC3C3AE0847005F1A39228C088700",
+        "stateFacts": ["Identifiable"],
+        "type": "EML",
+        "id": 14239100
+    },
+    "person_address": {
+        "city": "Воронеж Город",
+        "countryId": "RUS",
+        "fiasCode": "36-0-000-001-000-000-0856-0000-000",
+        "house": "23 \"a\"",
+        "region": "Воронежская Область",
+        "zipCode": "369000",
+        "addressStr": "Воронежская область, Воронеж город, Станкевича улица",
+        "eTag": "A476F27783D0A6DA3B4E270CF3B71701BE5E57FA",
+        "street": "Станкевича Улица",
+        "stateFacts": ["Identifiable"],
+        "type": "PLV",
+        "id": 15842
+    }
+}
+
 
 def index(request):
     timestamp = unicode(datetime.now().strftime('%Y.%m.%d %H:%M:%S +0300'))
@@ -120,11 +152,11 @@ def redirect(request):
 
     person_info = _get_person_info(oid, access_token)
     person_contacts = _get_person_contacts(oid, access_token)
-    person_address = _get_person_address(oid, access_token)
+    person_addresses = _get_person_addresses(oid, access_token)
     resp = {
         'person_info': person_info,
         'person_contacts': person_contacts,
-        'person_address': person_address
+        'person_addresses': person_addresses
     }
     return HttpResponse(json.dumps(resp, ensure_ascii=False))
 
@@ -179,11 +211,17 @@ def _get_person_contacts(oid, access_token):
     """
     :param oid:
     :param access_token:
-    :return: {
-        "eTag": "B076BF422E5B25C4401BCBE33645BF49FD38BFD3",
-        "elements": ["https://esia-portal1.test.gosuslugi.ru:443/rs/prns/1000321854/ctts/14239100"],
-        "stateFacts": ["hasSize"], "size": 1
-    }
+    :return:
+    [
+            {
+        "vrfStu": "VERIFIED",
+        "value": "EsiaTest001@yandex.ru",
+        "eTag": "EC3E57C01CFEC3C3AE0847005F1A39228C088700",
+        "stateFacts": ["Identifiable"],
+        "type": "EML",
+        "id": 14239100
+        }
+    ]
     """
     response = requests.get('%s/%s/%s' % (PERSON_URL, oid, PERSON_CONTACTS_URL_SUFFIX), headers={
         'Authorization': 'Bearer ' + access_token
@@ -192,23 +230,37 @@ def _get_person_contacts(oid, access_token):
 
     response_dict = response.json()
 
-    response = requests.get(response_dict['elements'][0], headers={
-        'Authorization': 'Bearer ' + access_token
-    })
-    response.raise_for_status()
-    response_dict = response.json()
-    return response_dict
+    contact = []
+    for element in response_dict['elements']:
+        response = requests.get(element, headers={
+            'Authorization': 'Bearer ' + access_token
+        })
+        response.raise_for_status()
+        contact.append(response.json())
+    return contact
 
 
-def _get_person_address(oid, access_token):
+def _get_person_addresses(oid, access_token):
     """
     :param oid:
     :param access_token:
-    :return: {
-        "eTag": "B076BF422E5B25C4401BCBE33645BF49FD38BFD3",
-        "elements": ["https://esia-portal1.test.gosuslugi.ru:443/rs/prns/1000321854/addrs/15842"],
-        "stateFacts": ["hasSize"], "size": 1
-    }
+    :return:
+    [
+        {
+            "city": "Воронеж Город",
+            "countryId": "RUS",
+            "fiasCode": "36-0-000-001-000-000-0856-0000-000",
+            "house": "23 \"a\"",
+            "region": "Воронежская Область",
+            "zipCode": "369000",
+            "addressStr": "Воронежская область, Воронеж город, Станкевича улица",
+            "eTag": "A476F27783D0A6DA3B4E270CF3B71701BE5E57FA",
+            "street": "Станкевича Улица",
+            "stateFacts": ["Identifiable"],
+            "type": "PLV",
+            "id": 15842
+        }
+    ]
     """
     response = requests.get('%s/%s/%s' % (PERSON_URL, oid, PERSON_ADDRESS_URL_SUFFIX), headers={
         'Authorization': 'Bearer ' + access_token
@@ -216,12 +268,15 @@ def _get_person_address(oid, access_token):
     response.raise_for_status()
     response_dict = response.json()
 
-    response = requests.get(response_dict['elements'][0], headers={
-        'Authorization': 'Bearer ' + access_token
-    })
-    response.raise_for_status()
-    response_dict = response.json()
-    return response_dict
+    adresses = []
+    for element in response_dict['elements']:
+        response = requests.get(element, headers={
+            'Authorization': 'Bearer ' + access_token
+        })
+        response.raise_for_status()
+        adresses.append(response.json())
+
+    return adresses
 
 
 def _get_access_marker(code):
@@ -267,119 +322,3 @@ def _get_client_secret(scope, timestamp, client_id, state):
     os.unlink(data_file_path)
     os.unlink(signed_file_path)
     return sign
-    #
-    #
-    # @transaction.atomic()
-    # def index(request):
-    #     now = datetime.now().strftime('%Y.%m.%d %H:%M:%S +0400')
-    #     state = unicode(uuid.uuid4())
-    #     redirect_url = request.GET.get('redirect_url', settings.LOGIN_REDIRECT_URL)
-    #     access_token_address = ACCESS_TOKEN_URL
-    #     client_id = CLIENT_ID
-    #     client_secret = _get_client_secret(state)
-    #     code = request.GET.get('code', '')
-    #     errors = []
-    #
-    #     if not code:
-    #         return HttpResponse(u'Необходимо заново начать процедуру аутентификации Oauth')
-    #
-    #     response = requests.post(access_token_address, data={
-    #         'code': code,
-    #         'client_id': client_id,
-    #         'client_secret': client_secret,
-    #         'redirect_uri': _get_redirect_uri(request)
-    #     }, verify=False)
-    #
-    #     try:
-    #         response.raise_for_status()
-    #     except requests.HTTPError as e:
-    #         errors.append(e.message)
-    #
-    #     response_dict = response.json()
-    #
-    #     if errors:
-    #         return render(request, 'oauth2/index.html', {
-    #             'errors': errors
-    #         })
-    #
-    #     access_token = response_dict.get('access_token')
-    #
-    #     user_organizations_response = requests.get(KITAP_TATAR_API_BASE_ADDRESS + u'/participants/api/user_organizations/', headers={
-    #         'Authorization': 'token ' + access_token
-    #     }, verify=False)
-    #
-    #     user_organizations_response.raise_for_status()
-    #
-    #     user_organizations = user_organizations_response.json()
-    #
-    #     if not user_organizations:
-    #         return HttpResponse(u'Вы не являетесь сотрудником. Если Вы считаете это ошибкой, обратитесь к администратору.')
-    #
-    #     user_info_response = requests.get(KITAP_TATAR_API_BASE_ADDRESS + u'/accounts/api/user/', headers={
-    #         'Authorization': 'token ' + access_token
-    #     }, verify=False)
-    #
-    #     personal_cabinet_links_response = requests.get(KITAP_TATAR_API_BASE_ADDRESS + u'/participants/api/personal_cabinet_links/', headers={
-    #         'Authorization': 'token ' + access_token
-    #     }, verify=False)
-    #
-    #     personal_cabinet_links_response.raise_for_status()
-    #
-    #     personal_cabinet_links = personal_cabinet_links_response.json()
-    #
-    #     users_list = user_info_response.json()
-    #     if users_list:
-    #         user_fields = users_list[0]['fields']
-    #         try:
-    #             user = User.objects.get(username=user_fields['username'])
-    #         except User.DoesNotExist:
-    #             user = User(
-    #                 username=user_fields['username'],
-    #                 password=user_fields.get('password', u''),
-    #                 email=user_fields.get('email', u''),
-    #                 first_name=user_fields.get('first_name', u''),
-    #                 last_name=user_fields.get('last_name', u''),
-    #                 last_login=datetime.now(),
-    #                 is_active=True,
-    #                 is_staff=True
-    #             )
-    #             user.save()
-    #             try:
-    #                 g = Group.objects.get(name='users')
-    #                 g.user_set.add(user)
-    #             except Group.DoesNotExist:
-    #                 pass
-    #
-    #
-    #     user = auth.authenticate(user_model=user)
-    #
-    #     if user:
-    #         request.user = user
-    #         auth.login(request, user)
-    #         request.session['access_token'] = access_token
-    #         request.session['personal_cabinet_links'] = personal_cabinet_links
-    #         request.session['organizations'] = user_organizations
-    #         return redirect(redirect_url)
-    #
-    #     return HttpResponse(
-    #         u'Аутентификация не завершена. Попробуйте начать процесс входа заново или обратитесь к администратору.')
-    #
-    #
-    # def login(request):
-    #     if not OAUTH2_URL:
-    #         return render(request, 'oauth2/error.html')
-    #
-    #     redirect_uri = _get_redirect_uri(request)
-    #     authorize_address = OAUTH2_URL.get('authorize_address')
-    #     client_id = OAUTH2_URL.get('client_id')
-    #     redirect_url = u'%s?client_id=%s&redirect_uri=%s' % (authorize_address, client_id, redirect_uri)
-    #     return redirect(redirect_url)
-    #
-    #
-    # def _get_redirect_uri(request):
-    #     redirect_uri = u'%s://%s%s' % (request.scheme, request.get_host(), resolve_url('oauth2:index'))
-    #     return redirect_uri
-    #
-    #
-    # def _get_client_secret():
-    #     return  ''
