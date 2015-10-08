@@ -159,7 +159,7 @@ def redirect_from_ip(request):
         is_active=esia_user.active
     )
 
-    user = authenticate(external_username=esia_user.oid, auth_source=AUTH_SOURCE)
+    user = authenticate(external_username=external_user.external_username, auth_source=AUTH_SOURCE)
 
     if user:
         if user.is_active:
