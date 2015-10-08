@@ -30,14 +30,11 @@
                 </div>
                 <div class="span7">
                     <div style="position: absolute;">
-                        <a class="language" href="/ru
-                                {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Рус</a>
+                        <a class="language" href="/ru{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Рус</a>
                         |
-                        <a class="language" href="/tt
-                                {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Тат</a>
+                        <a class="language" href="/tt{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Тат</a>
                         |
-                        <a class="language" href="/en
-                                {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Eng</a>
+                        <a class="language" href="/en{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Eng</a>
                     </div>
 
                     {% if request.user.is_authenticated %}
