@@ -222,8 +222,8 @@
                 };
 
                 $.get('{% url 'participants:frontend:geo_nearest' %}', {
-                    'lat': myPosition[1],
-                    'lon': myPosition[0]
+                    'lat': myPosition[0],
+                    'lon': myPosition[1]
                 }).done(function (data) {
                     drawResults(iam, data);
                 });

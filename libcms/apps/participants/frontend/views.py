@@ -104,7 +104,7 @@ def geo_nearest(request):
             continue
         geo_libraries.append({
             'library': library,
-            'distance': geodistance(lat, lon, latitude, longitude),
+            'distance': geodistance(lon, lat, latitude, longitude),
             'href': resolve_url('participants:frontend:detail', code=library.get('code'))
         })
 
