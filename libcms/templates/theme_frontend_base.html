@@ -44,7 +44,15 @@
                         {% if request.user.password == '!' %}
                             <p style="text-align: right">Вы вошли через социальную сеть</p>
                         {% else %}
-                            <p style="text-align: right">Вы вошли как <b>{{ request.user.username }}</b></p>
+                            <p style="text-align: right">Вы вошли как
+                                <b>
+                                    {% if user.first_name %}
+                                    {{ user.first_name }} {% if user.last_name.0 %} {{ user.last_name.0 }}.{% endif %}
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
+                                </b>
+                            </p>
                         {% endif %}
 
                         {% include 'cabinet.html' %}

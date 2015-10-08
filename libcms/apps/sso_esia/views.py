@@ -128,7 +128,7 @@ def redirect(request):
             request=request,
             error='no_access_toke',
             state=state,
-            error_description='No access token in access_marker'
+            error_description=u'Авторизационный код доступа не был получен'
         )
 
     try:
@@ -138,7 +138,7 @@ def redirect(request):
             request=request,
             error='get_oid',
             state=state,
-            error_description=u'Error while get oid',
+            error_description=u'Ошибка при получении oid',
             exception=e
         )
 
@@ -147,12 +147,22 @@ def redirect(request):
             request=request,
             error='no_oid',
             state=state,
-            error_description='No oid in access token'
+            error_description=u'oid не был получен'
         )
 
-    person_info = _get_person_info(oid, access_token)
-    person_contacts = _get_person_contacts(oid, access_token)
-    person_addresses = _get_person_addresses(oid, access_token)
+    try:
+        person_info = _get_person_info(oid, access_token)
+        person_contacts = _get_person_contacts(oid, access_token)
+        person_addresses = _get_person_addresses(oid, access_token)
+    except Exception as e:
+        return _error_response(
+            request=request,
+            error='user_info_error',
+            state=state,
+            error_description=u'Ошибка при получении информации из ЕСИА',
+            exception=e
+        )
+
     resp = {
         'person_info': person_info,
         'person_contacts': person_contacts,

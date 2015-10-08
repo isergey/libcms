@@ -97,7 +97,8 @@ WSGI_APPLICATION = 'libcms.wsgi.application'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'oauth2_provider.backend.OauthUserBackend',
+    'sso_ruslan.backend.RuslanAuthBackend',
+    #'oauth2_provider.backend.OauthUserBackend',
     'guardian.backends.ObjectPermissionBackend',
 )
 
@@ -154,7 +155,9 @@ INSTALLED_APPS = (
     'newinlib',
     'attacher',
     'oauth2_provider',
-    'esia_sso',
+    'sso',
+    'sso_ruslan',
+    'sso_esia',
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
