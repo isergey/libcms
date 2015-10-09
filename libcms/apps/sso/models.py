@@ -68,7 +68,7 @@ def create_or_update_external_user(
         is_active=None,
         is_staff=None,
         is_superuser=None,
-        groups=[]):
+        groups=['users']):
     """
     Создание или обновление пользователя из внешней системы аутентификации
     :param external_username: Имя пользователя во внешней системе
