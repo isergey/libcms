@@ -143,24 +143,19 @@ def redirect_from_ip(request):
         'person_addresses': person_addresses
     }
 
-    esia_user = models.create_or_update_esia_user(
-        oid,
-        user_attrs=user_attrs,
-        trusted=person_info.get('trusted', False),
-        active=(person_info.get('status', '') == 'REGISTERED')
-    )
 
     external_user = sso_models.create_or_update_external_user(
-        external_username=esia_user.oid,
+        external_username=oid,
         auth_source=AUTH_SOURCE,
         first_name=person_info.get('firstName', ''),
         last_name=person_info.get('lastName', ''),
         email=(_find_contacts_attr('EML', person_contacts) or [''])[0],
-        is_active=esia_user.active
+        attributes=user_attrs,
+        is_active=(person_info.get('status', '') == 'REGISTERED')
     )
 
     user = authenticate(user_model=external_user.user)
-    print 'user', user
+
     if user:
         if user.is_active:
             login(request, user)
