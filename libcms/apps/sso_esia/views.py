@@ -11,7 +11,7 @@ from django.conf import settings
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import authenticate, login
 from sso import models as sso_models
-from . import models
+# from . import models
 
 AUTH_SOURCE = 'esia'
 
