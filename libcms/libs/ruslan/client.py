@@ -133,6 +133,6 @@ class HttpClient(object):
     def _auth(self):
         session = requests.Session()
         session.auth = (self._username, self._password)
-        response = session.get(self._base_url + self._auth_path, timeout=self._timeout)
+        response = session.get(self._base_url + self._auth_path, timeout=self._timeout, verify=self._verify_requests)
         response.raise_for_status()
         return session
