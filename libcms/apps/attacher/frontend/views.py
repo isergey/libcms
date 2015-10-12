@@ -103,7 +103,7 @@ def get_sign_delete_path(delete_path):
 def get_dir_for_object(content_type, content_id):
     content_type = content_type.replace(u'/', u'_')
     content_id = content_id.replace(u'/', u'_')
-    return '%s%s/%s/' % (ATTACH_BASE_PATH, content_type, content_id)
+    return u'%s%s/%s/' % (ATTACH_BASE_PATH, content_type, content_id)
 
 
 def get_media_url_for_file(content_type, content_id, file_name):
