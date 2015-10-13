@@ -10,22 +10,33 @@ import requests
 from django.conf import settings
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import authenticate, login
+from django.db import transaction
+from ruslan import connection_pool, client, humanize
 from sso import models as sso_models
+from ruslan import grs
 # from . import models
+
+RUSLAN = getattr(settings, 'RUSLAN', {})
+
+RUSLAN_API_ADDRESS = RUSLAN.get('api_address', 'http://localhost/')
+RUSLAN_API_USERNAME = RUSLAN.get('username')
+RUSLAN_API_PASSWORD = RUSLAN.get('password')
+RUSLAN_USERS_DATABASE = RUSLAN.get('users_database', 'allusers')
+RUSLAN_ID_MASK = RUSLAN.get('id_mask', '000000000')
 
 AUTH_SOURCE = 'esia'
 
 ESIA_SSO = getattr(settings, 'ESIA_SSO', {})
-TMP_DIR = ESIA_SSO.get('tmp_dir', '/tmp')
-JAR_CERT_GENERATOR = ESIA_SSO.get('jar_cert_generator')
-CERT_ALIAS = ESIA_SSO.get('cert_alias', 'RaUser-561d2f13-c72b-4018-a473-48017a4622d2')
-CERT_PASSWORD = ESIA_SSO.get('cert_password', '1234567890')
+ESIA_SSO_TMP_DIR = ESIA_SSO.get('tmp_dir', '/tmp')
+ESIA_SSO_JAR_CERT_GENERATOR = ESIA_SSO.get('jar_cert_generator')
+ESIA_SSO_CERT_ALIAS = ESIA_SSO.get('cert_alias', 'RaUser-561d2f13-c72b-4018-a473-48017a4622d2')
+ESIA_SSO_CERT_PASSWORD = ESIA_SSO.get('cert_password', '1234567890')
+ESIA_SSO_CLIENT_ID = unicode(ESIA_SSO.get('client_id', ''))
+ESIA_SSO_SCOPE = unicode(ESIA_SSO.get('scope', 'http://esia.gosuslugi.ru/usr_inf'))
+ESIA_SSO_ACCESS_TOKEN_URL = ESIA_SSO.get('access_token_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/ac')
+ESIA_SSO_ACCESS_MARKER_URL = ESIA_SSO.get('access_marker_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/te')
+ESIA_SSO_PERSON_URL = ESIA_SSO.get('person_url', 'https://esia-portal1.test.gosuslugi.ru/rs/prns')
 
-CLIENT_ID = unicode(ESIA_SSO.get('client_id', ''))
-SCOPE = unicode(ESIA_SSO.get('scope', 'http://esia.gosuslugi.ru/usr_inf'))
-ACCESS_TOKEN_URL = ESIA_SSO.get('access_token_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/ac')
-ACCESS_MARKER_URL = ESIA_SSO.get('access_marker_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/te')
-PERSON_URL = ESIA_SSO.get('person_url', 'https://esia-portal1.test.gosuslugi.ru/rs/prns')
 PERSON_CONTACTS_URL_SUFFIX = 'ctts'
 PERSON_ADDRESS_URL_SUFFIX = 'addrs'
 
@@ -43,17 +54,56 @@ logger = logging.getLogger('django.request')
 def index(request):
     timestamp = unicode(datetime.now().strftime('%Y.%m.%d %H:%M:%S +0300'))
     state = unicode(uuid.uuid4())
-    client_secret = _get_client_secret(SCOPE, timestamp, CLIENT_ID, state)
+    client_secret = _get_client_secret(ESIA_SSO_SCOPE, timestamp, ESIA_SSO_CLIENT_ID, state)
     return render(request, 'esia_sso/index.html', {
         'access_type': 'offline',
-        'client_id': CLIENT_ID,
-        'scope': SCOPE,
+        'client_id': ESIA_SSO_CLIENT_ID,
+        'scope': ESIA_SSO_SCOPE,
         'response_type': RESPONSE_TYPE,
         'timestamp': timestamp,
         'state': state,
         'client_secret': client_secret,
-        'access_token_url': ACCESS_TOKEN_URL
+        'access_token_url': ESIA_SSO_ACCESS_TOKEN_URL
     })
+
+
+def create_or_update_ruslan_user(request):
+    record = grs.Record()
+    record.add_field(grs.Field('101', u'Ф'))
+    record.add_field(grs.Field('102', u'И'))
+    record.add_field(grs.Field('103', u'О'))
+    record.add_field(grs.Field('115', u'password'))
+    record.add_field(grs.Field('402', 'snils'))
+    record.add_field(grs.Field('403', 'esiaoid'))
+    record.add_field(grs.Field('404', u'Ж'))
+    record.add_field(grs.Field('501', u'ЕСИА'))
+    record.add_field(grs.Field('502', u'да'))
+    record.add_field(grs.Field('503', u'да'))
+
+    portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
+    grs_content = portal_client.create_or_update_grs(record, RUSLAN_USERS_DATABASE)
+    grs_record = grs_content.get('content', [{}])[0]
+    record = grs.Record.from_dict(grs_record)
+
+    fields_1 = record.get_field('1')
+    record_id = ''
+
+    if fields_1:
+        record_id = fields_1[0].content
+
+    fields_100 = record.get_field('100')
+
+    if not fields_100:
+        field_100 = grs.Field('100')
+        record.add_field(field_100)
+    else:
+        field_100 = fields_100[0]
+
+    field_100.content = RUSLAN_ID_MASK[:len(record_id) * -1] + record_id
+    grs_content = portal_client.create_or_update_grs(record, RUSLAN_USERS_DATABASE, id=record_id)
+
+    print 'create_or_update_grs complate'
+    return HttpResponse(json.dumps(grs_content, ensure_ascii=False))
 
 
 def _error_response(request, error, state, error_description, exception=None):
@@ -69,10 +119,12 @@ def _error_response(request, error, state, error_description, exception=None):
     })
 
 
-def redirect_from_ip(request):
+@transaction.atomic()
+def redirect_from_idp(request):
     error = request.GET.get('error')
     state = request.GET.get('state')
     error_description = request.GET.get('error_description')
+
     if error:
         return _error_response(
             request=request,
@@ -154,6 +206,7 @@ def redirect_from_ip(request):
         is_active=(person_info.get('status', '') == 'REGISTERED')
     )
 
+
     user = authenticate(user_model=external_user.user)
 
     if user:
@@ -228,7 +281,7 @@ def _get_person_info(oid, access_token):
         "trusted": False
     }
     """
-    person_response = requests.get(PERSON_URL + '/' + oid, headers={
+    person_response = requests.get(ESIA_SSO_PERSON_URL + '/' + oid, headers={
         'Authorization': 'Bearer ' + access_token
     }, verify=VERIFY_REQUESTS)
     person_response.raise_for_status()
@@ -251,7 +304,7 @@ def _get_person_contacts(oid, access_token):
         }
     ]
     """
-    response = requests.get('%s/%s/%s' % (PERSON_URL, oid, PERSON_CONTACTS_URL_SUFFIX), headers={
+    response = requests.get('%s/%s/%s' % (ESIA_SSO_PERSON_URL, oid, PERSON_CONTACTS_URL_SUFFIX), headers={
         'Authorization': 'Bearer ' + access_token
     }, verify=VERIFY_REQUESTS)
     response.raise_for_status()
@@ -290,7 +343,7 @@ def _get_person_addresses(oid, access_token):
         }
     ]
     """
-    response = requests.get('%s/%s/%s' % (PERSON_URL, oid, PERSON_ADDRESS_URL_SUFFIX), headers={
+    response = requests.get('%s/%s/%s' % (ESIA_SSO_PERSON_URL, oid, PERSON_ADDRESS_URL_SUFFIX), headers={
         'Authorization': 'Bearer ' + access_token
     }, verify=VERIFY_REQUESTS)
     response.raise_for_status()
@@ -310,14 +363,14 @@ def _get_person_addresses(oid, access_token):
 def _get_access_marker(code):
     timestamp = unicode(datetime.now().strftime('%Y.%m.%d %H:%M:%S +0300'))
     state = unicode(uuid.uuid4())
-    client_secret = _get_client_secret(SCOPE, timestamp, CLIENT_ID, state)
-    response = requests.post(ACCESS_MARKER_URL, data={
+    client_secret = _get_client_secret(ESIA_SSO_SCOPE, timestamp, ESIA_SSO_CLIENT_ID, state)
+    response = requests.post(ESIA_SSO_ACCESS_MARKER_URL, data={
         'code': code,
-        'client_id': CLIENT_ID,
+        'client_id': ESIA_SSO_CLIENT_ID,
         'client_secret': client_secret,
         'grant_type': 'authorization_code',
         'state': state,
-        'scope': SCOPE,
+        'scope': ESIA_SSO_SCOPE,
         'refresh_token': state,
         'redirect_uri': REDIRECT_URI,
         'token_type': 'Bearer',
@@ -331,16 +384,16 @@ def _get_access_marker(code):
 
 def _get_client_secret(scope, timestamp, client_id, state):
     signed_data = (scope + timestamp + client_id + state).encode('utf-8')
-    data_file_path = os.path.join(TMP_DIR, state + '.esia')
+    data_file_path = os.path.join(ESIA_SSO_TMP_DIR, state + '.esia')
     signed_file_path = data_file_path + '.signed'
     data_file = open(data_file_path, mode='w')
     data_file.write(signed_data)
     data_file.close()
     os.system(
         'java -jar "%s" -alias "%s" -password "%s" -file "%s" -sign "%s"' % (
-            JAR_CERT_GENERATOR,
-            CERT_ALIAS,
-            CERT_PASSWORD,
+            ESIA_SSO_JAR_CERT_GENERATOR,
+            ESIA_SSO_CERT_ALIAS,
+            ESIA_SSO_CERT_PASSWORD,
             data_file_path,
             signed_file_path
         )

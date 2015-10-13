@@ -73,7 +73,7 @@ class HttpClient(object):
         if opac:
             accept = 'application/opac+json'
 
-        ids = [id.replace('\\\\', '\\').replace('\\', '\\\\') for id in set(id_list)]
+        ids = [id.replace('\\', '\\\\') for id in set(id_list)]
         attrs = []
 
         for id in ids:
@@ -87,6 +87,23 @@ class HttpClient(object):
             accept=accept
         )
 
+    def create_or_update_grs(self, grs_record, database, id='0'):
+        record_json = json.dumps({
+            'content': [grs_record.to_dict()]
+        }, ensure_ascii=False, encoding='utf-8').encode('utf-8')
+        response = self._make_request(
+            'put',
+            self._base_url + self._db_path + database + '/' + id,
+            data=record_json,
+            headers={
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            })
+
+        response.raise_for_status()
+        print response.text
+        return response.json()
+
     def send_ncip_message(self, message_dict):
         response = self._make_request(
             'post',
@@ -95,7 +112,7 @@ class HttpClient(object):
             headers={
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-            }, verify=self._verify_requests)
+            })
 
         response.raise_for_status()
         return response
