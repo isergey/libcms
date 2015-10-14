@@ -30,15 +30,24 @@ class RuslanAuthBackend(object):
         if not username:
             return None
 
-        user_auth_client = client.HttpClient(API_ADDRESS, username, password)
         portal_client = connection_pool.get_client(API_ADDRESS, API_USERNAME, API_PASSWORD)
 
         if need_check_password:
             try:
-                principal = user_auth_client.principal()
-                if principal.get('id', '') != username:
-                    return None
+                reader_id = username.replace('\\', '\\\\').replace('"', '\\"')
+                password = password.replace('\\', '\\\\').replace('"', '\\"')
+                sru_response = portal_client.search(
+                    query='@attrset bib-1 @attr 1=100 "%s"' % (reader_id,),
+                    database=RUSLAN_USERS_DATABASE,
+                    maximum_records=1
+                )
+                sru_records = humanize.get_records(sru_response)
+
+                if not sru_records:
+                   return None
+
             except Exception as e:
+                logger.exception(e)
                 return None
 
         sru_reps = portal_client.get_user(username, database=RUSLAN_USERS_DATABASE)
