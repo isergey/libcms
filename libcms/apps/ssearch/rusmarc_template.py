@@ -165,7 +165,7 @@ def __title_and_parts(title_parts):
 
 def __fuzzy_title(title_parts):
     min_main_title_length = 3
-    max_title_length = 1300
+    max_title_length = 1000
     out = {
         'title': u'',
         'parts_of': u''

@@ -20,21 +20,24 @@ logger = logging.getLogger('django.request')
 
 
 class RuslanAuthBackend(object):
-    def authenticate(self, username=None, password=None):
+    def authenticate(self, username=None, password='', need_check_password=True):
         if not username:
             return None
+
         user_auth_client = client.HttpClient(API_ADDRESS, username, password)
         portal_client = connection_pool.get_client(API_ADDRESS, API_USERNAME, API_PASSWORD)
 
-        try:
-            principal = user_auth_client.principal()
-            if principal.get('id', '') != username:
+        if need_check_password:
+            try:
+                principal = user_auth_client.principal()
+                if principal.get('id', '') != username:
+                    return None
+            except Exception as e:
                 return None
-        except Exception as e:
-            return None
 
         sru_reps = portal_client.get_user(username, database=RUSLAN_USERS_DATABASE)
         records = humanize.get_records(sru_reps)
+
         if not records:
             return None
         # 101 - фамилия
@@ -42,7 +45,8 @@ class RuslanAuthBackend(object):
         # 103 - отчество
         grs_record = humanize.grs_to_dict(humanize.get_record_content(records[0]).get('GRSTag', [{}]))
         user_password = password
-        if user_password != password:
+
+        if need_check_password and user_password != password:
             return None
 
         return self.get_or_create_user(username, password, grs_record)
@@ -69,6 +73,7 @@ class RuslanAuthBackend(object):
             groups=groups,
             is_active=True
         ).user
+
         try:
             ruslan_user = RuslanUser.objects.get(user=user)
             need_update = False

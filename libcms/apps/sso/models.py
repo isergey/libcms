@@ -85,7 +85,8 @@ def create_or_update_external_user(
     """
     cleaned_external_username = external_username.strip().lower()
     cleaned_auth_source = auth_source.strip().lower()
-
+    print cleaned_external_username
+    print cleaned_auth_source
     try:
         external_user = ExternalUser.objects.get(
             external_username=cleaned_external_username,

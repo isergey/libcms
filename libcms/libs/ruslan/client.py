@@ -2,6 +2,45 @@ import requests
 import json
 
 
+def dec(obj):
+    if isinstance(obj, dict):
+        for key in obj.keys():
+            obj[key] = dec(obj[key])
+    elif isinstance(obj, list):
+        for i, value in enumerate(obj):
+            obj[i] = dec(value)
+    elif isinstance(obj, str):
+        obj = obj.decode('utf-8')
+    return obj
+
+class DictUnicoder(object):
+    @staticmethod
+    def decode_value(value):
+        if isinstance(value, str):
+            return value.decode('utf-8')
+        elif isinstance(value, dict):
+            return DictUnicoder.decode_dict(value)
+        elif isinstance(value, list):
+            return DictUnicoder.decode_list(value)
+        return value
+
+    @staticmethod
+    def decode_dict(dict_obj):
+        for key, value in dict_obj.items():
+            dict_obj[key] = DictUnicoder.decode_value(value)
+        return dict_obj
+
+    @staticmethod
+    def decode_list(values):
+        for i, value in enumerate(values):
+            values[i] = DictUnicoder.decode_value(value)
+        return value
+
+    @staticmethod
+    def decode(obj):
+        return DictUnicoder.decode_value(obj)
+
+
 class HttpClient(object):
     def __init__(
             self,
@@ -87,9 +126,25 @@ class HttpClient(object):
             accept=accept
         )
 
-    def create_or_update_grs(self, grs_record, database, id='0'):
+    def create_grs(self, grs_record, database):
         record_json = json.dumps({
-            'content': [grs_record.to_dict()]
+            'content': [dec(grs_record.to_dict())]
+        }, ensure_ascii=False, encoding='utf-8').encode('utf-8')
+
+        response = self._make_request(
+            'put',
+            self._base_url + self._db_path + database + '/0',
+            data=record_json,
+            headers={
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            })
+        response.raise_for_status()
+        return response.json()
+
+    def update_grs(self, grs_record, database, id):
+        record_json = json.dumps({
+            'content': [dec(grs_record.to_dict())]
         }, ensure_ascii=False, encoding='utf-8').encode('utf-8')
         response = self._make_request(
             'put',
@@ -99,10 +154,8 @@ class HttpClient(object):
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             })
-
         response.raise_for_status()
-        print response.text
-        return response.json()
+        return response
 
     def send_ncip_message(self, message_dict):
         response = self._make_request(
@@ -113,7 +166,6 @@ class HttpClient(object):
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             })
-
         response.raise_for_status()
         return response
 

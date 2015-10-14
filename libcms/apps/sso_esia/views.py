@@ -14,7 +14,8 @@ from django.db import transaction
 from ruslan import connection_pool, client, humanize
 from sso import models as sso_models
 from ruslan import grs
-# from . import models
+from . import models
+from . import forms
 
 RUSLAN = getattr(settings, 'RUSLAN', {})
 
@@ -36,6 +37,8 @@ ESIA_SSO_SCOPE = unicode(ESIA_SSO.get('scope', 'http://esia.gosuslugi.ru/usr_inf
 ESIA_SSO_ACCESS_TOKEN_URL = ESIA_SSO.get('access_token_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/ac')
 ESIA_SSO_ACCESS_MARKER_URL = ESIA_SSO.get('access_marker_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/te')
 ESIA_SSO_PERSON_URL = ESIA_SSO.get('person_url', 'https://esia-portal1.test.gosuslugi.ru/rs/prns')
+ESIA_SSO_ASK_FOR_EXIST_READER = ESIA_SSO.get('ask_for_exist_reader', True)
+ESIA_SSO_PASSWORD_LENGTH = ESIA_SSO.get('password_length', 8)
 
 PERSON_CONTACTS_URL_SUFFIX = 'ctts'
 PERSON_ADDRESS_URL_SUFFIX = 'addrs'
@@ -67,22 +70,126 @@ def index(request):
     })
 
 
-def create_or_update_ruslan_user(request):
-    record = grs.Record()
-    record.add_field(grs.Field('101', u'Ф'))
-    record.add_field(grs.Field('102', u'И'))
-    record.add_field(grs.Field('103', u'О'))
-    record.add_field(grs.Field('115', u'password'))
-    record.add_field(grs.Field('402', 'snils'))
-    record.add_field(grs.Field('403', 'esiaoid'))
-    record.add_field(grs.Field('404', u'Ж'))
-    record.add_field(grs.Field('501', u'ЕСИА'))
-    record.add_field(grs.Field('502', u'да'))
-    record.add_field(grs.Field('503', u'да'))
+def _generate_password(length=ESIA_SSO_PASSWORD_LENGTH):
+    if not isinstance(length, int) or length < ESIA_SSO_PASSWORD_LENGTH:
+        raise ValueError("temp password must have positive length")
+    chars = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz123456789"
+    return "".join([chars[ord(c) % len(chars)] for c in os.urandom(length)])
 
+
+def _create_grs_from_esia(oid, email='', user_attrs=None):
+    user_attrs = user_attrs or {}
+    gender_map = {
+        'm': u'М',
+        'f': u'Ж'
+    }
+
+    person_info = user_attrs.get('person_info', {})
+    person_addresses = user_attrs.get('person_addresses', [{}])[0]
+
+    birth_date = person_info.get('birthDate', '')
+    if birth_date:
+        birth_date = datetime.strptime(birth_date, '%d.%m.%Y').strftime('%Y%m%d')
+
+    registration_address_parts = []
+
+    def add_to_registration_address(item):
+        if not item:
+            return
+        registration_address_parts.append(item.strip())
+
+    add_to_registration_address(person_addresses.get('region', ''))
+    add_to_registration_address(person_addresses.get('city', ''))
+    add_to_registration_address(person_addresses.get('street', ''))
+    add_to_registration_address(person_addresses.get('house', ''))
+
+    region_city_parts = []
+    region = person_addresses.get('region', '')
+    city = person_addresses.get('city', '')
+
+    if region:
+        region_city_parts.append(region)
+    if city:
+        region_city_parts.append(city)
+
+    foreigner = u''
+    citizenship = person_info.get('citizenship', '').lower()
+
+    if citizenship:
+        if citizenship == 'rus':
+            foreigner = u'0'
+        else:
+            foreigner = u'1'
+
+    record = grs.Record()
+
+    def add_field_to_record(tag, value):
+        if not value:
+            return
+        record.add_field(grs.Field(tag, value))
+
+    add_field_to_record('101', person_info.get('lastName', ''))
+    add_field_to_record('102', person_info.get('firstName', ''))
+    add_field_to_record('103', person_info.get('middleName', ''))
+    add_field_to_record('105', datetime.now().strftime('%Y%m%d'))
+    add_field_to_record('115', _generate_password())
+    add_field_to_record('122', email)
+    add_field_to_record('130', ', '.join(registration_address_parts))
+    add_field_to_record('234', birth_date)
+    add_field_to_record('402', person_info.get('snils', ''))
+    add_field_to_record('403', oid)
+    add_field_to_record('404', gender_map.get(person_info.get('gender', '').lower(), u''))
+    add_field_to_record('423', person_addresses.get('zipCode', ''))
+    add_field_to_record('424', ' / '.join(region_city_parts))
+    add_field_to_record('427', foreigner)
+    add_field_to_record('501', 'ЕСИА')
+    add_field_to_record('502', '1')
+    add_field_to_record('503', str(int(person_info.get('trusted', False))))
+
+    return record
+
+
+esia_response = {
+    "person_info": {
+        "status": "REGISTERED",
+        "birthPlace": "!Общая тестовая УЗ! ПОЖАЛУЙСТА, не изменяйте данные УЗ!ПОЖАЛУЙСТА!!!!!!!",
+        "citizenship": "TJK", "firstName": "Имя001", "updatedOn": 1438692792, "middleName": "Отчество001",
+        "lastName": "Фамилия0012",
+        "birthDate": "07.01.1994",
+        "eTag": "42D905D3CBEF2F2DC9FF85CCFC91ED82FCEFA723", "snils": "000-000-600 01",
+        "stateFacts": ["EntityRoot"],
+        "gender": "F",
+        "trusted": True
+    },
+    "person_contacts": [{
+        "vrfStu": "VERIFIED",
+        "value": "EsiaTest001@yandex.ru",
+        "eTag": "EC3E57C01CFEC3C3AE0847005F1A39228C088700",
+        "stateFacts": ["Identifiable"],
+        "type": "EML",
+        "id": 14239100
+    }],
+    "person_addresses": [{
+        "city": "Воронеж Город",
+        "countryId": "RUS",
+        "fiasCode": "36-0-000-001-000-000-0856-0000-000",
+        "house": "23 \"a\"",
+        "region": "Воронежская Область",
+        "zipCode": "369000",
+        "addressStr": "Воронежская область, Воронеж город, Станкевича улица",
+        "eTag": "A476F27783D0A6DA3B4E270CF3B71701BE5E57FA",
+        "street": "Станкевича Улица",
+        "stateFacts": ["Identifiable"],
+        "type": "PLV",
+        "id": 15842
+    }]
+}
+
+
+def _create_or_update_ruslan_user(grs_user_record):
     portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
-    grs_content = portal_client.create_or_update_grs(record, RUSLAN_USERS_DATABASE)
-    grs_record = grs_content.get('content', [{}])[0]
+    response = portal_client.create_grs(grs_user_record, RUSLAN_USERS_DATABASE)
+    grs_record = response.get('content', [{}])[0]
     record = grs.Record.from_dict(grs_record)
 
     fields_1 = record.get_field('1')
@@ -90,6 +197,9 @@ def create_or_update_ruslan_user(request):
 
     if fields_1:
         record_id = fields_1[0].content
+
+    if not record_id:
+        raise ValueError('record_id must be not empty')
 
     fields_100 = record.get_field('100')
 
@@ -100,10 +210,8 @@ def create_or_update_ruslan_user(request):
         field_100 = fields_100[0]
 
     field_100.content = RUSLAN_ID_MASK[:len(record_id) * -1] + record_id
-    grs_content = portal_client.create_or_update_grs(record, RUSLAN_USERS_DATABASE, id=record_id)
-
-    print 'create_or_update_grs complate'
-    return HttpResponse(json.dumps(grs_content, ensure_ascii=False))
+    portal_client.update_grs(grs_record=record, database=RUSLAN_USERS_DATABASE, id=record_id)
+    return record
 
 
 def _error_response(request, error, state, error_description, exception=None):
@@ -189,44 +297,211 @@ def redirect_from_idp(request):
             exception=e
         )
 
+
     user_attrs = {
         'person_info': person_info,
         'person_contacts': person_contacts,
         'person_addresses': person_addresses
     }
 
+    portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
+    #oid = u'erf'
+    #state = '112313'
+    #user_attrs = esia_response
+    # person_info = user_attrs.get('person_info', {})
+    # person_contacts = user_attrs.get('person_contacts', [])
 
-    external_user = sso_models.create_or_update_external_user(
-        external_username=oid,
-        auth_source=AUTH_SOURCE,
-        first_name=person_info.get('firstName', ''),
-        last_name=person_info.get('lastName', ''),
-        email=(_find_contacts_attr('EML', person_contacts) or [''])[0],
-        attributes=user_attrs,
-        is_active=(person_info.get('status', '') == 'REGISTERED')
+
+    sru_response = portal_client.search(
+        query='@attrset bib-1 @attr 1=403 "%s"' % (oid.replace('\\', '\\\\').replace('"', '\\"'),),
+        database=RUSLAN_USERS_DATABASE,
+        maximum_records=1
     )
 
+    sru_records = humanize.get_records(sru_response)
 
-    user = authenticate(user_model=external_user.user)
+    if not sru_records:
+        esia_user = models.create_or_update_esia_user(oid, user_attrs)
+        return redirect('sso_esia:ask_for_exist_reader', id=esia_user.id)
+    else:
+        user_grs_record = grs.Record.from_dict(humanize.get_record_content(sru_records[0]))
+        fields_100 = user_grs_record.get_field('100')
+        if not fields_100:
+            return _error_response(
+                request=request,
+                error='no_user',
+                state=state,
+                error_description=u'Система в данный момент не может произвести авторизацию'
+            )
+        else:
+            user = authenticate(username=fields_100[0].content, need_check_password=False)
+            if user:
+                if user.is_active:
+                    login(request, user)
+                    return redirect('index:frontend:index')
+                else:
+                    return _error_response(
+                        request=request,
+                        error='no_access_toke',
+                        state=state,
+                        error_description=u'Ваша учетная запись не активна'
+                    )
+            else:
+                return _error_response(
+                    request=request,
+                    error='no_user',
+                    state=state,
+                    error_description=u'Система не может сопоставить вашу учетную запись ЕСИА'
+                )
+
+
+@transaction.atomic()
+def register_new_user(request, id):
+    try:
+        esia_user = models.EsiaUser.objects.get(id=id)
+    except models.EsiaUser.DoesNotExist:
+        return redirect('sso_esia:index')
+
+    user_attrs = json.loads(esia_user.user_attrs)
+    person_contacts = user_attrs.get('person_contacts', [])
+
+    portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
+    # oid = u'777'
+    query = u'@attrset bib-1 @attr 1=403 "%s"' % (esia_user.oid.replace('\\', '\\\\'))
+    sru_response = portal_client.search(database=RUSLAN_USERS_DATABASE, query=query, start_record=1, maximum_records=1)
+    sru_records = humanize.get_records(sru_response)
+
+    reader_id = ''
+    password = ''
+
+    if not sru_records:
+        user_grs_record = _create_grs_from_esia(
+            oid=esia_user.oid,
+            email=(_find_contacts_attr('EML', person_contacts) or [''])[0],
+            user_attrs=user_attrs
+        )
+        fields_115 = user_grs_record.get_field('115')
+        if fields_115:
+            password = fields_115[0].content
+        user_grs_record = _create_or_update_ruslan_user(user_grs_record)
+
+    else:
+        user_grs_record = grs.Record.from_dict(humanize.get_record_content(sru_records[0]))
+
+    fields_100 = user_grs_record.get_field('100')
+
+    if fields_100:
+        reader_id = fields_100[0].content
+
+    esia_user.delete()
+
+    user = authenticate(username=reader_id, password=password, need_check_password=False)
 
     if user:
         if user.is_active:
             login(request, user)
-            return redirect('index:frontend:index')
+            return render(request, 'esia_sso/register_new_user.html', {
+                'reader_id': reader_id,
+                'password': password
+            })
         else:
             return _error_response(
                 request=request,
                 error='no_access_toke',
-                state=state,
+                state='',
                 error_description=u'Ваша учетная запись не активна'
             )
     else:
         return _error_response(
             request=request,
             error='no_user',
-            state=state,
+            state='',
             error_description=u'Система не может сопоставить вашу учетную запись ЕСИА'
         )
+
+
+@transaction.atomic()
+def ask_for_exist_reader(request, id):
+    try:
+        esia_user = models.EsiaUser.objects.get(id=id)
+    except models.EsiaUser.DoesNotExist:
+        return redirect('sso_esia:index')
+
+    portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
+
+    if request.method == 'POST':
+        ruslan_auth_form = forms.RuslanAuthForm(request.POST)
+        if ruslan_auth_form.is_valid():
+            reader_id = ruslan_auth_form.cleaned_data['reader_id'].replace('\\', '\\\\').replace('"', '\\"')
+            password = ruslan_auth_form.cleaned_data['password'].replace('\\', '\\\\').replace('"', '\\"')
+
+            sru_response = portal_client.search(
+                query='@attrset bib-1 @attr 1=100 "%s"' % (reader_id,),
+                database=RUSLAN_USERS_DATABASE,
+                maximum_records=1
+            )
+
+            sru_records = humanize.get_records(sru_response)
+
+            if not sru_records:
+                ruslan_auth_form.add_error('reader_id', u'Идентификатор читателя не найден')
+            else:
+                sru_response = portal_client.search(
+                    query='@attrset bib-1 @and @attr 1=100 "%s" @attr 1=115 "%s"' % (reader_id, password),
+                    database=RUSLAN_USERS_DATABASE,
+                    maximum_records=1
+                )
+                sru_records = humanize.get_records(sru_response)
+                if not sru_records:
+                    ruslan_auth_form.add_error('reader_id', u'Неверный пароль')
+                else:
+                    user_record = humanize.get_record_content(sru_records[0])
+                    user_grs_record = grs.Record.from_dict(user_record)
+                    fields_403 = user_grs_record.get_field('403')
+
+                    if fields_403:
+                        if fields_403[0].content != esia_user.oid:
+                            ruslan_auth_form.add_error(
+                                'reader_id',
+                                u'Идентификатор читателя уже связан с учетной записью ЕСИА'
+                            )
+                    else:
+                        user_grs_record.add_field(grs.Field('403', esia_user.oid))
+                        portal_client.update_grs(
+                            grs_record=user_grs_record,
+                            database=RUSLAN_USERS_DATABASE,
+                            id=reader_id
+                        )
+                        esia_user.delete()
+                        user = authenticate(
+                            username=ruslan_auth_form.cleaned_data['reader_id'],
+                            password=ruslan_auth_form.cleaned_data['password']
+                        )
+                        if user:
+                            if user.is_active:
+                                login(request, user)
+                                return redirect('index:frontend:index')
+                            else:
+                                return _error_response(
+                                    request=request,
+                                    error='no_access_toke',
+                                    state='',
+                                    error_description=u'Ваша учетная запись читателя не активна'
+                                )
+                        else:
+                            return _error_response(
+                                request=request,
+                                error='no_user',
+                                state='',
+                                error_description=u'Система не может сопоставить вашу учетную запись ЕСИА'
+                            )
+    else:
+        ruslan_auth_form = forms.RuslanAuthForm()
+
+    return render(request, 'esia_sso/ask_for_exist_reader.html', {
+        'ruslan_auth_form': ruslan_auth_form,
+        'esia_id': id
+    })
 
 
 def _find_contacts_attr(type_name, contacts, only_verified=False):

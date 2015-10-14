@@ -1,0 +1,54 @@
+{% extends 'theme_frontend_base.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans 'Login' %}
+{% endblock %}
+{% block content %}
+    {% url 'sso_esia:redirect_from_ip' as redirect_url %}
+    <div class="span12">
+        <div class="row">
+            <div class="span12">
+                <ul class="breadcrumb">
+                    <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+                    <li class="active">Вход на портал через ЕСИА</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span8">
+
+                <p>Уважаемый пользователь, Вы зашли на портал с помощью ЕСИА в первый раз.</p>
+
+                <p>Если у Вас уже есть Единый Читательский Билет (ЕЧБ), Вы можете привязвать его к учетной записи
+                    ЕСИА.</p>
+
+                <form method="POST" class="form-horizontal">{% csrf_token %}
+                    <fieldset>
+                        {% include 'frontend/base_form_fields.html' with form=ruslan_auth_form %}
+                        <div class="form-actions">
+                            <input type="submit" value="Привязать" class="btn btn-success"/>
+                            <a href="{% url 'sso_esia:register_new_user' esia_id %}" class="btn btn-primary">У меня нет Единого Читалеьского Билета</a>
+                        </div>
+                    </fieldset>
+                </form>
+
+
+                {#                <div>#}
+                {#                    <span>Войти через ЕСИА</span>#}
+                {#                    <a href="{{ access_token_url|safe }}?access_type={{ access_type|urlencode }}&state={{ state|urlencode }}&timestamp={{ timestamp|urlencode }}&response_type=code&redirect_uri=https://{{ request.META.HTTP_HOST }}{{ redirect_url }}&client_id={{ client_id|urlencode }}&scope={{ scope|urlencode }}&client_secret={{ client_secret|urlencode }}"><img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>#}
+                {#                </div>#}
+
+
+                {#                <form method="post">#}
+                {#                    {% csrf_token %}#}
+                {#                    <input name="cs" placeholder="client_secret" value="{{ client_secret }}"/><br/>#}
+                {#                    <input name="state" placeholder="state" value="{{ client_id }}" /><br/>#}
+                {#                    <input name="state" placeholder="state" value="{{ state }}" /><br/>#}
+                {#                    <input name="timestamp" placeholder="timestamp" value="{{ timestamp }}" /><br/>#}
+                {#                    <input name="scope" placeholder="scope" value="{{ scope }}" /><br/>#}
+                {#                    <input type="submit" />#}
+                {#                </form>#}
+            </div>
+        </div>
+    </div>
+{% endblock %}
