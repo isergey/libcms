@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, HttpResponse
 from django.contrib.auth.decorators import login_required
-from urt.models import LibReader
+from sso_ruslan import models as ruslan_models
 
 @login_required
 def index(request):
@@ -9,6 +9,8 @@ def index(request):
     #     lib_reader = LibReader.objects.get(user=request.user)
     # except LibReader.DoesNotExist:
     #     lib_reader = None
+
+    ruslan_user = ruslan_models.get_ruslan_user(request)
     return render(request, 'personal/frontend/index.html', {
-        # 'lib_reader': lib_reader
+        'ruslan_user': ruslan_user
     })

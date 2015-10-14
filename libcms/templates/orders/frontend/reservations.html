@@ -8,18 +8,18 @@
         <li class="active">Заказы на бронирование</li>
     </ul>
 
-    {% if links %}
+    {% if libraries %}
         <ul style="list-style: none; margin: 0;">
-            {% for link in links %}
+            {% for library in libraries %}
                 <li>
                     <div class="thumbnail" style="margin-bottom: 10px;">
-                        <h3>{{ link.library.name }}</h3>
+                        <h3><a target="_blank" href="{% url 'participants:frontend:detail' library.code %}">{{ library.name }}</a></h3>
                         <div class="on_hand">
                             <ul style="list-style: none">
-                                {% if link.error %}
-                                    <li><div class="alert alert-error">{{ link.error }}</div></li>
+                                {% if library.error %}
+                                    <li><div class="alert alert-error">{{ library.error }}</div></li>
                                 {% else %}
-                                    {% for order in link.reservations %}
+                                    {% for order in library.reservations %}
                                         <li>{{ order.record|safe }}
                                             <div class="alert alert-success">
                                                 <b>Номер</b>: {{ order.target_reference }}<br/>

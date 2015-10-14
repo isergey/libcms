@@ -2,41 +2,53 @@
 {% block title %}Выданные книги{% endblock %}
 {% block content %}
     <div class="span12">
-    <ul class="breadcrumb">
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>
-        <li class="active">Выданные книги</li>
-    </ul>
-
-    {% if links %}
-        <ul style="list-style: none; margin: 0">
-            {% for link in links %}
-                <li>
-                    <div class="thumbnail" style="margin-bottom: 10px;">
-                        <h3>{{ link.library.name }}</h3>
-                        <div class="on_hand" id="{% url 'orders:frontend:on_hand_in_lib' link.library.id %}">
-                            <ul style="list-style: none;">
-                                {% for book in link.books %}
-                                    <li>{{ book.record|safe }}
-                                        <div class="alert alert-success">
-                                            <b>Примечание</b>: {{ book.description }}
-                                        </div>
-                                    </li>
-                                    {% if not forloop.last %}<hr/>{% endif %}
-                                    {% empty %}
-                                    <li><div class="alert">Выданных книг нет</div></li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-            {% endfor %}
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>
+            <li class="active">Выданные книги</li>
         </ul>
-    {% else %}
-        <p>
-            В настоящий момент Вы не связали свой аккаунт на портале с какой-либо ЦБС.
-            Чтобы воспользоваться сервисами предоставляемыми библиотеками необходимо <a href="{% url 'urt:frontend:link' %}">связать</a> совой аккаунт с идентификатором читателя выданного в библиотеке.
-        </p>
-    {% endif %}
+
+        {% if libraries %}
+            <ul style="list-style: none; margin: 0">
+                {% for library in libraries %}
+                    <li>
+                        <div class="thumbnail" style="margin-bottom: 10px;">
+                            <h3><a target="_blank" href="{% url 'participants:frontend:detail' library.code %}">{{ library.name }}</a></h3>
+
+                            <div class="on_hand" id="{% url 'orders:frontend:on_hand_in_lib' library.id %}">
+                                <ul style="list-style: none;">
+                                    {% if library.error %}
+                                        <li>
+                                            <div class="alert alert-error">{{ library.error }}</div>
+                                        </li>
+                                    {% else %}
+                                        {% for book in library.books %}
+                                            <li>{{ book.record|safe }}
+                                                <div class="alert alert-success">
+                                                    <b>Примечание</b>: {{ book.description }}
+                                                </div>
+                                            </li>
+                                            {% if not forloop.last %}
+                                                <hr/>{% endif %}
+                                        {% empty %}
+                                            <li>
+                                                <div class="alert">Выданных книг нет</div>
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>
+                В настоящий момент Вы не связали свой аккаунт на портале с какой-либо ЦБС.
+                Чтобы воспользоваться сервисами предоставляемыми библиотеками необходимо <a
+                    href="{% url 'urt:frontend:link' %}">связать</a> совой аккаунт с идентификатором читателя выданного
+                в библиотеке.
+            </p>
+        {% endif %}
     </div>
 {% endblock %}

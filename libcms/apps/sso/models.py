@@ -9,8 +9,10 @@ from django.contrib.auth.models import User, Group
 
 
 class ExternalUser(models.Model):
-    user = models.OneToOneField(User, verbose_name=u'Связь с пользователем', blank=True, null=True, on_delete=models.CASCADE)
-    external_username = models.CharField(verbose_name=u'Имя пользователя во внешней системе', max_length=255, db_index=True)
+    user = models.OneToOneField(User, verbose_name=u'Связь с пользователем', blank=True, null=True,
+                                on_delete=models.CASCADE)
+    external_username = models.CharField(verbose_name=u'Имя пользователя во внешней системе', max_length=255,
+                                         db_index=True)
     auth_source = models.CharField(verbose_name=u'Идентфикатор источника аутенификации', max_length=32, db_index=True)
     attributes = models.TextField(verbose_name=u'Атрибуты пользователя в формате JSON', max_length=10 * 1024)
     update = models.DateTimeField(auto_now=True, db_index=True)
@@ -37,6 +39,16 @@ def on_external_user_delete(sender, **kwargs):
     kwargs['instance'].user.delete()
 
 
+def get_external_users(user, auth_source=None):
+    q = models.Q(user=user)
+    if auth_source:
+        q = q & models.Q(auth_source=auth_source)
+    try:
+        return ExternalUser.objects.filter(q)
+    except ExternalUser.DoesNotExist:
+        return []
+
+
 def find_external_user(external_username, auth_source):
     """
     Найти пользователя из внешней системы
@@ -54,7 +66,6 @@ def find_external_user(external_username, auth_source):
         return external_user.user
     except ExternalUser.DoesNotExist:
         return None
-
 
 
 @transaction.atomic()
@@ -159,4 +170,3 @@ def create_or_update_external_user(
         external_user.save()
 
         return external_user
-
