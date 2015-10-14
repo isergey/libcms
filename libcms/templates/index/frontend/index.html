@@ -45,8 +45,8 @@
                         <div class="banner-node"
                              style="position: relative; top: 192px; color: #ffffff; padding-left: 10px">
                             <div style="background: #34832B; padding: 10px;">
-                                В электронном каталоге Вы сможете <a style="color: #ffffff; font-weight: bold;"
-                                                                     href="{% url 'ssearch:frontend:index' %}">найти</a>
+                                В электронном каталоге Вы сможете
+                                <a style="color: #ffffff; font-weight: bold;" href="{% url 'ssearch:frontend:index' %}">найти</a>
                                 и забронировать книги в библиотеках Республики Татарстан.
                             </div>
                         </div>
@@ -55,9 +55,8 @@
             </div>
             <div class="span6">
                 <h3 style="margin-top: -5px;">{% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}
-                    Яңалыклар{% else %}News{% endif %}<a href="{% url 'news:frontend:rss' %}"> <img width="24"
-                                                                                                    src="{{ STATIC_URL }}images/rss.png"
-                                                                                                    alt="Подписаться"></a>
+                    Яңалыклар{% else %}News{% endif %}<a href="{% url 'news:frontend:rss' %}">
+                    <img width="24" src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a>
                 </h3>
                 {% news_feed %}
                 <a href="{% url 'news:frontend:index' %}" class="last">{% if LANGUAGE_CODE == 'ru' %}Архив
@@ -100,6 +99,7 @@
 
             </style>
             <div class="incomes span6">
+                <hr />
                 <h3 style="padding-top: 10px;">{% if LANGUAGE_CODE == 'ru' %}Последние
                     поступления{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}From new
                     arrivals{% endif %}</h3>
@@ -120,10 +120,13 @@
             </div>
 
             <div class="span6">
-
-                <h3 style="margin: 10px 0 10px 0;">{% if LANGUAGE_CODE == 'ru' %}Карта
-                    библиотек{% elif LANGUAGE_CODE == 'tt' %}Китапханәләр картасы{% else %}Map of
-                    libraries{% endif %}</h3>
+                <hr />
+                <h3 style="margin: 10px 0 10px 0; display: inline-block">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Карта библиотек
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Китапханәләр картасы
+                    {% else %}Map of libraries{% endif %}</h3> <a href="{% url 'participants:frontend:geosearch' %}">найти ближайшую</a>
                 {% cbs_map %}
                 {% if request.GET.draft %}
                     <hr/>
