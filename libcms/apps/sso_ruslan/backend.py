@@ -21,6 +21,12 @@ logger = logging.getLogger('django.request')
 
 class RuslanAuthBackend(object):
     def authenticate(self, username=None, password='', need_check_password=True):
+        if username:
+            username = username.strip()
+
+        if password:
+            password = password.strip()
+
         if not username:
             return None
 
