@@ -31,7 +31,6 @@ class RuslanAuthBackend(object):
             if principal.get('id', '') != username:
                 return None
         except Exception as e:
-            logger.exception(e)
             return None
 
         sru_reps = portal_client.get_user(username, database=RUSLAN_USERS_DATABASE)
