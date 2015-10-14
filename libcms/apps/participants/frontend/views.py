@@ -95,11 +95,11 @@ def geo_nearest(request):
 
     libraries = json.loads(cached_libraies.decode('zlib'))
 
-    # print len(json.dumps(libraries, ensure_ascii=False).encode('utf-8').encode('zlib'))
     geo_libraries = []
     for library in libraries:
         latitude = library.get('latitude', 0)
         longitude = library.get('longitude', 0)
+
         if not latitude or not longitude:
             continue
         geo_libraries.append({
@@ -108,7 +108,8 @@ def geo_nearest(request):
             'href': resolve_url('participants:frontend:detail', code=library.get('code'))
         })
 
-    geo_libraries = sorted(geo_libraries, key=lambda item: item.get('distance'))
+    #geo_libraries = sorted(geo_libraries, key=lambda item: item.get('distance'))
+    geo_libraries.sort(key=lambda item: item.get('distance'))
 
     per_page = 10
     # objects_page = get_page(request, geo_libraries, per_page)
@@ -146,3 +147,20 @@ def geodistance(lat1, lon1, lat2, lon2, unit='K'):
         dist = dist * 0.8684
     return dist
 
+# def geodistance(lat1, lon1, lat2, lon2):
+#     lat1 = math.radians(lat1)
+#     lon1 = math.radians(lon1)
+#     lat2 = math.radians(lat2)
+#     lon2 = math.radians(lon2)
+#
+#     dlon = lon1 - lon2
+#
+#     EARTH_R = 6372.8
+#
+#     y = math.sqrt(
+#         (math.cos(lat2) * math.sin(dlon)) ** 2
+#         + (math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(dlon)) ** 2
+#     )
+#     x = math.sin(lat1) * math.sin(lat2) + math.cos(lat1) * math.cos(lat2) * math.cos(dlon)
+#     c = math.atan2(y, x)
+#     return EARTH_R * c

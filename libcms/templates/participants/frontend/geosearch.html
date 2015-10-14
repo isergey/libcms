@@ -270,8 +270,8 @@
                 };
                 myPosition = iam.position;
                 $.get('{% url 'participants:frontend:geo_nearest' %}', {
-                    'lat': iam.position[1],
-                    'lon': iam.position[0]
+                    'lat': iam.position[0],
+                    'lon': iam.position[1]
                 }).done(function (data) {
                     drawResults(iam, data);
                 });
