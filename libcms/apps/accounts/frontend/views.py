@@ -151,6 +151,7 @@ def wifi(request):
 
 @transaction.atomic()
 def registration(request):
+    return redirect('accounts:frontend:login')
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
