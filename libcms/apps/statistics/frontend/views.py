@@ -16,7 +16,7 @@ cache = caches['default']
 TOKEN = '123'
 
 TATAR_STATISTICS = getattr(settings, 'TATAR_STATISTICS', {})
-REPORT_SERVER = TATAR_STATISTICS.get('report_server', '10.14.0.52')
+REPORT_SERVER = TATAR_STATISTICS.get('report_server', 'http://10.14.0.52/reports')
 
 template = etree.XSLT(etree.parse(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'modern.xsl')))
 
