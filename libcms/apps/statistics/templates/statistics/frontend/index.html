@@ -35,14 +35,14 @@
                             </li>
                         {% endrecursetree %}
                     </ul>
-{#                    {% for managed_library in managed_libraries %}#}
-{#                        {% if managed_library.parent_id %}#}
-{#                            {% for ancestor in managed_library.get_ancestors %}#}
-{#                                {{ ancestor.name }} /#}
-{#                            {% endfor %}#}
-{#                        {% endif %}#}
-{#                        {{ managed_library.name }}#}
-{#                    {% endfor %}#}
+                    {#                    {% for managed_library in managed_libraries %}#}
+                    {#                        {% if managed_library.parent_id %}#}
+                    {#                            {% for ancestor in managed_library.get_ancestors %}#}
+                    {#                                {{ ancestor.name }} /#}
+                    {#                            {% endfor %}#}
+                    {#                        {% endif %}#}
+                    {#                        {{ managed_library.name }}#}
+                    {#                    {% endfor %}#}
                 {% else %}
                     Вам доступна статистика всех организаций
                 {% endif %}

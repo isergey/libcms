@@ -25,7 +25,7 @@ def log_page_view(path, query, url_hash, session):
     ])
 
 
-def get_view_count_stats(from_date, to_date, period, visit_type='view' ,url_filter=''):
+def get_view_count_stats(from_date, to_date, period, visit_type='view', url_filter=''):
     date_range = _generate_dates(from_date, to_date, period)
 
     group_by = 'year(datetime), month(datetime), day(datetime)'
@@ -76,7 +76,7 @@ def _dictfetchall(cursor):
     return [
         dict(zip([col[0] for col in desc], row))
         for row in cursor.fetchall()
-    ]
+        ]
 
 
 def _generate_dates(from_date, to_date, period):
@@ -92,6 +92,7 @@ def _generate_dates(from_date, to_date, period):
             date_range.append(date.strftime('%Y-%m-%d'))
 
     return date_range
+
 
 def _monthrange(start, finish):
     months = (finish.year - start.year) * 12 + finish.month + 1

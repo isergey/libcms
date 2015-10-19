@@ -1,20 +1,23 @@
 # coding=utf-8
-import hashlib
 import os
-import requests
+
 from lxml import etree
-import json
+from  django.conf import settings
 from django.core.cache import caches
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, HttpResponse, urlresolvers
-from guardian.decorators import permission_required_or_403
+from django.shortcuts import render, HttpResponse
+
+import requests
 from participants.decorators import must_be_org_user
 from . import forms
 
 cache = caches['default']
 
 TOKEN = '123'
-REPORT_SERVER = 'http://statat.ipq.co/reports/'
+
+TATAR_STATISTICS = getattr(settings, 'TATAR_STATISTICS', {})
+REPORT_SERVER = TATAR_STATISTICS.get('report_server', '10.14.0.52')
+
 template = etree.XSLT(etree.parse(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'modern.xsl')))
 
 

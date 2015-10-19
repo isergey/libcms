@@ -52,5 +52,3 @@ class RequestLog(object):
             log_page_view(path=path, query=query, url_hash=url_hash, session=session)
 
         return response
-
-

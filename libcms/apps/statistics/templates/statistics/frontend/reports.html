@@ -1,11 +1,11 @@
 {% extends 'statistics/frontend/index.html' %}
-        {% block breadcrumb %}
-            <ul class="breadcrumb">
-                <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-                <li><a href="{% url 'statistics:frontend:index' %}">Статистика</a> <span class="divider">/</span></li>
-                <li class="active">Отчет</li>
-            </ul>
-        {% endblock %}
+{% block breadcrumb %}
+    <ul class="breadcrumb">
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'statistics:frontend:index' %}">Статистика</a> <span class="divider">/</span></li>
+        <li class="active">Отчет</li>
+    </ul>
+{% endblock %}
 {% block index_content %}
-        {{ report_body|safe }}
+    {{ report_body|safe }}
 {% endblock %}
