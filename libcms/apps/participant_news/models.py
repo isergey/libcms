@@ -72,7 +72,7 @@ def resize_news_image(sender, **kwargs):
     maximum_height = 1440
     instance = kwargs['instance']
     image_path = MEDIA_ROOT + unicode(instance.image)
-    im = Image.open(image_path)
+    im = Image.open(image_path).convert('RGB')
 
     resized_im = image_utils.adjust_image(im, [maximum_width, maximum_height])
     resized_im.save(image_path, "JPEG", quality=95, optimize=True, progressive=True)

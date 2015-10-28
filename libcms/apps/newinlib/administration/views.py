@@ -253,7 +253,7 @@ def handle_uploaded_file(f, old_name=None):
         for chunk in f.chunks():
             destination.write(chunk)
 
-    im = Image.open(path)
+    im = Image.open(path).convert('RGB')
     im = get_im_crop(im, ratio)
 
     final_hight = 450

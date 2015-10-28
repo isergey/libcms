@@ -244,7 +244,7 @@ def handle_uploaded_file(f, old_name=None):
     with open(path, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
-    im = Image.open(path)
+    im = Image.open(path).convert('RGB')
     image_width = im.size[0]
     image_hight = im.size[1]
     image_ratio = float(image_width) / image_hight

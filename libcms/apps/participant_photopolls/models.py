@@ -151,7 +151,7 @@ class Comment(models.Model):
 def resize_poll_avatar(sender, **kwargs):
     instance = kwargs['instance']
     image_path = MEDIA_ROOT + unicode(instance.avatar)
-    im = Image.open(image_path)
+    im = Image.open(image_path).convert('RGB')
     tumbnail = image_utils.image_crop_center(im)
     tumbnail.save(image_path, "JPEG", quality=95, optimize=True, progressive=True)
 
@@ -161,7 +161,7 @@ def resize_poll_image(sender, **kwargs):
     maximum_height = 1440
     instance = kwargs['instance']
     image_path = MEDIA_ROOT + unicode(instance.image)
-    im = Image.open(image_path)
+    im = Image.open(image_path).convert('RGB')
 
     resized_im = image_utils.adjust_image(im, [maximum_width, maximum_height])
     resized_im.save(image_path, "JPEG", quality=95, optimize=True, progressive=True)

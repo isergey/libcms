@@ -159,7 +159,7 @@ def remove_attachments(sender, **kwargs):
 def resize_avatar(sender, **kwargs):
     instance = kwargs['instance']
     image_path = MEDIA_ROOT + unicode(instance.avatar)
-    im = Image.open(image_path)
+    im = Image.open(image_path).convert('RGB')
     image_width = im.size[0]
     image_hight = im.size[1]
     image_ratio = float(image_width) / image_hight
