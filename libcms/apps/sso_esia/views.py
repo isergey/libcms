@@ -85,7 +85,11 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
     }
 
     person_info = user_attrs.get('person_info', {})
-    person_addresses = user_attrs.get('person_addresses', [{}])[0]
+    person_addresses = user_attrs.get('person_addresses', [])
+    person_address = {}
+
+    if person_addresses:
+        person_address = person_addresses[0]
 
     birth_date = person_info.get('birthDate', '')
     if birth_date:
@@ -98,14 +102,14 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
             return
         registration_address_parts.append(item.strip())
 
-    add_to_registration_address(person_addresses.get('region', ''))
-    add_to_registration_address(person_addresses.get('city', ''))
-    add_to_registration_address(person_addresses.get('street', ''))
-    add_to_registration_address(person_addresses.get('house', ''))
+    add_to_registration_address(person_address.get('region', ''))
+    add_to_registration_address(person_address.get('city', ''))
+    add_to_registration_address(person_address.get('street', ''))
+    add_to_registration_address(person_address.get('house', ''))
 
     region_city_parts = []
-    region = person_addresses.get('region', '')
-    city = person_addresses.get('city', '')
+    region = person_address.get('region', '')
+    city = person_address.get('city', '')
 
     if region:
         region_city_parts.append(region)
