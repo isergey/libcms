@@ -143,7 +143,7 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
     add_field_to_record('402', person_info.get('snils', ''))
     add_field_to_record('403', oid)
     add_field_to_record('404', gender_map.get(person_info.get('gender', '').lower(), u''))
-    add_field_to_record('423', person_addresses.get('zipCode', ''))
+    add_field_to_record('423', person_address.get('zipCode', ''))
     add_field_to_record('424', ' / '.join(region_city_parts))
     add_field_to_record('427', foreigner)
     add_field_to_record('501', 'ЕСИА')
