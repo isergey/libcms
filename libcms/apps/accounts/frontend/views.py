@@ -1,16 +1,31 @@
 # -*- coding: utf-8 -*-
+import urlparse
+
 from django.conf import settings
-from django.core.mail import send_mail
+from django.contrib.auth import (
+    logout as auth_logout, )
+from django.utils.translation import ugettext as _
+from django.template.response import TemplateResponse
+from django.http import HttpResponseRedirect
+from django.utils.http import is_safe_url
+from django.shortcuts import resolve_url
 from django.db import transaction
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.api import get_messages
 
+from django.views.decorators.debug import sensitive_post_parameters
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.sites.models import get_current_site
+
 from social_auth import __version__ as version
+
 from forms import RegistrationForm
 from accounts.models import RegConfirm
-
 from participants import models as participants_models
 
 
@@ -57,15 +72,6 @@ def error(request):
         'version': version,
         'messages': messages
     })
-
-
-import urlparse
-from django.views.decorators.debug import sensitive_post_parameters
-from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
-from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.sites.models import get_current_site
 
 
 @sensitive_post_parameters()
@@ -139,8 +145,53 @@ def login(request, template_name='registration/login.html',
     return render(request, template_name, context, current_app=current_app)
 
 
-def wifi(request):
+def logout(request, next_page=None,
+           template_name='registration/logged_out.html',
+           redirect_field_name=REDIRECT_FIELD_NAME,
+           current_app=None, extra_context=None):
+    """
+    Logs out the user and displays 'You are logged out' message.
+    """
+    logout_idp_url = request.session.get('logout_idp_url')
 
+
+    auth_logout(request)
+
+    if next_page is not None:
+        next_page = resolve_url(next_page)
+
+    if (redirect_field_name in request.POST or
+                redirect_field_name in request.GET):
+        next_page = request.POST.get(redirect_field_name,
+                                     request.GET.get(redirect_field_name))
+        # Security check -- don't allow redirection to a different host.
+        if not is_safe_url(url=next_page, host=request.get_host()):
+            next_page = request.path
+
+    if logout_idp_url:
+        return redirect(logout_idp_url)
+
+    if next_page:
+        # Redirect to this page until the session has been cleared.
+        return HttpResponseRedirect(next_page)
+
+    current_site = get_current_site(request)
+    context = {
+        'site': current_site,
+        'site_name': current_site.name,
+        'title': _('Logged out')
+    }
+    if extra_context is not None:
+        context.update(extra_context)
+
+    if current_app is not None:
+        request.current_app = current_app
+
+
+    return TemplateResponse(request, template_name, context)
+
+
+def wifi(request):
     if request.user.is_authenticated():
         orgs = participants_models.user_organizations(request.user)
         if orgs:

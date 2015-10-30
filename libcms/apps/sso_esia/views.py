@@ -342,6 +342,7 @@ def redirect_from_idp(request):
             if user:
                 if user.is_active:
                     login(request, user)
+                    request.session['logout_idp_url'] = 'https://esia-portal1.test.gosuslugi.ru/profile/user/saml/Logout'
                     return redirect('index:frontend:index')
                 else:
                     return _error_response(

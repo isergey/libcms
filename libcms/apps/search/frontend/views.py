@@ -347,7 +347,7 @@ def detail(request):
     id = request.GET.get('id', '')
 
     if prnt:
-        tpl = tpl = 'search/frontend/print.html'
+        tpl = 'search/frontend/print.html'
 
     records = models.get_records([id])
     if not records:
