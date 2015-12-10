@@ -1,79 +1,172 @@
 {% extends 'theme_frontend_base.html' %}
 {% block title %}Личный кабинет{% endblock %}
 {% block content %}
-    <style>
-        .personal .thumbnail{
-            height: 70px;
-            margin-bottom: 10px;
-            background: #f8f8f8;
-        }
-        .personal .thumbnail:hover{
-            background: #ededed;
-        }
-        .personal .thumbnail a {
-            color: #434343;
-            text-decoration: none;
-            font-size: 18px;
-            display: block;
-            height: 100%;
-        }
-    </style>
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-            <li class="active">Личный кабинет</li>
-        </ul>
-        <div class="row personal">
-            <div class="span6">
-                {% if not ruslan_user %}
-                    <div class="thumbnail"  style="background-color: #d9edf7; border-color: #bce8f1;">
-                        Вы не являетесь читателем
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li>
+                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                        Главная
+                    </a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a class="bread__crumbs_link bread__crumbs_link_active">
+                        Личный кабинет
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <hr class="footer-hr">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="content-page__title">Личный кабинет
+                        <span>(
+                             {% if not ruslan_user %}
+                                    Вы не являетесь читателем
+                                {% else %}
+                                    Идентификатор читательского билета: <b>{{ ruslan_user.username }}</b>
+                                {% endif %}
+                        )</span>
+                    </h1>
+                    <div class="big-block__margin">
+                        <div class="row">
+                            <div class="col-6">
+                                <a href="{% url 'orders:frontend:reservations' %}" class="big-block big-block_border"
+                                   title="Заказы на бронирование">
+                                    <h2 class="big-block__title">Заказы на бронирование</h2>
+                                    <img class="pr1" src="{{ STATIC_URL }}dist/images/pr1.png">
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="{% url 'mydocs:frontend:index' %}" class="big-block big-block_border"
+                                   title="Мои документы">
+                                    <h2 class="big-block__title">Мои документы</h2>
+                                    <img class="pr2" src="{{ STATIC_URL }}dist/images/pr2.png">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <a href="{% url 'ssearch:frontend:saved_search_requests' %}"
+                                   class="big-block big-block_border" title="Заказы на бронирование">
+                                    <h2 class="big-block__title">Поисковые запросы</h2>
+                                    <img class="pr3" src="{{ STATIC_URL }}dist/images/pr3.png">
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="{% url 'orders:frontend:on_hand' %}" class="big-block big-block_border"
+                                   title="Мои документы">
+                                    <h2 class="big-block__title">Выданные книги</h2>
+                                    <img class="pr4" src="{{ STATIC_URL }}dist/images/pr4.png">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <a href="{% url 'ask_librarian:frontend:my_questions' %}"
+                                   class="big-block big-block_border" title="Заказы на бронирование">
+                                    <h2 class="big-block__title">Мои вопросы</h2>
+                                    <img class="pr5" src="{{ STATIC_URL }}dist/images/pr5.png">
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                {% else %}
-                    <div class="thumbnail"  style="background-color: #dff0d8; border-color: #d6e9c6;">
-                        <p>Идентификатор читательского билета:</p>
-                        <p><b style="font-size: 200%">{{ ruslan_user.username }}</b></p>
-                    </div>
-                {% endif %}
-            </div>
-
-            <div class="span6">
-                <div class="thumbnail">
-                    <a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a>
-                </div>
-            </div>
-            <div class="span6">
-                <div class="thumbnail">
-                    <a href="{% url 'orders:frontend:reservations' %}">Заказы на бронирование</a>
-                </div>
-            </div>
-            <div class="span6">
-                <div class="thumbnail">
-                    <a href="{% url 'mydocs:frontend:index' %}">Мои документы</a>
-                </div>
-            </div>
-            <div class="span6">
-                <div class="thumbnail">
-                    <a href="{% url 'ssearch:frontend:saved_search_requests' %}">Поисковые запросы</a>
-                </div>
-            </div>
-            <div class="span6">
-                <div class="thumbnail">
-                    <a href="{% url 'ask_librarian:frontend:my_questions' %}">Мои вопросы</a>
                 </div>
             </div>
         </div>
-{#    {% if not esia_linked %}#}
-{#        <div class="alert alert-info">#}
-{#            Установить связь с ЕСИА#}
-{#            <img style="width: 50px" src="{{ STATIC_URL }}images/republic-gerb.png">#}
+    </main>
+
+
+
+
+
+
+
+    {#    <style>#}
+    {#        .personal .thumbnail {#}
+    {#            height: 70px;#}
+    {#            margin-bottom: 10px;#}
+    {#            background: #f8f8f8;#}
+    {#        }#}
+    {##}
+    {#        .personal .thumbnail:hover {#}
+    {#            background: #ededed;#}
+    {#        }#}
+    {##}
+    {#        .personal .thumbnail a {#}
+    {#            color: #434343;#}
+    {#            text-decoration: none;#}
+    {#            font-size: 18px;#}
+    {#            display: block;#}
+    {#            height: 100%;#}
+    {#        }#}
+    {#    </style>#}
+{#    <div class="span12">#}
+        {#        <ul class="breadcrumb">#}
+        {#            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
+        {#            <li class="active">Личный кабинет</li>#}
+        {#        </ul>#}
+{#        <div class="row personal">#}
+{#            <div class="span6">#}
+                {#                {% if not ruslan_user %}#}
+                {#                    <div class="thumbnail" style="background-color: #d9edf7; border-color: #bce8f1;">#}
+                {#                        Вы не являетесь читателем#}
+                {#                    </div>#}
+                {#                {% else %}#}
+                {#                    <div class="thumbnail" style="background-color: #dff0d8; border-color: #d6e9c6;">#}
+                {#                        <p>Идентификатор читательского билета:</p>#}
+                {##}
+                {#                        <p><b style="font-size: 200%">{{ ruslan_user.username }}</b></p>#}
+                {#                    </div>#}
+                {#                {% endif %}#}
+{#            </div>#}
+{##}
+{#            <div class="span6">#}
+{#                <div class="thumbnail">#}
+{#                    <a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="span6">#}
+{#                <div class="thumbnail">#}
+{#                    <a href="{% url 'orders:frontend:reservations' %}">Заказы на бронирование</a>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="span6">#}
+{#                <div class="thumbnail">#}
+{#                    <a href="{% url 'mydocs:frontend:index' %}">Мои документы</a>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="span6">#}
+{#                <div class="thumbnail">#}
+{#                    <a href="{% url 'ssearch:frontend:saved_search_requests' %}">Поисковые запросы</a>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="span6">#}
+{#                <div class="thumbnail">#}
+{#                    <a href="{% url 'ask_librarian:frontend:my_questions' %}">Мои вопросы</a>#}
+{#                </div>#}
+{#            </div>#}
 {#        </div>#}
-{#    {% else %}#}
-{#        <div class="alert alert-success">#}
-{#            Свзязь с ЕСИА установлена#}
-{#            <img style="width: 50px" src="{{ STATIC_URL }}images/republic-gerb.png">#}
-{#        </div>#}
-{#    {% endif %}#}
-    </div>
+        {#    {% if not esia_linked %}#}
+        {#        <div class="alert alert-info">#}
+        {#            Установить связь с ЕСИА#}
+        {#            <img style="width: 50px" src="{{ STATIC_URL }}images/republic-gerb.png">#}
+        {#        </div>#}
+        {#    {% else %}#}
+        {#        <div class="alert alert-success">#}
+        {#            Свзязь с ЕСИА установлена#}
+        {#            <img style="width: 50px" src="{{ STATIC_URL }}images/republic-gerb.png">#}
+        {#        </div>#}
+        {#    {% endif %}#}
+{#    </div>#}
 
 {% endblock %}

@@ -20,28 +20,45 @@
 </section>
 {% endblock %}
 {% block index_content %}
-    <ul style="list-style: none; padding: 0; margin: 0;">
-        {% for question in questions_page.object_list %}
-            <li>
-                {{ question.question }}<br/>
-                {% if question.category_id %}
-                    <b>
-                        {% cache 30 questions_category question.category_id  LANGUAGE_CODE %}
-                            {% for ancestor in  question.category.get_t_ancestors %}
-                                {{ ancestor }}  →
-                            {% endfor %}
-                            {{ question.category }}
-                        {% endcache %}
-                    </b>
-                    <br/>
+    {% admin_pagination questions_page %}
 
-                {% endif %}
-                <a href="{% url 'ask_librarian:frontend:detail' question.id %}">подробнее >></a>
-                <hr class="lightgray"/>
-            </li>
-        {% empty %}
-            <li>Вопросов нет</li>
-        {% endfor %}
-    </ul>
+    {% for question in questions_page.object_list %}
+        <div class="answer-box">
+            <div class="answer-box__index">
+                {{ question.id }}
+            </div>
+            <div class="answer-box__content_padding">
+                <div class="answer-box__content">
+                    <div class="answer-box__content__question">
+                        {% if question.is_ready %}
+                            {{ question.question|safe }}
+                        {% else %}
+                            {{ question.question }}
+                        {% endif %}
+
+                        {% if question.category_id %}
+                            <b>
+                                {% cache 30 questions_category question.category_id LANGUAGE_CODE %}
+                                    {% for ancestor in  question.category.get_t_ancestors %}
+                                        {{ ancestor }}  →
+                                    {% endfor %}
+                                    {{ question.category }}
+                                {% endcache %}
+                            </b>
+                        {% endif %}
+                    </div>
+                    <hr class="answer-box__content__hr">
+                    <div class="answer-box__content__answ">
+                        {{ question.answer|safe }}
+                        <br/>
+                        <a href="{% url 'ask_librarian:frontend:detail' question.id %}">подробнее</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <li>Вопросов нет</li>
+    {% endfor %}
+
     {% admin_pagination questions_page %}
 {% endblock %}

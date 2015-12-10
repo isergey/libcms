@@ -8,145 +8,564 @@
 {% load cache %}
 {% get_current_language as LANGUAGE_CODE %}
 {% block content %}
-    <div class="span12" style="margin-bottom: 10px">
+    <nav class="bg bg_first">
+    <div class="bg__black">
+        <div class="container">
+            {% include 'main_menu.html' %}
+              {% if LANGUAGE_CODE == 'ru' %}
 
-        {#        <div class="actions">#}
-        <div class="actions">
-            <div class="row">
-                <div class="span3" style="font-family: Sans Sherif; font-size: 18px;">
-                    {% if LANGUAGE_CODE == 'ru' %}
-                        Поиск по электронному каталогу и коллекциям
+                        <h1>В электронном <a href="#" title="Электронный каталог">каталоге</a> вы сможете<br>
+                <a href="{% url 'ssearch:frontend:index' %}" title="Поиск в электронный каталоге">найти</a> и забронировать <a href="#" title="Забронировать книги">книги</a><sup>5854</sup><br>
+                в <a href="#" title="библиотеки Республики Татарстан">библиотеках</a><sup>5854</sup> Республики
+                Татарстан</h1>
+
                     {% elif LANGUAGE_CODE == 'tt' %}
-                        Электрон каталог һәм коллекцияләр буенча эзләү
+                        <h1>Электрон каталог һәм коллекцияләр буенча эзләү</h1>
                     {% else %}
-                        Search in e-catalog and e-collections
+                        <h1>Search in e-catalog and e-collections</h1>
                     {% endif %}
-                </div>
-                <div class="span8">
-                    <form style="margin: 0" action="{% url 'ssearch:frontend:index' %}" class="form-search" method="get">
+
+            <div class="search-box search-box_first">
+                <form action="{% url 'ssearch:frontend:index' %}" method="get">
+                    <div class="search-form">
                         <input type="hidden" name="attr" value="text_t">
-                        <div class="input-append">
-                            <input name="q"  class="span7" id="appendedInputButton" type="text">
-                            <input type="submit" class="btn btn-success"
-                                   value="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}">
-                        </div>
-                    </form>
-                </div>
+                        <input class="search-form__input" name="q" id="appendedInputButton" type="text" placeholder="Введите автора, заглавие, тему...">
+                          <span class="input-form-group">
+                              <button class="search-form__submit" type="submit" title="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}"><img
+                                      src="{{ STATIC_URL }}dist/images/search.svg"></button>
+                          </span>
+                    </div>
+                </form>
             </div>
         </div>
-
-        {#        </div>#}
     </div>
-    <div class="span12">
-        <div class="row">
-            <div class="span6">
-                <div class="banners thumbnail">
-                    <div style="background: url('{{ STATIC_URL }}theme/banner/loremIpsum.jpg'); height: 246px">
-                        <div class="banner-node"
-                             style="position: relative; top: 192px; color: #ffffff; padding-left: 10px">
-                            <div style="background: #34832B; padding: 10px;">
-                                В электронном каталоге Вы сможете
-                                <a style="color: #ffffff; font-weight: bold;" href="{% url 'ssearch:frontend:index' %}">найти</a>
-                                и забронировать книги в библиотеках Республики Татарстан.
-                            </div>
-                        </div>
-                    </div>
-                </div>
+</nav>
+<main>
+<div class="tab-container">
+<ul class="tab-container__tabs">
+    <li class="active">{% if LANGUAGE_CODE == 'ru' %}Последние
+                    поступления{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}From new
+                    arrivals{% endif %}</li>
+    <li>Новые оцифрованные издания</li>
+</ul>
+<ul class="tab-container__tab">
+    <li class="active">
+        <div id="owl-1" class="owl-carousel">
+            {% cache 60 newinlib.html %}
+                {% load newinlib_tags %}
+                {% last_items_feed %}
+            {% endcache %}
+        </div>
+        <span class="btn-box">
+            <a href="{% url 'newinlib:frontend:index' %}" class="btn-show-all-owl" title="">
+                {% if LANGUAGE_CODE == 'ru' %}Остальные
+            новинки{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}More new
+            arrivals{% endif %}
+            </a>
+        </span>
+    </li>
+<li>
+    <div id="owl-2" class="owl-carousel">
+        <div class="item-book" style="width:386px">
+            <div class="bookmark-box bookmark-box_yellow"></div>
+            <h3>Достопамятный год
+                жизни, или заточение
+                в Сибирь и возвращение
+                оттуда</h3>
+
+            <p>
+                Коцебу, А. Достопамятный год жизни, или заточение в Сибирь и возвращение оттуда : Описан. им самим.— М.:
+                Привилегир. тип. Кряжева и Мея, 1806
+            </p>
+
+            <div class="tag-crumbs tag-crumbs_main-page">
+                <ul class="tag-crumbs__list">
+                    <li>
+                                    <span href="#" class="tag-crumbs__list_link">
+                                        Пункт
+                                    </span>
+                    </li>
+                    <li>
+                                    <span href="#" class="tag-crumbs__list_link">
+                                        Пункт
+                                    </span>
+                    </li>
+                    <li>
+                                    <span href="#" class="tag-crumbs__list_link">
+                                        Пункт
+                                    </span>
+                    </li>
+                    <li>
+                                    <span href="#" class="tag-crumbs__list_link">
+                                        Пункт
+                                    </span>
+                    </li>
+                </ul>
             </div>
-            <div class="span6">
-                <h3 style="margin-top: -5px;">{% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}
-                    Яңалыклар{% else %}News{% endif %}<a href="{% url 'news:frontend:rss' %}">
-                    <img width="24" src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a>
-                </h3>
-                {% news_feed %}
-                <a href="{% url 'news:frontend:index' %}" class="last">{% if LANGUAGE_CODE == 'ru' %}Архив
-                    новостей{% elif LANGUAGE_CODE == 'tt' %}Архив новостей{% else %}News archive{% endif %}</a>
+            <div class="item-book__hover-box animated fadeIn">
+                <a href="#" class="item-book__hover-box__add-bookmark" title="Добавить в закладки">Добавить в
+                    закладки</a>
+                <a href="#" class="item-book__hover-box__add-reservation" title="Забронировать">Забронировать</a>
+                <a href="#" class="item-book__hover-box__info" title="Информация о книге">Информация о книге</a>
+                <hr>
+                <span>Рекомендовать друзьям</span>
+
+                <div class="item-book__hover-box__share-box">
+                    <a href="#" class="item-book__hover-box__share-box__link" title="Вконтакте"><img alt="Вконтакте"
+                                                                                                     src="{{ STATIC_URL }}dist/images/vkontakte.svg"></a>
+                    <a href="#" class="item-book__hover-box__share-box__link" title="Facebook"><img alt="Facebook"
+                                                                                                    src="{{ STATIC_URL }}dist/images/facebook.svg"></a>
+                    <a href="#" class="item-book__hover-box__share-box__link" title="Twitter"><img alt="Twitter"
+                                                                                                   src="{{ STATIC_URL }}dist/images/twitter.svg"></a>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <style>
-                .incomes .thumbnail {
-                    margin-top: 10px;
-                    background: #f8f8f8;
-                    width: 450px;
-                }
 
-                .incomes .thumbnail .image {
-                    width: 90px;
-                    float: left;
-                    margin-right: 10px;
-                }
-
-                .incomes .thumbnail .info {
-                    float: left;
-                }
-
-                .incomes .thumbnail .image img {
-                    border: 5px solid #E0DCD0;
-
-                }
-
-                .incomes .thumbnail .item a {
-                    font-weight: bold;
-                    text-decoration: none;
-                    font-size: 12px;
-                }
-
-                .incomes .thumbnail .info {
-                    width: 340px;
-                    margin-left: 10px;
-                }
-
-            </style>
-            <div class="incomes span6">
-                <hr />
-                <h3 style="padding-top: 10px;">{% if LANGUAGE_CODE == 'ru' %}Последние
-                    поступления{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}From new
-                    arrivals{% endif %}</h3>
-
-                <div class="row">
-                    <div class="span6">
-                        {% cache 60 newinlib.html %}
-                            {% load newinlib_tags %}
-                            {% last_items_feed %}
-                        {% endcache %}
-                    </div>
-
-                </div>
-                <div class="span6" style="text-align: center; font-size: 14px; padding-top: 10px;"><a
-                        href="{% url 'newinlib:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Остальные
-                    новинки{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}More new
-                    arrivals{% endif %} >></a></div>
-            </div>
-
-            <div class="span6">
-                <hr />
-                <h3 style="margin: 10px 0 10px 0; display: inline-block">
-                    {% if LANGUAGE_CODE == 'ru' %}
+    </div>
+                <span class="btn-box">
+                    <a href="#" class="btn-show-all-owl" title="">Показать все новинки</a>
+                </span>
+</li>
+</ul>
+</div>
+<div class="container">
+<div class="row">
+<div class="col-7">
+    <div class="news-box news-box_border-right">
+        <div class="news-box__title">
+            {% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}
+                    Яңалыклар{% else %}News{% endif %}
+        </div>
+        <a href="{% url 'news:frontend:index' %}" class="news-box__all" title="Посмотреть архив новостей">
+            {% if LANGUAGE_CODE == 'ru' %}Архив
+                    новостей{% elif LANGUAGE_CODE == 'tt' %}Архив новостей{% else %}News archive{% endif %}
+        </a>
+        {% news_feed %}
+        <div class="news-box__title news-box__title_bib">
+            {% if LANGUAGE_CODE == 'ru' %}
                         Карта библиотек
                     {% elif LANGUAGE_CODE == 'tt' %}
                         Китапханәләр картасы
-                    {% else %}Map of libraries{% endif %}</h3> <a href="{% url 'participants:frontend:geosearch' %}">найти ближайшую</a>
-                {% cbs_map %}
-                {% if request.GET.draft %}
-                    <hr/>
-                    <h3>Афиша событий</h3>
-                    <div>
-                        {% events_nearest %}
-                    </div>
-                    <a href="{% url 'events:frontend:index' %}">Остальные события >></a>
-                    <div>
-                    <hr/>
-                    <h3>Новости библиотек</h3>
-                    {% participant_all_news_feed 10 %}
-                    <a href="{% url 'participant_all_news:index' %}">Остальные новости >></a>
-                    </div>
-                {% endif %}
+                    {% else %}Map of libraries{% endif %}
+        </div>
+        <a href="{% url 'participants:frontend:geosearch' %}" class="news-box__all">Найти ближайшую библиотеку</a>
+    </div>
+</div>
+<div class="col-5">
+    <div class="poster-box">
+        <div class="poster-box__title">Афиша</div>
+        <a href="#" class="poster-box__all" title="Посмотреть все мероприятия">Все мероприятия</a>
+
+        <div id="owl-poster" class="owl-carousel">
+            <div class="item-poster">
+                <div class="poster-box__item__date">
+                    <img title="Календарь" title="Календарь" src="{{ STATIC_URL }}dist/images/calendar.svg">
+                    22 октября 2015 / 08:00
+                </div>
+                <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">
+                    <img alt="Расположение на карте" src="{{ STATIC_URL }}dist/images/geo_pin.svg">
+                    Казань
+                </a>
+                <br>
+                <a href="#" title="Камско-Устьинская ЦБС" class="poster-box__item__bib-tag">
+                    Камско-Устьинская ЦБС
+                </a>
+
+                <h2 class="poster-box__item__title">
+                    <a href="#" title="Впервые пройдет слет молодых работников">
+                        Впервые пройдет слет молодых работников
+                        и участников мероприятий
+                    </a>
+                </h2>
+
+                <p class="poster-box__item__teaser">
+                    8 июля в библиотеках города и района пройдут праздничные
+                    мероприятия, посвящённые Всероссийскому дню семьи,
+                    любви и верности.
+                </p>
+                <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить напоминание</a>
+                <hr class="poster-box__item__hr">
+                <div class="poster-box__item__date">
+                    <img title="Календарь" title="Календарь" src="{{ STATIC_URL }}dist/images/calendar.svg">
+                    22 октября 2015 / 08:00
+                </div>
+                <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">
+                    <img alt="Расположение на карте" src="{{ STATIC_URL }}dist/images/geo_pin.svg">
+                    Казань
+                </a>
+                <br>
+                <a href="#" title="Камско-Устьинская ЦБС" class="poster-box__item__bib-tag">
+                    Камско-Устьинская ЦБС
+                </a>
+
+                <h2 class="poster-box__item__title">
+                    <a href="#" title="Впервые пройдет слет молодых работников">
+                        Впервые пройдет слет молодых работников
+                        и участников мероприятий
+                    </a>
+                </h2>
+
+                <p class="poster-box__item__teaser">
+                    8 июля в библиотеках города и района пройдут праздничные
+                    мероприятия, посвящённые Всероссийскому дню семьи,
+                    любви и верности.
+                </p>
+                <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить напоминание</a>
+            </div>
+            <div class="item-poster">
+                <div class="poster-box__item__date">
+                    <img title="Календарь" title="Календарь" src="{{ STATIC_URL }}dist/images/calendar.svg">
+                    22 октября 2015 / 08:00
+                </div>
+                <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">
+                    <img alt="Расположение на карте" src="{{ STATIC_URL }}dist/images/geo_pin.svg">
+                    Казань
+                </a>
+                <br>
+                <a href="#" title="Камско-Устьинская ЦБС" class="poster-box__item__bib-tag">
+                    Камско-Устьинская ЦБС
+                </a>
+
+                <h2 class="poster-box__item__title">
+                    <a href="#" title="Впервые пройдет слет молодых работников">
+                        Впервые пройдет слет молодых работников
+                        и участников мероприятий
+                    </a>
+                </h2>
+
+                <p class="poster-box__item__teaser">
+                    8 июля в библиотеках города и района пройдут праздничные
+                    мероприятия, посвящённые Всероссийскому дню семьи,
+                    любви и верности.
+                </p>
+                <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить напоминание</a>
+                <hr class="poster-box__item__hr">
+                <div class="poster-box__item__date">
+                    <img title="Календарь" title="Календарь" src="{{ STATIC_URL }}dist/images/calendar.svg">
+                    22 октября 2015 / 08:00
+                </div>
+                <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">
+                    <img alt="Расположение на карте" src="{{ STATIC_URL }}dist/images/geo_pin.svg">
+                    Казань
+                </a>
+                <br>
+                <a href="#" title="Камско-Устьинская ЦБС" class="poster-box__item__bib-tag">
+                    Камско-Устьинская ЦБС
+                </a>
+
+                <h2 class="poster-box__item__title">
+                    <a href="#" title="Впервые пройдет слет молодых работников">
+                        Впервые пройдет слет молодых работников
+                        и участников мероприятий
+                        Впервые пройдет слет молодых работников
+                        и участников мероприятий
+                        Впервые пройдет слет молодых работников
+                        и участников мероприятий
+                    </a>
+                </h2>
+
+                <p class="poster-box__item__teaser">
+                    8 июля в библиотеках города и района пройдут праздничные
+                    мероприятия, посвящённые Всероссийскому дню семьи,
+                    любви и верности.
+                    8 июля в библиотеках города и района пройдут праздничные
+                    мероприятия, посвящённые Всероссийскому дню семьи,
+                    любви и верности.
+                </p>
+                <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить напоминание</a>
             </div>
         </div>
     </div>
+</div>
+</div>
+</div>
+
+<div id="map">
+    <div class="map-box">
+        <div class="map-box__list-bib">
+            <div class="map-box__list-bib__item">
+                <a class="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+                <span>(52598)</span>
+            </div>
+            <div class="map-box__list-bib__item">
+                <a class="map-box__list-bib__item__link" href="#" title="">Республиканская специальная библиотека
+                    для слепых и слабовидящих</a>
+                <span>(52598)</span>
+            </div>
+            <div class="map-box__list-bib__item">
+                <a class="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+                <span>(52598)</span>
+            </div>
+            <div class="map-box__list-bib__item">
+                <a class="map-box__list-bib__item__link" href="#" title="">Республиканская специальная библиотека
+                    для слепых и слабовидящих</a>
+                <span>(52598)</span>
+            </div>
+            <div class="map-box__list-bib__item">
+                <a class="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+                <span>(52598)</span>
+            </div>
+            <div class="map-box__list-bib__item">
+                <a class="map-box__list-bib__item__link" href="#" title="">Республиканская специальная библиотека
+                    для слепых и слабовидящих</a>
+                <span>(52598)</span>
+            </div>
+            <div class="map-box__list-bib__item">
+                <a class="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+                <span>(52598)</span>
+            </div>
+            <div class="map-box__list-bib__item">
+                <a class="map-box__list-bib__item__link" href="#" title="">Республиканская специальная библиотека
+                    для слепых и слабовидящих</a>
+                <span>(52598)</span>
+            </div>
+            <div class="map-box__list-bib__item">
+                <a class="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+                <span>(52598)</span>
+            </div>
+            <div class="map-box__list-bib__item">
+                <a class="map-box__list-bib__item__link" href="#" title="">Республиканская специальная библиотека
+                    для слепых и слабовидящих</a>
+                <span>(52598)</span>
+            </div>
+        </div>
+        <h2 class="map-box__title">Алфавитный указатель муниципальных районов РТ</h2>
+        <div class="abc-crumbs">
+            <ul class="abc-crumbs__list">
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        A
+                    </a>
+                </li>
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        B
+                    </a>
+                </li>
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        A
+                    </a>
+                </li>
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        B
+                    </a>
+                </li>
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        A
+                    </a>
+                </li>
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        B
+                    </a>
+                </li>
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        A
+                    </a>
+                </li>
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        B
+                    </a>
+                </li>
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        A
+                    </a>
+                </li>
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        B
+                    </a>
+                </li>
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        A
+                    </a>
+                </li>
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        B
+                    </a>
+                </li>
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        И
+                    </a>
+                </li>
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        Щ
+                    </a>
+                </li>
+                <li>
+                    <a title="" href="#" class="abc-crumbs__list_link">
+                        Ы
+                    </a>
+                </li>
+                <li>
+                    <a title="Мое местоположение" href="#" class="abc-crumbs__list_link-img">
+                        <img src="images/geo_plain.svg">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</main>
 
 
-    <hr/>
+
+
+
+
+
+
+{##}
+{#    <div class="span12" style="margin-bottom: 10px">#}
+{##}
+        {#        <div class="actions">#}
+{#        <div class="actions">#}
+{#            <div class="row">#}
+{#                <div class="span3" style="font-family: Sans Sherif; font-size: 18px;">#}
+{#                    {% if LANGUAGE_CODE == 'ru' %}#}
+{#                        Поиск по электронному каталогу и коллекциям#}
+{#                    {% elif LANGUAGE_CODE == 'tt' %}#}
+{#                        Электрон каталог һәм коллекцияләр буенча эзләү#}
+{#                    {% else %}#}
+{#                        Search in e-catalog and e-collections#}
+{#                    {% endif %}#}
+{#                </div>#}
+{#                <div class="span8">#}
+{#                    <form style="margin: 0" action="{% url 'ssearch:frontend:index' %}" class="form-search" method="get">#}
+{#                        <input type="hidden" name="attr" value="text_t">#}
+{#                        <div class="input-append">#}
+{#                            <input name="q"  class="span7" id="appendedInputButton" type="text">#}
+{#                            <input type="submit" class="btn btn-success"#}
+{#                                   value="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}">#}
+{#                        </div>#}
+{#                    </form>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{##}
+        {#        </div>#}
+{#    </div>#}
+{#    <div class="span12">#}
+{#        <div class="row">#}
+{#            <div class="span6">#}
+{#                <div class="banners thumbnail">#}
+{#                    <div style="background: url('{{ STATIC_URL }}theme/banner/loremIpsum.jpg'); height: 246px">#}
+{#                        <div class="banner-node"#}
+{#                             style="position: relative; top: 192px; color: #ffffff; padding-left: 10px">#}
+{#                            <div style="background: #34832B; padding: 10px;">#}
+{#                                В электронном каталоге Вы сможете#}
+{#                                <a style="color: #ffffff; font-weight: bold;" href="{% url 'ssearch:frontend:index' %}">найти</a>#}
+{#                                и забронировать книги в библиотеках Республики Татарстан.#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="span6">#}
+{#                <h3 style="margin-top: -5px;">{% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}#}
+{#                    Яңалыклар{% else %}News{% endif %}<a href="{% url 'news:frontend:rss' %}">#}
+{#                    <img width="24" src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a>#}
+{#                </h3>#}
+{#                {% news_feed %}#}
+{#                <a href="{% url 'news:frontend:index' %}" class="last">{% if LANGUAGE_CODE == 'ru' %}Архив#}
+{#                    новостей{% elif LANGUAGE_CODE == 'tt' %}Архив новостей{% else %}News archive{% endif %}</a>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="row">#}
+{#            <style>#}
+{#                .incomes .thumbnail {#}
+{#                    margin-top: 10px;#}
+{#                    background: #f8f8f8;#}
+{#                    width: 450px;#}
+{#                }#}
+{##}
+{#                .incomes .thumbnail .image {#}
+{#                    width: 90px;#}
+{#                    float: left;#}
+{#                    margin-right: 10px;#}
+{#                }#}
+{##}
+{#                .incomes .thumbnail .info {#}
+{#                    float: left;#}
+{#                }#}
+{##}
+{#                .incomes .thumbnail .image img {#}
+{#                    border: 5px solid #E0DCD0;#}
+{##}
+{#                }#}
+{##}
+{#                .incomes .thumbnail .item a {#}
+{#                    font-weight: bold;#}
+{#                    text-decoration: none;#}
+{#                    font-size: 12px;#}
+{#                }#}
+{##}
+{#                .incomes .thumbnail .info {#}
+{#                    width: 340px;#}
+{#                    margin-left: 10px;#}
+{#                }#}
+{##}
+{#            </style>#}
+{#            <div class="incomes span6">#}
+{#                <hr />#}
+{#                <h3 style="padding-top: 10px;">{% if LANGUAGE_CODE == 'ru' %}Последние#}
+{#                    поступления{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}From new#}
+{#                    arrivals{% endif %}</h3>#}
+{##}
+{#                <div class="row">#}
+{#                    <div class="span6">#}
+{#                        {% cache 60 newinlib.html %}#}
+{#                            {% load newinlib_tags %}#}
+{#                            {% last_items_feed %}#}
+{#                        {% endcache %}#}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{#                <div class="span6" style="text-align: center; font-size: 14px; padding-top: 10px;"><a#}
+{#                        href="{% url 'newinlib:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Остальные#}
+{#                    новинки{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}More new#}
+{#                    arrivals{% endif %} >></a></div>#}
+{#            </div>#}
+{##}
+{#            <div class="span6">#}
+{#                <hr />#}
+{#                <h3 style="margin: 10px 0 10px 0; display: inline-block">#}
+{#                    {% if LANGUAGE_CODE == 'ru' %}#}
+{#                        Карта библиотек#}
+{#                    {% elif LANGUAGE_CODE == 'tt' %}#}
+{#                        Китапханәләр картасы#}
+{#                    {% else %}Map of libraries{% endif %}</h3> <a href="{% url 'participants:frontend:geosearch' %}">найти ближайшую</a>#}
+{#                {% cbs_map %}#}
+{#                {% if request.GET.draft %}#}
+{#                    <hr/>#}
+{#                    <h3>Афиша событий</h3>#}
+{#                    <div>#}
+{#                        {% events_nearest %}#}
+{#                    </div>#}
+{#                    <a href="{% url 'events:frontend:index' %}">Остальные события >></a>#}
+{#                    <div>#}
+{#                    <hr/>#}
+{#                    <h3>Новости библиотек</h3>#}
+{#                    {% participant_all_news_feed 10 %}#}
+{#                    <a href="{% url 'participant_all_news:index' %}">Остальные новости >></a>#}
+{#                    </div>#}
+{#                {% endif %}#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{##}
+{##}
+{#    <hr/>#}
 
 {% endblock %}

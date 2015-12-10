@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <!--[if lte IE 10]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="styles/index.css">
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="row">
+
+            <div class="col-7">
+                <a href="/" title="На главную!">
+                    <div class="logo">
+                        <div class="logo__img">
+                            <img src="images/logo.png">
+                        </div>
+                        <div class="logo__text">
+                            <span>Национальная электронная библиотека</span><br>Республики Татарстан
+                        </div>
+                    </div>
+                </a>
+
+                <div class="language">
+                    <a href="#" class="language__btn language__btn_active" title="Русский">Рус</a>
+                    <a href="#" class="language__btn" title="Татарский">Тат</a>
+                    <a href="#" class="language__btn" title="English">Eng</a>
+                </div>
+            </div>
+
+            <div class="col-5">
+                <div class="user-block">
+                    <div class="user-block__info">
+                        <img class="user-block__info-key" src="images/user_block_key.svg">
+                        <span class="user-block__info-text">Вы вошли как:</span>
+                        <span class="user-block__info-name">Константин Р.</span>
+                    </div>
+                    <a href="#" class="user-block__btn">Личный кабинет</a>
+
+                    <div class="click-nav">
+                        <ul class="no-js">
+                            <li>
+                                <a href="#" class="clicker"><img src="images/user_block_drop.svg" alt="Icon"></a>
+                                <ul>
+                                    <li><a href="#">Мои документы</a></li>
+                                    <li><a href="#">Мои документы</a></li>
+                                    <li><a href="#">Мои документы</a></li>
+                                    <li><a href="#">Мои документы</a></li>
+                                    <li><a href="#">Мои документы</a></li>
+                                    <li><a href="#">Мои документы</a></li>
+                                    <li><a href="#">Мои документы</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<nav class="bg bg_second">
+    <div class="container">
+        <ul class="menu-box menu-box_second">
+            <li><a href="#" title="" class="header-link">Каталог</a></li>
+            <li><a href="#" title="" class="header-link">Коллекции</a></li>
+            <li><a href="#" title="" class="header-link">Библиотеки</a></li>
+            <li><a href="#" title="" class="header-link">Отзывы</a></li>
+            <li><a href="#" title="" class="header-link">Новости</a></li>
+            <li><a href="#" title="" class="header-link">Профессионалам</a></li>
+            <li><a href="#" title="" class="header-link">О проекте</a></li>
+        </ul>
+    </div>
+    <hr class="bg__hr">
+    <div class="container">
+        <div class="select_lib">Поиск по библиотеке:<a href="#" title="тайтл">рядом со мной</a></div>
+        <div class="search-box search-box_second">
+            <form>
+                <div class="search-form">
+                    <input class="search-form__input" placeholder="Введите автора, заглавие, тему...">
+                    <span class="input-form-group">
+                      <button class="search-form__submit" type="submit" title="Поиск"><img
+                              src="images/search.svg"></button>
+                    </span>
+                </div>
+                <div class="search-btn">Поиск по:
+
+                    <input id="q1" type="radio" name="gender" value="q1" checked>
+                    <label class="search-btn__radio" for="q1">автору</label>
+                    <input id="q2" type="radio" name="gender" value="q2">
+                    <label class="search-btn__radio" for="q2">заглавию</label>
+                    <input id="q3" type="radio" name="gender" value="q3">
+                    <label class="search-btn__radio" for="q3">тематике</label>
+                    <input id="q4" type="radio" name="gender" value="female">
+                    <label class="search-btn__radio" for="q4">году публикации</label>
+                    <input id="q5" type="radio" name="gender" value="female">
+                    <label class="search-btn__radio" for="q5">IFMFS</label>
+                    <input id="q6" type="radio" name="gender" value="female">
+                    <label class="search-btn__radio" for="q6">SDSFSF</label>
+                    <input id="q7" type="radio" name="gender" value="female">
+                    <label class="search-btn__radio" for="q7">везде</label>
+                </div>
+                <div class="search-in-result">
+                    <label>
+                        <input type="checkbox"> Искать в найденном
+                    </label>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
+<main>
+<div class="container">
+<div class="row">
+<div class="col-8">
+<ul class="bread__crumbs">
+    <li>
+        <a title="" href="#" class="bread__crumbs_link">
+            Главная
+        </a>
+    </li>
+    <li>
+        <img src="images/br_crumbs.svg">
+    </li>
+    <li>
+        <a title="" href="#" class="bread__crumbs_link">
+            Поиск
+        </a>
+    </li>
+    <li>
+        <img src="images/br_crumbs.svg">
+    </li>
+    <li>
+        <a title="" class="bread__crumbs_link bread__crumbs_link_active">
+            Найдено документов: 836
+        </a>
+    </li>
+</ul>
+<div class="sort_select">
+    Сортировать по:
+    <select name="sort">
+        <option value="0">
+            релевантности
+        </option>
+        <option value="author">
+            автору
+        </option>
+        <option value="title">
+            заглавию
+        </option>
+        <option value="date-of-publication">
+            году публикации
+        </option>
+        <option value="record-create-date">
+            дате поступления
+        </option>
+        <option value="tom">
+            Тому/части
+        </option>
+    </select>
+
+</div>
+<hr class="search-result-hr">
+<ul class="pagination">
+    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+    <li><a href="#">1</a></li>
+    <li class="active"><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">4</a></li>
+    <li><a href="#">5</a></li>
+    <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+</ul>
+<div class="result-container">
+<div class="result">
+    <div class="result__index">
+        1234
+    </div>
+    <div class="result__info">
+        <h3>
+            <a href="#">Микропроцессоры в автоматике и вычислительной технике : учебное пособие / [К. П. Дурандин [и
+                др.]] ; Ленинградский политехнический институт им.</a>
+        </h3>
+
+        <div class="result__author">Васильев, А. М.; Институт Африки</div>
+        <ul class="result__crumbs__list">
+            <li>
+                <a title="" href="#" class="result__crumbs__list_link">
+                    Социально-экономическое развитие
+                </a>
+            </li>
+            <li>
+                <a title="" href="#" class="result__crumbs__list_link">
+                    Социально-экономическое развитие
+                </a>
+            </li>
+            <li>
+                <a title="" href="#" class="result__crumbs__list_link">
+                    Социально-экономическое развитие
+                </a>
+            </li>
+            <li>
+                <a title="" href="#" class="result__crumbs__list_link">
+                    Социально
+                </a>
+            </li>
+            <li>
+                <a title="" href="#" class="result__crumbs__list_link">
+                    Социально-экономическое
+                </a>
+            </li>
+            <li>
+                <a title="" href="#" class="result__crumbs__list_link">
+                    экономическое развитие
+                </a>
+            </li>
+        </ul>
+        <div class="result__detail">
+            <div class="result__detail_box">
+                <img class="result__detail_img"
+                     src="http://elib.spbstu.ru/main/picture?url=http://dl.unilib.neva.ru/dl/002082.pdf&amp;size=1"/>
+            </div>
+            <div class="result__detail_box">
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Источник:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Материалы 28 февраля - 1 марта 2003 г.</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Вид документа:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">статья</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Авторы:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Бабко Л.В.; Жвариков В.А.; Мелехин В.Ф.</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Организация:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Санкт-Петербургский государственный политехнический
+                            университет
+                        </div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Дата публикации:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">2003</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Ключевые слова:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">востребованные специальности; общепрофессиональные
+                            дисциплины; семестровая схема
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="result__detail__print" href="#">Версия для печати</a>
+    </div>
+</div>
+<div class="result">
+    <div class="result__index">
+        123 344
+    </div>
+    <div class="result__info">
+        <h3>
+            <a href="#">Микропроцессоры в автоматике и вычислительной технике : учебное пособие / [К. П. Дурандин [и
+                др.]] ; Ленинградский политехнический институт им.</a>
+        </h3>
+
+        <div class="result__detail">
+            <div class="result__detail_box">
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Источник:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Материалы 28 февраля - 1 марта 2003 г.</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Вид документа:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">статья</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Авторы:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Бабко Л.В.; Жвариков В.А.; Мелехин В.Ф.</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Организация:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Санкт-Петербургский государственный политехнический
+                            университет
+                        </div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Дата публикации:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">2003</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Ключевые слова:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">востребованные специальности; общепрофессиональные
+                            дисциплины; семестровая схема
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="result__detail__print" href="#">Версия для печати</a>
+    </div>
+</div>
+<div class="result">
+    <div class="result__index">
+        1234
+    </div>
+    <div class="result__info">
+        <h3>
+            <a href="#">Микропроцессоры в автоматике и вычислительной технике : учебное пособие / [К. П. Дурандин [и
+                др.]] ; Ленинградский политехнический институт им.</a>
+        </h3>
+
+        <div class="result__detail">
+            <div class="result__detail_box">
+                <img class="result__detail_img"
+                     src="http://elib.spbstu.ru/main/picture?url=http://dl.unilib.neva.ru/dl/002082.pdf&amp;size=1"/>
+            </div>
+            <div class="result__detail_box">
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Источник:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Материалы 28 февраля - 1 марта 2003 г.</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Вид документа:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">статья</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Авторы:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Бабко Л.В.; Жвариков В.А.; Мелехин В.Ф.</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Организация:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Санкт-Петербургский государственный политехнический
+                            университет
+                        </div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Дата публикации:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">2003</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Ключевые слова:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">востребованные специальности; общепрофессиональные
+                            дисциплины; семестровая схема
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="result__detail__print" href="#">Версия для печати</a>
+    </div>
+</div>
+<div class="result">
+    <div class="result__index">
+        1234
+    </div>
+    <div class="result__info">
+        <h3>
+            <a href="#">Микропроцессоры в автоматике и вычислительной технике : учебное пособие / [К. П. Дурандин [и
+                др.]] ; Ленинградский политехнический институт им.</a>
+        </h3>
+
+        <div class="result__detail">
+            <div class="result__detail_box">
+                <img class="result__detail_img"
+                     src="http://elib.spbstu.ru/main/picture?url=http://dl.unilib.neva.ru/dl/002082.pdf&amp;size=1"/>
+            </div>
+            <div class="result__detail_box">
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Источник:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Материалы 28 февраля - 1 марта 2003 г.</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Вид документа:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">статья</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Авторы:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Бабко Л.В.; Жвариков В.А.; Мелехин В.Ф.</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Организация:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Санкт-Петербургский государственный политехнический
+                            университет
+                        </div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Дата публикации:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">2003</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Ключевые слова:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">востребованные специальности; общепрофессиональные
+                            дисциплины; семестровая схема
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="result__detail__print" href="#">Версия для печати</a>
+    </div>
+</div>
+<div class="result">
+    <div class="result__index">
+        1234
+    </div>
+    <div class="result__info">
+        <h3>
+            <a href="#">Микропроцессоры в автоматике и вычислительной технике : учебное пособие / [К. П. Дурандин [и
+                др.]] ; Ленинградский политехнический институт им.</a>
+        </h3>
+
+        <div class="result__detail">
+            <div class="result__detail_box">
+                <img class="result__detail_img"
+                     src="http://elib.spbstu.ru/main/picture?url=http://dl.unilib.neva.ru/dl/002082.pdf&amp;size=1"/>
+            </div>
+            <div class="result__detail_box">
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Источник:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Материалы 28 февраля - 1 марта 2003 г.</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Вид документа:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">статья</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Авторы:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Бабко Л.В.; Жвариков В.А.; Мелехин В.Ф.</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Организация:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Санкт-Петербургский государственный политехнический
+                            университет
+                        </div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Дата публикации:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">2003</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Ключевые слова:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">востребованные специальности; общепрофессиональные
+                            дисциплины; семестровая схема
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="result__detail__print" href="#">Версия для печати</a>
+    </div>
+</div>
+<div class="result">
+    <div class="result__index">
+        1234
+    </div>
+    <div class="result__info">
+        <h3>
+            <a href="#">Микропроцессоры в автоматике и вычислительной технике : учебное пособие / [К. П. Дурандин [и
+                др.]] ; Ленинградский политехнический институт им.</a>
+        </h3>
+
+        <div class="result__detail">
+            <div class="result__detail_box">
+                <img class="result__detail_img"
+                     src="http://elib.spbstu.ru/main/picture?url=http://dl.unilib.neva.ru/dl/002082.pdf&amp;size=1"/>
+            </div>
+            <div class="result__detail_box">
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Источник:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Материалы 28 февраля - 1 марта 2003 г.</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Вид документа:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">статья</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Авторы:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Бабко Л.В.; Жвариков В.А.; Мелехин В.Ф.</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Организация:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">Санкт-Петербургский государственный политехнический
+                            университет
+                        </div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Дата публикации:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">2003</div>
+                    </div>
+                </div>
+                <div class="result__detail_row">
+                    <div class="result__detail_box">
+                        <div class="result__detail_title">Ключевые слова:</div>
+                    </div>
+                    <div class="result__detail_box">
+                        <div class="result__detail_description">востребованные специальности; общепрофессиональные
+                            дисциплины; семестровая схема
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="result__detail__print" href="#">Версия для печати</a>
+    </div>
+</div>
+</div>
+<ul class="pagination">
+    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+    <li class="active"><a href="#">1</a></li>
+    <li><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">4</a></li>
+    <li><a href="#">5</a></li>
+    <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+</ul>
+</div>
+<div class="col-4">
+    <div class="facets-container">
+        <div class="facets-container__item">
+            <div class="facet">
+                <div class="facet__header">
+                    <h4 class="facet__title">Автор</h4>
+                </div>
+                <div class="facet__body">
+                    <div class="facet__link">
+                        <a href="#">Республиканская специальная библиотека
+                            для слепых и слабовидящих</a>
+                        <span>(52598)</span>
+                    </div>
+                    <div class="facet__link">
+                        <a href="#">Республиканская специальная библиотека
+                            для слепых и слабовидящих</a>
+                        <span>(52598)</span>
+                    </div>
+                    <div class="facet__link">
+                        <a href="#">Республиканская х</a>
+                        <span>(52598)</span>
+                    </div>
+                    <div class="facet__link">
+                        <a href="#">Республиканская специальная</a>
+                        <span>(52598)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="facets-container__item">
+            <div class="facet">
+                <div class="facet__header facet__header_closed">
+                    <h4 class="facet__title">Автор</h4>
+                </div>
+                <div class="facet__body facet__body_closed">
+                    <div class="facet__link">
+                        <a href="#">Республиканская специальная библиотека
+                            для слепых и слабовидящих</a>
+                        <span>(52598)</span>
+                    </div>
+                    <div class="facet__link">
+                        <a href="#">Республиканская специальная библиотека
+                            для слепых и слабовидящих</a>
+                        <span>(52598)</span>
+                    </div>
+                    <div class="facet__link">
+                        <a href="#">Республиканская х</a>
+                        <span>(52598)</span>
+                    </div>
+                    <div class="facet__link">
+                        <a href="#">Республиканская специальная</a>
+                        <span>(52598)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="facets-container__item">
+            <div class="facet">
+                <div class="facet__header facet__header_closed">
+                    <h4 class="facet__title">Тип содержания</h4>
+                </div>
+                <div class="facet__body facet__body_closed">
+                    <div class="facet__link">
+                        <a href="#">Республиканская специальная библиотека
+                            для слепых и слабовидящих</a>
+                        <span>(52598)</span>
+                    </div>
+                    <div class="facet__link">
+                        <a href="#">Республиканская специальная библиотека
+                            для слепых и слабовидящих</a>
+                        <span>(52598)</span>
+                    </div>
+                    <div class="facet__link">
+                        <a href="#">Республиканская х</a>
+                        <span>(52598)</span>
+                    </div>
+                    <div class="facet__link">
+                        <a href="#">Республиканская специальная</a>
+                        <span>(52598)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="facets-container__item">
+            <div class="facet">
+                <div class="facet__header">
+                    <h4 class="facet__title">Автор</h4>
+                </div>
+                <div class="facet__body">
+                    <div class="facet__link">
+
+                        <a href="#">Республиканская специальная библиотека
+                            для слепых и слабовидящих</a>
+                        <span>(52598)</span>
+                    </div>
+                    <div class="facet__link">
+                        <a href="#">Республиканская специальная библиотека
+                            для слепых и слабовидящих</a>
+                        <span>(52598)</span>
+                    </div>
+                    <div class="facet__link">
+                        <a href="#">Республиканская х</a>
+                        <span>(52598)</span>
+                    </div>
+                    <div class="facet__link">
+                        <a href="#">Республиканская специальная</a>
+                        <span>(52598)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="facets-container__item">
+            <div class="facet">
+                <div class="facet__header">
+                    <h4 class="facet__title">Facet</h4>
+                </div>
+                <div class="facet__body facet__body_closed">
+                    <div class="facet__input">
+                        <label>Text
+                            <div class="facet__input_group">
+                                <input type="text" placeholder="text">
+                                <input type="text" placeholder="text">
+                            </div>
+                        </label>
+                    </div>
+                    <a class="facet__link" href="#">link</a>
+                    <a class="facet__link" href="#">link</a>
+
+                    <div class="facet__checkbox">
+                        <label>
+                            <input type="checkbox">checkbox
+                        </label>
+                    </div>
+                    <div class="facet__checkbox">
+                        <label>
+                            <input type="checkbox">checkbox
+                        </label>
+                    </div>
+                    <div class="facet__radio">
+                        <label>
+                            <input type="radio">radio
+                        </label>
+                    </div>
+                    <div class="facet__radio">
+                        <label>
+                            <input type="radio">radio
+                        </label>
+                    </div>
+                    <div class="facet__input">
+                        <label>Text
+                            <div class="facet__input_line">
+                                <input type="text" placeholder="text">
+                            </div>
+                        </label>
+                    </div>
+                    <div class="facet__input">
+                        <label>Text
+                            <div class="facet__input_line">
+                                <input type="text" placeholder="text">
+                            </div>
+                        </label>
+                    </div>
+                    <div class="facet__input">
+                        <label>Text
+                            <div class="facet__input_group">
+                                <input type="text" placeholder="text">
+                                <input type="text" placeholder="text">
+                            </div>
+                            <div class="facet__input_group">
+                                <input type="text" placeholder="text">
+                                <input type="text" placeholder="text">
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+
+</main>
+<footer>
+    <hr class="footer-hr">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <ul class="menu-box menu-box_first">
+                    <li><a href="#" title="" class="footer-link">Каталог</a></li>
+                    <li><a href="#" title="" class="footer-link">Коллекции</a></li>
+                    <li><a href="#" title="" class="footer-link">Библиотеки</a></li>
+                    <li><a href="#" title="" class="footer-link">Отзывы</a></li>
+                    <li><a href="#" title="" class="footer-link">Новости</a></li>
+                    <li><a href="#" title="" class="footer-link">Профессионалам</a></li>
+                    <li><a href="#" title="" class="footer-link">О проекте</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <hr class="footer-hr">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <a class="footer-logo__bib" href="#" title="тайтл"><img src="images/logo_bib.png" alt="тайтл"></a>
+                <a class="footer-logo__min" href="#" title="тайтл"><img src="images/logo_min.png" alt="тайтл"></a>
+                <a class="footer-logo__ask-lib" href="#" title="тайтл">Задать вопрос библиотекарю</a>
+                <a class="footer-logo__ask-all" href="#" title="тайтл">Все вопросы</a>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+<script src="./scripts/commons.js"></script>
+<script src="scripts/index.js"></script>
+<script src="vendors/owl-carousel/owl.carousel.min.js"></script>
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#owl-1").owlCarousel({
+            autoPlay: true,
+            stopOnHover: true,
+            loop: true,
+            autoWidth: true,
+            slideSpeed: 100,
+            items: 4,
+            responsive: false,
+            responsiveRefreshRate: 200
+        });
+
+        $("#owl-2").owlCarousel({
+            autoPlay: true,
+            stopOnHover: true,
+            loop: true,
+            autoWidth: true,
+            slideSpeed: 100,
+            items: 4,
+            responsive: false,
+            responsiveRefreshRate: 200
+        });
+
+        $("#owl-poster").owlCarousel({
+            autoPlay: true,
+            stopOnHover: true,
+            loop: true,
+            autoWidth: true,
+            slideSpeed: 100,
+            items: 1,
+            responsive: false
+        });
+
+    });
+
+    <!-- Drop down btn -->
+    $(function () {
+        $('.click-nav > ul').toggleClass('no-js js');
+        $('.click-nav .js ul').hide();
+        $('.click-nav .js').click(function (e) {
+            $('.click-nav .js ul').slideToggle(10);
+            $('.clicker').toggleClass('active');
+            e.stopPropagation();
+        });
+        $(document).click(function () {
+            if ($('.click-nav .js ul').is(':visible')) {
+                $('.click-nav .js ul', this).slideUp(10);
+                $('.clicker').removeClass('active');
+            }
+        });
+    });
+
+    <!-- Tab -->
+    $(document).ready(function () {
+        $(".tab-container__tabs li").click(function (e) {
+            if (!$(this).hasClass("active")) {
+                var tabNum = $(this).index();
+                var nthChild = tabNum + 1;
+                $(".tab-container__tabs li.active").removeClass("active");
+                $(this).addClass("active");
+                $(".tab-container__tab li.active").removeClass("active");
+                $(".tab-container__tab li:nth-child(" + nthChild + ")").addClass("active");
+            }
+        });
+    });
+
+    $('.facet__header').click(function () {
+        var facetBody = $(this).next();
+        if (facetBody.hasClass('facet__body_closed')) {
+            $(this).removeClass('facet__header_closed');
+            facetBody.removeClass('facet__body_closed');
+        } else {
+            facetBody.addClass('facet__body_closed');
+            $(this).addClass('facet__header_closed');
+        }
+    });
+
+    <!-- Ya map -->
+    ymaps.ready(init);
+    var myMap;
+
+    function init() {
+        myMap = new ymaps.Map("map", {
+            center: [55.76, 37.64],
+            zoom: 7
+        });
+    }
+
+</script>
+
+</body>
+</html>

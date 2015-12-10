@@ -1,24 +1,76 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-<style type="text/css">
-    .announce img{
-        width: 86px;
-    }
-</style>
 
 {% for item in items_list %}
+
     {% if item.id_in_catalog %}
         {% url 'ssearch:frontend:detail'  item.id_in_catalog  as item_url %}
     {% else %}
-        {%  url 'newinlib:frontend:show' item.id as item_url %}
+        {% url 'newinlib:frontend:show' item.id as item_url %}
     {% endif %}
-    <div class="thumbnail ">
-        {% if item.avatar_img_name %}<div class="image"><a href="{{ item_url }}"><img src="{{ MEDIA_URL }}uploads/newinlib/itemavatars/{{ item.avatar_img_name }}" alt="{{ item.item_content.title }}"></a></div>{% endif %}
-        <div class="info">
-            <h4 style="margin-bottom: 10px;;">{{ item.item_content.title }}</h4>
-            {{ item.item_content.content|safe }}
-            <p><a href="{{ item_url }}">{% if LANGUAGE_CODE == 'ru' %}подробнее{% elif LANGUAGE_CODE == 'tt' %}подробнее{% else %}details{% endif %}</a></p>
+
+
+    <div class="item-book" style="width:386px">
+        <div class="bookmark-box bookmark-box_yellow"></div>
+        <h3>{{ item.item_content.title }}</h3>
+
+        <p>{{ item.item_content.content|striptags }}</p>
+
+        <div class="tag-crumbs tag-crumbs_main-page">
+            <ul class="tag-crumbs__list">
+                <li>
+                    <span href="#" class="tag-crumbs__list_link">
+                        Пункт
+                    </span>
+                </li>
+                <li>
+                    <span href="#" class="tag-crumbs__list_link">
+                        Пункт
+                    </span>
+                </li>
+                <li>
+                    <span href="#" class="tag-crumbs__list_link">
+                        Пункт
+                    </span>
+                </li>
+                <li>
+                    <span href="#" class="tag-crumbs__list_link">
+                        Пункт
+                    </span>
+                </li>
+            </ul>
         </div>
-        <div style="clear: both;"> </div>
+        <div class="item-book__hover-box animated fadeIn">
+            <a href="#" class="item-book__hover-box__add-bookmark">Добавить в закладки</a>
+            <a href="#" class="item-book__hover-box__add-reservation">Забронировать</a>
+            <a href="{{ item_url }}" class="item-book__hover-box__info">{% if LANGUAGE_CODE == 'ru' %}Информация о
+                книге{% elif LANGUAGE_CODE == 'tt' %}Информация о книге{% else %}Details{% endif %}</a>
+            <hr>
+            <span>Рекомендовать друзьям</span>
+
+            <div class="item-book__hover-box__share-box">
+                <a href="#" class="item-book__hover-box__share-box__link" title="Вконтакте"><img alt="Вконтакте"
+                                                                                                 src="static/dist/images/vkontakte.svg"></a>
+                <a href="#" class="item-book__hover-box__share-box__link" title="Facebook"><img alt="Facebook"
+                                                                                                src="static/dist/images/facebook.svg"></a>
+                <a href="#" class="item-book__hover-box__share-box__link" title="Twitter"><img alt="Twitter"
+                                                                                               src="static/dist/images/twitter.svg"></a>
+            </div>
+        </div>
     </div>
+
+    {#    {% if item.id_in_catalog %}#}
+    {#        {% url 'ssearch:frontend:detail'  item.id_in_catalog  as item_url %}#}
+    {#    {% else %}#}
+    {#        {%  url 'newinlib:frontend:show' item.id as item_url %}#}
+    {#    {% endif %}#}
+    {#    <div class="thumbnail ">#}
+    {#        {% if item.avatar_img_name %}<div class="image"><a href="{{ item_url }}"><img src="{{ MEDIA_URL }}uploads/newinlib/itemavatars/{{ item.avatar_img_name }}" alt="{{ item.item_content.title }}"></a></div>{% endif %}#}
+    {#        <div class="info">#}
+    {#            <h4 style="margin-bottom: 10px;;">{{ item.item_content.title }}</h4>#}
+    {#            {{ item.item_content.content|safe }}#}
+    {#            <p><a href="{{ item_url }}">{% if LANGUAGE_CODE == 'ru' %}подробнее{% elif LANGUAGE_CODE == 'tt' %}подробнее{% else %}details{% endif %}</a></p>#}
+    {#        </div>#}
+    {#        <div style="clear: both;"> </div>#}
+    {#    </div>#}
 {% endfor %}

@@ -7,8 +7,21 @@ from forms import FeedbackForm
 
 def index(request):
     feedbacks_page = get_page(request, Feedback.objects.filter(publicated=True).order_by('-add_date'))
+
+    count_feedback = len(feedbacks_page)
+
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return render(request, 'guestbook/frontend/thanks.html')
+    else:
+        form = FeedbackForm()
+
     return render(request, 'guestbook/frontend/index.html', {
         'feedbacks_page': feedbacks_page,
+        'form': form,
+        'count_feedback': count_feedback
     })
 
 

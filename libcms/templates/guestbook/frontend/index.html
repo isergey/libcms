@@ -2,28 +2,103 @@
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <div class="span12">
-        <ul class="breadcrumb">
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li>
+                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                        Главная
+                    </a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a class="bread__crumbs_link bread__crumbs_link_active">
+                        Гостевая книга
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <hr class="footer-hr">
+        <div class="container content-page">
+            <div class="row">
+                <div class="col-7">
+                    <h1 class="content-page__title">Отзывы <span>({{ count_feedback }})</span></h1>
+                    {% admin_pagination feedbacks_page %}
 
-            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-            <li class="active">Гостевая книга</li>
+                    {% for feedback in feedbacks_page.object_list %}
+                        <div class="answer-box">
+                            <div class="answer-box__index">
+                               {{ feedback.id }}
+                            </div>
+                            <div class="answer-box__content_padding">
+                                <div class="answer-box__content">
+                                    <p class="answer-box__content__question">{{ feedback.content|striptags }}</p>
+                                    {% if feedback.comment %}
+                                        <hr class="answer-box__content__hr">
+                                        <p class="answer-box__content__answ">{{ feedback.comment|striptags }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% admin_pagination feedbacks_page %}
+                </div>
+                <div class="col-5">
+                    <div class="side-box">
+                        <h2 class="side-box__title">Ваш отзыв</h2>
 
-        </ul>
-        <p>
-        <a href="{% url 'guestbook:frontend:send_feedback' %}" class="btn btn-success">Написать отзыв</a>
-        </p>
-        <hr/>
-        <ul class="feedbacks" style="list-style: none; margin: 0">
-        {% for feedback in feedbacks_page.object_list %}
-            <li>
-                <div>{{ feedback.content|safe }}</div>
-                {% if feedback.comment %}
-                <div class="alert alert-success">{{ feedback.comment|safe }}</div>
-                {% endif %}
-            </li>
-            {% if not forloop.last %}<hr/>{% endif %}
-        {% endfor %}
-        </ul>
-        {% admin_pagination feedbacks_page %}
-    </div>
+                        <form class="side-box__form" method="POST">{% csrf_token %}
+                            {% include 'frontend/base_form_fields.html' %}
+                            <button class="side-box__form__btn" type="submit">Добавить отзыв</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+
+
+
+
+
+
+
+    {#    <div class="span12">#}
+    {#        <ul class="breadcrumb">#}
+    {##}
+    {#            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
+    {#            <li class="active">Гостевая книга</li>#}
+    {##}
+    {#        </ul>#}
+    {#        <p>#}
+    {#            <a href="{% url 'guestbook:frontend:send_feedback' %}" class="btn btn-success">Написать отзыв</a>#}
+    {#        </p>#}
+    {#        <hr/>#}
+    {#        <ul class="feedbacks" style="list-style: none; margin: 0">#}
+    {#            {% for feedback in feedbacks_page.object_list %}#}
+    {#                <li>#}
+    {#                    <div>{{ feedback.content|safe }}</div>#}
+    {#                    {% if feedback.comment %}#}
+    {#                        <div class="alert alert-success">{{ feedback.comment|safe }}</div>#}
+    {#                    {% endif %}#}
+    {#                </li>#}
+    {#                {% if not forloop.last %}#}
+    {#                    <hr/>{% endif %}#}
+    {#            {% endfor %}#}
+    {#        </ul>#}
+    {#        {% admin_pagination feedbacks_page %}#}
+    {#    </div>#}
+
+
 {% endblock %}

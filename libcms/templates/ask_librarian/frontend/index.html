@@ -6,45 +6,106 @@
 {% block title %}Спроси библиотекаря{% endblock %}
 
 {% block content %}
-        <div class="span12">
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
+        </div>
+    </nav>
+    <main>
+        <div class="container">
             {% block breadcrumb %}
-                <ul class="breadcrumb">
-                    <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-                    <li>Спроси библиотекаря</li>
+                <ul class="bread__crumbs">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                            Главная
+                        </a>
+                    </li>
+                    <li>
+                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                    </li>
+                    <li>
+                        <a class="bread__crumbs_link bread__crumbs_link_active">
+                            Спроси библиотекар
+                        </a>
+                    </li>
                 </ul>
             {% endblock %}
-        </div>
-
-        <div class="span3">
-        <a style="display: block; padding: 15px 0 15px 0" class="btn btn-success" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>
-            {% cache 30 questions_category_menu LANGUAGE_CODE %}
-                {% drow_categories_tree %}
-            {% endcache %}
 
         </div>
-        <div class="span9">
-            {% block index_content %}
+        <hr class="footer-hr">
+        <div class="container content-page">
+            <div class="row">
+                <div class="col-7">
+                    {% block index_content %}
 
-            {% endblock %}
+                    {% endblock %}
+                </div>
+                <div class="col-5">
+                    <div class="side-box">
+                        <h2 class="side-box__title">Категории вопросов</h2>
+                        <a class="side-box__btn__ask" title="Задать вопрос библиотекарю" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>
+
+                        {% cache 30 questions_category_menu LANGUAGE_CODE %}
+                            {% drow_categories_tree %}
+                        {% endcache %}
+
+                    </div>
+
+                </div>
+            </div>
         </div>
-{#    <ul class="breadcrumb">#}
-{#        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>#}
-{#        {% for ancestor in content.page.get_ancestors_titles %}#}
-{#            <li><a href="{% url pages:frontend:show ancestor.url_path %}">#}
-{#                {% if not ancestor.title %}#}
-{#                    {{ ancestor }}#}
-{#                {% else %}#}
-{#                    {{ ancestor.title }}#}
-{#                {% endif %}#}
-{#            </a> <span class="divider">/</span></li>#}
-{#        {% endfor %}#}
-{#        <li>#}
-{#            {% if not content.title %}#}
-{#                заглавие страницы для этого языка не указано.#}
-{#            {% else %}#}
-{#                {{ content.title }}#}
-{#            {% endif %}#}
-{#        </li>#}
-{#    </ul>#}
-{#    {{ content.content|safe }}#}
+    </main>
+
+{#    <div class="span12">#}
+{#        {% block breadcrumb %}#}
+{#            <ul class="breadcrumb">#}
+{#                <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
+{#                <li>Спроси библиотекаря</li>#}
+{#            </ul>#}
+{#        {% endblock %}#}
+{#    </div>#}
+{##}
+{#    <div class="span3">#}
+{#        <a style="display: block; padding: 15px 0 15px 0" class="btn btn-success"#}
+{#           href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>#}
+{#        {% cache 30 questions_category_menu LANGUAGE_CODE %}#}
+{#            {% drow_categories_tree %}#}
+{#        {% endcache %}#}
+{##}
+{#    </div>#}
+{#    <div class="span9">#}
+{#        {% block index_content %}#}
+{##}
+{#        {% endblock %}#}
+{#    </div>#}
+
+
+
+
+
+
+
+
+
+
+    {#    <ul class="breadcrumb">#}
+    {#        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>#}
+    {#        {% for ancestor in content.page.get_ancestors_titles %}#}
+    {#            <li><a href="{% url pages:frontend:show ancestor.url_path %}">#}
+    {#                {% if not ancestor.title %}#}
+    {#                    {{ ancestor }}#}
+    {#                {% else %}#}
+    {#                    {{ ancestor.title }}#}
+    {#                {% endif %}#}
+    {#            </a> <span class="divider">/</span></li>#}
+    {#        {% endfor %}#}
+    {#        <li>#}
+    {#            {% if not content.title %}#}
+    {#                заглавие страницы для этого языка не указано.#}
+    {#            {% else %}#}
+    {#                {{ content.title }}#}
+    {#            {% endif %}#}
+    {#        </li>#}
+    {#    </ul>#}
+    {#    {{ content.content|safe }}#}
 {% endblock %}

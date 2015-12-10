@@ -3,7 +3,7 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 {% url 'ask_librarian:frontend:index' as ask_librarian_index %}
-<ul class="items">
+<ul class="side-box__list-category">
     {% if nodes %}
         {% recursetree nodes %}
             <li {% if path == node.item_title.url  %}class="active"{% endif %}>

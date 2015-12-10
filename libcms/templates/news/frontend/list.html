@@ -2,37 +2,449 @@
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <div class="span12">
-        <div class="breadcrumb">
-            <span><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></span>
-            <span class="active">Новости <a href="{% url 'news:frontend:rss' %}"><img src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a></span>
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
         </div>
-        <style>
-            ul.news {
-                list-style: none;
-                margin: 0;
-            }
-            .news .title{
-                font-size: 16px;
-                font-weight: bold;
-            }
-            .news .teaser{
-                padding: 5px 0;
-            }
-            .news .create_date{
-                color: #8c8c8c;
-            }
-        </style>
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li>
+                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                        Главная
+                    </a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a class="bread__crumbs_link bread__crumbs_link_active">
+                        Новости
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <hr class="footer-hr">
+        <div class="container content-page">
+            <div class="row">
+                <div class="col-7">
+                    <h1 class="content-page__title">Новости</h1>
+                    {% admin_pagination news_page %}
+                    {% for news in news_list %}
+                        <div class="news-page-box">
+                            <div class="news-page-box__date">{{ news.create_date }}</div>
+                            <h1 class="news-page-box__title"><a href="{% url 'news:frontend:show' news.id %}">{{ news.news_content.title }}</a></h1>
 
-        <ul class="news">
-            {% for news in news_list %}
-                <div class="title"><a href="{% url 'news:frontend:show' news.id %}">{{ news.news_content.title }}</a></div>
-                <div class="teaser">{{ news.news_content.teaser }}</div>
-                <div class="create_date">{{ news.create_date }}</div>
-                {% if not forloop.last %}<hr/>{% endif %}
-            {% endfor %}
-        </ul>
-        {% admin_pagination news_page %}
-    </div>
+                            <p class="news-page-box__teaser">{{ news.news_content.teaser }}</p>
+                        </div>
+                    {% endfor %}
+                    {% admin_pagination news_page %}
+                </div>
+                <div class="col-5">
+                    <div class="side-box">
+                        <h2 class="side-box__title">Архив новостей</h2>
+                        <table class="cal-table">
+
+
+                            <caption class="cal-caption">
+
+
+                                <div class="cal-table__date">Сегодня: 11 октября, 2015</div>
+
+                                <form name="event_calendar_filter" action="" method="POST"><input type="hidden"
+                                                                                                  name="csrfmiddlewaretoken"
+                                                                                                  value="jWXvGxqoquCtepvjVmhOUEtMZv1MJPJq">
+                                    <select id="id_month" name="month" onchange="this.form.submit();">
+                                        <option value="1">Январь</option>
+                                        <option value="2">Февраль</option>
+                                        <option value="3">Март</option>
+                                        <option value="4">Апрель</option>
+                                        <option value="5">Май</option>
+                                        <option value="6">Июнь</option>
+                                        <option value="7">Июль</option>
+                                        <option value="8">Август</option>
+                                        <option value="9">Сентябрь</option>
+                                        <option value="10">Октябрь</option>
+                                        <option value="11">Ноябрь</option>
+                                        <option value="12" selected="selected">Декабрь</option>
+                                    </select>
+                                    <select id="id_year" name="year" onchange="this.form.submit();">
+                                        <option value="2014">2014</option>
+                                        <option value="2015" selected="selected">2015</option>
+                                        <option value="2016">2016</option>
+                                    </select>
+                                </form>
+                            </caption>
+                            <tbody class="cal-body">
+
+                            <tr>
+
+
+                                <td>
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>1</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>2</a>
+
+
+                                </td>
+
+
+                                <td class="cal-today">
+
+
+                                    <a>3</a>
+
+
+                                </td>
+
+
+                                <td class="cal-check">
+
+
+                                    <a>4</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>5</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>6</a>
+
+
+                                </td>
+
+
+                            </tr>
+
+                            <tr>
+
+
+                                <td>
+
+
+                                    <a>7</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>8</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>9</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>10</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>11</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>12</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>13</a>
+
+
+                                </td>
+
+
+                            </tr>
+
+                            <tr>
+
+
+                                <td>
+
+
+                                    <a>14</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>15</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>16</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>17</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>18</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>19</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>20</a>
+
+
+                                </td>
+
+
+                            </tr>
+
+                            <tr>
+
+
+                                <td>
+
+
+                                    <a>21</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>22</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>23</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>24</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>25</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>26</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>27</a>
+
+
+                                </td>
+
+
+                            </tr>
+
+                            <tr>
+
+
+                                <td>
+
+
+                                    <a>28</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>29</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>30</a>
+
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <a>31</a>
+
+
+                                </td>
+
+
+                                <td>
+
+                                </td>
+
+
+                                <td>
+
+                                </td>
+
+
+                                <td>
+
+                                </td>
+
+
+                            </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    {#    <div class="span12">#}
+    {#        <div class="breadcrumb">#}
+    {#            <span><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></span>#}
+    {#            <span class="active">Новости <a href="{% url 'news:frontend:rss' %}"><img src="{{ STATIC_URL }}images/rss.png" alt="Подписаться"></a></span>#}
+    {#        </div>#}
+    {#        <style>#}
+    {#            ul.news {#}
+    {#                list-style: none;#}
+    {#                margin: 0;#}
+    {#            }#}
+    {#            .news .title{#}
+    {#                font-size: 16px;#}
+    {#                font-weight: bold;#}
+    {#            }#}
+    {#            .news .teaser{#}
+    {#                padding: 5px 0;#}
+    {#            }#}
+    {#            .news .create_date{#}
+    {#                color: #8c8c8c;#}
+    {#            }#}
+    {#        </style>#}
+    {##}
+    {#        <ul class="news">#}
+    {#            {% for news in news_list %}#}
+    {#                {{ news.news_content.title }}#}
+    {#                <div class="title"><a href="{% url 'news:frontend:show' news.id %}">{{ news.news_content.title }}</a></div>#}
+    {#                <div class="teaser">{{ news.news_content.teaser }}</div>#}
+    {#                <div class="create_date">{{ news.create_date }}</div>#}
+    {#                {% if not forloop.last %}<hr/>{% endif %}#}
+    {#            {% endfor %}#}
+    {#        </ul>#}
+    {#        {% admin_pagination news_page %}#}
+    {#    </div>#}
 
 {% endblock %}

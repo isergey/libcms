@@ -1,26 +1,46 @@
 {% extends 'ask_librarian/frontend/index.html' %}
 {% block title %}Спроси библиотекаря{% endblock %}
 {% block breadcrumb %}
-    <ul class="breadcrumb">
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url 'ask_librarian:frontend:index' %}">Спроси библиотекаря</a> <span class="divider">/</span></li>
-        <li>Задать вопрос</li>
+    <ul class="bread__crumbs">
+        <li>
+            <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                Главная
+            </a>
+        </li>
+        <li>
+            <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+        </li>
+        <li>
+            <a href="{% url 'ask_librarian:frontend:index' %}" class="bread__crumbs_link">
+                Спроси библиотекар
+            </a>
+        </li>
+        <li>
+            <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+        </li>
+        <li>
+            <a href="{% url 'ask_librarian:frontend:index' %}" class="bread__crumbs_link bread__crumbs_link_active">
+                Задать вопрос
+            </a>
+        </li>
     </ul>
 {% endblock %}
 {% block index_content %}
-<style type="text/css">
-form#ask_form textarea, input[type=text]{
-    width: 99%;
-}
-</style>
-<form id="ask_form" class="" method="POST">{% csrf_token %}
-    <legend>Задать вопрос</legend>
-    <fieldset>
-        {% include 'frontend/base_form_fields.html' with form=form %}
-        {#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
-        <div class="form-actions">
-            <button type="submit" class="btn">Спросить</button>
-        </div>
-    </fieldset>
-</form>
+    <div class="side-box">
+        <form class="side-box__form" method="POST">{% csrf_token %}
+            {% include 'frontend/base_form_fields.html' with form=form %}
+            <button class="side-box__form__btn" type="submit" class="btn">Спросить</button>
+        </form>
+    </div>
+
+    {#    <form id="ask_form" class="side-box__form" method="POST">{% csrf_token %}#}
+    {#    <legend>Задать вопрос</legend>#}
+    {#    <fieldset>#}
+    {#        {% include 'frontend/base_form_fields.html' with form=form %}#}
+    {#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+    {#        <div class="form-actions">#}
+    {#            <button type="submit" class="btn">Спросить</button>#}
+    {#        </div>#}
+    {#    </fieldset>#}
+    {#</form>#}
 {% endblock %}

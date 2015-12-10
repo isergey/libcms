@@ -1,41 +1,39 @@
 {% load add_get_tag %}
 {% load i18n %}
 
-<div class="pagination">
-    <ul>
-        {% if not page.has_previous %}
-            <li class="disabled"><a href="#">←</a></li>
-        {% else %}
-            <li><a href="{% add_get page=page.previous_page_number %}">←</a></li>
-        {% endif %}
+<ul class="pagination">
+    {% if not page.has_previous %}
+        <li class="disabled"><a href="#">←</a></li>
+    {% else %}
+        <li><a href="{% add_get page=page.previous_page_number %}">←</a></li>
+    {% endif %}
 
-        {% for pnum in begin %}
+    {% for pnum in begin %}
+        <li {% ifequal page.number pnum %}class="active"{% endifequal %}>
+            <a href="{% add_get page=pnum %}">{{ pnum }}</a>
+        </li>
+    {% endfor %}
+    {% if middle %}
+        <li class="disabled"><a href="#">…</a></li>
+        {% for pnum in middle %}
+            <li {% ifequal page.number pnum %}class="active"{% endifequal %}>
+                <a href="{% add_get page=pnum %}">{{ pnum }}</a></li>
+        {% endfor %}
+    {% endif %}
+    {% if end %}
+        <li class="disabled"><a href="#">…</a></li>
+        {% for pnum in end %}
             <li {% ifequal page.number pnum %}class="active"{% endifequal %}>
                 <a href="{% add_get page=pnum %}">{{ pnum }}</a>
             </li>
         {% endfor %}
-        {% if middle %}
-            <li class="disabled"><a href="#">…</a></li>
-            {% for pnum in middle %}
-                <li {% ifequal page.number pnum %}class="active"{% endifequal %}>
-                    <a href="{% add_get page=pnum %}">{{ pnum }}</a></li>
-            {% endfor %}
-        {% endif %}
-        {% if end %}
-            <li class="disabled"><a href="#">…</a></li>
-            {% for pnum in end %}
-                <li {% ifequal page.number pnum %}class="active"{% endifequal %}>
-                    <a href="{% add_get page=pnum %}">{{ pnum }}</a>
-                </li>
-            {% endfor %}
+    {% endif %}
+
+        {% if not page.has_next %}
+            <li class="disabled"><a href="#">→</a></li>
+        {% else %}
+            <li><a href="{% add_get page=page.next_page_number %}">→</a></li>
         {% endif %}
 
-            {% if not page.has_next %}
-                <li class="disabled"><a href="#">→</a></li>
-            {% else %}
-                <li><a href="{% add_get page=page.next_page_number %}">→</a></li>
-            {% endif %}
 
-
-    </ul>
-</div>
+</ul>

@@ -4,43 +4,126 @@
     {% trans 'Login' %}
 {% endblock %}
 {% block content %}
-    <div class="span12">
-        <div class="row">
-            <div class="span12">
-                <ul class="breadcrumb">
-                    <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-                    <li class="active">Вход на портал</li>
-                </ul>
-            </div>
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
         </div>
-        <div class="row">
-            <div class="span6">
-                <p class="alert alert-info">Войти на портал с использованием идентификатора и пароля
-                    <b>Единого Читательского билета</b>.
-                </p>
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li>
+                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                        Главная
+                    </a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a class="bread__crumbs_link bread__crumbs_link_active">
+                        Личный кабинет
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <hr class="footer-hr">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="content-page__title">Авторизация</h1>
 
-                <form method="POST" class="form-horizontal">{% csrf_token %}
-                    <fieldset>
-                        {% include 'frontend/base_form_fields.html' %}
-                        <div class="form-actions">
-                            <input type="submit" value="Войти" class="btn"/>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="auth-box">
+                                <p class="auth-box__info">Вход на портал с использованием идентификатора
+                                    и пароля Единого Читательского билета.
+                                </p>
+
+                                {#                                <form>#}
+                                {#                                    <label>#}
+                                {#                                        <img src="{{ STATIC_URL }}dist/images/login.png">#}
+                                {#                                        <input type="text" placeholder="Логин">#}
+                                {#                                    </label>#}
+                                {#                                    <label>#}
+                                {#                                        <img src="{{ STATIC_URL }}dist/images/pass.png">#}
+                                {#                                        <input type="password" placeholder="Пароль">#}
+                                {#                                    </label>#}
+                                {#                                    <button type="submit">Вхожу</button>#}
+                                {#                                    <a href="#">Забыли пароль?</a>#}
+                                {#                                </form>#}
+
+                                <form method="POST" class="form-horizontal">{% csrf_token %}
+                                    {% include 'frontend/base_form_fields.html' %}
+                                    <button type="submit">Вхожу</button>
+                                    <a href="#">Забыли пароль?</a>
+                                </form>
+
+                            </div>
                         </div>
-                    </fieldset>
-                </form>
-            </div>
-            <div class="span6">
-                <p class="alert alert-info">
-                    Войти с использованием учетной записи на портале <b>Госуслуг</b>.
-                    Вы автоматически станете читателем и сможете пользоваться сервисами библиотек.
-                </p>
+                        <div class="col-6">
+                            <div class="esia-box">
+                                <p class="esia-box__info">
+                                    Вход с использованием учетной записи на портале Госуслуг.
+                                </p>
 
-                <div>
-                    <a style="display: block" class="btn" href="{% url 'sso_esia:index' %}"> Войти через ЕСИА
-                    <img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>
+                                <p class="esia-box__info">
+                                    Вы автоматически станете читателем и сможете
+                                    пользоваться сервисами библиотек.
+                                </p>
+                                <a href="{% url 'sso_esia:index' %}" title="Войти через ЕСИА">Войти через ЕСИА</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
+
+
+
+
+
+
+
+
+    {#    <div class="span12">#}
+    {#        <div class="row">#}
+    {#            <div class="span12">#}
+    {#                <ul class="breadcrumb">#}
+    {#                    <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
+    {#                    <li class="active">Вход на портал</li>#}
+    {#                </ul>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="row">#}
+    {#            <div class="span6">#}
+    {#                <p class="alert alert-info">Войти на портал с использованием идентификатора и пароля#}
+    {#                    <b>Единого Читательского билета</b>.#}
+    {#                </p>#}
+    {##}
+    {#                <form method="POST" class="form-horizontal">{% csrf_token %}#}
+    {#                    <fieldset>#}
+    {#                        {% include 'frontend/base_form_fields.html' %}#}
+    {#                        <div class="form-actions">#}
+    {#                            <input type="submit" value="Вхожу" class="btn"/>#}
+    {#                        </div>#}
+    {#                    </fieldset>#}
+    {#                </form>#}
+    {#            </div>#}
+    {#            <div class="span6">#}
+    {#                <p class="alert alert-info">#}
+    {#                    Войти с использованием учетной записи на портале <b>Госуслуг</b>.#}
+    {#                    Вы автоматически станете читателем и сможете пользоваться сервисами библиотек.#}
+    {#                </p>#}
+    {##}
+    {#                <div>#}
+    {#                    <a style="display: block" class="btn" href="{% url 'sso_esia:index' %}"> Войти через ЕСИА#}
+    {#                        <img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
     {#    <div class="span6">#}
     {#          <div>#}
     {#            {% include 'accounts/frontend/oauth_buttons.html' %}#}

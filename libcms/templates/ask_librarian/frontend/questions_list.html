@@ -5,43 +5,76 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% block title %}Спроси библиотекаря{% endblock %}
 {% block breadcrumb %}
-    <ul class="breadcrumb">
-
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+    <ul class="bread__crumbs">
+        <li>
+            <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                Главная
+            </a>
+        </li>
         {% if category %}
             {% cache 30 questions_breadcrumb category.id LANGUAGE_CODE %}
-            <li><a href="{% url 'ask_librarian:frontend:index' %}">Спроси библиотекаря</a> <span class="divider">/</span></li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li><a href="{% url 'ask_librarian:frontend:index' %}" class="bread__crumbs_link">Спроси
+                    библиотекаря</a></li>
 
                 {% if category.is_root_node %}
-                    <li>{{ category }}</li>
+                    <li>
+                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                    </li>
+                    <li><a class="bread__crumbs_link bread__crumbs_link_active">{{ category }}</a></li>
                 {% else %}
                     {% for ancestor in  category.get_t_ancestors %}
-                        <li><a href="{% url 'ask_librarian:frontend:index' %}?category={{ ancestor.category_id }}">{{ ancestor }}</a> <span class="divider">/</span></li>
+                        <li>
+                            <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                        </li>
+                        <li><a href="{% url 'ask_librarian:frontend:index' %}?category={{ ancestor.category_id }}"
+                               class="bread__crumbs_link">{{ ancestor }}</a></li>
                     {% endfor %}
-                    <li>{{ category }}</li>
+                    <li>
+                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                    </li>
+                    <li><a class="bread__crumbs_link bread__crumbs_link_active">{{ category }}</a></li>
                 {% endif %}
             {% endcache %}
         {% else %}
-            <li>Спроси библиотекаря</li>
+            <li>
+                <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+            </li>
+            <li>
+                <a class="bread__crumbs_link bread__crumbs_link_active">
+                    Спроси библиотекаря
+                </a>
+            </li>
         {% endif %}
-
     </ul>
-
 {% endblock %}
 {% block index_content %}
-    <div class="row">
-        <div class="span4">
+    <h1 class="content-page__title">
+        {% if category.is_root_node %}
+            {{ category }}
+        {% else %}
+            Спроси библиотекаря
+        {% endif %}
+    </h1>
+
+    <div class="answer-search">
+        <div class="answer-search__box">
             <form action="" method="GET">
-                Перейти к вопросу №: <input type="text" style=" width: 50px;" name="id"/><br/>
-                <input type="submit" value="Перейти" class="btn"/>
+                <label for="number">Перейти к вопросу №:</label>
+                <input id="number" type="number" name="id">
+                <button type="submit">Перейти</button>
             </form>
         </div>
-        <div class="span5">
+        <div class="answer-search__box">
             <form action="" method="POST">{% csrf_token %}
-                Найти вопросы по дате:
+                <label for="date">Найти вопросы по дате:</label>
+                {#                <input id="date" type="date" placeholder="формат даты: дд.мм.гггг">#}
                 {% for field in date_filter_form.visible_fields %}
                     <div class="control-group {% if field.errors %}error{% endif %}">
                         <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+
                         <div class="controls">
                             {{ field }}
                             {% if field.errors %}
@@ -52,36 +85,112 @@
 
                     </div>
                 {% endfor %}
-                <input type="submit" value="Найти" class="btn"/>
+                <button type="submit">Найти</button>
             </form>
         </div>
     </div>
-    <hr/>
-    <ul style="list-style: none; padding: 0; margin: 0;">
+
+    {% admin_pagination questions_page %}
+
     {% for question in questions_page.object_list %}
-        <li>
-            {% if question.is_ready %}
-                {{ question.question|safe }}
-            {% else %}
-                {{ question.question }}
-            {% endif %}<br/>
-            {% if question.category_id %}
-                <b>
-                {% cache 30 questions_category question.category_id  LANGUAGE_CODE %}
-                    {% for ancestor in  question.category.get_t_ancestors %}
-                        {{ ancestor }}  →
-                    {% endfor %}
-                        {{ question.category }}
-                {% endcache %}
-                </b>
-            {% endif %}
-            <br/>
-            <a href="{% url 'ask_librarian:frontend:detail' question.id %}">подробнее</a>
-        <hr/>
-        </li>
+        <div class="answer-box">
+            <div class="answer-box__index">
+                {{ question.id }}
+            </div>
+            <div class="answer-box__content_padding">
+                <div class="answer-box__content">
+                    <div class="answer-box__content__question">
+                        {% if question.is_ready %}
+                            {{ question.question|safe }}
+                        {% else %}
+                            {{ question.question }}
+                        {% endif %}
+
+                        {% if question.category_id %}
+                            <b>
+                                {% cache 30 questions_category question.category_id LANGUAGE_CODE %}
+                                    {% for ancestor in  question.category.get_t_ancestors %}
+                                        {{ ancestor }}  →
+                                    {% endfor %}
+                                    {{ question.category }}
+                                {% endcache %}
+                            </b>
+                        {% endif %}
+                    </div>
+                    <hr class="answer-box__content__hr">
+                    <div class="answer-box__content__answ">
+                        {{ question.answer|safe }}
+                        <br/>
+                        <a href="{% url 'ask_librarian:frontend:detail' question.id %}">подробнее</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% empty %}
         <li>Вопросов нет</li>
     {% endfor %}
-    </ul>
+
     {% admin_pagination questions_page %}
+
+
+
+
+
+    {#    <div class="row">#}
+    {#        <div class="span4">#}
+    {#            <form action="" method="GET">#}
+    {#                Перейти к вопросу №: <input type="text" style=" width: 50px;" name="id"/><br/>#}
+    {#                <input type="submit" value="Перейти" class="btn"/>#}
+    {#            </form>#}
+    {#        </div>#}
+    {#        <div class="span5">#}
+    {#            <form action="" method="POST">{% csrf_token %}#}
+    {#                Найти вопросы по дате:#}
+    {#                {% for field in date_filter_form.visible_fields %}#}
+    {#                    <div class="control-group {% if field.errors %}error{% endif %}">#}
+    {#                        <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>#}
+    {##}
+    {#                        <div class="controls">#}
+    {#                            {{ field }}#}
+    {#                            {% if field.errors %}#}
+    {#                                {{ field.errors }}#}
+    {#                            {% endif %}#}
+    {#                            {% if  field.help_text %}<p class="help-block">{{ field.help_text }}</p>{% endif %}#}
+    {#                        </div>#}
+    {##}
+    {#                    </div>#}
+    {#                {% endfor %}#}
+    {#                <input type="submit" value="Найти" class="btn"/>#}
+    {#            </form>#}
+    {#        </div>#}
+    {#    </div>#}
+    {#    <hr/>#}
+
+    {#    <ul style="list-style: none; padding: 0; margin: 0;">#}
+    {#        {% for question in questions_page.object_list %}#}
+    {#            <li>#}
+    {#                {% if question.is_ready %}#}
+    {#                    {{ question.question|safe }}#}
+    {#                {% else %}#}
+    {#                    {{ question.question }}#}
+    {#                {% endif %}<br/>#}
+    {#                {% if question.category_id %}#}
+    {#                    <b>#}
+    {#                        {% cache 30 questions_category question.category_id LANGUAGE_CODE %}#}
+    {#                            {% for ancestor in  question.category.get_t_ancestors %}#}
+    {#                                {{ ancestor }}  →#}
+    {#                            {% endfor %}#}
+    {#                            {{ question.category }}#}
+    {#                        {% endcache %}#}
+    {#                    </b>#}
+    {#                {% endif %}#}
+    {#                <br/>#}
+    {#                <a href="{% url 'ask_librarian:frontend:detail' question.id %}">подробнее</a>#}
+    {#                <hr/>#}
+    {#            </li>#}
+    {#        {% empty %}#}
+    {#            <li>Вопросов нет</li>#}
+    {#        {% endfor %}#}
+    {#    </ul>#}
+    {#    {% admin_pagination questions_page %}#}
 {% endblock %}

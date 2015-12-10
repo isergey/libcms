@@ -124,7 +124,7 @@ INSTALLED_APPS = (
     'core',
     'accounts',
     'profile',
-    'social_auth',
+    # 'social_auth',
     'filebrowser',
     'menu',
     'pages',

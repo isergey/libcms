@@ -1,5 +1,6 @@
 # coding=utf-8
 from collections import OrderedDict
+import httplib2
 import hashlib
 import datetime
 from lxml import etree
@@ -275,7 +276,8 @@ def search(request, catalog=None, library=None):
 
     search_attrs = _make_search_attrs(catalog)
     search_deep_limit = 5  # ограничение вложенных поисков
-    solr = sunburnt.SolrInterface(settings.SOLR['host'])
+    solr_connection = httplib2.Http(disable_ssl_certificate_validation=True)
+    solr = sunburnt.SolrInterface(settings.SOLR['host'], http_connection=solr_connection)
 
     qs = request.GET.getlist('q', [])
     attrs = request.GET.getlist('attr', [])
@@ -480,7 +482,8 @@ def search(request, catalog=None, library=None):
 
 def participant_income(request):
     sigla = request.GET.get('sigla', None)
-    solr = sunburnt.SolrInterface(settings.SOLR['local_records_host'])
+    solr_connection = httplib2.Http(disable_ssl_certificate_validation=True)
+    solr = sunburnt.SolrInterface(settings.SOLR['local_records_host'], http_connection=solr_connection)
 
     if sigla:
         query = solr.Q(**{'holder-sigla_s': sigla})
@@ -584,7 +587,9 @@ def detail(request, gen_id):
     if analitic_level == '1':
         doc['holders'] = []
 
-        solr = sunburnt.SolrInterface(settings.SOLR['host'])
+        solr_connection = httplib2.Http(disable_ssl_certificate_validation=True)
+        solr = sunburnt.SolrInterface(settings.SOLR['host'], http_connection=solr_connection)
+
         linked_query = solr.query(**{'linked-record-number_s': record.record_id.replace(u"\\", u'\\\\')})
         linked_query = linked_query.field_limit("id")
         linked_results = linked_query.execute()
@@ -824,7 +829,9 @@ def log_search_request(last_search_value, catalog, library_code=u''):
 
 
 def statictics():
-    solr = sunburnt.SolrInterface(settings.SOLR['host'])
+    solr_connection = httplib2.Http(disable_ssl_certificate_validation=True)
+    solr = sunburnt.SolrInterface(settings.SOLR['host'], http_connection=solr_connection)
+
     facet_fields = ['fond_sf']
     qkwargs = {'*': '*'}
     solr_searcher = solr.query(**qkwargs).paginate(start=0, rows=0)
