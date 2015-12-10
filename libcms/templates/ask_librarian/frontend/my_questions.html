@@ -3,21 +3,49 @@
 {% load pagination_tag %}
 {% block title %}Мои вопросы{% endblock %}
 {% block breadcrumb %}
-<section>
-    <div id="breadcrumbs">
-        <ul class="breadcrumb">
-            <a href="{% url 'index:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Начало{% else %}Home{% endif %}</a>
-            <span class="divider">/</span>
+    <ul class="bread__crumbs">
+        <li>
+            <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                {% if LANGUAGE_CODE == 'ru' %}Главная{% else %}Home{% endif %}
+            </a>
+        </li>
+        <li>
+            <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+        </li>
+        {% if request.GET.back %}
+            <li><a class="bread__crumbs_link" href="{{ request.GET.back }}">{% if LANGUAGE_CODE == 'ru' %}Консультация
+                специалиста СИЦ{% else %}Ask librarian{% endif %}</a></li>
+        {% else %}
+            <li><a class="bread__crumbs_link" href="{% url 'ask_librarian:frontend:index' %}">
+                {% if LANGUAGE_CODE == 'ru' %}Консультация специалиста СИЦ{% else %}Ask librarian{% endif %}</a>
+            <li>
+        {% endif %}
+        <li>
+            <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+        </li>
+        <li><a class="bread__crumbs_link bread__crumbs_link_active">{% if LANGUAGE_CODE == 'ru' %}Мои вопросы{% else %}
+            View question{% endif %}</a>
+        <li>
+    </ul>
 
-            {% if request.GET.back %}
-                <a href="{{ request.GET.back }}">{% if LANGUAGE_CODE == 'ru' %}Консультация специалиста СИЦ{% else %}Ask librarian{% endif %}</a> <span class="divider">/</span>
-            {% else %}
-                <a href="{% url 'ask_librarian:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Консультация специалиста СИЦ{% else %}Ask librarian{% endif %}</a> <span class="divider">/</span>
-            {% endif %}
-            {% if LANGUAGE_CODE == 'ru' %}Мои вопросы{% else %}View question{% endif %}
-        </ul>
-    </div>
-</section>
+{#    <section>#}
+{#        <div id="breadcrumbs">#}
+{#            <ul class="breadcrumb">#}
+{#                <a href="{% url 'index:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Начало{% else %}#}
+{#                    Home{% endif %}</a>#}
+{#                <span class="divider">/</span>#}
+{##}
+{#                {% if request.GET.back %}#}
+{#                    <a href="{{ request.GET.back }}">{% if LANGUAGE_CODE == 'ru' %}Консультация специалиста#}
+{#                        СИЦ{% else %}Ask librarian{% endif %}</a> <span class="divider">/</span>#}
+{#                {% else %}#}
+{#                    <a href="{% url 'ask_librarian:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Консультация#}
+{#                        специалиста СИЦ{% else %}Ask librarian{% endif %}</a> <span class="divider">/</span>#}
+{#                {% endif %}#}
+{#                {% if LANGUAGE_CODE == 'ru' %}Мои вопросы{% else %}View question{% endif %}#}
+{#            </ul>#}
+{#        </div>#}
+{#    </section>#}
 {% endblock %}
 {% block index_content %}
     {% admin_pagination questions_page %}
@@ -57,7 +85,7 @@
             </div>
         </div>
     {% empty %}
-        <li>Вопросов нет</li>
+        <p>Вопросов нет</p>
     {% endfor %}
 
     {% admin_pagination questions_page %}

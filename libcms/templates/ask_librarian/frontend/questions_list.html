@@ -16,8 +16,10 @@
                 <li>
                     <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
                 </li>
-                <li><a href="{% url 'ask_librarian:frontend:index' %}" class="bread__crumbs_link">Спроси
-                    библиотекаря</a></li>
+                <li>
+                    <a href="{% url 'ask_librarian:frontend:index' %}" class="bread__crumbs_link">Спроси
+                        библиотекаря</a>
+                </li>
 
                 {% if category.is_root_node %}
                     <li>

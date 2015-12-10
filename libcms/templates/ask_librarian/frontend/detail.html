@@ -3,57 +3,104 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 {% block title %}Спроси библиотекаря{% endblock %}
+
 {% block breadcrumb %}
-    <ul class="breadcrumb">
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url 'ask_librarian:frontend:index' %}">Спроси библиотекаря</a> <span class="divider">/</span>
+    <ul class="bread__crumbs">
+        <li><a class="bread__crumbs_link" href="{% url 'index:frontend:index' %}">Главная</a></li>
+        <li>
+            <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
         </li>
-        <li>Вопрос № {{ question.id }}</li>
+        <li><a class="bread__crumbs_link" href="{% url 'ask_librarian:frontend:index' %}">Спроси библиотекаря</a></li>
+        <li>
+            <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+        </li>
+        <li><a class="bread__crumbs_link bread__crumbs_link_active">Вопрос № {{ question.id }}</a></li>
     </ul>
 {% endblock %}
+
 {% block index_content %}
-    <div class="answer-box">
-        <div class="answer-box__index">
-            {{ question.id }}
+
+    <div class="content-page">
+        <h1 class="content-page__title">Вопрос:</h1>
+
+        <div class="content-page__text">
+            {% if question.is_ready %}
+                {{ question.question|safe }}
+            {% else %}
+                {{ question.question }}
+            {% endif %}<br/>
+            {% if question.category_id %}
+                <b>Категория:</b>
+                {% cache 30 questions_category question.category_id LANGUAGE_CODE %}
+                    {% for ancestor in  question.category.get_t_ancestors %}
+                        {{ ancestor }}  →
+                    {% endfor %}
+                    {{ question.category }}
+                {% endcache %}
+
+            {% endif %}
+            <br/>
+
+            <b>Статус</b>: <span
+                class="question_status{{ question.status }}">{{ question.get_status_display }} </span>
         </div>
-        <div class="answer-box__content_padding">
-            <div class="answer-box__content">
-                <div class="answer-box__content__question">
-                    <h3>Вопрос:</h3>
-                    {% if question.is_ready %}
-                        {{ question.question|safe }}
-                    {% else %}
-                        {{ question.question }}
-                    {% endif %}<br/>
-                    {% if question.category_id %}
-                        <b>Категория:</b>
-                            {% cache 30 questions_category question.category_id LANGUAGE_CODE %}
-                                {% for ancestor in  question.category.get_t_ancestors %}
-                                    {{ ancestor }}  →
-                                {% endfor %}
-                                {{ question.category }}
-                            {% endcache %}
+        <h1 class="content-page__title">Ответ:</h1>
 
-                    {% endif %}
-                    <br/>
-
-                    <b>Статус</b>: <span
-                        class="question_status{{ question.status }}">{{ question.get_status_display }} </span>
-                </div>
-                <hr class="answer-box__content__hr">
-                <div class="answer-box__content__question">
-                    <h3>Ответ:</h3>
-                    {% if question.is_ready %}
-                        {{ question.answer|safe }}
-                    {% else %}
-                        Ответа на вопрос еще нет.
-                    {% endif %}
-                    <a href="{% url 'ask_librarian:frontend:printed_detail' question.id %}" target="_blank">Версия для
-                        печати</a>
-                </div>
-            </div>
+        <div class="content-page__text">
+            {% if question.is_ready %}
+                {{ question.answer|safe }}
+            {% else %}
+                Ответа на вопрос еще нет.
+            {% endif %}
+            <a href="{% url 'ask_librarian:frontend:printed_detail' question.id %}" target="_blank">Версия для
+                печати</a>
         </div>
     </div>
+
+
+
+    {#    <div class="answer-box">#}
+    {#        <div class="answer-box__index">#}
+    {#            {{ question.id }}#}
+    {#        </div>#}
+    {#        <div class="answer-box__content_padding">#}
+    {#            <div class="answer-box__content">#}
+    {#                <div class="answer-box__content__question">#}
+    {#                    <h3>Вопрос:</h3>#}
+    {#                    {% if question.is_ready %}#}
+    {#                        {{ question.question|safe }}#}
+    {#                    {% else %}#}
+    {#                        {{ question.question }}#}
+    {#                    {% endif %}<br/>#}
+    {#                    {% if question.category_id %}#}
+    {#                        <b>Категория:</b>#}
+    {#                        {% cache 30 questions_category question.category_id LANGUAGE_CODE %}#}
+    {#                            {% for ancestor in  question.category.get_t_ancestors %}#}
+    {#                                {{ ancestor }}  →#}
+    {#                            {% endfor %}#}
+    {#                            {{ question.category }}#}
+    {#                        {% endcache %}#}
+    {##}
+    {#                    {% endif %}#}
+    {#                    <br/>#}
+    {##}
+    {#                    <b>Статус</b>: <span#}
+    {#                        class="question_status{{ question.status }}">{{ question.get_status_display }} </span>#}
+    {#                </div>#}
+    {#                <hr class="answer-box__content__hr">#}
+    {#                <div class="answer-box__content__question">#}
+    {#                    <h3>Ответ:</h3>#}
+    {#                    {% if question.is_ready %}#}
+    {#                        {{ question.answer|safe }}#}
+    {#                    {% else %}#}
+    {#                        Ответа на вопрос еще нет.#}
+    {#                    {% endif %}#}
+    {#                    <a href="{% url 'ask_librarian:frontend:printed_detail' question.id %}" target="_blank">Версия для#}
+    {#                        печати</a>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
 
 
 
