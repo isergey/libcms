@@ -3,12 +3,12 @@
     {% for owner in owners %}
         {% if owner.has_catalog %}
 
-        <a class="reserv-box__geo" href="#" title="Посмотреть на карте">
-            <img alt="Расположение на карте" src="/static/dist/images/geo_pin.svg">
+        <a class="reserv-box__geo" href="{% url 'participants:frontend:detail' owner.owner.code %}" title="Посмотреть на карте">
+            <img alt="Информация о библиотеке" src="/static/dist/images/geo_pin.svg">
         <span>{{ owner.owner.name }}</span>
         </a>
 
-        <a class="reserv-box__btn" href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">Забронировать</a>
+        <a title="Забронировать в: {{ owner.owner.name }}" class="reserv-box__btn" href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">Забронировать</a>
          {% else %}(заказ невозможен: отсутвует информация о сервере заказа)
 
         {% endif %}
