@@ -1,0 +1,24 @@
+{% extends 'frontend_base.html' %}
+{% block title %}Установка связи{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'profile:frontend:index' %}">Профиль</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'urt:frontend:index' %}">Прикрепление к библиотеке</a> <span class="divider">/</span></li>
+        <li class="active">Редактирование связи</li>
+    </ul>
+
+    {% if errors %}
+        {% include 'frontend/errors.html' %}
+    {% endif %}
+
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+        <legend>Редактирование связи</legend>
+        <fieldset>
+            {% include 'frontend/base_form_fields.html' %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Редактировать связь</button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

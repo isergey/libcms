@@ -1,0 +1,30 @@
+{% extends 'theme_frontend_base.html' %}
+{% block title %}Установка связи{% endblock %}
+{% block content %}
+    <div class="span12">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'urt:frontend:index' %}">Мои библиотеки</a> <span class="divider">/</span></li>
+            <li class="active">Авторизация</li>
+        </ul>
+        {% if errors %}
+            {% include 'frontend/errors.html' %}
+        {% endif %}
+
+        <form class="form-horizontal" method="POST">{% csrf_token %}
+            <legend>Авторизация в: {{ library.name }}</legend>
+            <fieldset>
+                {% include 'frontend/base_form_fields.html' %}
+                {#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Авторизоваться</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+
+
+
+{% endblock %}

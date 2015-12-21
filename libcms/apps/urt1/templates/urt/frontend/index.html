@@ -1,0 +1,23 @@
+{% extends 'frontend_base.html' %}
+{% block title %}Прикрепление к библиотеке{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'profile:frontend:index' %}">Профиль</a> <span class="divider">/</span></li>
+        <li class="active">Прикрепление к библиотеке</li>
+    </ul>
+    <p><a href="{% url 'urt:frontend:link' %}" class="btn">Добавить связь</a></p>
+    <hr/>
+    {% if links %}
+    <h3>Установлена связь со следующими библиотеками:</h3>
+        <ul>
+        {% for link in links %}
+            <li>{{ link.library.name }} (идентификатор: <b>{{ link.lib_login }}</b>) <a href="{% url 'urt:frontend:edit_link' link.id %}">редактировать</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>
+        В настоящий момент Вы не связали свой аккаунт с какой-либо ЦБС
+        </p>
+    {% endif %}
+{% endblock %}

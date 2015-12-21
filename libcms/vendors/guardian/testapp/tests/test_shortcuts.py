@@ -8,7 +8,7 @@ from django.test import TestCase
 from guardian.shortcuts import get_perms_for_model
 from guardian.core import ObjectPermissionChecker
 from guardian.compat import get_user_model
-from guardian.compat import get_user_permission_full_codename
+from guardian.compat import get_user_permission_full_codename, get_model_name
 from guardian.shortcuts import assign
 from guardian.shortcuts import assign_perm
 from guardian.shortcuts import remove_perm
@@ -21,7 +21,7 @@ from guardian.exceptions import MixedContentTypeError
 from guardian.exceptions import NotUserNorGroup
 from guardian.exceptions import WrongAppError
 from guardian.testapp.models import NonIntPKModel
-from guardian.testapp.tests.core_test import ObjectPermissionTestCase
+from guardian.testapp.tests.test_core import ObjectPermissionTestCase
 from guardian.models import Group, Permission
 
 import warnings
@@ -29,7 +29,7 @@ import warnings
 
 User = get_user_model()
 user_app_label = User._meta.app_label
-user_module_name = User._meta.module_name
+user_module_name = get_model_name(User)
 
 class ShortcutsTests(ObjectPermissionTestCase):
 
@@ -774,6 +774,26 @@ class GetObjectsForUser(TestCase):
          self.assertRaises(MixedContentTypeError, get_objects_for_user,
             self.user, ['auth.change_permission', 'auth.change_group'])
 
+    def test_has_any_permissions(self):
+        group_names = ['group1', 'group2', 'group3']
+        groups = [Group.objects.create(name=name) for name in group_names]
+        for group in groups:
+            assign_perm('change_group', self.user, group)
+
+        objects = get_objects_for_user(self.user, [], Group)
+        self.assertEqual(len(objects), len(groups))
+        self.assertTrue(isinstance(objects, QuerySet))
+        self.assertEqual(
+            set(objects),
+            set(groups))
+
+    def test_short_codenames_with_klass(self):
+        assign_perm('contenttypes.change_contenttype', self.user, self.ctype)
+
+        objects = get_objects_for_user(self.user,
+            ['change_contenttype'], ContentType)
+        self.assertEqual([obj.name for obj in objects], [self.ctype.name])
+
 
 class GetObjectsForGroup(TestCase):
     """
@@ -894,7 +914,7 @@ class GetObjectsForGroup(TestCase):
             ['contenttypes.change_contenttype',
             'contenttypes.delete_contenttype'], any_perm=True)
         self.assertTrue(isinstance(objects, QuerySet))
-        self.assertEqual([obj for obj in objects.order_by('name')],
+        self.assertEqual([obj for obj in objects.order_by('app_label')],
             [self.obj1, self.obj3])
 
     def test_results_for_different_groups_are_correct(self):

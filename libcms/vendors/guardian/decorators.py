@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.utils.functional import wraps
-from django.db.models import Model, get_model
+from django.db.models import Model
+from django.apps import apps
 from django.db.models.base import ModelBase
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
@@ -93,7 +94,7 @@ def permission_required(perm, lookup_variables=None, **kwargs):
                     if len(splitted) != 2:
                         raise GuardianError("If model should be looked up from "
                             "string it needs format: 'app_label.ModelClass'")
-                    model = get_model(*splitted)
+                    model = apps.get_model(*splitted)
                 elif issubclass(model.__class__, (Model, ModelBase, QuerySet)):
                     pass
                 else:

@@ -1,0 +1,10 @@
+{% load i18n %}
+{% load active_link %}
+<ul class="nav nav-list">
+    <li class="nav-header">{% trans 'Users' %}</li>
+    <li class="{% active 'accounts:administration:users_list' %}"><a href="{% url 'accounts:administration:users_list' %}">{% trans 'List' %}</a></li>
+    <li class="{% active 'accounts:administration:create_user' %}"><a href="{% url 'accounts:administration:create_user' %}">{% trans 'Add' %}</a></li>
+    <li class="nav-header">{% trans 'Groups' %}</li>
+    <li class="{% active 'accounts:administration:groups_list' %}"><a href="{% url 'accounts:administration:groups_list' %}">{% trans 'List' %}</a></li>
+    <li class="{% active 'accounts:administration:create_group' %}"><a href="{% url 'accounts:administration:create_group' %}">{% trans 'Add' %}</a></li>
+</ul>

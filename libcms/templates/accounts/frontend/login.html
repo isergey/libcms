@@ -40,25 +40,19 @@
                                     и пароля Единого Читательского билета.
                                 </p>
 
-                                {#                                <form>#}
-                                {#                                    <label>#}
-                                {#                                        <img src="{{ STATIC_URL }}dist/images/login.png">#}
-                                {#                                        <input type="text" placeholder="Логин">#}
-                                {#                                    </label>#}
-                                {#                                    <label>#}
-                                {#                                        <img src="{{ STATIC_URL }}dist/images/pass.png">#}
-                                {#                                        <input type="password" placeholder="Пароль">#}
-                                {#                                    </label>#}
-                                {#                                    <button type="submit">Вхожу</button>#}
-                                {#                                    <a href="#">Забыли пароль?</a>#}
-                                {#                                </form>#}
-
-                                <form method="POST" class="form-horizontal">{% csrf_token %}
-                                    {% include 'frontend/base_form_fields.html' %}
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <label>
+                                        <img src="{{ STATIC_URL }}dist/images/login.png">
+                                        <input name="username"  type="text" placeholder="Логин">
+                                    </label>
+                                    <label>
+                                        <img src="{{ STATIC_URL }}dist/images/pass.png">
+                                        <input name="password"  type="password" placeholder="Пароль">
+                                    </label>
                                     <button type="submit">Вхожу</button>
                                     <a href="{% url 'accounts:frontend:password_reset' %}">Забыли пароль?</a>
                                 </form>
-
                             </div>
                         </div>
                         <div class="col-6">

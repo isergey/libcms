@@ -55,7 +55,7 @@ urlpatterns = patterns(
     # Uncomment the next line to enable the admin:
     url(r'^radmin/', include(admin.site.urls)),
     url(r'^jsi18n/$', site.i18n_javascript, name='jsi18n'),
-    url(r'^sauth/', include('social_auth.urls')),
+    #url(r'^sauth/', include('social_auth.urls')),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 )

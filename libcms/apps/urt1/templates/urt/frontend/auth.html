@@ -1,0 +1,66 @@
+{% extends 'frontend_base.html' %}
+{% block title %}Установка связи{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'profile:frontend:index' %}">Профиль</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'urt:frontend:index' %}">Прикрепление к библиотеке</a> <span class="divider">/</span></li>
+        <li class="active">Авторизация</li>
+    </ul>
+
+    {% if errors %}
+        {% include 'frontend/errors.html' %}
+    {% endif %}
+
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+        <legend>Авторизация в: {{ library.name }}</legend>
+        <fieldset>
+{#            <div class="control-group ">#}
+{#                <label class="control-label" for="cbs_select">Укажите библиотеку в которой у Вас имеется идентификатор читателя и пароль</label>#}
+{#                <div class="controls">#}
+{#                    <select name="cbs" id="cbs_select">#}
+{#                        <option disabled="" selected="">Выберите ЦБС</option>#}
+{#                        {% for cbs in cbses %}#}
+{#                            <option value="{{ cbs.id }}">{{ cbs.name }}</option>#}
+{#                        {% endfor %}#}
+{#                    </select>#}
+{#                </div>#}
+{#                <br/>#}
+{#                <div class="controls">#}
+{#                    <select name="library" id="lib_select">#}
+{#                        <option disabled="" selected="">-----</option>#}
+{#                    </select>#}
+{#                </div>#}
+{#            </div>#}
+
+            {% include 'frontend/base_form_fields.html' %}
+            {#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Авторизоваться</button>
+            </div>
+        </fieldset>
+    </form>
+{#    <script type="text/javascript">#}
+{#        $("#cbs_select").change(function () {#}
+{#            $.ajax({#}
+{#                url:'{% url participants:frontend:branches %}',#}
+{#                type:'POST',#}
+{#                dataType:"json",#}
+{#                async:true,#}
+{#                data:{id:$(this).val()},#}
+{#                success:function (orgs) {#}
+{#                    $('#lib_select').html(tmpl("lib_list_tmpl", {'orgs':orgs}));#}
+{#                }#}
+{#            });#}
+{#        });#}
+{##}
+{#    </script>#}
+{##}
+{#    <script type="text/html" id="lib_list_tmpl">#}
+{#        <option disabled="" selected="">Выберите библиотеку</option>#}
+{#        <% for (var i in orgs) { %>#}
+{#            <option value="<%=orgs[i].id%>"><%=orgs[i].name%></option>#}
+{#        <% } %>#}
+{#    </script>#}
+
+{% endblock %}

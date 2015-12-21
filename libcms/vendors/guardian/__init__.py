@@ -3,9 +3,10 @@ Implementation of per object permissions for Django 1.2 or later.
 """
 from __future__ import unicode_literals
 
-VERSION = (1, 2, 6, 'dev')
+VERSION = (1, 3, 2)
 
 __version__ = '.'.join((str(each) for each in VERSION[:4]))
+
 
 def get_version():
     """
@@ -25,7 +26,6 @@ def monkey_patch_user():
     # Prototype User and Group methods
     setattr(User, 'get_anonymous', staticmethod(lambda: get_anonymous_user()))
     setattr(User, 'add_obj_perm',
-        lambda self, perm, obj: UserObjectPermission.objects.assign_perm(perm, self, obj))
+            lambda self, perm, obj: UserObjectPermission.objects.assign_perm(perm, self, obj))
     setattr(User, 'del_obj_perm',
-        lambda self, perm, obj: UserObjectPermission.objects.remove_perm(perm, self, obj))
-
+            lambda self, perm, obj: UserObjectPermission.objects.remove_perm(perm, self, obj))
