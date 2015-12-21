@@ -3,75 +3,138 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 {% block content %}
-    <style>
-        ul.news {
-            list-style: none;
-            margin: 0;
-        }
-
-        .news .title {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .news .teaser {
-            padding: 5px 0;
-        }
-
-        .news .create_date {
-            color: #8c8c8c;
-        }
-    </style>
-    <div class="span12">
-        <div class="breadcrumb">
-            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
-            <span><a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a> <span
-                    class="divider">/</span></span>
-            <span class="active">Новости</span>
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
         </div>
-    </div>
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li>
+                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                        Главная
+                    </a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <a href="{% url 'participant_site:frontend:index' library.code %}" class="bread__crumbs_link">
+                    {{ library.name }}
+                </a>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <a class="bread__crumbs_link bread__crumbs_link_active">
+                    Новости
+                </a>
+            </ul>
+        </div>
+        <hr class="footer-hr">
+        <div class="container content-page">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="content-page__title">Новости</h1>
+                    {% admin_pagination news_page %}
+                    {% for news in news_list %}
+                        <div class="news-page-box">
+                            <div class="news-page-box__date">{{ news.create_date|date:'d E Y' }}</div>
+                            <h1 class="news-page-box__title"><a
+                                    href="{% url 'participant_news:frontend:show' library.code news.id %}">{{ news.title }}</a></h1>
 
-    <div class="span3">
-                {% include 'participant_site/frontend/site_menu.html' %}
-    </div>
-    <div class="span9">
-        {% include 'participant_site/frontend/inline_org_info.html' %}
-
-            <style>
-                ul.news {
-                    list-style: none;
-                    margin: 0;
-                }
-                .news .title{
-                    font-size: 16px;
-                    font-weight: bold;
-                }
-                .news .create_date{
-                    color: #8c8c8c;
-                }
-            </style>
-
-            <div class="news">
-                {% for news in news_list %}
-                    <div class="title"><a href="{% url 'participant_news:frontend:show' library.code news.id %}">{{ news.title }}</a></div>
-
-                    <table style="width: 100%">
-                        <tr>
-                        {% if news.avatar_img_name %}
-                            <td style="width: 100px; padding-right: 5px">
-                                <img src="{{ MEDIA_URL }}uploads/participant_news/newsavatars/{{ news.avatar_img_name }}"></td>
-                        {% endif %}
-                            <td style="vertical-align: top">
-                                {{ news.teaser }}
-                            </td>
-                        </tr>
-                    </table>
-                    <div class="create_date">{{ news.create_date|date:'d E Y' }}</div>
-                    {% if not forloop.last %}<hr/>{% endif %}
-                {% endfor %}
+                            <p class="news-page-box__teaser">{{ news.teaser }}</p>
+                        </div>
+                    {% endfor %}
+                    {% admin_pagination news_page %}
+                </div>
             </div>
-            {% admin_pagination news_page %}
-    </div>
+        </div>
 
+
+    </main>
+
+
+
+
+
+
+
+
+    {#    <style>#}
+    {#        ul.news {#}
+    {#            list-style: none;#}
+    {#            margin: 0;#}
+    {#        }#}
+    {##}
+    {#        .news .title {#}
+    {#            font-size: 16px;#}
+    {#            font-weight: bold;#}
+    {#        }#}
+    {##}
+    {#        .news .teaser {#}
+    {#            padding: 5px 0;#}
+    {#        }#}
+    {##}
+    {#        .news .create_date {#}
+    {#            color: #8c8c8c;#}
+    {#        }#}
+    {#    </style>#}
+    {#    <div class="span12">#}
+    {#        <div class="breadcrumb">#}
+    {#            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>#}
+    {#            <span><a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a> <span#}
+    {#                    class="divider">/</span></span>#}
+    {#            <span class="active">Новости</span>#}
+    {#        </div>#}
+    {#    </div>#}
+
+{#    <div class="span3">#}
+{#        {% include 'participant_site/frontend/site_menu.html' %}#}
+{#    </div>#}
+{#    <div class="span9">#}
+{#        {% include 'participant_site/frontend/inline_org_info.html' %}#}
+{##}
+{#        <style>#}
+{#            ul.news {#}
+{#                list-style: none;#}
+{#                margin: 0;#}
+{#            }#}
+{##}
+{#            .news .title {#}
+{#                font-size: 16px;#}
+{#                font-weight: bold;#}
+{#            }#}
+{##}
+{#            .news .create_date {#}
+{#                color: #8c8c8c;#}
+{#            }#}
+{#        </style>#}
+{##}
+{#        <div class="news">#}
+{#            {% for news in news_list %}#}
+{#                <div class="title"><a#}
+{#                        href="{% url 'participant_news:frontend:show' library.code news.id %}">{{ news.title }}</a>#}
+{#                </div>#}
+{##}
+{#                <table style="width: 100%">#}
+{#                    <tr>#}
+{#                        {% if news.avatar_img_name %}#}
+{#                            <td style="width: 100px; padding-right: 5px">#}
+{#                                <img src="{{ MEDIA_URL }}uploads/participant_news/newsavatars/{{ news.avatar_img_name }}">#}
+{#                            </td>#}
+{#                        {% endif %}#}
+{#                        <td style="vertical-align: top">#}
+{#                            {{ news.teaser }}#}
+{#                        </td>#}
+{#                    </tr>#}
+{#                </table>#}
+{#                <div class="create_date">{{ news.create_date|date:'d E Y' }}</div>#}
+{#                {% if not forloop.last %}#}
+{#                    <hr/>{% endif %}#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#        {% admin_pagination news_page %}#}
+{#    </div>#}
+{##}
 
 {% endblock %}

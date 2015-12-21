@@ -1,6 +1,6 @@
-<div>
+{#<div>#}
     {% if already_saved %}
-        <a class="btn btn-success" href="{% url 'mydocs:frontend:index' %}#{{ gen_id }}"><i class="icon-star icon-white"></i>  Сохранен в документах</a>
+        <a class="detail-page__options__btn" href="{% url 'mydocs:frontend:index' %}#{{ gen_id }}">Сохранен в документах</a>
 
     {% else %}
         <style>
@@ -29,9 +29,9 @@
             </form>
         </div>
         {% if user.id %}
-            <a class="btn" data-toggle="modal" href="#save_doc_modal" id="save_doc_button" ><i class="icon-star"></i> Сохранить в документах</a>
+            <a class="detail-page__options__btn" data-toggle="modal" href="#save_doc_modal" id="save_doc_button" >Сохранить в документах</a>
         {% else %}
-            <a class="btn disabled" href="#1" id="save_doc_button" onclick="alert('Необходимо войти на портал')" ><i class="icon-star"></i> Сохранить в документах</a>
+            <a class="detail-page__options__btn" href="#1" id="save_doc_button" onclick="alert('Необходимо войти на портал')" >Сохранить в документах</a>
         {% endif %}
         <script type="text/javascript">
             $('#save_doc_form').submit(function () {
@@ -70,4 +70,4 @@
 
 
     {% endif %}
-</div>
+{#</div>#}

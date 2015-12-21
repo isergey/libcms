@@ -1,75 +1,177 @@
 {% extends 'theme_frontend_base.html' %}
 {% block title %}Заказы на бронирование{% endblock %}
 {% block content %}
-    <div class="span12">
-    <ul class="breadcrumb">
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>
-        <li class="active">Заказы на бронирование</li>
-    </ul>
 
-    {% if libraries %}
-        <ul style="list-style: none; margin: 0;">
-            {% for library in libraries %}
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
                 <li>
-                    <div class="thumbnail" style="margin-bottom: 10px;">
-                        <h3><a target="_blank" href="{% url 'participants:frontend:detail' library.code %}">{{ library.name }}</a></h3>
-                        <div class="on_hand">
-                            <ul style="list-style: none">
-                                {% if library.error %}
-                                    <li><div class="alert alert-error">{{ library.error }}</div></li>
-                                {% else %}
-                                    {% for order in library.reservations %}
-                                        <li>{{ order.record|safe }}
-                                            <div class="alert alert-success">
-                                                <b>Номер</b>: {{ order.target_reference }}<br/>
-                                                <b>Статус</b>: {{ order.task_status }}<br/>
-                                                <b>Дата создания</b>: {{ order.creation_date_time }}<br/>
-                                                <b>Отчет</b>: {{ order.status_or_error_report }}
-                                            </div>
-                                        </li>
-                                        {% if not forloop.last %}<hr/>{% endif %}
-                                    {% empty %}
-                                        <li>Заказов нет</li>
-                                    {% endfor %}
-                                {% endif %}
-                            </ul>
-                        </div>
-                    </div>
+                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                        Главная
+                    </a>
                 </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>
-            Вы не являетесь читателем. Обратитесь в <a href="{% url 'participants:frontend:geosearch' %}">ближайшую библиотеку</a> или войдите на портал с использованием учетной записи на портале Госуслуг.
-        </p>
-    {% endif %}
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a href="{% url 'personal:frontend:index' %}" class="bread__crumbs_link">
+                        Личный кабинет
+                    </a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a class="bread__crumbs_link bread__crumbs_link_active">
+                        Заказы на бронирование
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <hr class="footer-hr">
+        <div class="container content-page">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="content-page__title">Заказы на бронирование</h1>
 
-    </div>
-{#    <script>#}
-{#    $().ready(function(){#}
-{#        $('.on_hand').each(function (){#}
-{#            var id = $(this).attr('id');#}
-{#            var elem = $(this);#}
-{#            $.ajax({#}
-{#                url: id,#}
-{#                success: function(data) {#}
-{#                    elem.html(data);#}
-{#                },#}
-{#                statusCode: {#}
-{#                    404: function() {#}
-{#                        elem.html('<div class="alert alert-error">Ошибка: отсутвует страница с информацией о заказах.</div>');#}
-{#                    },#}
-{#                    500: function() {#}
-{#                        elem.html('<div class="alert alert-error">Ошибка: на сервере произошло что-то страшное. Попробуйте зайти позднее</div>');#}
-{#                    },#}
-{#                    403: function() {#}
-{#                        elem.html('<div class="alert alert-error">Ошибка: доступ к информацие о заказах запрещен.</div>');#}
-{#                    }#}
-{#                }#}
-{#            });#}
-{#        });#}
-{#    });#}
-{##}
-{#    </script>#}
+                    <div class="content-page__text">
+                        {% if libraries %}
+                            <ul style="list-style: none; margin: 0;">
+                                {% for library in libraries %}
+                                    <li>
+                                        <div class="thumbnail" style="margin-bottom: 10px;">
+                                            <h3><a target="_blank"
+                                                   href="{% url 'participants:frontend:detail' library.code %}">{{ library.name }}</a>
+                                            </h3>
+
+                                            <div class="on_hand">
+                                                <ul style="list-style: none">
+                                                    {% if library.error %}
+                                                        <li>
+                                                            <div class="alert alert-error">{{ library.error }}</div>
+                                                        </li>
+                                                    {% else %}
+                                                        {% for order in library.reservations %}
+                                                            <li>{{ order.record|safe }}
+                                                                <div class="alert alert-success">
+                                                                    <b>Номер</b>: {{ order.target_reference }}<br/>
+                                                                    <b>Статус</b>: {{ order.task_status }}<br/>
+                                                                    <b>Дата создания</b>: {{ order.creation_date_time }}<br/>
+                                                                    <b>Отчет</b>: {{ order.status_or_error_report }}
+                                                                </div>
+                                                            </li>
+                                                            {% if not forloop.last %}
+                                                                <hr/>{% endif %}
+                                                        {% empty %}
+                                                            <li>Заказов нет</li>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>
+                                Вы не являетесь читателем. Обратитесь в <a
+                                    href="{% url 'participants:frontend:geosearch' %}">ближайшую
+                                библиотеку</a> или войдите на портал с использованием учетной записи на портале
+                                Госуслуг.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+
+
+    {#    <div class="span12">#}
+    {#        <ul class="breadcrumb">#}
+    {#            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
+    {#            <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>#}
+    {#            <li class="active">Заказы на бронирование</li>#}
+    {#        </ul>#}
+    {##}
+    {#        {% if libraries %}#}
+    {#            <ul style="list-style: none; margin: 0;">#}
+    {#                {% for library in libraries %}#}
+    {#                    <li>#}
+    {#                        <div class="thumbnail" style="margin-bottom: 10px;">#}
+    {#                            <h3><a target="_blank"#}
+    {#                                   href="{% url 'participants:frontend:detail' library.code %}">{{ library.name }}</a>#}
+    {#                            </h3>#}
+    {##}
+    {#                            <div class="on_hand">#}
+    {#                                <ul style="list-style: none">#}
+    {#                                    {% if library.error %}#}
+    {#                                        <li>#}
+    {#                                            <div class="alert alert-error">{{ library.error }}</div>#}
+    {#                                        </li>#}
+    {#                                    {% else %}#}
+    {#                                        {% for order in library.reservations %}#}
+    {#                                            <li>{{ order.record|safe }}#}
+    {#                                                <div class="alert alert-success">#}
+    {#                                                    <b>Номер</b>: {{ order.target_reference }}<br/>#}
+    {#                                                    <b>Статус</b>: {{ order.task_status }}<br/>#}
+    {#                                                    <b>Дата создания</b>: {{ order.creation_date_time }}<br/>#}
+    {#                                                    <b>Отчет</b>: {{ order.status_or_error_report }}#}
+    {#                                                </div>#}
+    {#                                            </li>#}
+    {#                                            {% if not forloop.last %}#}
+    {#                                                <hr/>{% endif %}#}
+    {#                                        {% empty %}#}
+    {#                                            <li>Заказов нет</li>#}
+    {#                                        {% endfor %}#}
+    {#                                    {% endif %}#}
+    {#                                </ul>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                    </li>#}
+    {#                {% endfor %}#}
+    {#            </ul>#}
+    {#        {% else %}#}
+    {#            <p>#}
+    {#                Вы не являетесь читателем. Обратитесь в <a href="{% url 'participants:frontend:geosearch' %}">ближайшую#}
+    {#                библиотеку</a> или войдите на портал с использованием учетной записи на портале Госуслуг.#}
+    {#            </p>#}
+    {#        {% endif %}#}
+    {##}
+    {#    </div>#}
+
+
+    {#    <script>#}
+    {#    $().ready(function(){#}
+    {#        $('.on_hand').each(function (){#}
+    {#            var id = $(this).attr('id');#}
+    {#            var elem = $(this);#}
+    {#            $.ajax({#}
+    {#                url: id,#}
+    {#                success: function(data) {#}
+    {#                    elem.html(data);#}
+    {#                },#}
+    {#                statusCode: {#}
+    {#                    404: function() {#}
+    {#                        elem.html('<div class="alert alert-error">Ошибка: отсутвует страница с информацией о заказах.</div>');#}
+    {#                    },#}
+    {#                    500: function() {#}
+    {#                        elem.html('<div class="alert alert-error">Ошибка: на сервере произошло что-то страшное. Попробуйте зайти позднее</div>');#}
+    {#                    },#}
+    {#                    403: function() {#}
+    {#                        elem.html('<div class="alert alert-error">Ошибка: доступ к информацие о заказах запрещен.</div>');#}
+    {#                    }#}
+    {#                }#}
+    {#            });#}
+    {#        });#}
+    {#    });#}
+    {##}
+    {#    </script>#}
 {% endblock %}

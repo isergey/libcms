@@ -6,176 +6,552 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 
-{% block title %}{% if LANGUAGE_CODE == 'ru' %}Детальная информация{% elif LANGUAGE_CODE == 'tt' %}Детальная информация{% else %}Detail information{% endif %}{% endblock %}
+{% block title %}{% if LANGUAGE_CODE == 'ru' %}Детальная информация{% elif LANGUAGE_CODE == 'tt' %}Детальная информация
+{% else %}Detail information{% endif %}{% endblock %}
 {% block content %}
-    <style type="text/css">
-        .marc_dump span.fieldlabel, span.subfieldlabel {
-            font-family: monospace;
-            color: blue;
-        }
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
 
-        .marc_dump span.data, span.indicator {
-            font-family: monospace;
-        }
-
-        .marc_dump span.label {
-            font-family: monospace;
-        }
-        .record {
-            font-weight: normal;
-        }
-    </style>
-    <div class="span12">
-        <ul class="breadcrumb">
-
-            <li><a href="{% url 'index:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Начало{% elif LANGUAGE_CODE == 'tt' %}Начало{% else %}Home{% endif %}</a> <span class="divider">/</span></li>
-            <li><a href="{% url 'ssearch:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}</a> <span class="divider">/</span></li>
-            {% if request.GET.back %}
-                <li><a href="{{ request.GET.back }}">{% if LANGUAGE_CODE == 'ru' %}Результаты поиска{% elif LANGUAGE_CODE == 'tt' %}Эзләү нәтиҗәләре{% else %}Search results{% endif %}</a> <span class="divider">/</span></li>
-            {% endif %}
-            <li class="active">{% if LANGUAGE_CODE == 'ru' %}Детальная информация{% elif LANGUAGE_CODE == 'tt' %}Детальная информация{% else %}Detail information{% endif %}</li>
-
-        </ul>
-        <div class="row">
-            <div class="span2">
-                <p>{% drow_save_doc request.user gen_id %}</p>
-                <p><a class="btn" href="{% url 'ssearch:frontend:to_print' gen_id %}" target="_blank"><i class="icon-print"></i>Печать</a></p>
-                <hr/>
-                <div>
-                    {% if LANGUAGE_CODE == 'ru' %}Количество обращений{% elif LANGUAGE_CODE == 'tt' %}Количество обращений{% else %}Views{% endif %}: {{ access_count }}
-                </div>
-            </div>
-
-            <div class="span10">
-                <ul class="nav nav-tabs">
-                    <li class="dropdown active">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Просмотр <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#card" data-toggle="tab">{% if LANGUAGE_CODE == 'ru' %}Карточка{% elif LANGUAGE_CODE == 'tt' %}Карточка{% else %}Card{% endif %}</a></li>
-                            <li><a href="#marc" data-toggle="tab">Marc</a></li>
-                        </ul>
+                <li><a class="bread__crumbs_link" href="{% url 'index:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}
+                    Главная{% elif LANGUAGE_CODE == 'tt' %}Главная{% else %}Home{% endif %}</a></li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li><a class="bread__crumbs_link" href="{% url 'ssearch:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}
+                        Search{% endif %}</a></li>
+                {% if request.GET.back %}
+                    <li>
+                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
                     </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="card">{{ doc_dump|safe }}</div>
-                    <div class="tab-pane" id="marc">{{ marc_dump|safe }}</div>
+                    <li><a class="bread__crumbs_link" href="{{ request.GET.back }}">{% if LANGUAGE_CODE == 'ru' %}
+                        Результаты поиска{% elif LANGUAGE_CODE == 'tt' %}Эзләү нәтиҗәләре{% else %}Search
+                        results{% endif %}</a></li>
+                {% endif %}
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li><a class="bread__crumbs_link bread__crumbs_link_active">{% if LANGUAGE_CODE == 'ru' %}Детальная
+                    информация{% elif LANGUAGE_CODE == 'tt' %}Детальная информация{% else %}Detail
+                    information{% endif %}</a></li>
+
+            </ul>
+        </div>
+        <hr class="footer-hr">
+        <div class="container detail-page">
+            <div class="row">
+                <div class="col-8">
+
+                    <div class="tab-container">
+                        <h1 class="detail-page__title">Детальная информация</h1>
+                        <ul class="tab-container__tabs">
+                            <li class="active">{% if LANGUAGE_CODE == 'ru' %}Карточка{% elif LANGUAGE_CODE == 'tt' %}
+                                Карточка{% else %}Card{% endif %}</li>
+                            <li>Marc</li>
+                        </ul>
+                        <div class="detail-page__options detail-page__options_border-bottom">
+                            {% drow_save_doc request.user gen_id %}
+                            <a class="detail-page__options__btn" href="{% url 'ssearch:frontend:to_print' gen_id %}"
+                               target="_blank">Печать</a>
+                            <span class="detail-page__options__count">{% if LANGUAGE_CODE == 'ru' %}Количество
+                                обращений{% elif LANGUAGE_CODE == 'tt' %}Количество обращений{% else %}Views{% endif %}
+                                : {{ access_count }}</span>
+                        </div>
+                        <ul class="tab-container__tab">
+                            <li class="active">
+                                <div class="detail-page__info">
+                                    {{ doc_dump|safe }}
+
+                                    {#                                    {% if linked_docs %}#}
+                                    {#                                        <style>#}
+                                    {#                                            .results {#}
+                                    {#                                                height: 500px;#}
+                                    {#                                            }#}
+                                    {##}
+                                    {#                                            .results ul {#}
+                                    {#                                                padding: 0;#}
+                                    {#                                                margin: 0;#}
+                                    {#                                                list-style: none;#}
+                                    {#                                            }#}
+                                    {##}
+                                    {#                                            .textBook p {#}
+                                    {#                                                line-height: 20px;#}
+                                    {#                                                margin: 0;#}
+                                    {#                                                padding: 0;#}
+                                    {#                                                color: #7D7D7D;#}
+                                    {#                                            }#}
+                                    {##}
+                                    {#                                            .textBook p.item1 a {#}
+                                    {#                                                font-size: 16px;#}
+                                    {#                                                font-weight: bold;#}
+                                    {##}
+                                    {#                                            }#}
+                                    {##}
+                                    {#                                            .textBook p.item2 {#}
+                                    {#                                                color: #3f3f3f;#}
+                                    {#                                            }#}
+                                    {##}
+                                    {#                                            .textBook .label {#}
+                                    {#                                                background: #51A351;#}
+                                    {#                                            }#}
+                                    {#                                        </style>#}
+                                    {#                                        <div class="results">#}
+                                    {#                                            <p>Это издание состоит из следующих#}
+                                    {#                                                томов/частей:#}
+                                    {#                                            </p>#}
+                                    {#                                            <ul class="list">#}
+                                    {#                                                {% for doc in linked_docs %}#}
+                                    {##}
+                                    {#                                                    <li class="textBook">#}
+                                    {#                                                        <p class="item1"><a target="_blank"#}
+                                    {#                                                                            href="{% url 'ssearch:frontend:detail' doc.id %}">{{ doc.record.title.0 }}</a>#}
+                                    {#                                                        </p>#}
+                                    {##}
+                                    {#                                                        <p class="item2">#}
+                                    {#                                                            {% for author in doc.record.author %}#}
+                                    {#                                                                {{ author }}{% if not forloop.last %}; {% endif %}#}
+                                    {#                                                            {% endfor %}#}
+                                    {#                                                        </p>#}
+                                    {##}
+                                    {#                                                        <p class="item3">#}
+                                    {#                                                            {% for subject in doc.record|hash:'subject-heading' %}#}
+                                    {#                                                                <span class="label label-info">{{ subject }}</span>#}
+                                    {#                                                            {% endfor %}#}
+                                    {#                                                        </p>#}
+                                    {#                                                        {% if doc.record|hash:'code-language' %}#}
+                                    {#                                                            <p class="item4">{% if LANGUAGE_CODE == 'ru' %}#}
+                                    {#                                                                Язык{% elif LANGUAGE_CODE == 'tt' %}Тел{% else %}#}
+                                    {#                                                                Language{% endif %}:#}
+                                    {#                                                                {% for lang in doc.record|hash:'code-language' %}#}
+                                    {#                                                                    {% if not forloop.last %}#}
+                                    {#                                                                        {{ lang|language_title }},#}
+                                    {#                                                                    {% else %}#}
+                                    {#                                                                        {{ lang|language_title }}#}
+                                    {#                                                                    {% endif %}#}
+                                    {#                                                                {% endfor %}#}
+                                    {#                                                            </p>#}
+                                    {#                                                        {% endif %}#}
+                                    {#                                                        {% if doc.record|hash:'date-of-publication' %}#}
+                                    {#                                                            <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Год#}
+                                    {#                                                                публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып#}
+                                    {#                                                                чыгару елы{% else %}#}
+                                    {#                                                                Publication year{% endif %}:#}
+                                    {#                                                                {% for dop in doc.record|hash:'date-of-publication' %}#}
+                                    {#                                                                    {% if not forloop.last %}#}
+                                    {#                                                                        {{ dop }},#}
+                                    {#                                                                    {% else %}#}
+                                    {#                                                                        {{ dop }}#}
+                                    {#                                                                    {% endif %}#}
+                                    {#                                                                {% endfor %}#}
+                                    {#                                                            </p>#}
+                                    {#                                                        {% endif %}#}
+                                    {#                                                        {% if doc.record|hash:'publisher' %}#}
+                                    {#                                                            <p class="item4">Издатель:#}
+                                    {#                                                                {% for publisher in doc.record|hash:'publisher' %}#}
+                                    {#                                                                    {% if not forloop.last %}#}
+                                    {#                                                                        {{ publisher }},#}
+                                    {#                                                                    {% else %}#}
+                                    {#                                                                        {{ publisher }}#}
+                                    {#                                                                    {% endif %}#}
+                                    {#                                                                {% endfor %}#}
+                                    {#                                                            </p>#}
+                                    {#                                                        {% endif %}#}
+                                    {#                                                        {% if doc.record|hash:'content-type' %}#}
+                                    {#                                                            <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Тип#}
+                                    {#                                                                содержания{% elif LANGUAGE_CODE == 'tt' %}Эчтәлек#}
+                                    {#                                                                тибы{% else %}Content#}
+                                    {#                                                                tipe{% endif %}:#}
+                                    {#                                                                {% for content_type in doc.record|hash:'content-type' %}#}
+                                    {#                                                                    {% if not forloop.last %}#}
+                                    {#                                                                        {{ content_type|content_type_title }},#}
+                                    {#                                                                    {% else %}#}
+                                    {#                                                                        {{ content_type|content_type_title }}#}
+                                    {#                                                                    {% endif %}#}
+                                    {#                                                                {% endfor %}#}
+                                    {#                                                            </p>#}
+                                    {#                                                        {% endif %}#}
+                                    {#                                                    </li>#}
+                                    {#                                                    <hr/>#}
+                                    {#                                                {% endfor %}#}
+                                    {#                                            </ul>#}
+                                    {#                                        </div>#}
+                                    {#                                    {% endif %}#}
+
+                                </div>
+                            </li>
+                            <li>
+                                <div class="detail-page__info">
+                                    <div class="marc_dump">
+                                        {{ marc_dump|safe }}
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                        {% if linked_docs %}
+                            <style>
+                                .results {
+                                    font-family: 'Roboto', sans-serif;
+                                    font-size: 18px;
+                                    font-weight: 300;
+                                    color: #000;
+                                    line-height: 28px;
+                                }
+
+                                .results .header {
+                                    margin: 45px 10px 0 40px;
+                                    font-family: RobotoSlabBold;
+                                    color: #373737;
+                                    font-weight: 500;
+                                    font-size: 26px;
+                                    line-height: 36px;
+                                }
+
+                                .results ul {
+                                    margin: 0 40px;
+                                    line-height: 16px;
+                                    font-size: 18px;
+                                }
+
+                                .results a {
+                                  color: #3062a4;
+                                }
+
+                                .results a:hover {
+                                    color: #e8290c;
+                                  }
+
+                                {#                                .results ul {#}
+                                {#                                    padding: 0;#}
+                                {#                                    margin: 0;#}
+                                {#                                    list-style: none;#}
+                                {#                                }#}
+                                {##}
+                                {#                                .textBook p {#}
+                                {#                                    line-height: 20px;#}
+                                {#                                    margin: 0;#}
+                                {#                                    padding: 0;#}
+                                {#                                    color: #7D7D7D;#}
+                                {#                                }#}
+                                {##}
+                                {#                                .textBook p.item1 a {#}
+                                {#                                    font-size: 16px;#}
+                                {#                                    font-weight: bold;#}
+                                {##}
+                                {#                                }#}
+                                {##}
+                                {#                                .textBook p.item2 {#}
+                                {#                                    color: #3f3f3f;#}
+                                {#                                }#}
+                                {##}
+                                {#                                .textBook .label {#}
+                                {#                                    background: #51A351;#}
+                                {#                                }#}
+                            </style>
+                            <div class="results">
+                                <p class="header">Это издание состоит из следующих
+                                    томов/частей:
+                                </p>
+                                <ul class="list">
+                                    {% for doc in linked_docs %}
+
+                                        <li class="textBook">
+                                            <p class="item1"><a target="_blank"
+                                                                href="{% url 'ssearch:frontend:detail' doc.id %}">{{ doc.record.title.0 }}</a>
+                                            </p>
+
+                                            <p class="item2">
+                                                {% for author in doc.record.author %}
+                                                    {{ author }}{% if not forloop.last %}; {% endif %}
+                                                {% endfor %}
+                                            </p>
+
+                                            <p class="item3">
+                                                {% for subject in doc.record|hash:'subject-heading' %}
+                                                    <span class="label label-info">{{ subject }}</span>
+                                                {% endfor %}
+                                            </p>
+                                            {% if doc.record|hash:'code-language' %}
+                                                <p class="item4">{% if LANGUAGE_CODE == 'ru' %}
+                                                    Язык{% elif LANGUAGE_CODE == 'tt' %}Тел{% else %}
+                                                    Language{% endif %}:
+                                                    {% for lang in doc.record|hash:'code-language' %}
+                                                        {% if not forloop.last %}
+                                                            {{ lang|language_title }},
+                                                        {% else %}
+                                                            {{ lang|language_title }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </p>
+                                            {% endif %}
+                                            {% if doc.record|hash:'date-of-publication' %}
+                                                <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Год
+                                                    публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып
+                                                    чыгару елы{% else %}
+                                                    Publication year{% endif %}:
+                                                    {% for dop in doc.record|hash:'date-of-publication' %}
+                                                        {% if not forloop.last %}
+                                                            {{ dop }},
+                                                        {% else %}
+                                                            {{ dop }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </p>
+                                            {% endif %}
+                                            {% if doc.record|hash:'publisher' %}
+                                                <p class="item4">Издатель:
+                                                    {% for publisher in doc.record|hash:'publisher' %}
+                                                        {% if not forloop.last %}
+                                                            {{ publisher }},
+                                                        {% else %}
+                                                            {{ publisher }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </p>
+                                            {% endif %}
+                                            {% if doc.record|hash:'content-type' %}
+                                                <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Тип
+                                                    содержания{% elif LANGUAGE_CODE == 'tt' %}Эчтәлек
+                                                    тибы{% else %}Content
+                                                    tipe{% endif %}:
+                                                    {% for content_type in doc.record|hash:'content-type' %}
+                                                        {% if not forloop.last %}
+                                                            {{ content_type|content_type_title }},
+                                                        {% else %}
+                                                            {{ content_type|content_type_title }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </p>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+
+                        {#                        <div class="detail-page__options detail-page__options_border-top">#}
+                        {#                            <a class="detail-page__options__btn-atrr" href="#" title="">#}
+                        {#                                <img src="{{ STATIC_URL }}dist/images/jpg.png" alt="Обложка">#}
+                        {#                                <span>Обложка</span>#}
+                        {#                            </a>#}
+                        {#                            <a class="detail-page__options__btn-atrr" href="#" title="">#}
+                        {#                                <img src="{{ STATIC_URL }}dist/images/pdf.png" alt="Оглавление">#}
+                        {#                                <span>Оглавление</span>#}
+                        {#                            </a>#}
+                        {#                        </div>#}
+                    </div>
                 </div>
+                <div class="col-4">
+                    <div class="reserv-box">
 
-                <div class="holders" style="clear: both;">
-                    <hr/>
-                         {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}
+
+                        {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}
+
+                    </div>
                 </div>
-
-            {% if linked_docs %}
-                <style>
-                .results ul {
-                    padding: 0;
-                    margin: 0;
-                    list-style: none;
-                }
-                    .textBook p {
-                        line-height: 20px;
-                        margin: 0;
-                        padding: 0;
-                        color: #7D7D7D;
-                    }
-                    .textBook p.item1 a {
-                        font-size: 16px;
-                        font-weight: bold;
-
-                    }
-                    .textBook p.item2 {
-                        color: #3f3f3f;
-                    }
-                    .textBook .label {
-                        background: #51A351;
-                    }
-                </style>
-            <div class="results">
-            <div class="alert alert-success">Это издание состоит из следующих томов/частей:</div>
-            <ul class="list">
-                    {% for doc in linked_docs %}
-
-                        <li class="textBook">
-                            <p class="item1"><a target="_blank" href="{% url 'ssearch:frontend:detail' doc.id %}">{{ doc.record.title.0 }}</a></p>
-                            <p class="item2">
-                                {% for author in doc.record.author %}
-                                    {{ author }}{% if not forloop.last %}; {% endif %}
-                                {% endfor %}
-                            </p>
-                            <p class="item3">
-                                {% for subject in doc.record|hash:'subject-heading' %}
-                                    <span class="label label-info">{{ subject }}</span>
-                                {% endfor %}
-                            </p>
-                            {% if doc.record|hash:'code-language' %}
-                                <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Язык{% elif LANGUAGE_CODE == 'tt' %}Тел{% else %}Language{% endif %}:
-                                    {% for lang in doc.record|hash:'code-language' %}
-                                        {% if not forloop.last %}
-                                            {{ lang|language_title }},
-                                        {% else %}
-                                            {{ lang|language_title }}
-                                        {% endif %}
-                                    {% endfor %}
-                                </p>
-                            {% endif %}
-                            {% if doc.record|hash:'date-of-publication' %}
-                                <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Год публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып чыгару елы{% else %}Publication year{% endif %}:
-                                    {% for dop in doc.record|hash:'date-of-publication' %}
-                                        {% if not forloop.last %}
-                                            {{ dop }},
-                                        {% else %}
-                                            {{ dop }}
-                                        {% endif %}
-                                    {% endfor %}
-                                </p>
-                            {% endif %}
-                            {% if doc.record|hash:'publisher' %}
-                                <p class="item4">Издатель:
-                                    {% for publisher in doc.record|hash:'publisher' %}
-                                        {% if not forloop.last %}
-                                            {{ publisher }},
-                                        {% else %}
-                                            {{ publisher }}
-                                        {% endif %}
-                                    {% endfor %}
-                                </p>
-                            {% endif %}
-                            {% if doc.record|hash:'content-type' %}
-                                <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Тип содержания{% elif LANGUAGE_CODE == 'tt' %}Эчтәлек тибы{% else %}Content tipe{% endif %}:
-                                    {% for content_type in doc.record|hash:'content-type' %}
-                                        {% if not forloop.last %}
-                                            {{ content_type|content_type_title }},
-                                        {% else %}
-                                            {{ content_type|content_type_title }}
-                                        {% endif %}
-                                    {% endfor %}
-                                </p>
-                            {% endif %}
-                        </li>
-                        <hr/>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
             </div>
         </div>
-    </div>
+    </main>
+
+
+
+
+
+
+
+
+
+    {#    <style type="text/css">#}
+    {#        .marc_dump span.fieldlabel, span.subfieldlabel {#}
+    {#            font-family: monospace;#}
+    {#            color: blue;#}
+    {#        }#}
+    {##}
+    {#        .marc_dump span.data, span.indicator {#}
+    {#            font-family: monospace;#}
+    {#        }#}
+    {##}
+    {#        .marc_dump span.label {#}
+    {#            font-family: monospace;#}
+    {#        }#}
+    {#        .record {#}
+    {#            font-weight: normal;#}
+    {#        }#}
+    {#    </style>#}
+    {#    <div class="span12">#}
+    {#        <ul class="breadcrumb">#}
+    {##}
+    {#            <li><a href="{% url 'index:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Начало{% elif LANGUAGE_CODE == 'tt' %}Начало{% else %}Home{% endif %}</a> <span class="divider">/</span></li>#}
+    {#            <li><a href="{% url 'ssearch:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}</a> <span class="divider">/</span></li>#}
+    {#            {% if request.GET.back %}#}
+    {#                <li><a href="{{ request.GET.back }}">{% if LANGUAGE_CODE == 'ru' %}Результаты поиска{% elif LANGUAGE_CODE == 'tt' %}Эзләү нәтиҗәләре{% else %}Search results{% endif %}</a> <span class="divider">/</span></li>#}
+    {#            {% endif %}#}
+    {#            <li class="active">{% if LANGUAGE_CODE == 'ru' %}Детальная информация{% elif LANGUAGE_CODE == 'tt' %}Детальная информация{% else %}Detail information{% endif %}</li>#}
+    {##}
+    {#        </ul>#}
+    {#        <div class="row">#}
+    {#            <div class="span2">#}
+    {#                <p>{% drow_save_doc request.user gen_id %}</p>#}
+    {#                <p><a class="btn" href="{% url 'ssearch:frontend:to_print' gen_id %}" target="_blank"><i class="icon-print"></i>Печать</a></p>#}
+    {#                <hr/>#}
+    {#                <div>#}
+    {#                    {% if LANGUAGE_CODE == 'ru' %}Количество обращений{% elif LANGUAGE_CODE == 'tt' %}Количество обращений{% else %}Views{% endif %}: {{ access_count }}#}
+    {#                </div>#}
+    {#            </div>#}
+    {##}
+    {#            <div class="span10">#}
+    {#                <ul class="nav nav-tabs">#}
+    {#                    <li class="dropdown active">#}
+    {#                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Просмотр <b class="caret"></b></a>#}
+    {#                        <ul class="dropdown-menu">#}
+    {#                            <li><a href="#card" data-toggle="tab">{% if LANGUAGE_CODE == 'ru' %}Карточка{% elif LANGUAGE_CODE == 'tt' %}Карточка{% else %}Card{% endif %}</a></li>#}
+    {#                            <li><a href="#marc" data-toggle="tab">Marc</a></li>#}
+    {#                        </ul>#}
+    {#                    </li>#}
+    {#                </ul>#}
+    {#                <div class="tab-content">#}
+    {#                    <div class="tab-pane active" id="card">{{ doc_dump|safe }}</div>#}
+    {#                    <div class="tab-pane" id="marc">{{ marc_dump|safe }}</div>#}
+    {#                </div>#}
+    {##}
+    {#                <div class="holders" style="clear: both;">#}
+    {#                    <hr/>#}
+    {#                         {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}#}
+    {#                </div>#}
+    {##}
+    {#                {% if linked_docs %}#}
+    {#                    <style>#}
+    {#                        .results ul {#}
+    {#                            padding: 0;#}
+    {#                            margin: 0;#}
+    {#                            list-style: none;#}
+    {#                        }#}
+    {##}
+    {#                        .textBook p {#}
+    {#                            line-height: 20px;#}
+    {#                            margin: 0;#}
+    {#                            padding: 0;#}
+    {#                            color: #7D7D7D;#}
+    {#                        }#}
+    {##}
+    {#                        .textBook p.item1 a {#}
+    {#                            font-size: 16px;#}
+    {#                            font-weight: bold;#}
+    {##}
+    {#                        }#}
+    {##}
+    {#                        .textBook p.item2 {#}
+    {#                            color: #3f3f3f;#}
+    {#                        }#}
+    {##}
+    {#                        .textBook .label {#}
+    {#                            background: #51A351;#}
+    {#                        }#}
+    {#                    </style>#}
+    {#                    <div class="results">#}
+    {#                        <div class="alert alert-success">Это издание состоит из следующих томов/частей:</div>#}
+    {#                        <ul class="list">#}
+    {#                            {% for doc in linked_docs %}#}
+    {##}
+    {#                                <li class="textBook">#}
+    {#                                    <p class="item1"><a target="_blank"#}
+    {#                                                        href="{% url 'ssearch:frontend:detail' doc.id %}">{{ doc.record.title.0 }}</a>#}
+    {#                                    </p>#}
+    {##}
+    {#                                    <p class="item2">#}
+    {#                                        {% for author in doc.record.author %}#}
+    {#                                            {{ author }}{% if not forloop.last %}; {% endif %}#}
+    {#                                        {% endfor %}#}
+    {#                                    </p>#}
+    {##}
+    {#                                    <p class="item3">#}
+    {#                                        {% for subject in doc.record|hash:'subject-heading' %}#}
+    {#                                            <span class="label label-info">{{ subject }}</span>#}
+    {#                                        {% endfor %}#}
+    {#                                    </p>#}
+    {#                                    {% if doc.record|hash:'code-language' %}#}
+    {#                                        <p class="item4">{% if LANGUAGE_CODE == 'ru' %}#}
+    {#                                            Язык{% elif LANGUAGE_CODE == 'tt' %}Тел{% else %}Language{% endif %}:#}
+    {#                                            {% for lang in doc.record|hash:'code-language' %}#}
+    {#                                                {% if not forloop.last %}#}
+    {#                                                    {{ lang|language_title }},#}
+    {#                                                {% else %}#}
+    {#                                                    {{ lang|language_title }}#}
+    {#                                                {% endif %}#}
+    {#                                            {% endfor %}#}
+    {#                                        </p>#}
+    {#                                    {% endif %}#}
+    {#                                    {% if doc.record|hash:'date-of-publication' %}#}
+    {#                                        <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Год#}
+    {#                                            публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып чыгару елы{% else %}#}
+    {#                                            Publication year{% endif %}:#}
+    {#                                            {% for dop in doc.record|hash:'date-of-publication' %}#}
+    {#                                                {% if not forloop.last %}#}
+    {#                                                    {{ dop }},#}
+    {#                                                {% else %}#}
+    {#                                                    {{ dop }}#}
+    {#                                                {% endif %}#}
+    {#                                            {% endfor %}#}
+    {#                                        </p>#}
+    {#                                    {% endif %}#}
+    {#                                    {% if doc.record|hash:'publisher' %}#}
+    {#                                        <p class="item4">Издатель:#}
+    {#                                            {% for publisher in doc.record|hash:'publisher' %}#}
+    {#                                                {% if not forloop.last %}#}
+    {#                                                    {{ publisher }},#}
+    {#                                                {% else %}#}
+    {#                                                    {{ publisher }}#}
+    {#                                                {% endif %}#}
+    {#                                            {% endfor %}#}
+    {#                                        </p>#}
+    {#                                    {% endif %}#}
+    {#                                    {% if doc.record|hash:'content-type' %}#}
+    {#                                        <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Тип#}
+    {#                                            содержания{% elif LANGUAGE_CODE == 'tt' %}Эчтәлек тибы{% else %}Content#}
+    {#                                            tipe{% endif %}:#}
+    {#                                            {% for content_type in doc.record|hash:'content-type' %}#}
+    {#                                                {% if not forloop.last %}#}
+    {#                                                    {{ content_type|content_type_title }},#}
+    {#                                                {% else %}#}
+    {#                                                    {{ content_type|content_type_title }}#}
+    {#                                                {% endif %}#}
+    {#                                            {% endfor %}#}
+    {#                                        </p>#}
+    {#                                    {% endif %}#}
+    {#                                </li>#}
+    {#                                <hr/>#}
+    {#                            {% endfor %}#}
+    {#                        </ul>#}
+    {#                    </div>#}
+    {#                {% endif %}#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
+    {#    #}
+    {#    #}
+
     <script>
 
 
-        function insertParam(href, key, value){
-            if (href.indexOf('?') > -1){
-                return href + '&'+ key +'=' + value;
-            }else{
-                return href + '?'+ key +'=' + value;
+        function insertParam(href, key, value) {
+            if (href.indexOf('?') > -1) {
+                return href + '&' + key + '=' + value;
+            } else {
+                return href + '?' + key + '=' + value;
             }
         }
 
     </script>
     <script>
         $(function () {
-            if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
                 $('.record a').each(function (index) {
                     var $elink = $(this);
                     var href = $elink.attr('href');
@@ -187,10 +563,10 @@
                     }
                 });
             } else {
-                $('#card .elink').click(function(){
-                   var elink_href = $(this).attr('href');
-                   $(this).attr('href', insertParam(elink_href, 'gen_id', '{{ gen_id|urlencode }}'));
-               });
+                $('#card .elink').click(function () {
+                    var elink_href = $(this).attr('href');
+                    $(this).attr('href', insertParam(elink_href, 'gen_id', '{{ gen_id|urlencode }}'));
+                });
             }
         });
     </script>

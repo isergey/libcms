@@ -1,17 +1,15 @@
 {% load mptt_tags %}
 
-    <ul class="library_menu">
+    <ul class="lib-info__list">
         {% if nodes %}
             {% recursetree nodes %}
                 <li {% if path == node.url  %} class="active" {% endif %}>
                     <a href="{{ node.url }}" {% if node.open_in_new %} target="_blank" {% endif %}>{{ node.title }}</a>
                 </li>
                 {% if not node.is_leaf_node %}
-                    <li class="dir">
-                        <ul class="children">
+                        <ul>
                         {{ children }}
                         </ul>
-                    </li>
                 {% endif %}
             {% endrecursetree %}
         {% endif %}

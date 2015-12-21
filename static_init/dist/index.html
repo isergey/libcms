@@ -1117,14 +1117,14 @@
         });
     });
 
-    $('.facet__header').click(function() {
-        var facetBody =  $(this).next();
+    $('.facet__header').click(function () {
+        var facetBody = $(this).next();
         if (facetBody.hasClass('facet__body_closed')) {
             $(this).removeClass('facet__header_closed');
             facetBody.removeClass('facet__body_closed');
         } else {
             facetBody.addClass('facet__body_closed');
-            $(this).addClass('facet__body_closed');
+            $(this).addClass('facet__header_closed');
         }
     });
 

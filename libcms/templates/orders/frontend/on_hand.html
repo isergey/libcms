@@ -1,51 +1,140 @@
 {% extends 'theme_frontend_base.html' %}
 {% block title %}Выданные книги{% endblock %}
 {% block content %}
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>
-            <li class="active">Выданные книги</li>
-        </ul>
-
-        {% if libraries %}
-            <ul style="list-style: none; margin: 0">
-                {% for library in libraries %}
-                    <li>
-                        <div class="thumbnail" style="margin-bottom: 10px;">
-                            <h3><a target="_blank" href="{% url 'participants:frontend:detail' library.code %}">{{ library.name }}</a></h3>
-
-                            <div class="on_hand" id="{% url 'orders:frontend:on_hand_in_lib' library.id %}">
-                                <ul style="list-style: none;">
-                                    {% if library.error %}
-                                        <li>
-                                            <div class="alert alert-error">{{ library.error }}</div>
-                                        </li>
-                                    {% else %}
-                                        {% for book in library.books %}
-                                            <li>{{ book.record|safe }}
-                                                <div class="alert alert-success">
-                                                    <b>Примечание</b>: {{ book.description }}
-                                                </div>
-                                            </li>
-                                            {% if not forloop.last %}
-                                                <hr/>{% endif %}
-                                        {% empty %}
-                                            <li>
-                                                <div class="alert">Выданных книг нет</div>
-                                            </li>
-                                        {% endfor %}
-                                    {% endif %}
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                {% endfor %}
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li>
+                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                        Главная
+                    </a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a href="{% url 'personal:frontend:index' %}" class="bread__crumbs_link">
+                        Личный кабинет
+                    </a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a class="bread__crumbs_link bread__crumbs_link_active">
+                        Выданные книги
+                    </a>
+                </li>
             </ul>
-        {% else %}
-            <p>
-                Вы не являетесь читателем. Обратитесь в <a href="{% url 'participants:frontend:geosearch' %}">ближайшую библиотеку</a> или войдите на портал с использованием учетной записи на портале Госуслуг.
-            </p>
-        {% endif %}
-    </div>
+        </div>
+        <hr class="footer-hr">
+        <div class="container content-page">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="content-page__title">Выданные книги</h1>
+
+                    <div class="content-page__text">
+                        {% if libraries %}
+                            <ul style="list-style: none; margin: 0">
+                                {% for library in libraries %}
+                                    <li>
+                                        <div class="thumbnail" style="margin-bottom: 10px;">
+                                            <h3><a target="_blank"
+                                                   href="{% url 'participants:frontend:detail' library.code %}">{{ library.name }}</a>
+                                            </h3>
+
+                                            <div class="on_hand"
+                                                 id="{% url 'orders:frontend:on_hand_in_lib' library.id %}">
+                                                <ul style="list-style: none;">
+                                                    {% if library.error %}
+                                                        <li>
+                                                            <div class="alert alert-error">{{ library.error }}</div>
+                                                        </li>
+                                                    {% else %}
+                                                        {% for book in library.books %}
+                                                            <li>{{ book.record|safe }}
+                                                                <div class="alert alert-success">
+                                                                    <b>Примечание</b>: {{ book.description }}
+                                                                </div>
+                                                            </li>
+                                                            {% if not forloop.last %}
+                                                                <hr/>{% endif %}
+                                                        {% empty %}
+                                                            <li>
+                                                                <div class="alert">Выданных книг нет</div>
+                                                            </li>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>
+                                Вы не являетесь читателем. Обратитесь в <a
+                                    href="{% url 'participants:frontend:geosearch' %}">ближайшую библиотеку</a> или
+                                войдите на портал с использованием учетной записи на портале Госуслуг.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    {#    <div class="span12">#}
+    {#        <ul class="breadcrumb">#}
+    {#            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
+    {#            <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>#}
+    {#            <li class="active">Выданные книги</li>#}
+    {#        </ul>#}
+    {##}
+    {#        {% if libraries %}#}
+    {#            <ul style="list-style: none; margin: 0">#}
+    {#                {% for library in libraries %}#}
+    {#                    <li>#}
+    {#                        <div class="thumbnail" style="margin-bottom: 10px;">#}
+    {#                            <h3><a target="_blank" href="{% url 'participants:frontend:detail' library.code %}">{{ library.name }}</a></h3>#}
+    {##}
+    {#                            <div class="on_hand" id="{% url 'orders:frontend:on_hand_in_lib' library.id %}">#}
+    {#                                <ul style="list-style: none;">#}
+    {#                                    {% if library.error %}#}
+    {#                                        <li>#}
+    {#                                            <div class="alert alert-error">{{ library.error }}</div>#}
+    {#                                        </li>#}
+    {#                                    {% else %}#}
+    {#                                        {% for book in library.books %}#}
+    {#                                            <li>{{ book.record|safe }}#}
+    {#                                                <div class="alert alert-success">#}
+    {#                                                    <b>Примечание</b>: {{ book.description }}#}
+    {#                                                </div>#}
+    {#                                            </li>#}
+    {#                                            {% if not forloop.last %}#}
+    {#                                                <hr/>{% endif %}#}
+    {#                                        {% empty %}#}
+    {#                                            <li>#}
+    {#                                                <div class="alert">Выданных книг нет</div>#}
+    {#                                            </li>#}
+    {#                                        {% endfor %}#}
+    {#                                    {% endif %}#}
+    {#                                </ul>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                    </li>#}
+    {#                {% endfor %}#}
+    {#            </ul>#}
+    {#        {% else %}#}
+    {#            <p>#}
+    {#                Вы не являетесь читателем. Обратитесь в <a href="{% url 'participants:frontend:geosearch' %}">ближайшую библиотеку</a> или войдите на портал с использованием учетной записи на портале Госуслуг.#}
+    {#            </p>#}
+    {#        {% endif %}#}
+    {#    </div>#}
 {% endblock %}

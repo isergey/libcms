@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+import httplib2
 from lxml import etree
 import socket
 from django.conf import settings
@@ -17,8 +18,8 @@ register = Library()
 
 @register.inclusion_tag('ssearch/tags/participant_income.html')
 def participant_income(sigla):
-
-    solr = sunburnt.SolrInterface(settings.SOLR['local_records_host'])
+    solr_connection = httplib2.Http(disable_ssl_certificate_validation=True)
+    solr = sunburnt.SolrInterface(settings.SOLR['local_records_host'], http_connection=solr_connection)
     if sigla:
         query = solr.Q(**{'holder-sigla_s': sigla})
     else:

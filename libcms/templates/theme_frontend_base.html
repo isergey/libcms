@@ -6,8 +6,8 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>{% block title %}НЭБ РТ{% endblock %}</title>
-        <meta name="description" content>
+    <title>{% block title %}Национальная электронная библиотека Республики Татарстан{% endblock %}</title>
+    <meta name="description" content>
     <meta name="keywords" content>
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
     <link rel="icon" type="image/ico" href="{{ STATIC_URL }}theme/favicon.ico"/>
@@ -16,16 +16,25 @@
     <![endif]-->
     <link rel="stylesheet" href="{{ STATIC_URL }}dist/styles/index.css">
 
-{#    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css"/>#}
-{#    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}theme/style.css"/>#}
-{#    {% block styles %}{% endblock %}#}
-{#    <script src="{{ STATIC_URL }}js/jquery.min.js"></script>#}
-{#    <script src="{{ STATIC_URL }}js/jquery.pjax.js"></script>#}
-{#    <script src="{{ STATIC_URL }}js/lodash.compat.min.js"></script>#}
-{#    <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>#}
-{#    <script src="{{ STATIC_URL }}js/typeahead.jquery.min.js"></script>#}
+    <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
+    <script src="{{ STATIC_URL }}dist/scripts/commons.js"></script>
+    <script src="{{ STATIC_URL }}dist/scripts/index.js"></script>
+    <script src="{{ STATIC_URL }}dist/vendors/owl-carousel/owl.carousel.min.js"></script>
+    <script src="{{ STATIC_URL }}js/lodash.compat.min.js"></script>
     <script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
     {% block scripts %}{% endblock %}
+
+
+    {#    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css"/>#}
+    {#    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}theme/style.css"/>#}
+    {#    {% block styles %}{% endblock %}#}
+{#        <script src="{{ STATIC_URL }}js/jquery.min.js"></script>#}
+{#        <script src="{{ STATIC_URL }}js/jquery.pjax.js"></script>#}
+{#        <script src="{{ STATIC_URL }}js/lodash.compat.min.js"></script>#}
+{#        <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>#}
+    {#    <script src="{{ STATIC_URL }}js/typeahead.jquery.min.js"></script>#}
+{#        <script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>#}
+{#        {% block scripts %}{% endblock %}#}
 </head>
 <body>
 <header>
@@ -39,15 +48,19 @@
                             <img src="{{ STATIC_URL }}dist/images/logo.png">
                         </div>
                         <div class="logo__text">
-                            <span>Национальная электронная библиотека</span><br>Республики Татарстан
+                            {% if LANGUAGE_CODE == 'ru' %}<span>Национальная электронная библиотека</span><br>Республики Татарстан{% elif LANGUAGE_CODE == 'tt' %}
+                                <span>Татарстан Республикасының Милли<br> электрон китапханәсе</span>{% else %}<span>National Electronic Library of the</span><br>Republic of Tatarstan{% endif %}
                         </div>
                     </div>
                 </a>
 
                 <div class="language">
-                    <a href="/ru{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}" class="language__btn language__btn_active" title="Русский">Рус</a>
-                    <a href="/tt{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}" class="language__btn" title="Татарский">Тат</a>
-                    <a href="/en{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}" class="language__btn" title="English">Eng</a>
+                    <a href="/ru{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                       class="language__btn {% if "/ru" in request.path %}language__btn_active{% endif %}" title="Русский">Рус</a>
+                    <a href="/tt{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                       class="language__btn {% if "/tt" in request.path %}language__btn_active{% endif %}" title="Татарский">Тат</a>
+                    <a href="/en{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                       class="language__btn {% if "/en" in request.path %}language__btn_active{% endif %}" title="English">Eng</a>
                 </div>
             </div>
             {% include 'cabinet.html' %}
@@ -60,15 +73,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <ul class="menu-box menu-box_first">
-                    <li><a href="#" title="" class="footer-link">Каталог</a></li>
-                    <li><a href="#" title="" class="footer-link">Коллекции</a></li>
-                    <li><a href="#" title="" class="footer-link">Библиотеки</a></li>
-                    <li><a href="#" title="" class="footer-link">Отзывы</a></li>
-                    <li><a href="#" title="" class="footer-link">Новости</a></li>
-                    <li><a href="#" title="" class="footer-link">Профессионалам</a></li>
-                    <li><a href="#" title="" class="footer-link">О проекте</a></li>
-                </ul>
+                {% include 'main_menu_footer.html' %}
             </div>
         </div>
     </div>
@@ -76,26 +81,19 @@
     <div class="container">
         <div class="row">
             <div class="col-6">
-                <a class="footer-logo__bib" href="#" title="тайтл"><img src="{{ STATIC_URL }}dist/images/logo_bib.png" alt="тайтл"></a>
-                <a class="footer-logo__min" href="#" title="тайтл"><img src="{{ STATIC_URL }}dist/images/logo_min.png" alt="тайтл"></a>
+                <a class="footer-logo__bib" href="{% url 'index:frontend:index' %}" title="На главную!"><img src="{{ STATIC_URL }}dist/images/logo_bib.png"
+                                                                        alt="тайтл"></a>
+                <a class="footer-logo__min" href="#" title="тайтл"><img src="{{ STATIC_URL }}dist/images/logo_min.png"
+                                                                        alt="тайтл"></a>
             </div>
             <div class="col-6">
-                <a class="footer-logo__ask-lib" href="#" title="тайтл">Задать вопрос библиотекарю</a>
-                <a class="footer-logo__ask-all" href="#" title="тайтл">Все вопросы</a>
+                <a class="footer-logo__ask-lib" href="{% url 'ask_librarian:frontend:index' %}" title="Спроси библиотекаря">Задать вопрос библиотекарю</a>
+                <a class="footer-logo__ask-all" href="{% url 'ask_librarian:frontend:ask' %}" title="Спроси библиотекаря все вопросы">Все вопросы</a>
             </div>
         </div>
     </div>
 
 </footer>
-
-
-
-
-
-
-
-
-
 
 
 {#<div class="container" style="margin-top: 5px;">#}
@@ -247,11 +245,113 @@
 {#    </div>#}
 {#</div>#}
 
-<script type="text/javascript">
-    if ($(window).height() - $('body').height() > 0) {
-        $('#footer').css('margin-top', $(window).height() - $('body').height() + 'px');
+
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#owl-1").owlCarousel({
+            autoPlay: true,
+            stopOnHover: true,
+            loop: true,
+            autoWidth: true,
+            slideSpeed: 100,
+            items: 4,
+            responsive: false,
+            responsiveRefreshRate: 200
+        });
+
+        $("#owl-2").owlCarousel({
+            autoPlay: true,
+            stopOnHover: true,
+            loop: true,
+            autoWidth: true,
+            slideSpeed: 100,
+            items: 4,
+            responsive: false,
+            responsiveRefreshRate: 200
+        });
+
+        $("#owl-poster").owlCarousel({
+            autoPlay: true,
+            stopOnHover: true,
+            loop: true,
+            autoWidth: true,
+            slideSpeed: 100,
+            items: 1,
+            responsive: false
+        });
+
+    });
+
+    <!-- Drop down btn -->
+    $(function () {
+        $('.click-nav > ul').toggleClass('no-js js');
+        $('.click-nav .js ul').hide();
+        $('.click-nav .js').click(function (e) {
+            $('.click-nav .js ul').slideToggle(0);
+            $('.clicker').toggleClass('active');
+            e.stopPropagation();
+        });
+        $(document).click(function () {
+            if ($('.click-nav .js ul').is(':visible')) {
+                $('.click-nav .js ul', this).slideUp(0);
+                $('.clicker').removeClass('active');
+            }
+        });
+    });
+
+    <!-- Tab -->
+    $(document).ready(function () {
+        $(".tab-container__tabs li").click(function (e) {
+            if (!$(this).hasClass("active")) {
+                var tabNum = $(this).index();
+                var nthChild = tabNum + 1;
+                $(".tab-container__tabs li.active").removeClass("active");
+                $(this).addClass("active");
+                $(".tab-container__tab li.active").removeClass("active");
+                $(".tab-container__tab li:nth-child(" + nthChild + ")").addClass("active");
+            }
+        });
+    });
+
+    $('.facet__header').click(function () {
+        var facetBody = $(this).next();
+        if (facetBody.hasClass('facet__body_closed')) {
+            $(this).removeClass('facet__header_closed');
+            facetBody.removeClass('facet__body_closed');
+        } else {
+            facetBody.addClass('facet__body_closed');
+            $(this).addClass('facet__header_closed');
+        }
+    });
+
+    <!-- Ya map -->
+    ymaps.ready(init);
+    var myMap;
+
+    function init() {
+        myMap = new ymaps.Map("map", {
+            center: [55.76, 37.64],
+            zoom: 7
+        });
     }
+
+    function bgSlider(){
+        var bg = $('.bg_first');
+        bg.delay(500).animate();
+    }
+
+    bgSlider();
+
 </script>
+
+{#<script type="text/javascript">#}
+{#    if ($(window).height() - $('body').height() > 0) {#}
+{#        $('#footer').css('margin-top', $(window).height() - $('body').height() + 'px');#}
+{#    }#}
+{#</script>#}
 <script type="text/javascript">
     jQuery(document).ajaxSend(function (event, xhr, settings) {
         function getCookie(name) {
@@ -300,7 +400,7 @@
             // load the template - and be sure to cache the result.
             var fn = !/\W/.test(str) ?
                     cache[str] = cache[str] ||
-                            tmpl(document.getElementById(str).innerHTML) :
+                    tmpl(document.getElementById(str).innerHTML) :
 
                 // Generate a reusable function that will serve as a template
                 // generator (and which will be cached).
@@ -452,102 +552,10 @@
 <!-- End Piwik Code -->
 
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
-<script src="{{ STATIC_URL }}dist/scripts/commons.js"></script>
-<script src="{{ STATIC_URL }}dist/scripts/index.js"></script>
-<script src="{{ STATIC_URL }}dist/vendors/owl-carousel/owl.carousel.min.js"></script>
-<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
 
-<script>
-    $(document).ready(function () {
-        $("#owl-1").owlCarousel({
-            autoPlay: true,
-            stopOnHover: true,
-            loop: true,
-            autoWidth: true,
-            slideSpeed: 100,
-            items: 4,
-            responsive: false,
-            responsiveRefreshRate: 200
-        });
 
-        $("#owl-2").owlCarousel({
-            autoPlay: true,
-            stopOnHover: true,
-            loop: true,
-            autoWidth: true,
-            slideSpeed: 100,
-            items: 4,
-            responsive: false,
-            responsiveRefreshRate: 200
-        });
 
-        $("#owl-poster").owlCarousel({
-            autoPlay: true,
-            stopOnHover: true,
-            loop: true,
-            autoWidth: true,
-            slideSpeed: 100,
-            items: 1,
-            responsive: false
-        });
 
-    });
-
-    <!-- Drop down btn -->
-    $(function () {
-        $('.click-nav > ul').toggleClass('no-js js');
-        $('.click-nav .js ul').hide();
-        $('.click-nav .js').click(function (e) {
-            $('.click-nav .js ul').slideToggle(10);
-            $('.clicker').toggleClass('active');
-            e.stopPropagation();
-        });
-        $(document).click(function () {
-            if ($('.click-nav .js ul').is(':visible')) {
-                $('.click-nav .js ul', this).slideUp(10);
-                $('.clicker').removeClass('active');
-            }
-        });
-    });
-
-    <!-- Tab -->
-    $(document).ready(function () {
-        $(".tab-container__tabs li").click(function (e) {
-            if (!$(this).hasClass("active")) {
-                var tabNum = $(this).index();
-                var nthChild = tabNum + 1;
-                $(".tab-container__tabs li.active").removeClass("active");
-                $(this).addClass("active");
-                $(".tab-container__tab li.active").removeClass("active");
-                $(".tab-container__tab li:nth-child(" + nthChild + ")").addClass("active");
-            }
-        });
-    });
-
-    $('.facet__header').click(function() {
-        var facetBody =  $(this).next();
-        if (facetBody.hasClass('facet__body_closed')) {
-            $(this).removeClass('facet__header_closed');
-            facetBody.removeClass('facet__body_closed');
-        } else {
-            facetBody.addClass('facet__body_closed');
-            $(this).addClass('facet__body_closed');
-        }
-    });
-
-    <!-- Ya map -->
-    ymaps.ready(init);
-    var myMap;
-
-    function init() {
-        myMap = new ymaps.Map("map", {
-            center: [55.76, 37.64],
-            zoom: 7
-        });
-    }
-
-</script>
 
 </body>
 </html>

@@ -1,12 +1,36 @@
-<ul style="list-style: none; margin: 0">
-    {% for owner in owners %}
-        <li>
-            {% if owner.has_catalog %}<a class="order btn" href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">Забронировать</a> {{ owner.owner.name }}{% else %}(заказ невозможен: отсутвует информация о сервере заказа){% endif %}</li>
-    {% endfor %}
-    {% if empty_codes %}
-        {% for empty_code in empty_codes %}
-            <li>{{ empty_code }}</li>
-        {% endfor %}
-    {% endif %}
+<div class="reserv-box__title">Бронирование <span>({{ owners|length }})</span></div>
+{% for owner in owners %}
+    {% if owner.has_catalog %}
 
-</ul>
+    <a class="reserv-box__geo" href="#" title="Посмотреть на карте">
+        <img alt="Расположение на карте" src="/static/dist/images/geo_pin.svg">
+    <span>{{ owner.owner.name }}</span>
+    </a>
+
+    <a class="reserv-box__btn" href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">Забронировать</a>
+     {% else %}(заказ невозможен: отсутвует информация о сервере заказа)
+
+    {% endif %}
+{% endfor %}
+{% if empty_codes %}
+    {% for empty_code in empty_codes %}
+
+        <li>{{ empty_code }}</li>
+
+    {% endfor %}
+{% endif %}
+
+
+
+{#<ul style="list-style: none; margin: 0">#}
+{#    {% for owner in owners %}#}
+{#        <li>#}
+{#            {% if owner.has_catalog %}<a class="order btn" href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">Забронировать</a> {{ owner.owner.name }}{% else %}(заказ невозможен: отсутвует информация о сервере заказа){% endif %}</li>#}
+{#    {% endfor %}#}
+{#    {% if empty_codes %}#}
+{#        {% for empty_code in empty_codes %}#}
+{#            <li>{{ empty_code }}</li>#}
+{#        {% endfor %}#}
+{#    {% endif %}#}
+{##}
+{#</ul>#}

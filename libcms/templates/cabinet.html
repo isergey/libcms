@@ -30,12 +30,11 @@
                                                          alt="Icon"></a>
                         <ul>
                             <li><a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a></li>
-                            <li><a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a></li>
                             <li><a href="{% url 'orders:frontend:reservations' %}">Заказы на бронирование</a></li>
                             <li><a href="{% url 'mydocs:frontend:index' %}">Мои документы</a></li>
                             <li><a href="{% url 'ask_librarian:frontend:my_questions' %}">Мои вопросы</a></li>
                             <li><a href="{% url 'ssearch:frontend:saved_search_requests' %}">Поисковые запросы</a></li>
-                            <li class="divider"></li>
+                            <hr>
                             {% cache 600 user_org request.user.id %}
                                 {% personal_cabinet_links as cabinet_links %}
                                 {% for cabinet_link in cabinet_links %}
@@ -45,6 +44,7 @@
                                     <li class="divider"></li>
                                 {% endif %}
                             {% endcache %}
+                            <hr>
                             <li><a href="{% url 'accounts:frontend:logout' %}">Выход</a></li>
                         </ul>
                     </li>
