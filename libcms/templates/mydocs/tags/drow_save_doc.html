@@ -9,24 +9,25 @@
             }
         </style>
 
-        <div class="modal hide" id="save_doc_modal" style="display: none">
+        <div class="modal" id="save_doc_modal">
+            <div class="modal-content">
+                <form action="{% url 'mydocs:frontend:save' %}" method="POST" id="save_doc_form" style="margin: 0">
+                    <div class="modal-header">
+                        <a class="close" data-dismiss="modal">×</a>
 
-            <form action="{% url 'mydocs:frontend:save' %}" method="POST" id="save_doc_form" style="margin: 0">
-                <div class="modal-header">
-                    <a class="close" data-dismiss="modal">×</a>
-
-                    <h3>Сохранение документа</h3>
-                </div>
-                <div class="modal-body">
-                    <fieldset>
-                        {% include 'frontend/base_form_fields.html' %}
-                    </fieldset>
-                </div>
-                <div class="modal-footer">
-{#                    <a href="#" class="btn" data-dismiss="modal">Закрыть</a>#}
-                    <input type="submit" value="Сохранить" class="btn" id='save_doc_submit'/>
-                </div>
-            </form>
+                        <h3>Сохранение документа</h3>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset>
+                            {% include 'frontend/base_form_fields.html' %}
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+    {#                    <a href="#" class="btn" data-dismiss="modal">Закрыть</a>#}
+                        <input type="submit" value="Сохранить" class="btn" id='save_doc_submit'/>
+                    </div>
+                </form>
+            </div>
         </div>
         {% if user.id %}
             <a class="detail-page__options__btn" data-toggle="modal" href="#save_doc_modal" id="save_doc_button" >Сохранить в документах</a>
