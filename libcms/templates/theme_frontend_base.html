@@ -87,10 +87,27 @@
                                                                         alt="тайтл"></a>
                 <a class="footer-logo__min" href="#" title="тайтл"><img src="{{ STATIC_URL }}dist/images/logo_min.png"
                                                                         alt="тайтл"></a>
+                                <!-- Yandex.Metrika informer -->
+                <a href="https://metrika.yandex.ru/stat/?id=28345621&amp;from=informer"
+                   target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/28345621/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
+                                                       style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика"
+                                                       title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)"
+                                                       onclick="try{Ya.Metrika.informer({i:this,id:28345621,lang:'ru'});return false}catch(e){}"/></a>
+                <!-- /Yandex.Metrika informer -->
+                <!-- begin of Top100 code -->
+
+                <script id="top100Counter" type="text/javascript" src="//counter.rambler.ru/top100.jcn?2811425"></script>
+                <noscript>
+                    <a href="//top100.rambler.ru/navi/2811425/">
+                        <img src="//counter.rambler.ru/top100.cnt?2811425" alt="Rambler's Top100" border="0"/>
+                    </a>
+
+                </noscript>
+                <!-- end of Top100 code -->
             </div>
             <div class="col-6">
-                <a class="footer-logo__ask-lib" href="{% url 'ask_librarian:frontend:index' %}" title="Спроси библиотекаря">Задать вопрос библиотекарю</a>
-                <a class="footer-logo__ask-all" href="{% url 'ask_librarian:frontend:ask' %}" title="Спроси библиотекаря все вопросы">Все вопросы</a>
+                <a class="footer-logo__ask-lib" href="{% url 'ask_librarian:frontend:ask' %}" title="Спроси библиотекаря">Задать вопрос библиотекарю</a>
+                <a class="footer-logo__ask-all" href="{% url 'ask_librarian:frontend:index' %}" title="Спроси библиотекаря все вопросы">Все вопросы</a>
             </div>
         </div>
     </div>
@@ -453,13 +470,7 @@
     <div><img src="//mc.yandex.ru/watch/17301607" style="position:absolute; left:-9999px;" alt=""/></div>
 </noscript>
 <!-- /Yandex.Metrika counter -->
-<!-- Yandex.Metrika informer -->
-<a href="https://metrika.yandex.ru/stat/?id=28345621&amp;from=informer"
-   target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/28345621/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
-                                       style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика"
-                                       title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)"
-                                       onclick="try{Ya.Metrika.informer({i:this,id:28345621,lang:'ru'});return false}catch(e){}"/></a>
-<!-- /Yandex.Metrika informer -->
+
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
@@ -511,18 +522,6 @@
     })();
 </script>
 
-<div style="float: left">
-    <!-- begin of Top100 code -->
-
-    <script id="top100Counter" type="text/javascript" src="//counter.rambler.ru/top100.jcn?2811425"></script>
-    <noscript>
-        <a href="//top100.rambler.ru/navi/2811425/">
-            <img src="//counter.rambler.ru/top100.cnt?2811425" alt="Rambler's Top100" border="0"/>
-        </a>
-
-    </noscript>
-    <!-- end of Top100 code -->
-</div>
 <script>
     $(function () {
         $.get('{% url 'statistics:api:watch' %}');
