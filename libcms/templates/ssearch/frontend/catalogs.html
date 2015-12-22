@@ -1,55 +1,141 @@
 {% load hash %}
-<div>Статистика по коллекциям:</div>
-<div>
-    <ul>
-        {% for collection in collections %}
-            {% if collection.title == 'Фонд И. А. Второва' %}
-            <li><a href="#vtorov" data-toggle="modal">{{ collection.title.0 }}</a>: <b>{{ collection.value }}</b></li>
-            {%  elif collection.title == 'Коллекция И. А. Сахарова'%}
-                <li><a href="#saharov" data-toggle="modal">{{ collection.title.0 }}</a>: <b>{{ collection.value }}</b></li>
-            {%  elif collection.title == 'Татарика'%}
-                <li><a href="#tatarika" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
-            {%  elif collection.title == 'Прижизненные издания Г.Тукая'%}
-                <li><a href="#tukay" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
-            {%  elif collection.title == 'Коллекция русской старопечатной книги (до 1830 г.)'%}
-                <li><a href="#staropecht" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
-            {%  elif collection.title == 'Книги подаренные авторами'%}
-                <li><a href="#present" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
-            {%  elif collection.title == 'Периодические издания Казанской губернии'%}
-                <li><a href="#periodkazan"  data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>
-            {%  elif collection.title == 'Тестовая коллекция'%}
-{#                <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Тестовая+коллекция&attr=text&attr=fond_sf&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>#}
-            {% else %}
-                <li><a href="#{{ collection|hash:'persistant-number'|hash:0}}"  data-toggle="modal">{{ collection.title.0 }}</a>: <b>{{ collection.stats }}</b></li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-</div>
-<div>Всего документов в коллекции: {{ stats.count_all }}</div>
-<div>Добавлено за текущий месяц: {{ stats.count_last_month }}</div>
-<div>Добавлено за последние 30 дней: {{ stats.count_last_30 }}</div>
+<div class="container content-page">
+    <div class="row">
+        <div class="col-7">
+            <h1 class="content-page__title">Статистика по коллекциям:</h1>
 
+            <div class="content-page__text">
+                <div>
+                    <ul>
+                        {% for collection in collections %}
+                            {% if collection.title == 'Фонд И. А. Второва' %}
+                                <li><a href="#vtorov" data-toggle="modal">{{ collection.title.0 }}</a>:
+                                    <b>{{ collection.value }}</b></li>
+                            {% elif collection.title == 'Коллекция И. А. Сахарова' %}
+                                <li><a href="#saharov" data-toggle="modal">{{ collection.title.0 }}</a>:
+                                    <b>{{ collection.value }}</b></li>
+                            {% elif collection.title == 'Татарика' %}
+                                <li><a href="#tatarika" data-toggle="modal">{{ collection.title }}</a>:
+                                    <b>{{ collection.value }}</b></li>
+                            {% elif collection.title == 'Прижизненные издания Г.Тукая' %}
+                                <li><a href="#tukay" data-toggle="modal">{{ collection.title }}</a>:
+                                    <b>{{ collection.value }}</b></li>
+                            {% elif collection.title == 'Коллекция русской старопечатной книги (до 1830 г.)' %}
+                                <li><a href="#staropecht" data-toggle="modal">{{ collection.title }}</a>:
+                                    <b>{{ collection.value }}</b></li>
+                            {% elif collection.title == 'Книги подаренные авторами' %}
+                                <li><a href="#present" data-toggle="modal">{{ collection.title }}</a>:
+                                    <b>{{ collection.value }}</b></li>
+                            {% elif collection.title == 'Периодические издания Казанской губернии' %}
+                                <li><a href="#periodkazan" data-toggle="modal">{{ collection.title }}</a>:
+                                    <b>{{ collection.value }}</b></li>
+                            {% elif collection.title == 'Тестовая коллекция' %}
+                                {#                <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Тестовая+коллекция&attr=text&attr=fond_sf&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>#}
+                            {% else %}
+                                <li><a href="#{{ collection|hash:'persistant-number'|hash:0 }}"
+                                       data-toggle="modal">{{ collection.title.0 }}</a>: <b>{{ collection.stats }}</b>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div>Всего документов в коллекции: <b>{{ stats.count_all }}</b></div>
+                <div>Добавлено за текущий месяц: <b>{{ stats.count_last_month }}</b></div>
+                <div>Добавлено за последние 30 дней: <b>{{ stats.count_last_30 }}</b></div>
+
+                {#<a href="#tukay" role="button" class="btn" data-toggle="modal">Launch demo modal</a>#}
+
+                {% for collection in collections %}
+                    <div id="{{ collection|hash:'persistant-number'|hash:0 }}" class="modal hide fade" tabindex="-1"
+                         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h3 id="myModalLabel">{{ collection.title.0 }}</h3>
+                            <a href="{% url 'ssearch:frontend:ecollection' %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on"
+                               class="btn btn-success">Поиск по коллекции</a>
+
+                        </div>
+
+                        <div class="modal-body">
+                            {% if collection.collection_cover %}
+                                <img src="{{ collection.collection_cover.0 }}" alt=""
+                                     style="float: left; padding: 0 5px 5px 0">
+                            {% endif %}
+                            {% for comments in collection.comments %}
+                                <p class="western">{{ comments }}</p>
+                            {% endfor %}
+                        </div>
+                        {#    <div class="modal-footer">#}
+                        {#        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>#}
+                        {#    </div>#}
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{#<div>Статистика по коллекциям:</div>#}
+{#<div>#}
+{#    <ul>#}
+{#        {% for collection in collections %}#}
+{#            {% if collection.title == 'Фонд И. А. Второва' %}#}
+{#                <li><a href="#vtorov" data-toggle="modal">{{ collection.title.0 }}</a>: <b>{{ collection.value }}</b>#}
+{#                </li>#}
+{#            {% elif collection.title == 'Коллекция И. А. Сахарова' %}#}
+{#                <li><a href="#saharov" data-toggle="modal">{{ collection.title.0 }}</a>: <b>{{ collection.value }}</b>#}
+{#                </li>#}
+{#            {% elif collection.title == 'Татарика' %}#}
+{#                <li><a href="#tatarika" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b>#}
+{#                </li>#}
+{#            {% elif collection.title == 'Прижизненные издания Г.Тукая' %}#}
+{#                <li><a href="#tukay" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>#}
+{#            {% elif collection.title == 'Коллекция русской старопечатной книги (до 1830 г.)' %}#}
+{#                <li><a href="#staropecht" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b>#}
+{#                </li>#}
+{#            {% elif collection.title == 'Книги подаренные авторами' %}#}
+{#                <li><a href="#present" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b>#}
+{#                </li>#}
+{#            {% elif collection.title == 'Периодические издания Казанской губернии' %}#}
+{#                <li><a href="#periodkazan" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b>#}
+{#                </li>#}
+{#            {% elif collection.title == 'Тестовая коллекция' %}#}
+                {#                <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Тестовая+коллекция&attr=text&attr=fond_sf&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>#}
+{#            {% else %}#}
+{#                <li><a href="#{{ collection|hash:'persistant-number'|hash:0 }}"#}
+{#                       data-toggle="modal">{{ collection.title.0 }}</a>: <b>{{ collection.stats }}</b></li>#}
+{#            {% endif %}#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#</div>#}
+{#<div>Всего документов в коллекции: {{ stats.count_all }}</div>#}
+{#<div>Добавлено за текущий месяц: {{ stats.count_last_month }}</div>#}
+{#<div>Добавлено за последние 30 дней: {{ stats.count_last_30 }}</div>#}
+{##}
 {#<a href="#tukay" role="button" class="btn" data-toggle="modal">Launch demo modal</a>#}
-
-{% for collection in collections %}
-    <div id="{{ collection|hash:'persistant-number'|hash:0 }}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">{{ collection.title.0 }}</h3>
-        <a href="{% url 'ssearch:frontend:ecollection' %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>
-
-    </div>
-
-    <div class="modal-body">
-        {% if collection.collection_cover %}
-            <img src="{{ collection.collection_cover.0 }}" alt="" style="float: left; padding: 0 5px 5px 0">
-        {% endif %}
-        {% for comments in collection.comments %}
-            <p class="western">{{ comments }}</p>
-        {% endfor %}
-    </div>
-{#    <div class="modal-footer">#}
-{#        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>#}
+{##}
+{#{% for collection in collections %}#}
+{#    <div id="{{ collection|hash:'persistant-number'|hash:0 }}" class="modal hide fade" tabindex="-1" role="dialog"#}
+{#         aria-labelledby="myModalLabel" aria-hidden="true">#}
+{#        <div class="modal-header">#}
+{#            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>#}
+{#            <h3 id="myModalLabel">{{ collection.title.0 }}</h3>#}
+{#            <a href="{% url 'ssearch:frontend:ecollection' %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on"#}
+{#               class="btn btn-success">Поиск по коллекции</a>#}
+{##}
+{#        </div>#}
+{##}
+{#        <div class="modal-body">#}
+{#            {% if collection.collection_cover %}#}
+{#                <img src="{{ collection.collection_cover.0 }}" alt="" style="float: left; padding: 0 5px 5px 0">#}
+{#            {% endif %}#}
+{#            {% for comments in collection.comments %}#}
+{#                <p class="western">{{ comments }}</p>#}
+{#            {% endfor %}#}
+{#        </div>#}
+        {#    <div class="modal-footer">#}
+        {#        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>#}
+        {#    </div>#}
 {#    </div>#}
-</div>
-{% endfor %}
+{#{% endfor %}#}
