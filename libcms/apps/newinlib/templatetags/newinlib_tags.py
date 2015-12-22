@@ -5,6 +5,7 @@ from django import template
 from django.utils.translation import get_language
 from ..models import Item, ItemContent
 from ssearch.models import get_records
+from mydocs import models as mydocs_models
 from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
 
 register = template.Library()
@@ -28,6 +29,13 @@ def last_items_feed(count=5):
     for items_lis in items_list:
         records_ids.append(items_lis.item.id_in_catalog)
 
+
+    saved_documents = mydocs_models.SavedDocument.objects.values('gen_id').filter(gen_id__in=records_ids)
+    print 'saved_document', saved_documents
+    for saved_document in saved_documents:
+        item_content = nd.get(saved_document.get('gen_id'))
+        if item_content:
+            item_content.in_favorite = True
     # records = []
     # print 'records_ids', records_ids
     for record in get_records(records_ids):
@@ -35,7 +43,6 @@ def last_items_feed(count=5):
         print 'item_content', item_content
         if item_content:
             nd[record.gen_id].attrs = xml_doc_to_dict(record.content)
-            print nd[record.gen_id].attrs
         # records.append({
         #     'id': record.gen_id,
         #     'content': xml_doc_to_dict(record.content),

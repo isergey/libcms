@@ -3,15 +3,15 @@
 
 {% for item in items_list %}
 
-    {% if item.id_in_catalog %}
-        {% url 'ssearch:frontend:detail'  item.id_in_catalog  as item_url %}
+    {% if item.item.id_in_catalog %}
+        {% url 'ssearch:frontend:detail'  item.item.id_in_catalog  as item_url %}
     {% else %}
-        {% url 'newinlib:frontend:show' item.id as item_url %}
+        {% url 'newinlib:frontend:show' item.item_id as item_url %}
     {% endif %}
 
 
     <div class="item-book" style="width:386px">
-        <div class="bookmark-box bookmark-box_yellow"></div>
+        <div class="bookmark-box {% if item.in_favorite %}bookmark-box_yellow{% endif %}"></div>
         <h3>{{ item.title }}</h3>
 
         <p>{{ item.content|striptags }}</p>
@@ -42,7 +42,7 @@
 {#            </ul>#}
 {#        </div>#}
         <div class="item-book__hover-box animated fadeIn">
-            <a href="#" class="item-book__hover-box__add-bookmark">Добавить в закладки</a>
+{#            <a href="#" class="item-book__hover-box__add-bookmark">Добавить в закладки</a>#}
         {% if item.attrs.url %}
             <a href="{{ item.attrs.url.0 }}" class="item-book__hover-box__add-reservation">Читать</a>
         {% endif %}
