@@ -141,6 +141,10 @@
 
         <hr class="footer-hr">
 
+        {% if not docs and stats %}
+            {% include 'ssearch/frontend/catalogs.html' %}
+        {% endif %}
+
         <div class="container">
             <div class="row">
                 <div class="col-8">
@@ -300,12 +304,10 @@
                     {% admin_pagination results_page %}
                 {% endif %}
 
+
+
                 <div class="result-container">
-                    {% if not docs and stats %}
-                        <div class="well">
-                            {% include 'ssearch/frontend/catalogs.html' %}
-                        </div>
-                    {% endif %}
+
                     {% if docs %}
 
                         {% for doc in docs %}
