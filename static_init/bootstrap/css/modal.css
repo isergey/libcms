@@ -26,8 +26,6 @@ button.close {
 .modal-open {
     overflow: hidden
 }
-
-
 .modal {
     display: none;
     overflow: auto;

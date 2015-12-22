@@ -10,12 +10,12 @@ RECORD_SCHEMES = (
     ('rusmarc', u"Rusmarc"),
     ('usmarc', u"Usmarc"),
     ('unimarc', u"Unimarc"),
-    )
+)
 
 RECORD_FORMATS = (
     ('iso2709', u"ISO 2709"),
     ('xml', u"XML"),
-    )
+)
 
 RECORD_ENCODINGS = (
     ('utf-8', u"UTF-8"),
@@ -23,7 +23,7 @@ RECORD_ENCODINGS = (
     ('koi8-r', u"koi8-r"),
     ('latin-1', u"Unimarc"),
     ('marc8', u"Marc 8"),
-    )
+)
 
 
 class Upload(models.Model):
@@ -64,7 +64,7 @@ class ZippedTextField(models.BinaryField):
 
     def to_python(self, value):
         try:
-            value = zlib.decompress(value,-15)
+            value = zlib.decompress(value, -15)
             value = value.decode('utf-8')
         except zlib.error:
             pass
@@ -98,10 +98,12 @@ class Record(models.Model):
     content = ZippedTextField(verbose_name=u'Xml content')
     add_date = models.DateTimeField(auto_now_add=True, db_index=True)
     update_date = models.DateTimeField(auto_now_add=True, db_index=True)
-    deleted= models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
     hash = models.TextField(max_length=16)
+
     def __unicode__(self):
         return self.record_id
+
     class Meta:
         db_table = 'records'
 
@@ -114,12 +116,30 @@ class Ebook(models.Model):
     content = ZippedTextField(verbose_name=u'Xml content')
     add_date = models.DateTimeField(auto_now_add=True, db_index=True)
     update_date = models.DateTimeField(auto_now_add=True, db_index=True)
-    deleted= models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
     hash = models.TextField(max_length=16)
+
     def __unicode__(self):
         return self.record_id
+
     class Meta:
         db_table = 'ebooks'
+
+
+def get_records(doc_ids=[]):
+    records_dict = {}
+    records = list(Record.objects.using('records').filter(gen_id__in=doc_ids))
+
+    for record in records:
+        records_dict[record.gen_id] = record
+
+    result_records = []
+    for doc_id in doc_ids:
+        rec = records_dict.get(doc_id)
+        if rec:
+            result_records.append(rec)
+
+    return result_records
 
 class Collection(models.Model):
     source = models.ForeignKey(Source, null=True, blank=True)
@@ -129,17 +149,22 @@ class Collection(models.Model):
     content = ZippedTextField(verbose_name=u'Xml content')
     add_date = models.DateTimeField(auto_now_add=True, db_index=True)
     update_date = models.DateTimeField(auto_now_add=True, db_index=True)
-    deleted= models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
     hash = models.TextField(max_length=16)
+
     def __unicode__(self):
         return self.record_id
+
     class Meta:
         db_table = 'collections'
 
+
 class DetailAccessLog(models.Model):
-    gen_id = models.CharField(max_length=64, db_index=True, verbose_name=u'Документ, к которому было произведено обращение')
+    gen_id = models.CharField(max_length=64, db_index=True,
+                              verbose_name=u'Документ, к которому было произведено обращение')
     catalog = models.CharField(max_length=32, db_index=True, verbose_name=u'Каталог, в котором находиться документ')
     date_time = models.DateTimeField(db_index=True, auto_now_add=True, verbose_name=u'Время обращения')
+
 
 class SavedRequest(models.Model):
     user = models.ForeignKey(User, related_name='saved_request_user')
@@ -160,20 +185,27 @@ class SearchRequestLog(models.Model):
     datetime = models.DateTimeField(auto_now_add=True, db_index=True)
 
 
+
+
 DUBLET_STATUSES = (
     (0, u'На обработке'),
     (1, u'Обработан'),
 )
+
+
 class Dublet(models.Model):
     key = models.CharField(verbose_name=u'Ключ дублетности', db_index=True, unique=True, max_length=128)
     statuc = models.IntegerField(choices=DUBLET_STATUSES, db_index=True)
     change_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=u"Время изменения статуса")
     owner = models.ForeignKey(User)
 
+
 CATALOGS_CHOICES = (
     ('records', u'Сводный'),
     ('ebooks', u'Электронная библиотека'),
 )
+
+
 class WrongRecord(models.Model):
     gen_id = models.CharField(max_length=32, unique=True)
     record_id = models.CharField(max_length=32, db_index=True)
@@ -183,12 +215,11 @@ class WrongRecord(models.Model):
     send_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=u"Время добавления статуса")
 
 
-
 DEFAULT_LANG_CHICES = (
     ('rus', u'Русский'),
     ('eng', u'English'),
     ('tat', u'Татарский'),
-    )
+)
 
 ATTRIBUTES = {
     'fond': u'Коллекция',
@@ -201,15 +232,16 @@ ATTRIBUTES = {
     'code-language': u'Язык',
     'text': u'Везде',
     'full-text': u'Полный текст',
-    }
+}
+
 
 def dictfetchall(cursor):
     """Returns all rows from a cursor as a dict"""
     desc = cursor.description
     return [
-    dict(zip([col[0] for col in desc], row))
-    for row in cursor.fetchall()
-    ]
+        dict(zip([col[0] for col in desc], row))
+        for row in cursor.fetchall()
+        ]
 
 
 def execute(query, params):
@@ -235,11 +267,10 @@ def get_search_attributes_in_log():
             (
                 row['attribute'],
                 ATTRIBUTES.get(row['attribute'], row['attribute'])
-                )
+            )
         )
 
     return choices
-
 
 
 def date_group(group):
@@ -254,8 +285,6 @@ def date_group(group):
     group_by = 'GROUP BY ' + ', '.join(group_by)
 
     return group_by
-
-
 
 
 def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list(), library_code=''):
@@ -287,18 +316,15 @@ def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list(), 
 
     if catalogs:
         if len(catalogs) == 1:
-            where.append('AND ' + 'ssearch_searchrequestlog.catalog = "%s" ' % catalogs[0]  )
+            where.append('AND ' + 'ssearch_searchrequestlog.catalog = "%s" ' % catalogs[0])
         else:
             catalogs_where = []
             for catalog in catalogs:
                 catalogs_where.append(' ssearch_searchrequestlog.catalog = "%s" ' % catalog)
-            where.append('AND (' + u'OR'.join(catalogs_where) + ')' )
-
+            where.append('AND (' + u'OR'.join(catalogs_where) + ')')
 
     where = u' '.join(where)
-    results = execute( select + where + group_by, params)
-
-
+    results = execute(select + where + group_by, params)
 
     rows = []
     format = '%d.%m.%Y'
@@ -314,8 +340,6 @@ def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list(), 
     return rows
 
 
-
-
 def requests_by_attributes(start_date=None, end_date=None, attributes=list(), catalogs=list()):
     if not start_date:
         start_date = datetime.datetime.now()
@@ -326,7 +350,6 @@ def requests_by_attributes(start_date=None, end_date=None, attributes=list(), ca
     start_date = start_date.strftime('%Y-%m-%d 00:00:00')
     end_date = end_date.strftime('%Y-%m-%d 23:59:59')
 
-
     select = u"""
         SELECT
             count(ssearch_searchrequestlog.use) as count, ssearch_searchrequestlog.use as attribute
@@ -335,22 +358,18 @@ def requests_by_attributes(start_date=None, end_date=None, attributes=list(), ca
     """
     params = []
 
-
-
-
     where = ['WHERE date(datetime) BETWEEN %s  AND  %s']
     params.append(start_date)
     params.append(end_date)
 
-
     if catalogs:
         if len(catalogs) == 1:
-            where.append('AND ' + 'ssearch_searchrequestlog.catalog = "%s" ' % catalogs[0]  )
+            where.append('AND ' + 'ssearch_searchrequestlog.catalog = "%s" ' % catalogs[0])
         else:
             catalogs_where = []
             for catalog in catalogs:
                 catalogs_where.append(' ssearch_searchrequestlog.catalog = "%s" ' % catalog)
-            where.append('AND (' + u'OR'.join(catalogs_where) + ')' )
+            where.append('AND (' + u'OR'.join(catalogs_where) + ')')
 
     if attributes:
         attributes_args = []
@@ -362,7 +381,6 @@ def requests_by_attributes(start_date=None, end_date=None, attributes=list(), ca
         where.append('AND ssearch_searchrequestlog.use in (%s)' % attributes_args)
 
     where = u' '.join(where)
-
 
     results = execute(
         select + ' ' + where +
@@ -381,6 +399,7 @@ def requests_by_attributes(start_date=None, end_date=None, attributes=list(), ca
         rows.append((ATTRIBUTES.get(row['attribute'], row['attribute']), row['count']))
     return rows
 
+
 def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs=list()):
     if not start_date:
         start_date = datetime.datetime.now()
@@ -391,7 +410,6 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
     start_date = start_date.strftime('%Y-%m-%d 00:00:00')
     end_date = end_date.strftime('%Y-%m-%d 23:59:59')
 
-
     select = u"""
         SELECT
             count(ssearch_searchrequestlog.not_normalize) as count, ssearch_searchrequestlog.not_normalize as not_normalize
@@ -400,22 +418,18 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
     """
     params = []
 
-
-
-
     where = [u'WHERE date(datetime) BETWEEN %s  AND  %s']
     params.append(start_date)
     params.append(end_date)
 
-
     if catalogs:
         if len(catalogs) == 1:
-            where.append('AND ' + 'ssearch_searchrequestlog.catalog = "%s" ' % catalogs[0]  )
+            where.append('AND ' + 'ssearch_searchrequestlog.catalog = "%s" ' % catalogs[0])
         else:
             catalogs_where = []
             for catalog in catalogs:
                 catalogs_where.append(' ssearch_searchrequestlog.catalog = "%s" ' % catalog)
-            where.append('AND (' + u'OR'.join(catalogs_where) + ')' )
+            where.append('AND (' + u'OR'.join(catalogs_where) + ')')
 
     if attributes:
         attributes_args = []
@@ -445,7 +459,6 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
     for row in results:
         rows.append((row['not_normalize'], row['count']))
     return rows
-
 
 
 def request_group_by_date(from_date, to_date, period, catalog='', library_code=''):
@@ -485,7 +498,6 @@ def request_group_by_date(from_date, to_date, period, catalog='', library_code='
     for row in dictfetchall(cursor):
         row_hash[row['date']] = row['count']
 
-
     results = []
     for date in date_range:
         results.append({
@@ -493,6 +505,7 @@ def request_group_by_date(from_date, to_date, period, catalog='', library_code='
             'count': row_hash.get(date, 0)
         })
     return results
+
 
 def _generate_dates(from_date, to_date, period):
     date_range = []
@@ -508,6 +521,7 @@ def _generate_dates(from_date, to_date, period):
 
     return date_range
 
+
 def _monthrange(start, finish):
     months = (finish.year - start.year) * 12 + finish.month + 1
     for i in xrange(start.month, months):
@@ -522,4 +536,3 @@ def _daysrange(start, end):
     for i in range(delta.days + 1):
         dates.append(start + datetime.timedelta(days=i))
     return dates
-

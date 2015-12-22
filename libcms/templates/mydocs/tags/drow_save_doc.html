@@ -18,13 +18,11 @@
                         <h3>Сохранение документа</h3>
                     </div>
                     <div class="modal-body">
-                        <fieldset>
-                            {% include 'frontend/base_form_fields.html' %}
-                        </fieldset>
+                        {% include 'frontend/base_form_fields.html' %}
                     </div>
                     <div class="modal-footer">
     {#                    <a href="#" class="btn" data-dismiss="modal">Закрыть</a>#}
-                        <input type="submit" value="Сохранить" class="btn" id='save_doc_submit'/>
+                        <button type="submit" class="detail-page__options__btn" id='save_doc_submit'>Сохранить</button>
                     </div>
                 </form>
             </div>

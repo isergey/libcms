@@ -12,49 +12,57 @@
 
     <div class="item-book" style="width:386px">
         <div class="bookmark-box bookmark-box_yellow"></div>
-        <h3>{{ item.item_content.title }}</h3>
+        <h3>{{ item.title }}</h3>
 
-        <p>{{ item.item_content.content|striptags }}</p>
+        <p>{{ item.content|striptags }}</p>
 
-        <div class="tag-crumbs tag-crumbs_main-page">
-            <ul class="tag-crumbs__list">
-                <li>
-                    <span href="#" class="tag-crumbs__list_link">
-                        Пункт
-                    </span>
-                </li>
-                <li>
-                    <span href="#" class="tag-crumbs__list_link">
-                        Пункт
-                    </span>
-                </li>
-                <li>
-                    <span href="#" class="tag-crumbs__list_link">
-                        Пункт
-                    </span>
-                </li>
-                <li>
-                    <span href="#" class="tag-crumbs__list_link">
-                        Пункт
-                    </span>
-                </li>
-            </ul>
-        </div>
+
+{#        <div class="tag-crumbs tag-crumbs_main-page">#}
+{#            <ul class="tag-crumbs__list">#}
+{#                <li>#}
+{#                    <span href="#" class="tag-crumbs__list_link">#}
+{#                        Пункт#}
+{#                    </span>#}
+{#                </li>#}
+{#                <li>#}
+{#                    <span href="#" class="tag-crumbs__list_link">#}
+{#                        Пункт#}
+{#                    </span>#}
+{#                </li>#}
+{#                <li>#}
+{#                    <span href="#" class="tag-crumbs__list_link">#}
+{#                        Пункт#}
+{#                    </span>#}
+{#                </li>#}
+{#                <li>#}
+{#                    <span href="#" class="tag-crumbs__list_link">#}
+{#                        Пункт#}
+{#                    </span>#}
+{#                </li>#}
+{#            </ul>#}
+{#        </div>#}
         <div class="item-book__hover-box animated fadeIn">
             <a href="#" class="item-book__hover-box__add-bookmark">Добавить в закладки</a>
-            <a href="#" class="item-book__hover-box__add-reservation">Забронировать</a>
-            <a href="{{ item_url }}" class="item-book__hover-box__info">{% if LANGUAGE_CODE == 'ru' %}Информация о
-                книге{% elif LANGUAGE_CODE == 'tt' %}Информация о книге{% else %}Details{% endif %}</a>
+        {% if item.attrs.url %}
+            <a href="{{ item.attrs.url.0 }}" class="item-book__hover-box__add-reservation">Читать</a>
+        {% endif %}
+            <a href="{{ item_url }}" class="item-book__hover-box__info">
+                {% if LANGUAGE_CODE == 'ru' %}Информация о книге
+                {% elif LANGUAGE_CODE == 'tt' %}Информация о книге
+                {% else %}Details{% endif %}</a>
             <hr>
             <span>Рекомендовать друзьям</span>
 
             <div class="item-book__hover-box__share-box">
-                <a href="#" class="item-book__hover-box__share-box__link" title="Вконтакте"><img alt="Вконтакте"
-                                                                                                 src="static/dist/images/vkontakte.svg"></a>
-                <a href="#" class="item-book__hover-box__share-box__link" title="Facebook"><img alt="Facebook"
-                                                                                                src="static/dist/images/facebook.svg"></a>
-                <a href="#" class="item-book__hover-box__share-box__link" title="Twitter"><img alt="Twitter"
-                                                                                               src="static/dist/images/twitter.svg"></a>
+                <script>
+                    document.write('<a target="_blank" href="http://vk.com/share.php?url='+ window.location.protocol + '//' + window.location.host +'{{ item_url }}" class="item-book__hover-box__share-box__link" title="Вконтакте"><img alt="Вконтакте" src="/static/dist/images/vkontakte.svg"></a>');
+                </script>
+                <script>
+                    document.write('<a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+ window.location.protocol + '//' + window.location.host +'{{ item_url }}" class="item-book__hover-box__share-box__link" title="Вконтакте"><img alt="Вконтакте" src="/static/dist/images/facebook.svg"></a>');
+                </script>
+                <script>
+                    document.write('<a target="_blank" href="https://twitter.com/share?url='+ window.location.protocol + '//' + window.location.host +'{{ item_url }}" class="item-book__hover-box__share-box__link" title="Твиттер"><img alt="Вконтакте" src="/static/dist/images/twitter.svg"></a>');
+                </script>
             </div>
         </div>
     </div>

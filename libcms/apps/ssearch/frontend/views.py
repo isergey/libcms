@@ -16,7 +16,7 @@ from django.http import QueryDict
 from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
 
 from participants.models import Library
-from ..models import Record, SavedRequest, DetailAccessLog, Collection
+from ..models import Record, SavedRequest, DetailAccessLog, Collection, get_records
 from .. import rusmarc_template
 # # на эти трансформаторы ссылаются из других модулей
 #xslt_root = etree.parse('libcms/xsl/record_in_search.xsl')
@@ -400,29 +400,21 @@ def search(request, catalog=None, library=None):
     }
 
     docs = []
-
+    doc_ids = []
     if not facets:
         facets = replace_doc_attrs(results_page.object_list.facet_counts.facet_fields)
-        # for key in facets.keys():
-        #     if not facets[key]:
-        #         del(facets[key])
         cache.set(terms_facet_hash, facets)
 
     for row in results_page.object_list:
-        docs.append(replace_doc_attrs(row))
+        doc_id = replace_doc_attrs(row).get('id')
+        if doc_id:
+            doc_ids.append(doc_id)
 
-    doc_ids = []
-    for doc in docs:
-        doc_ids.append(doc['id'])
-
-    records_dict = {}
-    records = list(Record.objects.using('records').filter(gen_id__in=doc_ids))
-    for record in records:
-        records_dict[record.gen_id] = xml_doc_to_dict(record.content)
-
-    for doc in docs:
-        doc['record'] = records_dict.get(doc['id'])
-
+    for record in get_records(doc_ids):
+        docs.append({
+            'id': record.gen_id,
+            'record': xml_doc_to_dict(record.content)
+        })
     search_breadcumbs = []
     query_dict = None
 

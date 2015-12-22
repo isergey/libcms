@@ -1,4 +1,5 @@
 {% extends 'theme_frontend_base.html' %}
+{% load newinlib_tags %}
 {% load i18n %}
 {% load news_tags %}
 {% load participant_news_tags %}
@@ -43,89 +44,43 @@
 <main>
 <div class="tab-container">
 <ul class="tab-container__tabs">
-    <li class="active">{% if LANGUAGE_CODE == 'ru' %}Последние
-                    поступления{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}From new
-                    arrivals{% endif %}</li>
-    <li>Новые оцифрованные издания</li>
+{#    <li class="active">#}
+{#        {% if LANGUAGE_CODE == 'ru' %}Последние поступления#}
+{#        {% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар#}
+{#        {% else %}From new arrivals{% endif %}#}
+{#    </li>#}
+    <li class="active">
+        {% if LANGUAGE_CODE == 'ru' %}Новые оцифрованные издания
+        {% elif LANGUAGE_CODE == 'tt' %}Новые оцифрованные издания
+        {% else %}New e-resources{% endif %}
+    </li>
 </ul>
 <ul class="tab-container__tab">
     <li class="active">
         <div id="owl-1" class="owl-carousel">
-            {% cache 60 newinlib.html %}
-                {% load newinlib_tags %}
+{#            {% cache 60 newinlib.html %}#}
                 {% last_items_feed %}
-            {% endcache %}
+{#            {% endcache %}#}
         </div>
         <span class="btn-box">
             <a href="{% url 'newinlib:frontend:index' %}" class="btn-show-all-owl" title="">
-                {% if LANGUAGE_CODE == 'ru' %}Остальные
-            новинки{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар{% else %}More new
-            arrivals{% endif %}
+                {% if LANGUAGE_CODE == 'ru' %}Остальные новинки
+                {% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар
+                {% else %}More new arrivals
+                {% endif %}
             </a>
         </span>
     </li>
-<li>
-    <div id="owl-2" class="owl-carousel">
-        <div class="item-book" style="width:386px">
-            <div class="bookmark-box bookmark-box_yellow"></div>
-            <h3>Достопамятный год
-                жизни, или заточение
-                в Сибирь и возвращение
-                оттуда</h3>
-
-            <p>
-                Коцебу, А. Достопамятный год жизни, или заточение в Сибирь и возвращение оттуда : Описан. им самим.— М.:
-                Привилегир. тип. Кряжева и Мея, 1806
-            </p>
-
-            <div class="tag-crumbs tag-crumbs_main-page">
-                <ul class="tag-crumbs__list">
-                    <li>
-                                    <span href="#" class="tag-crumbs__list_link">
-                                        Пункт
-                                    </span>
-                    </li>
-                    <li>
-                                    <span href="#" class="tag-crumbs__list_link">
-                                        Пункт
-                                    </span>
-                    </li>
-                    <li>
-                                    <span href="#" class="tag-crumbs__list_link">
-                                        Пункт
-                                    </span>
-                    </li>
-                    <li>
-                                    <span href="#" class="tag-crumbs__list_link">
-                                        Пункт
-                                    </span>
-                    </li>
-                </ul>
-            </div>
-            <div class="item-book__hover-box animated fadeIn">
-                <a href="#" class="item-book__hover-box__add-bookmark" title="Добавить в закладки">Добавить в
-                    закладки</a>
-                <a href="#" class="item-book__hover-box__add-reservation" title="Забронировать">Забронировать</a>
-                <a href="#" class="item-book__hover-box__info" title="Информация о книге">Информация о книге</a>
-                <hr>
-                <span>Рекомендовать друзьям</span>
-
-                <div class="item-book__hover-box__share-box">
-                    <a href="#" class="item-book__hover-box__share-box__link" title="Вконтакте"><img alt="Вконтакте"
-                                                                                                     src="{{ STATIC_URL }}dist/images/vkontakte.svg"></a>
-                    <a href="#" class="item-book__hover-box__share-box__link" title="Facebook"><img alt="Facebook"
-                                                                                                    src="{{ STATIC_URL }}dist/images/facebook.svg"></a>
-                    <a href="#" class="item-book__hover-box__share-box__link" title="Twitter"><img alt="Twitter"
-                                                                                                   src="{{ STATIC_URL }}dist/images/twitter.svg"></a>
-                </div>
-            </div>
-        </div>
-
-    </div>
-                <span class="btn-box">
-                    <a href="#" class="btn-show-all-owl" title="">Показать все новинки</a>
-                </span>
-</li>
+{#    <li>#}
+{#        <div id="owl-2" class="owl-carousel">#}
+{#            {% cache 60 newinlib.html %}#}
+{#                {% last_items_feed %}#}
+{#            {% endcache %}#}
+{#        </div>#}
+{#        <span class="btn-box">#}
+{#            <a href="#" class="btn-show-all-owl" title="">Показать все новинки</a>#}
+{#        </span>#}
+{#    </li>#}
 </ul>
 </div>
 <div class="container">
@@ -133,8 +88,13 @@
 <div class="col-7">
     <div class="news-box news-box_border-right">
         <div class="news-box__title">
-            {% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}
-                    Яңалыклар{% else %}News{% endif %}
+            {% if LANGUAGE_CODE == 'ru' %}
+                Новости
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Яңалыклар
+            {% else %}
+                News
+            {% endif %}
         </div>
         <a href="{% url 'news:frontend:index' %}" class="news-box__all" title="Посмотреть архив новостей">
             {% if LANGUAGE_CODE == 'ru' %}Архив

@@ -3762,6 +3762,7 @@ a.thumbnail:hover {
 .popover-content ol {
   margin-bottom: 0;
 }
+
 .modal-open .dropdown-menu {
   z-index: 2050;
 }

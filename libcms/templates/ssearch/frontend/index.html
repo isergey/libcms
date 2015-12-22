@@ -114,16 +114,24 @@
                     <li>
                         <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
                     </li>
-                    <li><a class="bread__crumbs_link bread__crumbs_link_active">{% if LANGUAGE_CODE == 'ru' %}
-                        Результаты поиска:  найдено
-                        документов{% elif LANGUAGE_CODE == 'tt' %}Эзләү нәтиҗәләре: документлар
-                        табылды{% else %}
-                        Search
-                        results: finded records{% endif %}: {{ search_statisics.num_found }},
-                        {% if LANGUAGE_CODE == 'ru' %}время выполнения запроса{% elif LANGUAGE_CODE == 'tt' %}
-                            сорауүтәлү
-                            вакыты{% else %}request time{% endif %}: {{ search_statisics.search_time }} с.
-                    </a>
+                    <li>
+                        <a class="bread__crumbs_link bread__crumbs_link_active">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Результаты поиска:  найдено документов
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Эзләү нәтиҗәләре: документлар табылды
+                            {% else %}
+                                Search results: finded records
+                            {% endif %}:
+                            {{ search_statisics.num_found }},
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                время выполнения запроса
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                сорауүтәлү вакыты
+                            {% else %}
+                                request time
+                            {% endif %}: {{ search_statisics.search_time }} с.
+                        </a>
                     </li>
                 {% else %}
                     <li>
@@ -536,17 +544,18 @@
 
 
 
-    <div id="select_library" class="modal hide " tabindex="-1" role="dialog" aria-labelledby="select_library"
-         aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">Выберите библиотеку, по записям которой необходимо ограничить поиск</h3>
-        </div>
-        <div class="modal-body">
-            <a href="/ru">Начало</a>
-        </div>
-        <div class="modal-footer">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <div id="select_library" class="modal" tabindex="-1" role="dialog" aria-labelledby="select_library"  aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">Выберите библиотеку, по записям которой необходимо ограничить поиск</h3>
+            </div>
+            <div class="modal-body">
+                <a href="/ru">Начало</a>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
         </div>
     </div>
 
