@@ -1,15 +1,16 @@
 {#<div>#}
-    {% if already_saved %}
-        <a class="detail-page__options__btn" href="{% url 'mydocs:frontend:index' %}#{{ gen_id }}">Сохранен в документах</a>
+{% if already_saved %}
+    <a class="detail-page__options__btn" href="{% url 'mydocs:frontend:index' %}#{{ gen_id }}">Сохранен в документах</a>
 
-    {% else %}
-        <style>
-            #save_doc_form textarea {
-                width: 99%;
-            }
-        </style>
+{% else %}
+    <style>
+        #save_doc_form textarea {
+            width: 99%;
+        }
+    </style>
 
-        <div class="modal" id="save_doc_modal">
+    <div class="modal" id="save_doc_modal">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form action="{% url 'mydocs:frontend:save' %}" method="POST" id="save_doc_form" style="margin: 0">
                     <div class="modal-header">
@@ -21,52 +22,55 @@
                         {% include 'frontend/base_form_fields.html' %}
                     </div>
                     <div class="modal-footer">
-    {#                    <a href="#" class="btn" data-dismiss="modal">Закрыть</a>#}
+                        {#                    <a href="#" class="btn" data-dismiss="modal">Закрыть</a>#}
                         <button type="submit" class="detail-page__options__btn" id='save_doc_submit'>Сохранить</button>
                     </div>
                 </form>
             </div>
         </div>
-        {% if user.id %}
-            <a class="detail-page__options__btn" data-toggle="modal" href="#save_doc_modal" id="save_doc_button" >Сохранить в документах</a>
-        {% else %}
-            <a class="detail-page__options__btn" href="#1" id="save_doc_button" onclick="alert('Необходимо войти на портал')" >Сохранить в документах</a>
-        {% endif %}
-        <script type="text/javascript">
-            $('#save_doc_form').submit(function () {
-                $.ajax({
-                    url:'{% url 'mydocs:frontend:save' %}',
-                    type:'POST',
-                    dataType:"json",
-                    async:false,
-                    data:$(this).serialize(),
-                    statusCode: {
-                        401: function() {
-                            alert("Вы должны войти на портал.");
-                        },
-                        403: function() {
-                            alert("Действие запрещено.");
-                        },
-                        500: function() {
-                            alert("На сервере возникла ошибка. Администраторы оповещены.");
-                        }
-                    },
-                    success:function (response) {
-                        if (response.status == 'error') {
-                            alert("При сохранении возникла ошибка");
-                        }
-                        if (response.status == 'ok') {
-                            $('#save_doc_submit').addClass('btn-success');
-                            $('#save_doc_submit').attr('disabled','disabled');
-                            $('#save_doc_submit').attr('value','Сохранено');
-                        }
-                    }
-                });
-
-                return false;
-            });
-        </script>
-
-
+    </div>
+    {% if user.id %}
+        <a class="detail-page__options__btn" data-toggle="modal" href="#save_doc_modal" id="save_doc_button">Сохранить в
+            документах</a>
+    {% else %}
+        <a class="detail-page__options__btn" href="#1" id="save_doc_button"
+           onclick="alert('Необходимо войти на портал')">Сохранить в документах</a>
     {% endif %}
+    <script type="text/javascript">
+        $('#save_doc_form').submit(function () {
+            $.ajax({
+                url: '{% url 'mydocs:frontend:save' %}',
+                type: 'POST',
+                dataType: "json",
+                async: false,
+                data: $(this).serialize(),
+                statusCode: {
+                    401: function () {
+                        alert("Вы должны войти на портал.");
+                    },
+                    403: function () {
+                        alert("Действие запрещено.");
+                    },
+                    500: function () {
+                        alert("На сервере возникла ошибка. Администраторы оповещены.");
+                    }
+                },
+                success: function (response) {
+                    if (response.status == 'error') {
+                        alert("При сохранении возникла ошибка");
+                    }
+                    if (response.status == 'ok') {
+                        $('#save_doc_submit').addClass('btn-success');
+                        $('#save_doc_submit').attr('disabled', 'disabled');
+                        $('#save_doc_submit').attr('value', 'Сохранено');
+                    }
+                }
+            });
+
+            return false;
+        });
+    </script>
+
+
+{% endif %}
 {#</div>#}

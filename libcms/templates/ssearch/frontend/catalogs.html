@@ -46,28 +46,56 @@
                 {#<a href="#tukay" role="button" class="btn" data-toggle="modal">Launch demo modal</a>#}
 
                 {% for collection in collections %}
-                    <div id="{{ collection|hash:'persistant-number'|hash:0 }}" class="modal hide fade" tabindex="-1"
+                    <div id="{{ collection|hash:'persistant-number'|hash:0 }}" class="modal" tabindex="-1"
                          role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="myModalLabel">{{ collection.title.0 }}</h3>
-                            <a href="{% url 'ssearch:frontend:ecollection' %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on"
-                               class="btn btn-success">Поиск по коллекции</a>
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
 
-                        </div>
+{#                                <div class="modal-header">#}
+{#                                    <button type="button" class="close detail-page__options__btn" data-dismiss="modal" aria-hidden="true">#}
+{#                                        ×#}
+{#                                    </button>#}
+{#                                </div>#}
+                                <h1 class="content-page__title">{{ collection.title.0 }}</h1>
+                                <div class="content-page__text">
+                                    <a href="{% url 'ssearch:frontend:ecollection' %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on"
+                                       class="btn btn-success">Поиск по коллекции</a>
+                                    {% if collection.collection_cover %}
+                                        <img src="{{ collection.collection_cover.0 }}" alt=""
+                                             style="float: left; padding: 0 30px 10px 0">
+                                    {% endif %}
+                                    <ul>
+                                        {% for comments in collection.comments %}
+                                            <li>{{ comments }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
 
-                        <div class="modal-body">
-                            {% if collection.collection_cover %}
-                                <img src="{{ collection.collection_cover.0 }}" alt=""
-                                     style="float: left; padding: 0 5px 5px 0">
-                            {% endif %}
-                            {% for comments in collection.comments %}
-                                <p class="western">{{ comments }}</p>
-                            {% endfor %}
+
+                                {#                                <div class="modal-header">#}
+                                {#                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×#}
+                                {#                                    </button>#}
+                                {#                                    <h3 id="myModalLabel">{{ collection.title.0 }}</h3>#}
+                                {#                                    <a href="{% url 'ssearch:frontend:ecollection' %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on"#}
+                                {#                                       class="btn btn-success">Поиск по коллекции</a>#}
+                                {##}
+                                {#                                </div>#}
+                                {##}
+                                {#                                <div class="modal-body">#}
+                                {#                                    {% if collection.collection_cover %}#}
+                                {#                                        <img src="{{ collection.collection_cover.0 }}" alt=""#}
+                                {#                                             style="float: left; padding: 0 5px 5px 0">#}
+                                {#                                    {% endif %}#}
+                                {#                                    {% for comments in collection.comments %}#}
+                                {#                                        <p class="western">{{ comments }}</p>#}
+                                {#                                    {% endfor %}#}
+                                {#                                </div>#}
+                                <div class="modal-footer">
+                                    <button type="button" class="detail-page__options__btn" data-dismiss="modal">Close</button>
+                                    {#                                        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>#}
+                                </div>
+                            </div>
                         </div>
-                        {#    <div class="modal-footer">#}
-                        {#        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>#}
-                        {#    </div>#}
                     </div>
                 {% endfor %}
 
@@ -101,7 +129,7 @@
 {#                <li><a href="#periodkazan" data-toggle="modal">{{ collection.title }}</a>: <b>{{ collection.value }}</b>#}
 {#                </li>#}
 {#            {% elif collection.title == 'Тестовая коллекция' %}#}
-                {#                <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Тестовая+коллекция&attr=text&attr=fond_sf&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>#}
+{#                <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Тестовая+коллекция&attr=text&attr=fond_sf&in_founded=on">{{ collection.title }}</a>: <b>{{ collection.value }}</b></li>#}
 {#            {% else %}#}
 {#                <li><a href="#{{ collection|hash:'persistant-number'|hash:0 }}"#}
 {#                       data-toggle="modal">{{ collection.title.0 }}</a>: <b>{{ collection.stats }}</b></li>#}
@@ -134,8 +162,8 @@
 {#                <p class="western">{{ comments }}</p>#}
 {#            {% endfor %}#}
 {#        </div>#}
-        {#    <div class="modal-footer">#}
-        {#        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>#}
-        {#    </div>#}
+{#    <div class="modal-footer">#}
+{#        <a href="{% url ssearch:frontend:ecollection %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on" class="btn btn-success">Поиск по коллекции</a>#}
+{#    </div>#}
 {#    </div>#}
 {#{% endfor %}#}
