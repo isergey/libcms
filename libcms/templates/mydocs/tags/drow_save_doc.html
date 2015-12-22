@@ -12,19 +12,24 @@
     <div class="modal" id="save_doc_modal">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form action="{% url 'mydocs:frontend:save' %}" method="POST" id="save_doc_form" style="margin: 0">
-                    <div class="modal-header">
-                        <a class="close" data-dismiss="modal">×</a>
+                <form action="{% url 'mydocs:frontend:save' %}" method="POST" id="save_doc_form">
 
-                        <h3>Сохранение документа</h3>
-                    </div>
-                    <div class="modal-body">
+
+{#                    <div class="modal-header">#}
+{#                        <a class="close" data-dismiss="modal">×</a>#}
+{##}
+{#                        <h3>Сохранение документа</h3>#}
+{#                    </div>#}
+                    <h1 class="content-page__title" style="margin-left: 20px">Сохранение документа</h1>
+                    <div class="modal-body" style="padding: 20px">
                         {% include 'frontend/base_form_fields.html' %}
                     </div>
                     <div class="modal-footer">
-                        {#                    <a href="#" class="btn" data-dismiss="modal">Закрыть</a>#}
+                        <a href="#" class="detail-page__options__btn" data-dismiss="modal">Закрыть</a>
                         <button type="submit" class="detail-page__options__btn" id='save_doc_submit'>Сохранить</button>
                     </div>
+
+
                 </form>
             </div>
         </div>
