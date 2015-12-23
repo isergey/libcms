@@ -53,7 +53,7 @@
                     <h1 class="content-page__title">Добавить напоминание</h1>
 
                     <div class="content-page__text">
-                        <form method="post" class="form-horizontal">
+                        <form method="post" class="form-all">
                             {% csrf_token %}
                             {% include 'administration/base_form_fields.html' with form=notification_form %}
                             <br>
