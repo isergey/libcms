@@ -99,20 +99,29 @@ def filter_by_districts(request):
         status=400)
 
     districts = District.objects.filter(name__startswith=letter)
-    libraries = Library.objects.filter(district__in=districts).exclude(parent=None).order_by('-republican').order_by('name')
-    results = []
+    fields = ('id', 'code', 'name', 'latitude', 'longitude', 'postal_address')
+    libraries = list(Library.objects.filter(district__in=districts).exclude(parent=None).order_by('-republican').order_by('name').values(*fields))
+
+    geo_libraries = []
     for library in libraries:
-        results.append({
-            'id': library.id,
-            'name': library.name,
-            'code': library.code,
-            'latitude': library.latitude,
-            'longitude': library.longitude,
-            'href': resolve_url('participants:frontend:detail', code=library.code)
+        latitude = library.get('latitude', 0)
+        longitude = library.get('longitude', 0)
+        if not latitude or not longitude:
+            continue
+        geo_libraries.append({
+            'library': library,
+            #'distance': geodistance(lat, lon, latitude, longitude),
+            'href': resolve_url('participants:frontend:detail', code=library.get('code'))
         })
-    return HttpResponse(json.dumps({
-        'items': results
-    }, ensure_ascii=False), content_type='application/json; charset=utf-8')
+
+    #geo_libraries.sort(key=lambda item: item.get('distance'))
+
+    result = {
+        'count': len(geo_libraries),
+        'object_list': geo_libraries,
+
+    }
+    return HttpResponse(json.dumps(result, ensure_ascii=False), content_type='application/json')
 
 def geosearch(request):
     return render(request, 'participants/frontend/geosearch.html')
@@ -145,7 +154,6 @@ def geo_nearest(request):
             'href': resolve_url('participants:frontend:detail', code=library.get('code'))
         })
 
-    #geo_libraries = sorted(geo_libraries, key=lambda item: item.get('distance'))
     geo_libraries.sort(key=lambda item: item.get('distance'))
 
     per_page = 10

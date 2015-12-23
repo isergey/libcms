@@ -15,7 +15,8 @@ function getDistrictLetters() {
 function filterByDistricts(params) {
   return new Promise((resolve, reject) => {
     $.get('/ru/participants/filter_by_districts/', params).done(data => {
-      resolve(data.items);
+      console.log('data', data);
+      resolve(data.object_list);
     }).fail(error => {
       console.error(error);
       reject(error);
@@ -37,10 +38,10 @@ function geoSearch(params) {
 function getPositionAddress(params) {
   return new Promise((res, rej) => {
     $.get('//geocode-maps.yandex.ru/1.x/', {
-      'format': 'json',
-      'geocode': params.latitude + ',' + params.longitude,
+      format: 'json',
+      geocode: params.longitude + ',' + params.latitude,
     }).done(function (data) {
-      const address = data.response.GeoObjectCollection.featureMember[0].GeoObject.metaDataProperty.GeocoderMetaData.text;
+      const address = ((((data.response.GeoObjectCollection.featureMember[0] || {}).GeoObject || {}).metaDataProperty || {}).GeocoderMetaData || {}).text || '';
       res(address);
     }).error(function (error) {
       rej(error);

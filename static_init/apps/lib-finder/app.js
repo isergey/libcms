@@ -79,6 +79,7 @@ const MapBoxItem = React.createClass({
   propTypes: {
     id: React.PropTypes.number,
     code: React.PropTypes.string,
+    distance: React.PropTypes.number,
     href: React.PropTypes.string,
     name: React.PropTypes.string,
   },
@@ -86,6 +87,7 @@ const MapBoxItem = React.createClass({
     return (
       <div className="map-box__list-bib__item">
         <a className="map-box__list-bib__item__link" target={this.props.href ? '_blank' : ''} href={this.props.href || '#1'} title="">{this.props.name}</a>
+        { this.props.distance ? <span>{this.props.distance}</span> : null }
       </div>
     );
   },
@@ -130,11 +132,13 @@ const MapBoxItems = React.createClass({
   },
   renderItems() {
     return this.state.items.map((item, index) => {
+      const library = item.library || {};
       return (
         <MapBoxItem key={index}
-          code={item.code}
-          name={item.name}
+          code={library.code}
+          name={library.name}
           href={item.href}
+          distance={item.distance}
         />
       );
     });
@@ -300,30 +304,37 @@ const LibFinder = React.createClass({
       zoom: 7,
     });
   },
+  drowItemsToMap(items) {
+    this.itemsMap.geoObjects.removeAll();
+    const clusterer = new window.ymaps.Clusterer();
+    items.forEach(item => {
+      const library = item.library || {};
+      if (!library.latitude || !library.longitude) {
+        return;
+      }
+      clusterer.add(new window.ymaps.Placemark([library.latitude, library.longitude], {
+        hintContent: library.name || '',
+        balloonContent: library.name || '',
+      }));
+    });
+    this.itemsMap.geoObjects.add(clusterer);
+    this.itemsMap.setBounds(this.itemsMap.geoObjects.getBounds());
+  },
   handleStartFiltering() {
 
   },
   handleEndFiltering(params) {
     this.itemsMap.geoObjects.removeAll();
     const { items = [] } = params;
-    const clusterer = new window.ymaps.Clusterer();
-    items.forEach(item => {
-      if (!item.latitude || !item.longitude) {
-        return;
-      }
-      clusterer.add(new window.ymaps.Placemark([item.latitude, item.longitude], {
-        hintContent: item.name || '',
-        balloonContent: item.name || '',
-      }));
-    });
-    this.itemsMap.geoObjects.add(clusterer);
-    this.itemsMap.setBounds(this.itemsMap.geoObjects.getBounds());
+    this.drowItemsToMap(items);
   },
   handleGeoDetection(params) {
     console.log('handleGeoDetection', params);
   },
   handleEndGeoDetection(params) {
     console.log('handleEndGeoDetection', params);
+    const { items = [] } = params;
+    this.drowItemsToMap(items.object_list);
   },
   handleDetectGeoPosition(params) {
     const positionCoords = [params.latitude, params.longitude];
@@ -334,10 +345,13 @@ const LibFinder = React.createClass({
 
     }).then(() => {
       this.itemsMap.geoObjects.add(new window.ymaps.Placemark(positionCoords, {
-        hintContent: 'Моё местоположение: ' + address,
-        balloonContent: 'Моё местоположение: ' + address,
+        hintContent: `Ваше местоположение: <b>${address}</b>`,
+        balloonContent: `Ваше местоположение: <b>${address}</b>`,
+      }, {
+        preset: 'islands#redCircleIcon',
       }));
       this.itemsMap.setCenter(positionCoords);
+      this.itemsMap.setZoom(11);
     });
   },
   render() {
