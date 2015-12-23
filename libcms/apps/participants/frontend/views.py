@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import collections
 import json
 from django.shortcuts import resolve_url
 from django.core.cache import cache
@@ -75,6 +76,15 @@ def detail(request, code):
         'js_orgs': js_orgs
     })
 
+
+def get_district_letters(request):
+    districts = District.objects.all()
+    letters = set()
+    for district in districts:
+        letter = district.name[0:1]
+        if letter:
+            letters.add(letter.upper())
+    return HttpResponse(json.dumps(sorted(list(letters)), ensure_ascii=False), content_type='application/json;  charset=utf-8')
 
 def geosearch(request):
     return render(request, 'participants/frontend/geosearch.html')

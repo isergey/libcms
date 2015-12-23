@@ -17,26 +17,41 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}dist/styles/index.css">
 
     <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
-    <script src="{{ STATIC_URL }}dist/scripts/commons.js"></script>
-    <script src="{{ STATIC_URL }}dist/scripts/index.js"></script>
-    <script src="{{ STATIC_URL }}dist/vendors/owl-carousel/owl.carousel.min.js"></script>
+{#    <script src="{{ STATIC_URL }}dist/vendors/owl-carousel/owl.carousel.min.js"></script>#}
     <script src="{{ STATIC_URL }}js/lodash.compat.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/6.1.19/browser.min.js"></script>
+    <script src="{{ STATIC_URL }}js/browser-polyfill.min.js"></script>
+    <script src="{{ STATIC_URL }}js/browser.min.js"></script>
+    <script src="{{ STATIC_URL }}js/system.js"></script>
     <script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <script>
+        System.config({
+            map: {
+                jquery: '{{ STATIC_URL }}js/jquery.min.js',
+                lodash: '{{ STATIC_URL }}js/lodash.compat.min.js',
+                'owl-carousel': '{{ STATIC_URL }}dist/vendors/owl-carousel/owl.carousel.min.js',
+                react: '{{ STATIC_URL }}js/react-with-addons.min.js'
+            },
+            baseURL: '{{ STATIC_URL }}apps',
+            transpiler: 'babel'
+        });
+        System.import('base.js');
+        // loads /app/main.js
+
+    </script>
     {% block scripts %}{% endblock %}
 
 
-{#        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap/css/modal.css"/>#}
+    {#        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap/css/modal.css"/>#}
     {#    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}theme/style.css"/>#}
     {#    {% block styles %}{% endblock %}#}
-{#        <script src="{{ STATIC_URL }}js/jquery.min.js"></script>#}
-{#        <script src="{{ STATIC_URL }}js/jquery.pjax.js"></script>#}
-{#        <script src="{{ STATIC_URL }}js/lodash.compat.min.js"></script>#}
-{#        <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>#}
-<script type="text/javascript" src="{{ STATIC_URL }}dist/vendors/bootstrap/bootstrap.min.js"></script>
+    {#        <script src="{{ STATIC_URL }}js/jquery.min.js"></script>#}
+    {#        <script src="{{ STATIC_URL }}js/jquery.pjax.js"></script>#}
+    {#        <script src="{{ STATIC_URL }}js/lodash.compat.min.js"></script>#}
+    {#        <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>#}
+    <script type="text/javascript" src="{{ STATIC_URL }}dist/vendors/bootstrap/bootstrap.min.js"></script>
     {#    <script src="{{ STATIC_URL }}js/typeahead.jquery.min.js"></script>#}
-{#        <script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>#}
-{#        {% block scripts %}{% endblock %}#}
+    {#        <script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>#}
+    {#        {% block scripts %}{% endblock %}#}
     <script type="text/javascript" src="http://vk.com/js/api/share.js?93" charset="windows-1251"></script>
 </head>
 <body>
@@ -51,19 +66,27 @@
                             <img src="{{ STATIC_URL }}dist/images/logo.png">
                         </div>
                         <div class="logo__text">
-                            {% if LANGUAGE_CODE == 'ru' %}<span>Национальная электронная библиотека</span><br>Республики Татарстан{% elif LANGUAGE_CODE == 'tt' %}
-                                <span>Татарстан Республикасының Милли<br> электрон китапханәсе</span>{% else %}<span>National Electronic Library of the</span><br>Republic of Tatarstan{% endif %}
+                            {% if LANGUAGE_CODE == 'ru' %}<span>Национальная электронная библиотека</span><br>Республики
+                                Татарстан{% elif LANGUAGE_CODE == 'tt' %}
+                                <span>Татарстан Республикасының Милли<br> электрон китапханәсе</span>{% else %}
+                                <span>National Electronic Library of the</span><br>Republic of Tatarstan{% endif %}
                         </div>
                     </div>
                 </a>
 
                 <div class="language">
-                    <a href="/ru{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
-                       class="language__btn {% if "/ru" in request.path %}language__btn_active{% endif %}" title="Русский">Рус</a>
-                    <a href="/tt{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
-                       class="language__btn {% if "/tt" in request.path %}language__btn_active{% endif %}" title="Татарский">Тат</a>
-                    <a href="/en{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
-                       class="language__btn {% if "/en" in request.path %}language__btn_active{% endif %}" title="English">Eng</a>
+                    <a href="/ru
+                            {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                       class="language__btn {% if "/ru" in request.path %}language__btn_active{% endif %}"
+                       title="Русский">Рус</a>
+                    <a href="/tt
+                            {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                       class="language__btn {% if "/tt" in request.path %}language__btn_active{% endif %}"
+                       title="Татарский">Тат</a>
+                    <a href="/en
+                            {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                       class="language__btn {% if "/en" in request.path %}language__btn_active{% endif %}"
+                       title="English">Eng</a>
                 </div>
             </div>
             {% include 'cabinet.html' %}
@@ -84,286 +107,23 @@
     <div class="container">
         <div class="row">
             <div class="col-6">
-                <a class="footer-logo__bib" href="{% url 'index:frontend:index' %}" title="На главную!"><img src="{{ STATIC_URL }}dist/images/logo_bib.png"
-                                                                        alt="тайтл"></a>
+                <a class="footer-logo__bib" href="{% url 'index:frontend:index' %}" title="На главную!"><img
+                        src="{{ STATIC_URL }}dist/images/logo_bib.png"
+                        alt="тайтл"></a>
                 <a class="footer-logo__min" href="#" title="тайтл"><img src="{{ STATIC_URL }}dist/images/logo_min.png"
                                                                         alt="тайтл"></a>
-                                <!-- Yandex.Metrika informer -->
-                <a href="https://metrika.yandex.ru/stat/?id=28345621&amp;from=informer"
-                   target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/28345621/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
-                                                       style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика"
-                                                       title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)"
-                                                       onclick="try{Ya.Metrika.informer({i:this,id:28345621,lang:'ru'});return false}catch(e){}"/></a>
-                <!-- /Yandex.Metrika informer -->
-                <!-- begin of Top100 code -->
-
-                <script id="top100Counter" type="text/javascript" src="//counter.rambler.ru/top100.jcn?2811425"></script>
-                <noscript>
-                    <a href="//top100.rambler.ru/navi/2811425/">
-                        <img src="//counter.rambler.ru/top100.cnt?2811425" alt="Rambler's Top100" border="0"/>
-                    </a>
-
-                </noscript>
-                <!-- end of Top100 code -->
             </div>
             <div class="col-6">
-                <a class="footer-logo__ask-lib" href="{% url 'ask_librarian:frontend:ask' %}" title="Спроси библиотекаря">Задать вопрос библиотекарю</a>
-                <a class="footer-logo__ask-all" href="{% url 'ask_librarian:frontend:index' %}" title="Спроси библиотекаря все вопросы">Все вопросы</a>
+                <a class="footer-logo__ask-lib" href="{% url 'ask_librarian:frontend:ask' %}"
+                   title="Спроси библиотекаря">Задать вопрос библиотекарю</a>
+                <a class="footer-logo__ask-all" href="{% url 'ask_librarian:frontend:index' %}"
+                   title="Спроси библиотекаря все вопросы">Все вопросы</a>
             </div>
         </div>
     </div>
 
 </footer>
 
-
-{#<div class="container" style="margin-top: 5px;">#}
-{#    <div class="row">#}
-{#        <div class="span12">#}
-{#            <div class="row">#}
-{#                <div class="span5">#}
-{#                    <a id="logo" href="{% url 'index:frontend:index' %}"><img#}
-{#                            src="{{ STATIC_URL }}theme/images/logo.png"/></a>#}
-{#                </div>#}
-{#                <div class="span7">#}
-{#                    <div style="position: absolute;">#}
-{#                        <a class="language" href="/ru{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Рус</a>#}
-{#                        |#}
-{#                        <a class="language" href="/tt{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Тат</a>#}
-{#                        |#}
-{#                        <a class="language" href="/en{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}">Eng</a>#}
-{#                    </div>#}
-{##}
-{#                    {% if request.user.is_authenticated %}#}
-{#                        {% if request.user.password == '!' %}#}
-{#                            <p style="text-align: right">Вы вошли через социальную сеть</p>#}
-{#                        {% else %}#}
-{#                            <p style="text-align: right">Вы вошли как#}
-{#                                <b>#}
-{#                                    {% if user.first_name %}#}
-{#                                    {{ user.first_name }} {% if user.last_name.0 %} {{ user.last_name.0 }}.{% endif %}#}
-{#                                {% else %}#}
-{#                                    {{ user.username }}#}
-{#                                {% endif %}#}
-{#                                </b>#}
-{#                            </p>#}
-{#                        {% endif %}#}
-{##}
-{#                        {% include 'cabinet.html' %}#}
-{#                    {% else %}#}
-{#                        <div class="btn-group" style="float: right;">#}
-{#                            <a href="{% url 'accounts:frontend:login' %}" class="btn btn-success" style="width: 80px">Вход</a>#}
-{#                            <a href="{% url 'accounts:frontend:registration' %}" class="btn">Регистрация</a>#}
-{#                            <a href="{% url 'accounts:frontend:password_reset' %}" class="btn">Забыли пароль?</a>#}
-{#                        </div>#}
-{##}
-{#                    {% endif %}#}
-{##}
-{#                </div>#}
-{#            </div>#}
-{#            <div class="row">#}
-{#                <div class="span12">#}
-{#                    <div id="main_menu">#}
-{#                        <div class="left"></div>#}
-{#                        <div class="middle">#}
-{#                            {% include 'main_menu.html' %}#}
-{#                        </div>#}
-{#                        <div class="right"></div>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#            <div class="row" style="padding: 10px 0 0 0; ">#}
-{#                {% block content %}{% endblock %}#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#    <div class="row"></div>#}
-{#</div>#}
-{#<div style="background: #E1E1E1; min-height: 180px; margin-top: 10px;">#}
-{#    <style>#}
-{#        #footer-logo p {#}
-{#            font-family: Sans Sherif;#}
-{#            font-size: 18px;#}
-{#            color: #434343;#}
-{#            line-height: 20px;#}
-{#            margin: 0;#}
-{#        }#}
-{##}
-{#        #map_canvas img {#}
-{#            max-width: none;#}
-{#        }#}
-{#    </style>#}
-{#    <div class="container" id="footer">#}
-{#        <div class="row">#}
-{#            <div class="span3" id="footer-logo">#}
-{#                {% if LANGUAGE_CODE == 'ru' %}#}
-{#                    <p>Национальная</p>#}
-{#                    <p style="font-size: 22px;">ЭЛЕКТРОННАЯ</p>#}
-{#                    <p style="font-size: 22px;">БИБЛИОТЕКА</p>#}
-{#                    <p>Республики Татарстан</p>#}
-{#                {% elif LANGUAGE_CODE == 'tt' %}#}
-{#                    <p>Татарстан Республикасының</p>#}
-{#                    <p>Милли</p>#}
-{#                    <p style="font-size: 22px;">Электрон</p>#}
-{#                    <p style="font-size: 22px;">Китапханәсе</p>#}
-{#                {% else %}#}
-{#                    <p>National</p>#}
-{#                    <p style="font-size: 22px;">Electronic</p>#}
-{#                    <p style="font-size: 22px;">Library</p>#}
-{#                    <p>Republic of Tatarstan</p>#}
-{#                {% endif %}#}
-{#            </div>#}
-{#            <style>#}
-{#                #footer-links .column a {#}
-{#                    display: block;#}
-{#                    border-bottom: 1px solid #848484;#}
-{#                    padding-top: 10px;#}
-{#                    padding-bottom: 10px;#}
-{#                    padding-left: 18px;#}
-{#                    font-size: 11px;#}
-{#                    text-decoration: none;#}
-{#                    background: url('{{ STATIC_URL }}theme/images/link-arrow.png') no-repeat 0 50%;#}
-{#                }#}
-{##}
-{#                #footer-links .column {#}
-{#                    float: left;#}
-{#                    padding-left: 10px;#}
-{#                    width: 23%;#}
-{#                }#}
-{#            </style>#}
-{#            <div class="span9" id="footer-links">#}
-{##}
-{#                <div class="column">#}
-{#                    <a href="/{{ LANGUAGE_CODE }}">{% if LANGUAGE_CODE == 'ru' %}Главная{% elif LANGUAGE_CODE == 'tt' %}#}
-{#                        Главная{% else %}Main{% endif %}</a><br/>#}
-{#                    <a href="{% url 'pages:frontend:show' 'index' %}">{% if LANGUAGE_CODE == 'ru' %}О#}
-{#                        проекте{% elif LANGUAGE_CODE == 'tt' %}Проект турында{% else %}About{% endif %}</a>#}
-{#                </div>#}
-{#                <div class="column">#}
-{#                    <a href="{% url 'ask_librarian:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Спроси#}
-{#                        библиотекаря{% elif LANGUAGE_CODE == 'tt' %}Китапханәчедән сора{% else %}Ask#}
-{#                        librarian{% endif %}</a><br/>#}
-{#                    <a href="{% url 'ssearch:frontend:ecatalog' %}">{% if LANGUAGE_CODE == 'ru' %}Электронный#}
-{#                        каталог{% elif LANGUAGE_CODE == 'tt' %}Электрон каталог{% else %}Electronic#}
-{#                        catalogue{% endif %}</a>#}
-{#                </div>#}
-{#                <div class="column">#}
-{#                    <a href="{% url 'ssearch:frontend:ecollection' %}">{% if LANGUAGE_CODE == 'ru' %}Электронные#}
-{#                        коллекции{% elif LANGUAGE_CODE == 'tt' %}Электрон коллекцияләр{% else %}Electronic#}
-{#                        collections{% endif %}</a><br/>#}
-{#                    <a href="{% url 'guestbook:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}#}
-{#                        Отзывы{% elif LANGUAGE_CODE == 'tt' %}Фикерләр{% else %}Feedbacks{% endif %}</a>#}
-{#                </div>#}
-{#                <div class="column">#}
-{#                    <a href="{% url 'news:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}#}
-{#                        Новости{% elif LANGUAGE_CODE == 'tt' %}Яңалыклар{% else %}News{% endif %}</a><br/>#}
-{#                    <a href="{% url 'pages:frontend:show' 'for_professional' %}">{% if LANGUAGE_CODE == 'ru' %}#}
-{#                        Профессионалам {% elif LANGUAGE_CODE == 'tt' %}Профессионалларга{% else %}#}
-{#                        Professionals {% endif %}</a>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#</div>#}
-
-
-
-<script>
-    $(document).ready(function () {
-        $("#owl-1").owlCarousel({
-            autoPlay: true,
-            stopOnHover: true,
-            loop: true,
-            autoWidth: true,
-            slideSpeed: 100,
-            items: 4,
-            responsive: false,
-            responsiveRefreshRate: 200
-        });
-
-        $("#owl-2").owlCarousel({
-            autoPlay: true,
-            stopOnHover: true,
-            loop: true,
-            autoWidth: true,
-            slideSpeed: 100,
-            items: 4,
-            responsive: false,
-            responsiveRefreshRate: 200
-        });
-
-        $("#owl-poster").owlCarousel({
-            autoPlay: true,
-            stopOnHover: true,
-            loop: true,
-            autoWidth: true,
-            slideSpeed: 100,
-            items: 1,
-            responsive: false
-        });
-
-    });
-
-    <!-- Drop down btn -->
-    $(function () {
-        $('.click-nav > ul').toggleClass('no-js js');
-        $('.click-nav .js ul').hide();
-        $('.click-nav .js').click(function (e) {
-            $('.click-nav .js ul').slideToggle(0);
-            $('.clicker').toggleClass('active');
-            e.stopPropagation();
-        });
-        $(document).click(function () {
-            if ($('.click-nav .js ul').is(':visible')) {
-                $('.click-nav .js ul', this).slideUp(0);
-                $('.clicker').removeClass('active');
-            }
-        });
-    });
-
-    <!-- Tab -->
-    $(document).ready(function () {
-        $(".tab-container__tabs li").click(function (e) {
-            if (!$(this).hasClass("active")) {
-                var tabNum = $(this).index();
-                var nthChild = tabNum + 1;
-                $(".tab-container__tabs li.active").removeClass("active");
-                $(this).addClass("active");
-                $(".tab-container__tab li.active").removeClass("active");
-                $(".tab-container__tab li:nth-child(" + nthChild + ")").addClass("active");
-            }
-        });
-    });
-
-    $('.facet__header').click(function () {
-        var facetBody = $(this).next();
-        if (facetBody.hasClass('facet__body_closed')) {
-            $(this).removeClass('facet__header_closed');
-            facetBody.removeClass('facet__body_closed');
-        } else {
-            facetBody.addClass('facet__body_closed');
-            $(this).addClass('facet__header_closed');
-        }
-    });
-
-    <!-- Ya map -->
-    ymaps.ready(init);
-    var myMap;
-
-    function init() {
-        myMap = new ymaps.Map("map", {
-            center: [55.76, 37.64],
-            zoom: 7
-        });
-    }
-
-    function bgSlider(){
-        var bg = $('.bg_first');
-        bg.delay(500).animate();
-    }
-
-    bgSlider();
-
-</script>
 
 {#<script type="text/javascript">#}
 {#    if ($(window).height() - $('body').height() > 0) {#}
@@ -418,7 +178,7 @@
             // load the template - and be sure to cache the result.
             var fn = !/\W/.test(str) ?
                     cache[str] = cache[str] ||
-                    tmpl(document.getElementById(str).innerHTML) :
+                            tmpl(document.getElementById(str).innerHTML) :
 
                 // Generate a reusable function that will serve as a template
                 // generator (and which will be cached).
@@ -469,7 +229,13 @@
     <div><img src="//mc.yandex.ru/watch/17301607" style="position:absolute; left:-9999px;" alt=""/></div>
 </noscript>
 <!-- /Yandex.Metrika counter -->
-
+<!-- Yandex.Metrika informer -->
+<a href="https://metrika.yandex.ru/stat/?id=28345621&amp;from=informer"
+   target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/28345621/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
+                                       style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика"
+                                       title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)"
+                                       onclick="try{Ya.Metrika.informer({i:this,id:28345621,lang:'ru'});return false}catch(e){}"/></a>
+<!-- /Yandex.Metrika informer -->
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
@@ -521,6 +287,18 @@
     })();
 </script>
 
+<div style="float: left">
+    <!-- begin of Top100 code -->
+
+    <script id="top100Counter" type="text/javascript" src="//counter.rambler.ru/top100.jcn?2811425"></script>
+    <noscript>
+        <a href="//top100.rambler.ru/navi/2811425/">
+            <img src="//counter.rambler.ru/top100.cnt?2811425" alt="Rambler's Top100" border="0"/>
+        </a>
+
+    </noscript>
+    <!-- end of Top100 code -->
+</div>
 <script>
     $(function () {
         $.get('{% url 'statistics:api:watch' %}');
