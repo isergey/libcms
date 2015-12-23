@@ -2,32 +2,96 @@
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <div class="span12">
-        <div class="breadcrumb">
-            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
-            {% for ancestor in library.get_ancestors %}
-                <span>
-                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>
-                    <span class="divider">/</span>
-                </span>
-            {% endfor %}
-            <span><a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a> <span
-                    class="divider">/</span></span>
-            <span><a href="{% url 'participant_events:frontend:index' library.code %}">Афиша</a> <span class="divider">/</span></span>
-            <span class="active">Подписка на мероприятия</span>
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
         </div>
-    </div>
-    <div class="span3">
-                {% include 'participant_site/frontend/site_menu.html' %}
-    </div>
-    <div class="span9">
-        <div class="alert alert-info">
-            Для форомления подписки укажите возрастые категории и направления событий.
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li><a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">Главная</a></li>
+                {% for ancestor in library.get_ancestors %}
+                    <li>
+                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                    </li>
+                    <li>
+                        <a href="{% url 'participant_site:frontend:index' ancestor.code %}"
+                           class="bread__crumbs_link">{{ ancestor.name }}</a>
+                    </li>
+                {% endfor %}
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li><a href="{% url 'participant_site:frontend:index' library.code %}"
+                       class="bread__crumbs_link">{{ library.name }}</a></li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li><a href="{% url 'participant_events:frontend:index' library.code %}" class="bread__crumbs_link">Афиша</a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li><a class="bread__crumbs_link bread__crumbs_link_active">Подписка на мероприятия</a></li>
+            </ul>
         </div>
-        <form method="POST">
-            {% csrf_token %}
-            {% include 'administration/base_form_fields.html' %}
-            <input type="submit" class="btn btn-success" value="Подписаться"/>
-        </form>
-    </div>
+        <hr class="footer-hr">
+        <div class="container content-page">
+            <div class="row">
+                <div class="col-7">
+                    <h1 class="content-page__title">Подписка на мероприятия</h1>
+
+                    <div class="content-page__text">
+                        <p>
+                            Для форомления подписки укажите возрастые категории и направления событий.
+                        </p>
+
+                        <form method="POST">
+                            {% csrf_token %}
+                            {% include 'administration/base_form_fields.html' %}
+                            <br>
+                            <button type="submit" class="side-box__form__btn">Подписаться</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 {% endblock %}
+
+
+
+
+
+
+{#    <div class="span12">#}
+{#        <div class="breadcrumb">#}
+{#            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>#}
+{#            {% for ancestor in library.get_ancestors %}#}
+{#                <span>#}
+{#                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>#}
+{#                    <span class="divider">/</span>#}
+{#                </span>#}
+{#            {% endfor %}#}
+{#            <span><a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a> <span#}
+{#                    class="divider">/</span></span>#}
+{#            <span><a href="{% url 'participant_events:frontend:index' library.code %}">Афиша</a> <span#}
+{#                    class="divider">/</span></span>#}
+{#            <span class="active">Подписка на мероприятия</span>#}
+{#        </div>#}
+{#    </div>#}
+{#    <div class="span3">#}
+{#        {% include 'participant_site/frontend/site_menu.html' %}#}
+{#    </div>#}
+{#    <div class="span9">#}
+{#        <div class="alert alert-info">#}
+{#            Для форомления подписки укажите возрастые категории и направления событий.#}
+{#        </div>#}
+{#        <form method="POST">#}
+{#            {% csrf_token %}#}
+{#            {% include 'administration/base_form_fields.html' %}#}
+{#            <input type="submit" class="btn btn-success" value="Подписаться"/>#}
+{#        </form>#}
+{#    </div>#}

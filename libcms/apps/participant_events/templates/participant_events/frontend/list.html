@@ -2,75 +2,156 @@
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <div class="span12">
-        <div class="breadcrumb">
-            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
-            {% for ancestor in library.get_ancestors %}
-                <span>
-                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>
-                    <span class="divider">/</span>
-                </span>
-            {% endfor %}
-            <span><a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a> <span
-                    class="divider">/</span></span>
-            <span class="active">Афиша {% if date %}за {{ date|date:'d E Y' }}{% endif %}</span>
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
         </div>
-    </div>
-    <div class="span3">
-        {% include 'participant_site/frontend/site_menu.html' %}
-    </div>
-    <div class="span9">
-        <style>
-            ul.news {
-                list-style: none;
-                margin: 0;
-            }
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li><a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">Главная</a></li>
+                {% for ancestor in library.get_ancestors %}
+                    <li>
+                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                    </li>
+                    <li>
+                        <a href="{% url 'participant_site:frontend:index' ancestor.code %}"
+                           class="bread__crumbs_link">{{ ancestor.name }}</a>
+                    </li>
+                {% endfor %}
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li><a href="{% url 'participant_site:frontend:index' library.code %}"
+                       class="bread__crumbs_link">{{ library.name }}</a></li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li><a class="bread__crumbs_link bread__crumbs_link_active">Афиша {% if date %}за
+                    {{ date|date:'d E Y' }}{% endif %}</a></li>
 
-            .news .title {
-                font-size: 14px;
-                /*font-weight: bold;*/
-            }
-
-            .news .teaser {
-                padding: 5px 0;
-            }
-
-            .news .create_date {
-                color: #2a2a2a;
-            }
-        </style>
-        <div>
-            <a class="btn" href="{% url 'participant_events:frontend:subscribe' library.code %}">
-                <i class="icon-envelope"></i> подписаться на события
-            </a>
+            </ul>
         </div>
-        <hr/>
+        <hr class="footer-hr">
+        <div class="container content-page">
+            <div class="row">
+                <div class="col-7">
+                    <h1 class="content-page__title">Афиша</h1>
+                    <br>
+                    <a href="{% url 'participant_events:frontend:subscribe' library.code %}"
+                       class="poster-box__all poster-box__all_margin" title="Посмотреть архив новостей">Подписаться на
+                        события</a>
+                    {% for event in events_list %}
+                        <div class="news-page-box">
+                            {#                            <div class="news-page-box__date">Начало: {{ event.start_date|date:'j E Y H:i' }}</div>#}
+                            <h1 class="news-page-box__title"><a
+                                    href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a>
+                            </h1>
 
-        {% for event in events_list %}
-            <div class="event-block">
-                <div>
-                    <span class="event-block__title">
-                        <a href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a>
-                    </span>
+                            <p class="news-page-box__teaser">
+                                {{ event.event_content.teaser }}<br>
+                                <b>Начало:</b> {{ event.start_date|date:'j E Y H:i' }}
+                            </p>
+                        </div>
+                    {% endfor %}
+                    {% admin_pagination events_page %}
                 </div>
-                <div class="event-block__teaser">
-                    <table style="width: 100%">
-                        <tr>
-                            {% if event.avatar %}
-                                <td style="width: 100px; padding-right: 5px">
-                                    <img src="{{ MEDIA_URL }}{{ event.avatar }}"></td>
-                            {% endif %}
-                            <td style="vertical-align: top">
-                                {{ event.event_content.teaser }}
-                                <div class="create_date">Начало: <b>{{ event.start_date|date:'j E Y H:i' }}</b></div>
-                            </td>
-                        </tr>
-                    </table>
+                <div class="col-5">
+                    <div class="facets-container">
+                        <div class="facets-container__item">
+                            <div class="facet">
+                                <div class="facet__header">
+                                    <h4 class="facet__title">Информация</h4>
+                                </div>
+                                <div class="facet__body">
+                                    {% include 'participant_site/frontend/site_menu.html' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            {% if not forloop.last %}<hr/>{% endif %}
-        {% endfor %}
-
-        {% admin_pagination events_page %}
-    </div>
+        </div>
+    </main>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+{#    <div class="span12">#}
+{#        <div class="breadcrumb">#}
+{#            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>#}
+{#            {% for ancestor in library.get_ancestors %}#}
+{#                <span>#}
+{#                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>#}
+{#                    <span class="divider">/</span>#}
+{#                </span>#}
+{#            {% endfor %}#}
+{#            <span><a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a> <span#}
+{#                    class="divider">/</span></span>#}
+{#            <span class="active">Афиша {% if date %}за {{ date|date:'d E Y' }}{% endif %}</span>#}
+{#        </div>#}
+{#    </div>#}
+{#    <div class="span3">#}
+{#        {% include 'participant_site/frontend/site_menu.html' %}#}
+{#    </div>#}
+{#    <div class="span9">#}
+        {#        <style>#}
+        {#            ul.news {#}
+        {#                list-style: none;#}
+        {#                margin: 0;#}
+        {#            }#}
+        {##}
+        {#            .news .title {#}
+        {#                font-size: 14px;#}
+        {#                /*font-weight: bold;*/#}
+        {#            }#}
+        {##}
+        {#            .news .teaser {#}
+        {#                padding: 5px 0;#}
+        {#            }#}
+        {##}
+        {#            .news .create_date {#}
+        {#                color: #2a2a2a;#}
+        {#            }#}
+        {#        </style>#}
+        {#        <div>#}
+        {#            <a class="btn" href="{% url 'participant_events:frontend:subscribe' library.code %}">#}
+        {#                <i class="icon-envelope"></i> подписаться на события#}
+        {#            </a>#}
+        {#        </div>#}
+        {#        <hr/>#}
+{##}
+        {#        {% for event in events_list %}#}
+        {#            <div class="event-block">#}
+        {#                <div>#}
+        {#                    <span class="event-block__title">#}
+        {#                        <a href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a>#}
+        {#                    </span>#}
+        {#                </div>#}
+        {#                <div class="event-block__teaser">#}
+        {#                    <table style="width: 100%">#}
+        {#                        <tr>#}
+        {#                            {% if event.avatar %}#}
+        {#                                <td style="width: 100px; padding-right: 5px">#}
+        {#                                    <img src="{{ MEDIA_URL }}{{ event.avatar }}"></td>#}
+        {#                            {% endif %}#}
+        {#                            <td style="vertical-align: top">#}
+        {#                                {{ event.event_content.teaser }}#}
+        {#                                <div class="create_date">Начало: <b>{{ event.start_date|date:'j E Y H:i' }}</b></div>#}
+        {#                            </td>#}
+        {#                        </tr>#}
+        {#                    </table>#}
+        {#                </div>#}
+        {#            </div>#}
+        {#            {% if not forloop.last %}<hr/>{% endif %}#}
+        {#        {% endfor %}#}
+        {##}
+        {#        {% admin_pagination events_page %}#}
+{#    </div>#}
