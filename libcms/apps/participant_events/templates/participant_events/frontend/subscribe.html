@@ -47,7 +47,7 @@
                             Для форомления подписки укажите возрастые категории и направления событий.
                         </p>
 
-                        <form method="POST">
+                        <form method="POST" class="form-all">
                             {% csrf_token %}
                             {% include 'administration/base_form_fields.html' %}
                             <br>

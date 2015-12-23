@@ -9,6 +9,7 @@
 {#{% load participiants_tags %}#}
 {#{% load cache %}#}
 {% get_current_language as LANGUAGE_CODE %}
+{% block title %}{{ library.name }}{% endblock %}
 {% block content %}
     <nav class="bg bg_second">
         <div class="container">

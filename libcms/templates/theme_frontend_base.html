@@ -75,16 +75,13 @@
                 </a>
 
                 <div class="language">
-                    <a href="/ru
-                            {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                    <a href="/ru{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
                        class="language__btn {% if "/ru" in request.path %}language__btn_active{% endif %}"
                        title="Русский">Рус</a>
-                    <a href="/tt
-                            {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                    <a href="/tt{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
                        class="language__btn {% if "/tt" in request.path %}language__btn_active{% endif %}"
                        title="Татарский">Тат</a>
-                    <a href="/en
-                            {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                    <a href="/en{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
                        class="language__btn {% if "/en" in request.path %}language__btn_active{% endif %}"
                        title="English">Eng</a>
                 </div>
