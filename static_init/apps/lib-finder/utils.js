@@ -15,7 +15,7 @@ function getDistrictLetters() {
 function filterByDistricts(params) {
   return new Promise((resolve, reject) => {
     $.get('/ru/participants/filter_by_districts/', params).done(data => {
-      resolve(data.orgs);
+      resolve(data.items);
     }).fail(error => {
       console.error(error);
       reject(error);
@@ -23,8 +23,35 @@ function filterByDistricts(params) {
   });
 }
 
+function geoSearch(params) {
+  return new Promise((resolve, reject) => {
+    $.get('/ru/participants/geosearch/nearest/', params).done(data => {
+      resolve(data);
+    }).fail(error => {
+      console.error(error);
+      reject(error);
+    });
+  });
+}
+
+function getPositionAddress(params) {
+  return new Promise((res, rej) => {
+    $.get('//geocode-maps.yandex.ru/1.x/', {
+      'format': 'json',
+      'geocode': params.latitude + ',' + params.longitude,
+    }).done(function (data) {
+      const address = data.response.GeoObjectCollection.featureMember[0].GeoObject.metaDataProperty.GeocoderMetaData.text;
+      res(address);
+    }).error(function (error) {
+      rej(error);
+    });
+  });
+}
+
 export default {
   getDistrictLetters,
   filterByDistricts,
+  geoSearch,
+  getPositionAddress,
 };
 

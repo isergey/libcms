@@ -99,23 +99,23 @@ def filter_by_districts(request):
         status=400)
 
     districts = District.objects.filter(name__startswith=letter)
-    orgs = Library.objects.filter(district__in=districts).exclude(parent=None)
+    libraries = Library.objects.filter(district__in=districts).exclude(parent=None).order_by('-republican').order_by('name')
     results = []
-    for org in orgs:
+    for library in libraries:
         results.append({
-            'id': org.id,
-            'name': org.name,
-            'code': org.code,
-            'latitude': org.latitude,
-            'longitude': org.longitude,
+            'id': library.id,
+            'name': library.name,
+            'code': library.code,
+            'latitude': library.latitude,
+            'longitude': library.longitude,
+            'href': resolve_url('participants:frontend:detail', code=library.code)
         })
     return HttpResponse(json.dumps({
-        'orgs': results
+        'items': results
     }, ensure_ascii=False), content_type='application/json; charset=utf-8')
 
 def geosearch(request):
     return render(request, 'participants/frontend/geosearch.html')
-
 
 def geo_nearest(request):
     page = int(request.GET.get('page', 1))
