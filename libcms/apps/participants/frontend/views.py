@@ -84,7 +84,34 @@ def get_district_letters(request):
         letter = district.name[0:1]
         if letter:
             letters.add(letter.upper())
-    return HttpResponse(json.dumps(sorted(list(letters)), ensure_ascii=False), content_type='application/json;  charset=utf-8')
+    return HttpResponse(json.dumps(sorted(list(letters)), ensure_ascii=False), content_type='application/json; charset=utf-8')
+
+
+def filter_by_districts(request):
+    letter = request.GET.get('letter', '')
+
+    if not letter:
+        return HttpResponse(
+            json.dumps({
+                'error': u'Не указана буква района'
+            }, ensure_ascii=False),
+            content_type='application/json; charset=utf-8',
+        status=400)
+
+    districts = District.objects.filter(name__startswith=letter)
+    orgs = Library.objects.filter(district__in=districts).exclude(parent=None)
+    results = []
+    for org in orgs:
+        results.append({
+            'id': org.id,
+            'name': org.name,
+            'code': org.code,
+            'latitude': org.latitude,
+            'longitude': org.longitude,
+        })
+    return HttpResponse(json.dumps({
+        'orgs': results
+    }, ensure_ascii=False), content_type='application/json; charset=utf-8')
 
 def geosearch(request):
     return render(request, 'participants/frontend/geosearch.html')

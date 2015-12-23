@@ -12,7 +12,19 @@ function getDistrictLetters() {
   });
 }
 
+function filterByDistricts(params) {
+  return new Promise((resolve, reject) => {
+    $.get('/ru/participants/filter_by_districts/', params).done(data => {
+      resolve(data.orgs);
+    }).fail(error => {
+      console.error(error);
+      reject(error);
+    });
+  });
+}
+
 export default {
   getDistrictLetters,
+  filterByDistricts,
 };
 
