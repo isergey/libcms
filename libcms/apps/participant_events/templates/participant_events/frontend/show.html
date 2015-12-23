@@ -3,76 +3,182 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <div class="span12">
-        <div class="breadcrumb">
-            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
-            {% for ancestor in event.library.get_ancestors %}
-                <span>
-                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>
-                    <span class="divider">/</span>
-                </span>
-            {% endfor %}
-            <span>
-                <a href="{% url 'participant_site:frontend:index' event.library.code %}">{{ event.library.name }}</a>
-                <span class="divider">/</span></span>
-            <span><a href="{% url 'participant_events:frontend:index' event.library.code %}">Афиша</a> <span class="divider">/</span></span>
-            <span>Информация о событии</span>
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
         </div>
-    </div>
-
-    <div class="span3">
-        {% include 'participant_site/frontend/site_menu.html' %}
-    </div>
-
-    <div class="span9">
-        {% include 'participant_site/frontend/inline_org_info.html' %}
-        <h3>{{ content.title }}</h3>
-        <table class="table">
-            <tr>
-                <th style="width: 150px">Место проведения:</th>
-                <td>{{ event.address }}</td>
-            </tr>
-            <tr>
-                <th>Начало:</th>
-                <td>{{ event.start_date|date:'D' }} {{ event.start_date|date:'d E Y H:i' }}</td>
-            </tr>
-            <tr>
-                <th>Окончание:</th>
-                <td>{{ event.end_date|date:'D' }} {{ event.end_date|date:'d E Y H:i' }}</td>
-            </tr>
-            <tr>
-                <th>Длительность:</th>
-                <td>
-                    {% if period.0 %}
-                        {{ period.0 }} д.
-                    {% endif %}
-                    {% if period.1 %}
-                        {{ period.1 }} ч.
-                    {% endif %}
-                    {% if period.2 %}
-                        {{ period.2 }} мин.
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Возрастная категория:</th>
-                <td>{% for age_category in event.age_category.all %}<span class="label label-info">{{ age_category|lower }}</span> {% endfor %}</td>
-            </tr>
-            <tr>
-                <th>Направление:</th>
-                <td>{% for event_type in event.event_type.all %}<span class="label label-info">{{ event_type|lower }}</span> {% endfor %}</td>
-            </tr>
-        </table>
-        <div class="btn-group">
-             <a href="{% url 'participant_events:frontend:create_notification' library.code event.id %}"  class="btn">Установить напоминание</a>
-{#            <a href="#" class="btn">Добавить в избранное</a>#}
-            <a href="{% url 'participant_events:frontend:make_icalendar' library.code event.id %}" class="btn">Загрузить в календарь</a>
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li><a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">Главная</a></li>
+                {% for ancestor in event.library.get_ancestors %}
+                    <li>
+                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                    </li>
+                    <li>
+                        <a class="bread__crumbs_link"
+                           href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>
+                    </li>
+                {% endfor %}
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a class="bread__crumbs_link"
+                       href="{% url 'participant_site:frontend:index' event.library.code %}">{{ event.library.name }}</a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a class="bread__crumbs_link"
+                       href="{% url 'participant_events:frontend:index' event.library.code %}">Афиша</a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li><a class="bread__crumbs_link bread__crumbs_link_active">Информация о событии</a></li>
+            </ul>
         </div>
-        <hr/>
-        <p>
-            {{ content.content|safe }}
-        </p>
-    </div>
+        <hr class="footer-hr">
+        <div class="container content-page">
+            <div class="row">
+                <div class="col-7">
+                    <h1 class="content-page__title">{{ content.title }}</h1>
+
+                    <div class="content-page__text">
+                        <p><b>Место проведения:</b> {{ event.address }}</p>
+
+                        <p><b>Начало:</b> {{ event.start_date|date:'D' }} {{ event.start_date|date:'d E Y H:i' }}</p>
+
+                        <p><b>Окончание:</b> {{ event.end_date|date:'D' }} {{ event.end_date|date:'d E Y H:i' }}</p>
+
+                        <p><b>Длительность:</b>
+                            {% if period.0 %}
+                                {{ period.0 }} д.
+                            {% endif %}
+                            {% if period.1 %}
+                                {{ period.1 }} ч.
+                            {% endif %}
+                            {% if period.2 %}
+                                {{ period.2 }} мин.
+                            {% endif %}
+                        </p>
+
+                        <p><b>Возрастная категория:</b> {% for age_category in event.age_category.all %}
+                            {{ age_category|lower }} {% endfor %}</p>
+
+                        <p><b>Направление:</b>
+                            {% for event_type in event.event_type.all %}{{ event_type|lower }}{% endfor %}</p>
+
+
+                        <a href="{% url 'participant_events:frontend:create_notification' library.code event.id %}">Установить
+                            напоминание</a>
+                        <br>
+
+                        <a href="{% url 'participant_events:frontend:make_icalendar' library.code event.id %}">Загрузить
+                            в календарь</a>
+                        <br>
+                        <br>
+                        {{ content.content|safe }}
+                    </div>
+                </div>
+                <div class="col-5">
+                    <div class="facets-container">
+                        <div class="facets-container__item">
+                            <div class="facet">
+                                <div class="facet__header">
+                                    <h4 class="facet__title">Информация</h4>
+                                </div>
+                                <div class="facet__body">
+                                    {% include 'participant_site/frontend/site_menu.html' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+    {#    <div class="span12">#}
+    {#        <div class="breadcrumb">#}
+    {#            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>#}
+    {#            {% for ancestor in event.library.get_ancestors %}#}
+    {#                <span>#}
+    {#                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>#}
+    {#                    <span class="divider">/</span>#}
+    {#                </span>#}
+    {#            {% endfor %}#}
+    {#            <span>#}
+    {#                <a href="{% url 'participant_site:frontend:index' event.library.code %}">{{ event.library.name }}</a>#}
+    {#                <span class="divider">/</span></span>#}
+    {#            <span><a href="{% url 'participant_events:frontend:index' event.library.code %}">Афиша</a> <span#}
+    {#                    class="divider">/</span></span>#}
+    {#            <span>Информация о событии</span>#}
+    {#        </div>#}
+    {#    </div>#}
+    {##}
+    {#    <div class="span3">#}
+    {#        {% include 'participant_site/frontend/site_menu.html' %}#}
+    {#    </div>#}
+    {##}
+    {#    <div class="span9">#}
+    {#        {% include 'participant_site/frontend/inline_org_info.html' %}#}
+    {#        <h3>{{ content.title }}</h3>#}
+    {#        <table class="table">#}
+    {#            <tr>#}
+    {#                <th style="width: 150px">Место проведения:</th>#}
+    {#                <td>{{ event.address }}</td>#}
+    {#            </tr>#}
+    {#            <tr>#}
+    {#                <th>Начало:</th>#}
+    {#                <td>{{ event.start_date|date:'D' }} {{ event.start_date|date:'d E Y H:i' }}</td>#}
+    {#            </tr>#}
+    {#            <tr>#}
+    {#                <th>Окончание:</th>#}
+    {#                <td>{{ event.end_date|date:'D' }} {{ event.end_date|date:'d E Y H:i' }}</td>#}
+    {#            </tr>#}
+    {#            <tr>#}
+    {#                <th>Длительность:</th>#}
+    {#                <td>#}
+    {#                    {% if period.0 %}#}
+    {#                        {{ period.0 }} д.#}
+    {#                    {% endif %}#}
+    {#                    {% if period.1 %}#}
+    {#                        {{ period.1 }} ч.#}
+    {#                    {% endif %}#}
+    {#                    {% if period.2 %}#}
+    {#                        {{ period.2 }} мин.#}
+    {#                    {% endif %}#}
+    {#                </td>#}
+    {#            </tr>#}
+    {#            <tr>#}
+    {#                <th>Возрастная категория:</th>#}
+    {#                <td>{% for age_category in event.age_category.all %}#}
+    {#                    <span class="label label-info">{{ age_category|lower }}</span> {% endfor %}</td>#}
+    {#            </tr>#}
+    {#            <tr>#}
+    {#                <th>Направление:</th>#}
+    {#                <td>{% for event_type in event.event_type.all %}#}
+    {#                    <span class="label label-info">{{ event_type|lower }}</span> {% endfor %}</td>#}
+    {#            </tr>#}
+    {#        </table>#}
+    {#        <div class="btn-group">#}
+    {#            <a href="{% url 'participant_events:frontend:create_notification' library.code event.id %}" class="btn">Установить#}
+    {#                напоминание</a>#}
+    {#            <a href="#" class="btn">Добавить в избранное</a>#}
+    {#            <a href="{% url 'participant_events:frontend:make_icalendar' library.code event.id %}" class="btn">Загрузить#}
+    {#                в календарь</a>#}
+    {#        </div>#}
+    {#        <hr/>#}
+    {#        <p>#}
+    {#            {{ content.content|safe }}#}
+    {#        </p>#}
+    {#    </div>#}
 
 
 {% endblock %}

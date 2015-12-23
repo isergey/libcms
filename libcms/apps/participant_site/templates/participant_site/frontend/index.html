@@ -56,6 +56,11 @@
                             {% else %}
                                 {% url 'participant_site:frontend:index' library.code as library_site_address %}
                                 <a href="http://
+
+
+
+
+
                                         {{ request.META.HTTP_HOST }}{{ library_site_address }}">http://{{ request.META.HTTP_HOST }}{{ library_site_address }}</a>
                             {% endif %}
                         </p>
@@ -68,9 +73,15 @@
                         <p><strong>Телефон:</strong> {{ library.phone|default:'не указан' }}</p>
                     </div>
 
-                    <h1 class="content-page__title">Новости библиотеки <a href="{% url 'participant_news:frontend:index' library.code %}" class="news-box__all" title="Посмотреть архив новостей">Архив новостей</a></h1>
+                    <h1 class="content-page__title">Новости библиотеки <a
+                            href="{% url 'participant_news:frontend:index' library.code %}" class="news-box__all"
+                            title="Посмотреть архив новостей">Архив новостей</a></h1>
 
-                    {% participant_news_feed library.id '10' %}
+                    {% participant_news_feed library.id '4' %}
+
+                    <h1 class="content-page__title">Последние поступления в библиотеку</h1>
+
+                    {% participant_income library.code %}
 
                 </div>
                 <div class="col-5">
@@ -92,12 +103,14 @@
                                 </div>
                                 <div class="">
                                     <div class="poster-box">
-                                        <a href="{% url 'participant_events:frontend:subscribe' library.code %}" class="poster-box__all poster-box__all_margin">
+                                        <a href="{% url 'participant_events:frontend:subscribe' library.code %}"
+                                           class="poster-box__all poster-box__all_margin">
                                             Подписаться на события библиотеки</a>
                                         <br><br>
-                                        <a href="{% url 'participant_events:frontend:index' library.code %}" class="poster-box__all poster-box__all_margin"
+                                        <a href="{% url 'participant_events:frontend:index' library.code %}"
+                                           class="poster-box__all poster-box__all_margin"
                                            title="Посмотреть все мероприятия">Все мероприятия</a>
-
+                                                                                {% participant_events_nearest library.id '5' %}
                                         <div id="owl-poster" class="owl-carousel">
                                             <div class="item-poster">
                                                 <div class="poster-box__item__date">
@@ -128,35 +141,6 @@
                                                 </p>
                                                 <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить
                                                     напоминание</a>
-                                                <hr class="poster-box__item__hr">
-                                                <div class="poster-box__item__date">
-                                                    <img title="Календарь" title="Календарь" src="images/calendar.svg">
-                                                    22 октября 2015 / 08:00
-                                                </div>
-                                                <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">
-                                                    <img alt="Расположение на карте" src="images/geo_pin.svg">
-                                                    Казань
-                                                </a>
-                                                <br>
-                                                <a href="#" title="Камско-Устьинская ЦБС"
-                                                   class="poster-box__item__bib-tag">
-                                                    Камско-Устьинская ЦБС
-                                                </a>
-
-                                                <h2 class="poster-box__item__title">
-                                                    <a href="#" title="Впервые пройдет слет молодых работников">
-                                                        Впервые пройдет слет молодых работников
-                                                        и участников мероприятий
-                                                    </a>
-                                                </h2>
-
-                                                <p class="poster-box__item__teaser">
-                                                    8 июля в библиотеках города и района пройдут праздничные
-                                                    мероприятия, посвящённые Всероссийскому дню семьи,
-                                                    любви и верности.
-                                                </p>
-                                                <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить
-                                                    напоминание</a>
                                             </div>
                                             <div class="item-poster">
                                                 <div class="poster-box__item__date">
@@ -187,48 +171,23 @@
                                                 </p>
                                                 <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить
                                                     напоминание</a>
-                                                <hr class="poster-box__item__hr">
-                                                <div class="poster-box__item__date">
-                                                    <img title="Календарь" title="Календарь" src="images/calendar.svg">
-                                                    22 октября 2015 / 08:00
-                                                </div>
-                                                <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">
-                                                    <img alt="Расположение на карте" src="images/geo_pin.svg">
-                                                    Казань
-                                                </a>
-                                                <br>
-                                                <a href="#" title="Камско-Устьинская ЦБС"
-                                                   class="poster-box__item__bib-tag">
-                                                    Камско-Устьинская ЦБС
-                                                </a>
-
-                                                <h2 class="poster-box__item__title">
-                                                    <a href="#" title="Впервые пройдет слет молодых работников">
-                                                        Впервые пройдет слет молодых работников
-                                                        и участников мероприятий
-                                                        Впервые пройдет слет молодых работников
-                                                        и участников мероприятий
-                                                        Впервые пройдет слет молодых работников
-                                                        и участников мероприятий
-                                                    </a>
-                                                </h2>
-
-                                                <p class="poster-box__item__teaser">
-                                                    8 июля в библиотеках города и района пройдут праздничные
-                                                    мероприятия, посвящённые Всероссийскому дню семьи,
-                                                    любви и верности.
-                                                    8 июля в библиотеках города и района пройдут праздничные
-                                                    мероприятия, посвящённые Всероссийскому дню семьи,
-                                                    любви и верности.
-                                                </p>
-                                                <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить
-                                                    напоминание</a>
-                                            </div>
-                                            <div class="item-poster">
-                                                <p>sdsdasdasdasd</p>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="facets-container__item">
+                            <div class="facet">
+                                <div class="facet__header">
+                                    <h4 class="facet__title">Календарь событий</h4>
+                                </div>
+                                <div class="facet__body">
+                                    <a href="{% url 'participant_events:frontend:index' library.code %}"
+                                       class="poster-box__all">
+                                        Другие события</a>
+                                    {% participant_events_calendar library %}
+
                                 </div>
                             </div>
                         </div>
@@ -281,93 +240,93 @@
     {#        </div>#}
     {#    </div>#}
 
-{#    <div class="span3">#}
-{#        {% include 'participant_site/frontend/site_menu.html' %}#}
-{#    </div>#}
-    <div class="span9">
-        <div class="row">
-            <div class="span9">
-                <div class="row">
-                    <div class="span9">
-                        {#                        <h3>{{ library.name }}</h3>#}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="span5 org-info">
-
-                        {#                        <table style="width: 100%">#}
-                        {#                            <tr>#}
-                        {#                                <td>Сайт:</td>#}
-                        {#                                <td>#}
-                        {#                                    {% if library.http_service %}#}
-                        {#                                        <a target="_blank"#}
-                        {#                                           href="{{ library.http_service }}">{{ library.http_service }}</a>#}
-                        {#                                    {% else %}#}
-                        {#                                        {% url 'participant_site:frontend:index' library.code as library_site_address %}#}
-                        {#                                        <a href="http://{{ request.META.HTTP_HOST }}{{ library_site_address }}">http://{{ request.META.HTTP_HOST }}{{ library_site_address }}</a>#}
-                        {#                                    {% endif %}</td>#}
-                        {#                            </tr>#}
-                        {#                            {% if library.mail %}#}
-                        {#                                <tr>#}
-                        {#                                    <td>Email:</td>#}
-                        {#                                    <td><a href="mailto:{{ library.mail|lower }}">{{ library.mail|lower }}</a>#}
-                        {#                                    </td>#}
-                        {#                                </tr>#}
-                        {#                            {% endif %}#}
-                        {#                            <tr>#}
-                        {#                                <td>Адрес:</td>#}
-                        {#                                <td>{{ library.postal_address|default:'не указан' }}</td>#}
-                        {#                            </tr>#}
-                        {#                            <tr>#}
-                        {#                                <td>Телефон:</td>#}
-                        {#                                <td>{{ library.phone|default:'не указан' }}</td>#}
-                        {#                            </tr>#}
-                        {#                        </table>#}
-                    </div>
-                    <div class="span4">
-                        <div class="map" style="height: 145px"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-
-{#            <div class="span5">#}
-{#                <hr/>#}
-{#                <h3>Новости библиотеки<a href="{% url 'participant_news:frontend:rss' library.code %}">#}
-{#                    <img width="18" src="{{ STATIC_URL }}images/rss.png" title="Подписаться на новости библиотеки"></a>#}
-{#                </h3>#}
-{#                {% participant_news_feed library.id '10' %}#}
-{#                <div>#}
-{#                    <a href="{% url 'participant_news:frontend:index' library.code %}">Остальные новости >></a>#}
-{#                </div>#}
-{#            </div>#}
-            <div class="span4">
-                <hr/>
-                <h3>Афиша событий
-                    <a title="Подписаться на события библиотеки" class=""
-                       href="{% url 'participant_events:frontend:subscribe' library.code %}">
-                        <i class="icon-envelope"></i>
-                    </a>
-                </h3>
-                {% participant_events_nearest library.id '5' %}
-                <div>
-                    <a href="{% url 'participant_events:frontend:index' library.code %}">другие события >></a> <br/>
-                </div>
-                <hr/>
-                <h3>Календарь событий
-                </h3>
-                {% participant_events_calendar library %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="span9">
-                <hr/>
-                <h3 style="margin-bottom: 10px">rrПоследние поступления в библиотеку</h3>
-                {% participant_income library.code %}
-            </div>
-        </div>
-    </div>
+    {#    <div class="span3">#}
+    {#        {% include 'participant_site/frontend/site_menu.html' %}#}
+    {#    </div>#}
+    {#    <div class="span9">#}
+    {#        <div class="row">#}
+    {#            <div class="span9">#}
+    {#                <div class="row">#}
+    {#                    <div class="span9">#}
+    {#                        <h3>{{ library.name }}</h3>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#                <div class="row">#}
+    {#                    <div class="span5 org-info">#}
+    {##}
+    {#                        <table style="width: 100%">#}
+    {#                            <tr>#}
+    {#                                <td>Сайт:</td>#}
+    {#                                <td>#}
+    {#                                    {% if library.http_service %}#}
+    {#                                        <a target="_blank"#}
+    {#                                           href="{{ library.http_service }}">{{ library.http_service }}</a>#}
+    {#                                    {% else %}#}
+    {#                                        {% url 'participant_site:frontend:index' library.code as library_site_address %}#}
+    {#                                        <a href="http://{{ request.META.HTTP_HOST }}{{ library_site_address }}">http://{{ request.META.HTTP_HOST }}{{ library_site_address }}</a>#}
+    {#                                    {% endif %}</td>#}
+    {#                            </tr>#}
+    {#                            {% if library.mail %}#}
+    {#                                <tr>#}
+    {#                                    <td>Email:</td>#}
+    {#                                    <td><a href="mailto:{{ library.mail|lower }}">{{ library.mail|lower }}</a>#}
+    {#                                    </td>#}
+    {#                                </tr>#}
+    {#                            {% endif %}#}
+    {#                            <tr>#}
+    {#                                <td>Адрес:</td>#}
+    {#                                <td>{{ library.postal_address|default:'не указан' }}</td>#}
+    {#                            </tr>#}
+    {#                            <tr>#}
+    {#                                <td>Телефон:</td>#}
+    {#                                <td>{{ library.phone|default:'не указан' }}</td>#}
+    {#                            </tr>#}
+    {#                        </table>#}
+    {#                    </div>#}
+    {#                    <div class="span4">#}
+    {#                        <div class="map" style="height: 145px"></div>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="row">#}
+    {##}
+    {#            <div class="span5">#}
+    {#                <hr/>#}
+    {#                <h3>Новости библиотеки<a href="{% url 'participant_news:frontend:rss' library.code %}">#}
+    {#                    <img width="18" src="{{ STATIC_URL }}images/rss.png" title="Подписаться на новости библиотеки"></a>#}
+    {#                </h3>#}
+    {#                {% participant_news_feed library.id '10' %}#}
+    {#                <div>#}
+    {#                    <a href="{% url 'participant_news:frontend:index' library.code %}">Остальные новости >></a>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#            <div class="span4">#}
+    {#                <hr/>#}
+    {#                <h3>Афиша событий#}
+    {#                    <a title="Подписаться на события библиотеки" class=""#}
+    {#                       href="{% url 'participant_events:frontend:subscribe' library.code %}">#}
+    {#                        <i class="icon-envelope"></i>#}
+    {#                    </a>#}
+    {#                </h3>#}
+    {#                {% participant_events_nearest library.id '5' %}#}
+    {#                <div>#}
+    {#                    <a href="{% url 'participant_events:frontend:index' library.code %}">другие события >></a> <br/>#}
+    {#                </div>#}
+    {#                <hr/>#}
+    {#                <h3>Календарь событий#}
+    {#                </h3>#}
+    {#                {% participant_events_calendar library %}#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="row">#}
+    {#            <div class="span9">#}
+    {#                <hr/>#}
+    {#                <h3 style="margin-bottom: 10px">rrПоследние поступления в библиотеку</h3>#}
+    {#                {% participant_income library.code %}#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
     <script type="text/javascript">
         ymaps.ready(init);
         var myMap;

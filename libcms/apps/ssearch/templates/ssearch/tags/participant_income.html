@@ -1,20 +1,48 @@
 {% load hash %}
 {% if docs %}
-    <div style="margin-bottom: 10px">
-        <a class="btn btn-small" href="{% url 'ssearch:frontend:index' %}?library={{ sigla }}&sort=record-create-date&attr=*&q=*">все поступления >></a>
-    </div>
-    {% for doc in docs %}
-        <div>
-            <div class="record-wrapper">{{ doc.record|safe }}</div>
-            <div style="padding-top: 5px">
-                <div><b>Дата поступления</b>: {{ doc|hash:'record-create-date_dts'|date:'d E Y' }}</div>
-{#                <div><a href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">подробнее >></a></div>#}
+    <a
+            href="{% url 'ssearch:frontend:index' %}?library={{ sigla }}&sort=record-create-date&attr=*&q=*"
+            class="news-box__all"
+            title="Посмотреть все поступления" style="margin: 10px 0 0 40px">Все поступления</a>
+
+    <div class="content-page__text">
+        {% for doc in docs %}
+            <div>
+                <div class="record-wrapper">{{ doc.record|safe }}</div>
+                <br>
+                <b>Дата поступления</b>: {{ doc|hash:'record-create-date_dts'|date:'d E Y' }}
+
             </div>
-        </div>
-        <hr/>
-    {% endfor %}
-    <a href="{% url 'ssearch:frontend:index' %}?library={{ sigla }}&sort=record-create-date&attr=*&q=*">все поступления >></a>
+            <hr class="hr-income">
+        {% endfor %}
+    </div>
 {% else %}
-    Записи отсутствуют
+    <div class="content-page__text">
+        <p>Записи отсутствуют</p>
+    </div>
 {% endif %}
+
+
+{#{% if docs %}#}
+{#    <a#}
+{#                            href="{% url 'ssearch:frontend:index' %}?library={{ sigla }}&sort=record-create-date&attr=*&q=*" class="news-box__all"#}
+{#                            title="Посмотреть все поступления">Все поступления</a>#}
+{#    <div style="margin-bottom: 10px">#}
+{#        <a class="btn btn-small" href="{% url 'ssearch:frontend:index' %}?library={{ sigla }}&sort=record-create-date&attr=*&q=*">все поступления >></a>#}
+{#    </div>#}
+{#    {% for doc in docs %}#}
+{#        <div>#}
+{#            <div class="record-wrapper">{{ doc.record|safe }}</div>#}
+{#            <div style="padding-top: 5px">#}
+{#                <div><b>Дата поступления</b>: {{ doc|hash:'record-create-date_dts'|date:'d E Y' }}</div>#}
+{#                <div><a href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">подробнее >></a></div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <hr/>#}
+{#    {% endfor %}#}
+{#    <a href="{% url 'ssearch:frontend:index' %}?library={{ sigla }}&sort=record-create-date&attr=*&q=*">все поступления >></a>#}
+{#{% else %}#}
+{#    Записи отсутствуют#}
+{#{% endif %}#}
+
 
