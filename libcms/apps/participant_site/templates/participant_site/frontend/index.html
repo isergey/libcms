@@ -62,6 +62,8 @@
 
 
 
+
+
                                         {{ request.META.HTTP_HOST }}{{ library_site_address }}">http://{{ request.META.HTTP_HOST }}{{ library_site_address }}</a>
                             {% endif %}
                         </p>
@@ -111,69 +113,69 @@
                                         <a href="{% url 'participant_events:frontend:index' library.code %}"
                                            class="poster-box__all poster-box__all_margin"
                                            title="Посмотреть все мероприятия">Все мероприятия</a>
-                                                                                {% participant_events_nearest library.id '5' %}
-                                        <div id="owl-poster" class="owl-carousel">
-                                            <div class="item-poster">
-                                                <div class="poster-box__item__date">
-                                                    <img title="Календарь" title="Календарь" src="images/calendar.svg">
-                                                    22 октября 2015 / 08:00
-                                                </div>
-                                                <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">
-                                                    <img alt="Расположение на карте" src="images/geo_pin.svg">
-                                                    Казань
-                                                </a>
-                                                <br>
-                                                <a href="#" title="Камско-Устьинская ЦБС"
-                                                   class="poster-box__item__bib-tag">
-                                                    Камско-Устьинская ЦБС
-                                                </a>
-
-                                                <h2 class="poster-box__item__title">
-                                                    <a href="#" title="Впервые пройдет слет молодых работников">
-                                                        Впервые пройдет слет молодых работников
-                                                        и участников мероприятий
-                                                    </a>
-                                                </h2>
-
-                                                <p class="poster-box__item__teaser">
-                                                    8 июля в библиотеках города и района пройдут праздничные
-                                                    мероприятия, посвящённые Всероссийскому дню семьи,
-                                                    любви и верности.
-                                                </p>
-                                                <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить
-                                                    напоминание</a>
-                                            </div>
-                                            <div class="item-poster">
-                                                <div class="poster-box__item__date">
-                                                    <img title="Календарь" title="Календарь" src="images/calendar.svg">
-                                                    22 октября 2015 / 08:00
-                                                </div>
-                                                <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">
-                                                    <img alt="Расположение на карте" src="images/geo_pin.svg">
-                                                    Казань
-                                                </a>
-                                                <br>
-                                                <a href="#" title="Камско-Устьинская ЦБС"
-                                                   class="poster-box__item__bib-tag">
-                                                    Камско-Устьинская ЦБС
-                                                </a>
-
-                                                <h2 class="poster-box__item__title">
-                                                    <a href="#" title="Впервые пройдет слет молодых работников">
-                                                        Впервые пройдет слет молодых работников
-                                                        и участников мероприятий
-                                                    </a>
-                                                </h2>
-
-                                                <p class="poster-box__item__teaser">
-                                                    8 июля в библиотеках города и района пройдут праздничные
-                                                    мероприятия, посвящённые Всероссийскому дню семьи,
-                                                    любви и верности.
-                                                </p>
-                                                <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить
-                                                    напоминание</a>
-                                            </div>
-                                        </div>
+                                        {% participant_events_nearest library.id '5' %}
+                                        {#                                        <div id="owl-poster" class="owl-carousel">#}
+                                        {#                                            <div class="item-poster">#}
+                                        {#                                                <div class="poster-box__item__date">#}
+                                        {#                                                    <img title="Календарь" title="Календарь" src="images/calendar.svg">#}
+                                        {#                                                    22 октября 2015 / 08:00#}
+                                        {#                                                </div>#}
+                                        {#                                                <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">#}
+                                        {#                                                    <img alt="Расположение на карте" src="images/geo_pin.svg">#}
+                                        {#                                                    Казань#}
+                                        {#                                                </a>#}
+                                        {#                                                <br>#}
+                                        {#                                                <a href="#" title="Камско-Устьинская ЦБС"#}
+                                        {#                                                   class="poster-box__item__bib-tag">#}
+                                        {#                                                    Камско-Устьинская ЦБС#}
+                                        {#                                                </a>#}
+                                        {##}
+                                        {#                                                <h2 class="poster-box__item__title">#}
+                                        {#                                                    <a href="#" title="Впервые пройдет слет молодых работников">#}
+                                        {#                                                        Впервые пройдет слет молодых работников#}
+                                        {#                                                        и участников мероприятий#}
+                                        {#                                                    </a>#}
+                                        {#                                                </h2>#}
+                                        {##}
+                                        {#                                                <p class="poster-box__item__teaser">#}
+                                        {#                                                    8 июля в библиотеках города и района пройдут праздничные#}
+                                        {#                                                    мероприятия, посвящённые Всероссийскому дню семьи,#}
+                                        {#                                                    любви и верности.#}
+                                        {#                                                </p>#}
+                                        {#                                                <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить#}
+                                        {#                                                    напоминание</a>#}
+                                        {#                                            </div>#}
+                                        {#                                            <div class="item-poster">#}
+                                        {#                                                <div class="poster-box__item__date">#}
+                                        {#                                                    <img title="Календарь" title="Календарь" src="images/calendar.svg">#}
+                                        {#                                                    22 октября 2015 / 08:00#}
+                                        {#                                                </div>#}
+                                        {#                                                <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">#}
+                                        {#                                                    <img alt="Расположение на карте" src="images/geo_pin.svg">#}
+                                        {#                                                    Казань#}
+                                        {#                                                </a>#}
+                                        {#                                                <br>#}
+                                        {#                                                <a href="#" title="Камско-Устьинская ЦБС"#}
+                                        {#                                                   class="poster-box__item__bib-tag">#}
+                                        {#                                                    Камско-Устьинская ЦБС#}
+                                        {#                                                </a>#}
+                                        {##}
+                                        {#                                                <h2 class="poster-box__item__title">#}
+                                        {#                                                    <a href="#" title="Впервые пройдет слет молодых работников">#}
+                                        {#                                                        Впервые пройдет слет молодых работников#}
+                                        {#                                                        и участников мероприятий#}
+                                        {#                                                    </a>#}
+                                        {#                                                </h2>#}
+                                        {##}
+                                        {#                                                <p class="poster-box__item__teaser">#}
+                                        {#                                                    8 июля в библиотеках города и района пройдут праздничные#}
+                                        {#                                                    мероприятия, посвящённые Всероссийскому дню семьи,#}
+                                        {#                                                    любви и верности.#}
+                                        {#                                                </p>#}
+                                        {#                                                <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить#}
+                                        {#                                                    напоминание</a>#}
+                                        {#                                            </div>#}
+                                        {#                                        </div>#}
                                     </div>
                                 </div>
                             </div>
