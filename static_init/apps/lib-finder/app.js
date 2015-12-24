@@ -1,5 +1,6 @@
 'use strict';
 import React from 'react';
+import $ from 'jquery';
 import utils from './utils.js';
 import EventEmitter from 'eventemitter3';
 
@@ -74,6 +75,77 @@ function renderError(message = 'Ошибка') {
   return <span>{message}</span>;
 }
 
+
+const ContextMenu = React.createClass({
+  propTypes: {
+    children: React.PropTypes.object,
+    onClickAway: React.PropTypes.func,
+  },
+  getInitialState() {
+    return {
+      open: false,
+    };
+  },
+  componentDidMount() {
+    if (!this.manuallyBindClickAway) this._bindClickAway();
+  },
+  componentWillUnmount() {
+    this._unbindClickAway();
+  },
+  componentClickAway() {
+    this.setState({
+      open: false,
+    });
+  },
+  open(opened) {
+    this.setState({
+      open: opened,
+    });
+  },
+  isDescendant(parent, child) {
+    let node = child.parentNode;
+
+    while (node !== null) {
+      if (node === parent) return true;
+      node = node.parentNode;
+    }
+
+    return false;
+  },
+  _checkClickAway(event) {
+    if (this.isMounted()) {
+      const el = React.findDOMNode(this);
+      // Check if the target is inside the current component
+      if (event.target !== el &&
+          !this.isDescendant(el, event.target) &&
+          document.documentElement.contains(event.target)) {
+        if (this.componentClickAway) this.componentClickAway(event);
+      }
+    }
+  },
+  _bindClickAway() {
+    // On touch-enabled devices, both events fire, and the handler is called twice,
+    // but it's fine since all operations for which the mixin is used
+    // are idempotent.
+    document.addEventListener('mouseup', this._checkClickAway);
+    document.addEventListener('touchend', this._checkClickAway);
+  },
+  _unbindClickAway() {
+    document.removeEventListener('mouseup', this._checkClickAway);
+    document.removeEventListener('touchend', this._checkClickAway);
+  },
+  render() {
+    const classes = ['abc-crumbs__list__hover-box'];
+    if (this.state.open) {
+      classes.push('abc-crumbs__list__hover-box_show');
+    }
+    return (
+      <div className={classes.join(' ')}>
+        {this.props.children}
+      </div>
+    );
+  },
+});
 
 const MapBoxItem = React.createClass({
   propTypes: {
@@ -184,33 +256,41 @@ const AbcCrumbLetter = React.createClass({
     };
   },
   handleClick() {
-    this.props.onClick(this.props.letter);
+    // this.props.onClick(this.props.letter);
+    if (this.refs.contextMenu) {
+      this.refs.contextMenu.open(true);
+    }
+  },
+  renderContextMenu() {
+    return (
+      <ContextMenu ref="contextMenu">
+        <div className="map-box__list-bib">
+          <div className="map-box__list-bib__item">
+            <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+          </div>
+          <div className="map-box__list-bib__item">
+            <a className="map-box__list-bib__item__link" href="#" title="">Республиканская специальная библиотека
+            для слепых и слабовидящих</a>
+          </div>
+          <div className="map-box__list-bib__item">
+            <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+          </div>
+          <div className="map-box__list-bib__item">
+            <a className="map-box__list-bib__item__link" href="#" title="">Республиканская специальная библиотека
+            для слепых и слабовидящих</a>
+          </div>
+          <div className="map-box__list-bib__item">
+            <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+          </div>
+        </div>
+      </ContextMenu>
+    );
   },
   render() {
     return (
       <li onClick={this.handleClick}>
         <span title="" href="#" className="abc-crumbs__list_link"> {this.props.letter} </span>
-        <div className="abc-crumbs__list__hover-box abc-crumbs__list__hover-box_show">
-          <div className="map-box__list-bib">
-            <div className="map-box__list-bib__item">
-              <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
-            </div>
-            <div className="map-box__list-bib__item">
-              <a className="map-box__list-bib__item__link" href="#" title="">Республиканская специальная библиотека
-              для слепых и слабовидящих</a>
-            </div>
-            <div className="map-box__list-bib__item">
-              <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
-            </div>
-            <div className="map-box__list-bib__item">
-              <a className="map-box__list-bib__item__link" href="#" title="">Республиканская специальная библиотека
-              для слепых и слабовидящих</a>
-            </div>
-            <div className="map-box__list-bib__item">
-              <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
-            </div>
-          </div>
-        </div>
+        {this.renderContextMenu()}
       </li>
     );
   },
