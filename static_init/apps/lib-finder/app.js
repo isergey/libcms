@@ -21,15 +21,15 @@ const eventEmitter = new EventEmitter();
 eventEmitter.on(EVENTS.START_FILTERING, params => {
   searchId += 1;
   let error = false;
-  let items = [];
-  utils.filterByDistricts(params).then(orgs => {
-    items = orgs;
+  let response = {};
+  utils.filterByDistricts(params).then(resp => {
+    response = resp;
   }).catch(err => {
     error = err;
   }).then(() => {
     eventEmitter.emit(EVENTS.END_FILERING, {
       error,
-      items,
+      response,
     });
   });
 });
@@ -37,23 +37,22 @@ eventEmitter.on(EVENTS.START_FILTERING, params => {
 
 eventEmitter.on(EVENTS.GEO_DETECTION, () => {
   navigator.geolocation.getCurrentPosition(result => {
-    console.log('result', result);
-    eventEmitter.emit(EVENTS.DETECT_GEO_POSITION, {
-      latitude: result.coords.latitude,
-      longitude: result.coords.longitude,
-    });
+    // eventEmitter.emit(EVENTS.DETECT_GEO_POSITION, {
+    //  latitude: result.coords.latitude,
+    //  longitude: result.coords.longitude,
+    // });
     let error = false;
-    let items = [];
+    let response = {};
     utils.geoSearch({
       lat: result.coords.latitude,
       lon: result.coords.longitude,
-    }).then(response => {
-      items = response;
+    }).then(resp => {
+      response = resp;
     }).catch(err => {
       error = err;
     }).then(() => {
-      eventEmitter.emit(EVENTS.END_GEO_DETECTION, {
-        items,
+      eventEmitter.emit(EVENTS.END_FILERING, {
+        response,
         error,
         position: {
           latitude: result.coords.latitude,
@@ -195,15 +194,16 @@ const MapBoxItems = React.createClass({
     });
   },
   handleEndFiltering(params) {
-    const { items = [], error = false } = params;
+    const { response = {}, error = false } = params;
     this.setState({
       loaded: true,
-      items,
+      items: response.object_list || [],
       error,
     });
   },
   renderItems() {
     return this.state.items.map((item, index) => {
+      console.log('item', item);
       const library = item.library || {};
       return (
         <MapBoxItem key={index}
@@ -229,14 +229,18 @@ const MapBoxItems = React.createClass({
     } else if (!this.state.loaded) {
       content = renderLoader();
     } else if (!this.state.inited) {
-      content = this.renderNotInited();
+      // content = this.renderNotInited();
     } else if (!this.state.items.length) {
       content = this.renderNotFound();
     } else {
       content = this.renderItems();
     }
+    let display = 'none';
+    if (this.state.items.length > 0) {
+      display = 'block';
+    }
     return (
-      <div key={searchId} className="map-box__list-bib">
+      <div key={searchId} className="map-box__list-bib" style={{ display }}>
         {content}
       </div>
     );
@@ -387,7 +391,6 @@ const LibFinder = React.createClass({
       { e: EVENTS.START_FILTERING, h: this.handleStartFiltering },
       { e: EVENTS.END_FILERING, h: this.handleEndFiltering },
       { e: EVENTS.GEO_DETECTION, h: this.handleGeoDetection },
-      { e: EVENTS.END_GEO_DETECTION, h: this.handleEndGeoDetection },
       { e: EVENTS.DETECT_GEO_POSITION, h: this.handleDetectGeoPosition },
     ];
     this.subscribingEvents.forEach(event => {
@@ -406,7 +409,6 @@ const LibFinder = React.createClass({
     });
   },
   drowItemsToMap(items) {
-    this.itemsMap.geoObjects.removeAll();
     const clusterer = new window.ymaps.Clusterer();
     items.forEach(item => {
       const library = item.library || {};
@@ -421,21 +423,25 @@ const LibFinder = React.createClass({
     this.itemsMap.geoObjects.add(clusterer);
     this.itemsMap.setBounds(this.itemsMap.geoObjects.getBounds());
   },
+  drowUserPosition(position = {}) {
+    if (position.latitude && position.longitude) {
+      this.itemsMap.geoObjects.add(new window.ymaps.Placemark([position.latitude, position.longitude], {
+        hintContent: 'Ваше местоположение',
+        balloonContent: 'Ваше местоположение',
+      }));
+    }
+  },
   handleStartFiltering() {
 
   },
   handleEndFiltering(params) {
     this.itemsMap.geoObjects.removeAll();
-    const { items = [] } = params;
-    this.drowItemsToMap(items);
+    const { response = {}, position = {} } = params;
+    this.drowUserPosition(position)
+    this.drowItemsToMap(response.object_list || []);
   },
   handleGeoDetection(params) {
     console.log('handleGeoDetection', params);
-  },
-  handleEndGeoDetection(params) {
-    console.log('handleEndGeoDetection', params);
-    const { items = [] } = params;
-    this.drowItemsToMap(items.object_list);
   },
   handleDetectGeoPosition(params) {
     const positionCoords = [params.latitude, params.longitude];
