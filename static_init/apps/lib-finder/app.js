@@ -159,9 +159,9 @@ const MapBoxItem = React.createClass({
       return null;
     }
     return (
-      <div title="Расстояние до Вас" className="map-box__list-bib__item__link">
-        {`Расстояние: ${utils.humanizeDistance(this.props.distance)}`}
-      </div>
+      <span title="Расстояние до Вас">
+        {` (Расстояние: ${utils.humanizeDistance(this.props.distance)})`}
+      </span>
     );
   },
   render() {
