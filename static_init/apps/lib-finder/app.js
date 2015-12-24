@@ -190,6 +190,27 @@ const AbcCrumbLetter = React.createClass({
     return (
       <li onClick={this.handleClick}>
         <span title="" href="#" className="abc-crumbs__list_link"> {this.props.letter} </span>
+        <div className="abc-crumbs__list__hover-box abc-crumbs__list__hover-box_show">
+          <div className="map-box__list-bib">
+            <div className="map-box__list-bib__item">
+              <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+            </div>
+            <div className="map-box__list-bib__item">
+              <a className="map-box__list-bib__item__link" href="#" title="">Республиканская специальная библиотека
+              для слепых и слабовидящих</a>
+            </div>
+            <div className="map-box__list-bib__item">
+              <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+            </div>
+            <div className="map-box__list-bib__item">
+              <a className="map-box__list-bib__item__link" href="#" title="">Республиканская специальная библиотека
+              для слепых и слабовидящих</a>
+            </div>
+            <div className="map-box__list-bib__item">
+              <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+            </div>
+          </div>
+        </div>
       </li>
     );
   },
@@ -358,9 +379,9 @@ const LibFinder = React.createClass({
     return (
       <div id="map" ref="map">
         <div className="map-box">
-          <MapBoxItems />
           <h2 className="map-box__title">Алфавитный указатель муниципальных районов РТ</h2>
           <AbcCrumbs />
+          <MapBoxItems />
         </div>
       </div>
     );
