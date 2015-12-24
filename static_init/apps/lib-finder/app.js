@@ -83,6 +83,8 @@ const ContextMenu = React.createClass({
   getInitialState() {
     return {
       open: false,
+      left: 0,
+      right: 0,
     };
   },
   componentDidMount() {
@@ -96,9 +98,12 @@ const ContextMenu = React.createClass({
       open: false,
     });
   },
-  open(opened) {
+  open(opened, position = {}) {
+    const { left = 0, right = 0} = position;
     this.setState({
       open: opened,
+      left,
+      right,
     });
   },
   isDescendant(parent, child) {
@@ -260,7 +265,7 @@ const MapBoxItems = React.createClass({
 
 const AbcCrumbLetter = React.createClass({
   propTypes: {
-    letter: React.PropTypes.string,
+    letter: React.PropTypes.object,
     onClick: React.PropTypes.func,
   },
   getDefaultProps() {
@@ -277,26 +282,17 @@ const AbcCrumbLetter = React.createClass({
     }
   },
   renderContextMenu() {
+    const districts = (this.props.letter.districts || []).map((district, index) => {
+      return (
+        <div key={district.id || index} className="map-box__list-bib__item">
+          <a className="map-box__list-bib__item__link" href="#" title="">{district.name}</a>
+        </div>
+      );
+    });
     return (
       <ContextMenu ref="contextMenu">
         <div className="map-box__list-bib">
-          <div className="map-box__list-bib__item">
-            <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
-          </div>
-          <div className="map-box__list-bib__item">
-            <a className="map-box__list-bib__item__link" href="#" title="">Республиканская специальная библиотека
-            для слепых и слабовидящих</a>
-          </div>
-          <div className="map-box__list-bib__item">
-            <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
-          </div>
-          <div className="map-box__list-bib__item">
-            <a className="map-box__list-bib__item__link" href="#" title="">Республиканская специальная библиотека
-            для слепых и слабовидящих</a>
-          </div>
-          <div className="map-box__list-bib__item">
-            <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
-          </div>
+          {districts}
         </div>
       </ContextMenu>
     );
@@ -304,7 +300,7 @@ const AbcCrumbLetter = React.createClass({
   render() {
     return (
       <li onClick={this.handleClick}>
-        <span title="" href="#" className="abc-crumbs__list_link"> {this.props.letter} </span>
+        <span title="" href="#" className="abc-crumbs__list_link"> {this.props.letter.name} </span>
         {this.renderContextMenu()}
       </li>
     );
