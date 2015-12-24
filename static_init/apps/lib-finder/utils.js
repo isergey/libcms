@@ -15,8 +15,7 @@ function getDistrictLetters() {
 function filterByDistricts(params) {
   return new Promise((resolve, reject) => {
     $.get('/ru/participants/filter_by_districts/', params).done(data => {
-      console.log('data', data);
-      resolve(data.object_list);
+      resolve(data);
     }).fail(error => {
       console.error(error);
       reject(error);

@@ -98,21 +98,54 @@ const ContextMenu = React.createClass({
       open: false,
     });
   },
-  open(opened, position = {}) {
-    let { left = 0, top = 0 } = position;
-    console.log(window.innerHeight);
-    if (this.isMounted()) {
-      if (left !== 0) {
-        left = left - Number.parseInt(window.getComputedStyle(React.findDOMNode(this)).width, 10) / 2;
-      }
+  open(position = {}) {
+    if (this.state.open && opened) {
+      return;
     }
+    const calculatePosition = this._calculatePosition(position);
     this.setState({
-      open: opened,
-      left,
-      top,
+      open: true,
+      left: calculatePosition.left,
+      top: calculatePosition.top,
     });
   },
-  isDescendant(parent, child) {
+  close() {
+    this.setState({
+      open: false,
+      left: 0,
+      top: 0,
+    });
+  },
+  _calculatePosition(position) {
+    let { left = 0, top = 0 } = position;
+    if (this.isMounted()) {
+      const $selfNode = $(React.findDOMNode(this));
+      const selfWidth = $selfNode.width();
+      const selfHeght = $selfNode.height();
+      if (left + selfWidth > window.innerWidth) {
+        left = window.innerWidth - selfWidth;
+      } else {
+        left = left - selfWidth / 2;
+      }
+
+      if (top + selfHeght > window.innerHeight) {
+        top = window.innerHeight - selfHeght;
+      }
+
+      if (left < 0) {
+        left = 0;
+      }
+
+      if (top < 0) {
+        top = 0;
+      }
+    }
+    return {
+      left,
+      top,
+    };
+  },
+  _isDescendant(parent, child) {
     let node = child.parentNode;
 
     while (node !== null) {
@@ -125,18 +158,14 @@ const ContextMenu = React.createClass({
   _checkClickAway(event) {
     if (this.isMounted()) {
       const el = React.findDOMNode(this);
-      // Check if the target is inside the current component
       if (event.target !== el &&
-          !this.isDescendant(el, event.target) &&
+          !this._isDescendant(el, event.target) &&
           document.documentElement.contains(event.target)) {
         if (this.componentClickAway) this.componentClickAway(event);
       }
     }
   },
   _bindClickAway() {
-    // On touch-enabled devices, both events fire, and the handler is called twice,
-    // but it's fine since all operations for which the mixin is used
-    // are idempotent.
     document.addEventListener('mouseup', this._checkClickAway);
     document.addEventListener('touchend', this._checkClickAway);
   },
@@ -183,7 +212,10 @@ const MapBoxItem = React.createClass({
   render() {
     return (
       <div className="map-box__list-bib__item">
-        <a className="map-box__list-bib__item__link" target={this.props.href ? '_blank' : ''} href={this.props.href || '#1'} title="">{this.props.name}</a>
+        <a className="map-box__list-bib__item__link"
+          target={this.props.href ? '_blank' : ''}
+          href={this.props.href || '#1'}
+        >{this.props.name}</a>
         { this.renderDistance() }
       </div>
     );
@@ -202,6 +234,7 @@ const MapBoxItems = React.createClass({
   componentDidMount() {
     this.subscribingEvents = [
       { e: EVENTS.START_FILTERING, h: this.handleStartFiltering },
+      { e: EVENTS.GEO_DETECTION, h: this.handleStartFiltering },
       { e: EVENTS.END_FILERING, h: this.handleEndFiltering },
     ];
     this.subscribingEvents.forEach(event => {
@@ -255,18 +288,14 @@ const MapBoxItems = React.createClass({
     } else if (!this.state.loaded) {
       content = renderLoader();
     } else if (!this.state.inited) {
-      // content = this.renderNotInited();
+      content = this.renderNotInited();
     } else if (!this.state.items.length) {
       content = this.renderNotFound();
     } else {
       content = this.renderItems();
     }
-    let display = 'none';
-    if (this.state.items.length > 0) {
-      display = 'block';
-    }
     return (
-      <div key={searchId} className="map-box__list-bib" style={{ display }}>
+      <div key={searchId} className="map-box__list-bib">
         {content}
       </div>
     );
@@ -276,7 +305,7 @@ const MapBoxItems = React.createClass({
 const AbcCrumbLetter = React.createClass({
   propTypes: {
     letter: React.PropTypes.object,
-    onClick: React.PropTypes.func,
+    onDistrictClick: React.PropTypes.func,
   },
   getDefaultProps() {
     return {
@@ -285,9 +314,18 @@ const AbcCrumbLetter = React.createClass({
       },
     };
   },
+  handleDistrictClick(districtId) {
+    const contextMenu = this.refs.contextMenu;
+    if (contextMenu) {
+      contextMenu.close();
+    }
+    if (this.props.onDistrictClick) {
+      this.props.onDistrictClick(districtId);
+    }
+  },
   handleClick(event) {
     if (this.refs.contextMenu) {
-      this.refs.contextMenu.open(true, {
+      this.refs.contextMenu.open({
         left: event.clientX,
         top: event.clientY,
       });
@@ -297,7 +335,9 @@ const AbcCrumbLetter = React.createClass({
     const districts = (this.props.letter.districts || []).map((district, index) => {
       return (
         <div key={district.id || index} className="map-box__list-bib__item">
-          <a className="map-box__list-bib__item__link" href="#" title="">{district.name}</a>
+          <a onClick={this.handleDistrictClick.bind(this, district.id)}
+            className="map-box__list-bib__item__link" href="#1"
+          >{district.name}</a>
         </div>
       );
     });
@@ -362,9 +402,9 @@ const AbcCrumbs = React.createClass({
       });
     });
   },
-  handleLetterClick(letter) {
+  handleDistrictClick(districtId) {
     eventEmitter.emit(EVENTS.START_FILTERING, {
-      letter,
+      districtId,
     });
   },
   handleArrowClick() {
@@ -372,7 +412,7 @@ const AbcCrumbs = React.createClass({
   },
   renderLetters() {
     return this.state.letters.map((letter, index) => {
-      return <AbcCrumbLetter onClick={this.handleLetterClick} key={index} letter={letter}/>;
+      return <AbcCrumbLetter onDistrictClick={this.handleDistrictClick} key={index} letter={letter}/>;
     });
   },
   renderLoader() {
@@ -423,9 +463,15 @@ const LibFinder = React.createClass({
   },
   initMap() {
     this.itemsMap = new window.ymaps.Map(this.refs.map.getDOMNode(), {
-      center: [55.76, 37.64],
-      zoom: 7,
+      center: [55.797746, 49.115573],
+      zoom: 10,
+      controls: [],
     });
+    this.itemsMap.controls.add('zoomControl', { float: 'left' });
+    this.itemsMap.controls.add('searchControl', { float: 'left' });
+    this.itemsMap.controls.add('typeSelector', { float: 'left' });
+    this.itemsMap.controls.add('fullscreenControl', { float: 'left' });
+    // this.itemsMap.controls.add(new window.ymaps.control.ZoomControl());
   },
   drowItemsToMap(items) {
     const clusterer = new window.ymaps.Clusterer();
@@ -435,8 +481,8 @@ const LibFinder = React.createClass({
         return;
       }
       clusterer.add(new window.ymaps.Placemark([library.latitude, library.longitude], {
-        hintContent: library.name || '',
-        balloonContent: library.name || '',
+        hintContent: `${library.name || ''} <a target="_blank" href="${item.href}">подробнее</a>`,
+        balloonContent: `${library.name || ''} <a target="_blank" href="${item.href}">подробнее</a>`,
       }));
     });
     this.itemsMap.geoObjects.add(clusterer);
@@ -448,6 +494,8 @@ const LibFinder = React.createClass({
       this.itemsMap.geoObjects.add(new window.ymaps.Placemark([position.latitude, position.longitude], {
         hintContent: 'Ваше местоположение',
         balloonContent: 'Ваше местоположение',
+      }, {
+        preset: 'islands#redCircleIcon',
       }));
     }
   },

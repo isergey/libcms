@@ -108,17 +108,17 @@ def get_district_letters(request):
 
 
 def filter_by_districts(request):
-    letter = request.GET.get('letter', '')
+    district_id = request.GET.get('districtId', '')
 
-    if not letter:
+    if not district_id:
         return HttpResponse(
             json.dumps({
-                'error': u'Не указана буква района'
+                'error': u'Не указан район'
             }, ensure_ascii=False),
             content_type='application/json; charset=utf-8',
         status=400)
 
-    districts = District.objects.filter(name__startswith=letter)
+    districts = District.objects.filter(id=district_id)
     fields = ('id', 'code', 'name', 'latitude', 'longitude', 'postal_address')
     libraries = list(Library.objects.filter(district__in=districts).exclude(parent=None).order_by('-republican').order_by('name').values(*fields))
 
