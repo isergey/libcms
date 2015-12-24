@@ -84,7 +84,7 @@ const ContextMenu = React.createClass({
     return {
       open: false,
       left: 0,
-      right: 0,
+      top: 0,
     };
   },
   componentDidMount() {
@@ -99,11 +99,17 @@ const ContextMenu = React.createClass({
     });
   },
   open(opened, position = {}) {
-    const { left = 0, right = 0} = position;
+    let { left = 0, top = 0 } = position;
+    console.log(window.innerHeight);
+    if (this.isMounted()) {
+      if (left !== 0) {
+        left = left - Number.parseInt(window.getComputedStyle(React.findDOMNode(this)).width, 10) / 2;
+      }
+    }
     this.setState({
       open: opened,
       left,
-      right,
+      top,
     });
   },
   isDescendant(parent, child) {
@@ -143,8 +149,13 @@ const ContextMenu = React.createClass({
     if (this.state.open) {
       classes.push('abc-crumbs__list__hover-box_show');
     }
+    const style = {}
+    if (this.state.left !== 0 || this.state.top !== 0) {
+      style.left = this.state.left;
+      style.top = this.state.top;
+    }
     return (
-      <div className={classes.join(' ')}>
+      <div className={classes.join(' ')} style={style}>
         {this.props.children}
       </div>
     );
@@ -219,7 +230,6 @@ const MapBoxItems = React.createClass({
   },
   renderItems() {
     return this.state.items.map((item, index) => {
-      console.log('item', item);
       const library = item.library || {};
       return (
         <MapBoxItem key={index}
@@ -275,10 +285,12 @@ const AbcCrumbLetter = React.createClass({
       },
     };
   },
-  handleClick() {
-    // this.props.onClick(this.props.letter);
+  handleClick(event) {
     if (this.refs.contextMenu) {
-      this.refs.contextMenu.open(true);
+      this.refs.contextMenu.open(true, {
+        left: event.clientX,
+        top: event.clientY,
+      });
     }
   },
   renderContextMenu() {
