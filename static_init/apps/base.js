@@ -67,10 +67,7 @@ $(function () {
   function csaHead() {
     const $csaHead = $('.bg_first');
     const index = Math.floor(getRandomArbitrary(0, imgHead.length));
-    $csaHead.animate({ 'background-color': '#000' }, 1000, () => {
-      $csaHead.css({ 'background-color': '#000', 'background': 'url(' + imgHead[index] + ') no-repeat #aa863f' });
-    });
-    $csaHead.animate({ 'background-color': '#000' }, 1000);
+    $csaHead.css({ 'background': 'url(' + imgHead[index] + ') no-repeat #000' });
   }
 
   csaHead();
