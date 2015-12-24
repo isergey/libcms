@@ -8,6 +8,10 @@ let searchId = 0;
 const EVENTS = {
   START_FILTERING: 'START_FILTERING',
   END_FILERING: 'END_FILERING',
+  GEO_DETECTION: 'GEO_DETECTION',
+  END_GEO_DETECTION: 'END_GEO_DETECTION',
+  DETECT_GEO_POSITION: 'DETECT_GEO_POSITION',
+
 };
 
 const eventEmitter = new EventEmitter();
@@ -29,6 +33,39 @@ eventEmitter.on(EVENTS.START_FILTERING, params => {
   });
 });
 
+
+eventEmitter.on(EVENTS.GEO_DETECTION, () => {
+  navigator.geolocation.getCurrentPosition(result => {
+    console.log('result', result);
+    eventEmitter.emit(EVENTS.DETECT_GEO_POSITION, {
+      latitude: result.coords.latitude,
+      longitude: result.coords.longitude,
+    });
+    let error = false;
+    let items = [];
+    utils.geoSearch({
+      lat: result.coords.latitude,
+      lon: result.coords.longitude,
+    }).then(response => {
+      items = response;
+    }).catch(err => {
+      error = err;
+    }).then(() => {
+      eventEmitter.emit(EVENTS.END_GEO_DETECTION, {
+        items,
+        error,
+        position: {
+          latitude: result.coords.latitude,
+          longitude: result.coords.longitude,
+        },
+      });
+    });
+  }, () => {
+    alert('Для определения вашего местоположения необходимо дать разрешение в вашем бразузере');
+  });
+});
+
+
 function renderLoader(message = 'Загрузка...') {
   return <span>{message}</span>;
 }
@@ -42,12 +79,15 @@ const MapBoxItem = React.createClass({
   propTypes: {
     id: React.PropTypes.number,
     code: React.PropTypes.string,
+    distance: React.PropTypes.number,
+    href: React.PropTypes.string,
     name: React.PropTypes.string,
   },
   render() {
     return (
       <div className="map-box__list-bib__item">
-        <a className="map-box__list-bib__item__link" href="#" title="">{this.props.name}</a>
+        <a className="map-box__list-bib__item__link" target={this.props.href ? '_blank' : ''} href={this.props.href || '#1'} title="">{this.props.name}</a>
+        { this.props.distance ? <span>{this.props.distance}</span> : null }
       </div>
     );
   },
@@ -92,10 +132,13 @@ const MapBoxItems = React.createClass({
   },
   renderItems() {
     return this.state.items.map((item, index) => {
+      const library = item.library || {};
       return (
         <MapBoxItem key={index}
-          code={item.code}
-          name={item.name}
+          code={library.code}
+          name={library.name}
+          href={item.href}
+          distance={item.distance}
         />
       );
     });
@@ -200,6 +243,9 @@ const AbcCrumbs = React.createClass({
       letter,
     });
   },
+  handleArrowClick() {
+    eventEmitter.emit(EVENTS.GEO_DETECTION);
+  },
   renderLetters() {
     return this.state.letters.map((letter, index) => {
       return <AbcCrumbLetter onClick={this.handleLetterClick} key={index} letter={letter}/>;
@@ -224,23 +270,13 @@ const AbcCrumbs = React.createClass({
       <div className="abc-crumbs">
         <ul className="abc-crumbs__list">
           {lettersContent}
-          <AbcCrumbArrow/>
+          <AbcCrumbArrow onClick={this.handleArrowClick}/>
         </ul>
       </div>
     );
   },
 });
 
-const MapBox = React.createClass({
-  render() {
-    return (
-      <div className="map-box">
-        <MapBoxItems />
-        <AbcCrumbs />
-      </div>
-    );
-  },
-});
 
 const LibFinder = React.createClass({
   componentDidMount() {
@@ -249,6 +285,9 @@ const LibFinder = React.createClass({
     this.subscribingEvents = [
       { e: EVENTS.START_FILTERING, h: this.handleStartFiltering },
       { e: EVENTS.END_FILERING, h: this.handleEndFiltering },
+      { e: EVENTS.GEO_DETECTION, h: this.handleGeoDetection },
+      { e: EVENTS.END_GEO_DETECTION, h: this.handleEndGeoDetection },
+      { e: EVENTS.DETECT_GEO_POSITION, h: this.handleDetectGeoPosition },
     ];
     this.subscribingEvents.forEach(event => {
       eventEmitter.on(event.e, event.h);
@@ -265,22 +304,64 @@ const LibFinder = React.createClass({
       zoom: 7,
     });
   },
+  drowItemsToMap(items) {
+    this.itemsMap.geoObjects.removeAll();
+    const clusterer = new window.ymaps.Clusterer();
+    items.forEach(item => {
+      const library = item.library || {};
+      if (!library.latitude || !library.longitude) {
+        return;
+      }
+      clusterer.add(new window.ymaps.Placemark([library.latitude, library.longitude], {
+        hintContent: library.name || '',
+        balloonContent: library.name || '',
+      }));
+    });
+    this.itemsMap.geoObjects.add(clusterer);
+    this.itemsMap.setBounds(this.itemsMap.geoObjects.getBounds());
+  },
   handleStartFiltering() {
 
   },
   handleEndFiltering(params) {
+    this.itemsMap.geoObjects.removeAll();
     const { items = [] } = params;
-    this.itemsMap.geoObjects(items.map(item => {
-      return new window.ymaps.Placemark([item.altitude, item.longitude], {
-        hintContent: item.name || '',
-        balloonContent: item.name || '',
-      });
-    }));
+    this.drowItemsToMap(items);
+  },
+  handleGeoDetection(params) {
+    console.log('handleGeoDetection', params);
+  },
+  handleEndGeoDetection(params) {
+    console.log('handleEndGeoDetection', params);
+    const { items = [] } = params;
+    this.drowItemsToMap(items.object_list);
+  },
+  handleDetectGeoPosition(params) {
+    const positionCoords = [params.latitude, params.longitude];
+    let address = '';
+    utils.getPositionAddress(params).then(respose => {
+      address = respose;
+    }).catch(() => {
+
+    }).then(() => {
+      this.itemsMap.geoObjects.add(new window.ymaps.Placemark(positionCoords, {
+        hintContent: `Ваше местоположение: <b>${address}</b>`,
+        balloonContent: `Ваше местоположение: <b>${address}</b>`,
+      }, {
+        preset: 'islands#redCircleIcon',
+      }));
+      this.itemsMap.setCenter(positionCoords);
+      this.itemsMap.setZoom(11);
+    });
   },
   render() {
     return (
       <div id="map" ref="map">
-        <MapBox />
+        <div className="map-box">
+          <MapBoxItems />
+          <h2 className="map-box__title">Алфавитный указатель муниципальных районов РТ</h2>
+          <AbcCrumbs />
+        </div>
       </div>
     );
   },
