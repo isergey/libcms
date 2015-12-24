@@ -78,13 +78,22 @@ def detail(request, code):
 
 
 def get_district_letters(request):
+    letters_dict = {};
     districts = District.objects.all()
-    letters = set()
     for district in districts:
-        letter = district.name[0:1]
-        if letter:
-            letters.add(letter.upper())
-    return HttpResponse(json.dumps(sorted(list(letters)), ensure_ascii=False), content_type='application/json; charset=utf-8')
+        letter = district.name[0:1].upper()
+        exist_districts = letters_dict.get(letter)
+        if exist_districts is None:
+            exist_districts = []
+            letters_dict[letter] = exist_districts
+        exist_districts.append({
+            'id': district.id,
+            'name': district.name
+        })
+    return HttpResponse(
+        json.dumps(collections.OrderedDict(sorted(letters_dict.items())), ensure_ascii=False),
+        content_type='application/json; charset=utf-8'
+    )
 
 
 def filter_by_districts(request):
