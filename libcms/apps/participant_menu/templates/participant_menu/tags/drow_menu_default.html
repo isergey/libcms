@@ -1,7 +1,7 @@
 {% load mptt_tags %}
-
+{% if nodes %}
     <ul class="lib-info__list">
-        {% if nodes %}
+
             {% recursetree nodes %}
                 <li {% if path == node.url  %} class="active" {% endif %}>
                     <a href="{{ node.url }}" {% if node.open_in_new %} target="_blank" {% endif %}>{{ node.title }}</a>
@@ -12,6 +12,8 @@
                         </ul>
                 {% endif %}
             {% endrecursetree %}
-        {% endif %}
+
     </ul>
+{% else %}<p>Информация отсутствует</p>
+{% endif %}
 

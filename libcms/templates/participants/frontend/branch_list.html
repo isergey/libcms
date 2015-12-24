@@ -1,49 +1,113 @@
 {% extends 'theme_frontend_base.html' %}
 {% block title %}Библиотеки{% endblock %}
 {% block content %}
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{%  url 'participants:frontend:index' %}">Библиотеки</a> <span class="divider">/</span></li>
-            <li class="active">{{ library.name }}</li>
-        </ul>
-        <div class="row">
-            <div class="span5" >
-                <ul class="participants">
-                    {% for library in  libraries %}
-                        <li style="margin-bottom: 10px">
-                            {% url 'participant_site:frontend:index' library.code as participant_site_url %}
-                            <a href="{{ participant_site_url }}">{{ library.name }}</a><br/>
-{#                            {% if library.http_service  %}#}
-{#                                <a href="{{ library.http_service }}" target="_blank"> {{ library.http_service }}</a>#}
-{#                            {% else %}#}
-{#                                <a href="{% url 'participants:frontend:detail' library.code %}" target="_blank">#}
-{#                                    {{ request.META.HTTP_HOST }}{% url 'participants:frontend:detail' library.code %}#}
-{#                                </a>#}
-{#                            {% endif %}#}
-                        </li>
-                    {% empty %}
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li>
+                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                        Главная
+                    </a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li><a href="{% url 'participants:frontend:index' %}" class="bread__crumbs_link">Библиотеки</a></li>
+                {% if library.parent_id %}
+                    <li>
+                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                    </li>
+                    <li>
+                        <a href="{% url 'participants:frontend:branches' library.parent.code %}"
+                           class="bread__crumbs_link">{{ library.parent.name }}</a>
+                    </li>{% endif %}
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li><a class="bread__crumbs_link bread__crumbs_link_active">{{ library.name }}</a></li>
+            </ul>
+        </div>
+        <hr class="footer-hr">
+        <div class="container content-page">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="content-page__title">{{ library.name }}</h1>
+
+                    <div id="map_canvas">
+                    </div>
+                    {% include 'participants/frontend/map_js.html' %}
+                    <div class="result-container content-page__text">
+                        {% for library in  libraries %}
+                        <div class="result">
+                            <div class="result__index">
+                                {{ forloop.index }}
+                            </div>
+                            <div class="result__info">
+                                {% url 'participant_site:frontend:index' library.code as participant_site_url %}
+                                <h3>
+                                    <a href="{{ participant_site_url }}">{{ library.name }}</a>
+                                </h3>
+                            </div>
+                        </div>
+                        {% empty %}
                         Список еще не сформирован
                     {% endfor %}
-                </ul>
-            </div>
-            <div class="span7">
-                <style>
-                    #map_canvas{
-                        background: white;
-                        box-shadow: 0 0 10px #999;
-                        border-radius: 2px;
-                        padding: 10px;
-                    }
-                </style>
-                <div id="map_canvas" style="height: 400px"></div>
-                {% include 'participants/frontend/map_js.html' %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="span12">
+                    </div>
 
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 {% endblock %}
+
+
+{#    <div class="span12">#}
+{#        <ul class="breadcrumb">#}
+{#            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
+{#            <li><a href="{% url 'participants:frontend:index' %}">Библиотеки</a> <span class="divider">/</span></li>#}
+{#            <li class="active">{{ library.name }}</li>#}
+{#        </ul>#}
+{#        <div class="row">#}
+{#            <div class="span5">#}
+{#                <ul class="participants">#}
+{#                    {% for library in  libraries %}#}
+{#                        <li style="margin-bottom: 10px">#}
+{#                            {% url 'participant_site:frontend:index' library.code as participant_site_url %}#}
+{#                            <a href="{{ participant_site_url }}">{{ library.name }}</a><br/>#}
+                            {#                            {% if library.http_service  %}#}
+                            {#                                <a href="{{ library.http_service }}" target="_blank"> {{ library.http_service }}</a>#}
+                            {#                            {% else %}#}
+                            {#                                <a href="{% url 'participants:frontend:detail' library.code %}" target="_blank">#}
+                            {#                                    {{ request.META.HTTP_HOST }}{% url 'participants:frontend:detail' library.code %}#}
+                            {#                                </a>#}
+                            {#                            {% endif %}#}
+{#                        </li>#}
+{#                    {% empty %}#}
+{#                        Список еще не сформирован#}
+{#                    {% endfor %}#}
+{#                </ul>#}
+{#            </div>#}
+            {#            <div class="span7">#}
+            {#                <style>#}
+            {#                    #map_canvas{#}
+            {#                        background: white;#}
+            {#                        box-shadow: 0 0 10px #999;#}
+            {#                        border-radius: 2px;#}
+            {#                        padding: 10px;#}
+            {#                    }#}
+            {#                </style>#}
+            {#                <div id="map_canvas" style="height: 400px"></div>#}
+            {#                {% include 'participants/frontend/map_js.html' %}#}
+            {#            </div>#}
+{#        </div>#}
+{#        <div class="row">#}
+{#            <div class="span12">#}
+{##}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
