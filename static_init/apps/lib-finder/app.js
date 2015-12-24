@@ -154,11 +154,21 @@ const MapBoxItem = React.createClass({
     href: React.PropTypes.string,
     name: React.PropTypes.string,
   },
+  renderDistance() {
+    if (!this.props.distance) {
+      return null;
+    }
+    return (
+      <div title="Расстояние до Вас" className="map-box__list-bib__item__link">
+        {`Расстояние: ${utils.humanizeDistance(this.props.distance)}`}
+      </div>
+    );
+  },
   render() {
     return (
       <div className="map-box__list-bib__item">
         <a className="map-box__list-bib__item__link" target={this.props.href ? '_blank' : ''} href={this.props.href || '#1'} title="">{this.props.name}</a>
-        { this.props.distance ? <span>{this.props.distance}</span> : null }
+        { this.renderDistance() }
       </div>
     );
   },
@@ -196,6 +206,7 @@ const MapBoxItems = React.createClass({
   handleEndFiltering(params) {
     const { response = {}, error = false } = params;
     this.setState({
+      inited: true,
       loaded: true,
       items: response.object_list || [],
       error,
@@ -422,6 +433,7 @@ const LibFinder = React.createClass({
     });
     this.itemsMap.geoObjects.add(clusterer);
     this.itemsMap.setBounds(this.itemsMap.geoObjects.getBounds());
+    this.itemsMap.setZoom(this.itemsMap.getZoom() - 1);
   },
   drowUserPosition(position = {}) {
     if (position.latitude && position.longitude) {

@@ -49,10 +49,24 @@ function getPositionAddress(params) {
   });
 }
 
+function humanizeDistance(distance) {
+  const km = Math.floor(distance);
+  const meters = Math.round(distance % 1 * 1000);
+  const stringParts = [];
+  if (km) {
+    stringParts.push(km + ' км');
+  }
+  if (meters) {
+    stringParts.push(meters + ' м');
+  }
+  return stringParts.join(' ');
+}
+
 export default {
   getDistrictLetters,
   filterByDistricts,
   geoSearch,
   getPositionAddress,
+  humanizeDistance,
 };
 
