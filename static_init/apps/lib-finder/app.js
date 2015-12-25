@@ -471,6 +471,8 @@ const LibFinder = React.createClass({
     this.itemsMap.controls.add('searchControl', { float: 'left' });
     this.itemsMap.controls.add('typeSelector', { float: 'left' });
     this.itemsMap.controls.add('fullscreenControl', { float: 'left' });
+    this.itemsMap.controls.add('trafficControl', { float: 'left' });
+    this.itemsMap.controls.add('routeEditor', { float: 'left' });
     // this.itemsMap.controls.add(new window.ymaps.control.ZoomControl());
   },
   drowItemsToMap(items) {
