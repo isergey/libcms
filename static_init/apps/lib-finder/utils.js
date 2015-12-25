@@ -48,6 +48,41 @@ function getPositionAddress(params) {
   });
 }
 
+function getTypeHeadSource(myPosition) {
+  return (query, cb) => {
+    $.get('//geocode-maps.yandex.ru/1.x/', {
+      format: 'json',
+      geocode: query,
+      ll: myPosition[1] + ',' + myPosition[0],
+      spn: '3.0,3.0',
+    }).done(data => {
+      const results = [];
+      data.response.GeoObjectCollection.featureMember.forEach((item) => {
+        results.push({
+          value: item.GeoObject.metaDataProperty.GeocoderMetaData.text,
+          position: item.GeoObject.Point.pos,
+        });
+      });
+      cb(results);
+    }).error(error => {
+      console.error(error);
+    });
+  };
+}
+
+function detectUserGeoPosition() {
+  return new Promise((res, rej) => {
+    navigator.geolocation.getCurrentPosition(result => {
+      res({
+        latitude: result.coords.latitude,
+        longitude: result.coords.longitude,
+      });
+    }, error => {
+      rej(error);
+    });
+  });
+}
+
 function humanizeDistance(distance) {
   const km = Math.floor(distance);
   const meters = Math.round(distance % 1 * 1000);
@@ -66,6 +101,8 @@ export default {
   filterByDistricts,
   geoSearch,
   getPositionAddress,
+  detectUserGeoPosition,
   humanizeDistance,
+  getTypeHeadSource,
 };
 

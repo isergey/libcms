@@ -143,8 +143,10 @@ def filter_by_districts(request):
     }
     return HttpResponse(json.dumps(result, ensure_ascii=False), content_type='application/json')
 
+
 def geosearch(request):
     return render(request, 'participants/frontend/geosearch.html')
+
 
 def geo_nearest(request):
     page = int(request.GET.get('page', 1))

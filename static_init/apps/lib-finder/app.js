@@ -1,6 +1,7 @@
 'use strict';
 import React from 'react';
 import $ from 'jquery';
+import 'typehead';
 import utils from './utils.js';
 import EventEmitter from 'eventemitter3';
 
@@ -441,6 +442,65 @@ const AbcCrumbs = React.createClass({
   },
 });
 
+const AddrSearch = React.createClass({
+  componentDidMount() {
+    const $typeahead = $(this.refs.input.getDOMNode());
+    let position = {};
+    utils.detectUserGeoPosition().then(result => {
+      position = result;
+    }).catch(error => {
+      alert('Ваше местоположение не определено');
+      console.error('Error of user geo detection', error);
+    }).then(() => {
+      console.log('typeahead');
+      $typeahead.typeahead(
+        {
+          minLength: 3,
+          highlight: true,
+        },
+        {
+          name: 'qaddr',
+          source: utils.getTypeHeadSource([position.latitude, position.longitude]),
+        }
+      );
+      $typeahead.on('typeahead:selected', function (e, datum) {
+        const positionParts = datum.position.split(' ');
+        console.log(positionParts);
+
+      });
+    });
+  },
+  renderSuggest() {
+    return (
+      <div className="adrr-search__result-box">
+          <div className="map-box__list-bib__item">
+          <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+          </div>
+          <div className="map-box__list-bib__item">
+          <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+          </div>
+          <div className="map-box__list-bib__item">
+          <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+          </div>
+          <div className="map-box__list-bib__item">
+          <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+          </div>
+          <div className="map-box__list-bib__item">
+          <a className="map-box__list-bib__item__link" href="#" title="">Республиканская</a>
+        </div>
+      </div>
+    );
+  },
+  render() {
+    return (
+      <form className="adrr-search">
+        <input ref="input"
+          placeholder="Введите адрес для поиска ближайшей библиотеки"
+        />
+      </form>
+    );
+  },
+});
 
 const LibFinder = React.createClass({
   componentDidMount() {
@@ -535,6 +595,7 @@ const LibFinder = React.createClass({
     return (
       <div id="map" ref="map">
         <div className="map-box">
+          <AddrSearch />
           <h2 className="map-box__title">Алфавитный указатель муниципальных районов РТ</h2>
           <AbcCrumbs />
           <MapBoxItems />
