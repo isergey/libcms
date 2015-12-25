@@ -287,7 +287,7 @@ const MapBoxItems = React.createClass({
     return <div>Ничего не найдено</div>;
   },
   renderNotInited() {
-    return <div>Укажите букву района или нажмите на стрелку для поиска ближайших библиотек</div>;
+    return <div className="help-text">Укажите букву района или нажмите на стрелку для поиска ближайших библиотек</div>;
   },
   render() {
     let content = null;
