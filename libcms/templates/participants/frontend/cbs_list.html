@@ -22,32 +22,90 @@
             </ul>
         </div>
         <hr class="footer-hr">
-        <div id="lib-finder">Загрузка карты библиотек...</div>
-        <table class="table">
-        {% for cbs in  cbs_list %}
-            <tr>
-                <td>
-                    {% if cbs.republican %}
-                        <div>
-                            <a href="{% url 'participant_site:frontend:index' cbs.code %}">{{ cbs.name }}</a>
-                        </div>
-                    {% else %}
-                        <div>
-                            <a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}</a>
-                        </div>
-                    {% endif %}
+        <div class="container content-page">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="content-page__title">Библиотеки Республики Татарстан</h1>
 
-                    <div>
-                        <a class="btn btn-mini btn-info"
-                           href="{% url 'ssearch:frontend:index' %}?library={{ cbs.code }}">поиск в
-                            каталоге</a>
+                    <div class="content-page__text">
+                        <p><a href="#list">Список</a></p>
                     </div>
-                </td>
-                </tr>
-            {% empty %}
-                Список еще не сформирован
-            {% endfor %}
-        </table>
+                </div>
+            </div>
+        </div>
+    <style>
+        .loader-box {
+            position: relative;
+            display: block;
+            height: 300px;
+        }
+    </style>
+        <div id="lib-finder">
+            <div class="cssload-wrap loader-box">
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+                <div class="cssload-circle"></div>
+            </div>
+        </div>
+        <div class="container content-page">
+            <div class="row">
+                <div class="col-12">
+                    <a name="list"></a>
+
+                    <div class="result-container">
+                        {% for cbs in  cbs_list %}
+                            <div class="result">
+                                <div class="result__info">
+                                    <h3>
+                                        {% if cbs.republican %}
+                                            <a href="{% url 'participant_site:frontend:index' cbs.code %}">{{ cbs.name }}</a>
+                                        {% else %}
+                                            <a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}</a>
+                                        {% endif %}
+                                    </h3>
+
+                                    <a class="result__detail__print"
+                                       href="{% url 'ssearch:frontend:index' %}?library={{ cbs.code }}" target="_blank">Поиск
+                                        в
+                                        каталоге</a>
+                                </div>
+                            </div>
+                        {% empty %}
+                            Список еще не сформирован
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
     </main>
 
     {#    <nav class="bg bg_second">#}
