@@ -595,8 +595,8 @@ const LibFinder = React.createClass({
     return (
       <div id="map" ref="map">
         <div className="map-box">
-          <AddrSearch />
           <h2 className="map-box__title">Алфавитный указатель муниципальных районов РТ</h2>
+          <AddrSearch />
           <AbcCrumbs />
           <MapBoxItems />
         </div>
