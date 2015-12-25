@@ -7,6 +7,11 @@ import EventEmitter from 'eventemitter3';
 
 let searchId = 0;
 
+const POSITION_TYPES = {
+  ADDRESS: 'ADDRESS',
+  USER: 'USER',
+};
+
 const EVENTS = {
   START_FILTERING: 'START_FILTERING',
   END_FILERING: 'END_FILERING',
@@ -28,25 +33,29 @@ eventEmitter.on(EVENTS.START_FILTERING, params => {
   }).catch(err => {
     error = err;
   }).then(() => {
+    const { lat = 0, lon = 0 } = params;
+    const position = {};
+    if (lat && lon) {
+      position.latitude = lat;
+      position.longitude = lon;
+      position.type = POSITION_TYPES.ADDRESS;
+    }
     eventEmitter.emit(EVENTS.END_FILERING, {
       error,
       response,
+      position,
     });
   });
 });
 
 
 eventEmitter.on(EVENTS.GEO_DETECTION, () => {
-  navigator.geolocation.getCurrentPosition(result => {
-    // eventEmitter.emit(EVENTS.DETECT_GEO_POSITION, {
-    //  latitude: result.coords.latitude,
-    //  longitude: result.coords.longitude,
-    // });
+  utils.detectUserGeoPosition().then(position => {
     let error = false;
     let response = {};
     utils.geoSearch({
-      lat: result.coords.latitude,
-      lon: result.coords.longitude,
+      lat: position.latitude,
+      lon: position.longitude,
     }).then(resp => {
       response = resp;
     }).catch(err => {
@@ -56,16 +65,15 @@ eventEmitter.on(EVENTS.GEO_DETECTION, () => {
         response,
         error,
         position: {
-          latitude: result.coords.latitude,
-          longitude: result.coords.longitude,
+          latitude: position.latitude,
+          longitude: position.longitude,
         },
       });
     });
-  }, () => {
+  }).catch(() => {
     alert('Для определения вашего местоположения необходимо дать разрешение в вашем бразузере');
   });
 });
-
 
 function renderLoader(message = 'Загрузка...') {
   return <span>{message}</span>;
@@ -452,7 +460,6 @@ const AddrSearch = React.createClass({
       alert('Ваше местоположение не определено');
       console.error('Error of user geo detection', error);
     }).then(() => {
-      console.log('typeahead');
       $typeahead.typeahead(
         {
           minLength: 3,
@@ -465,8 +472,10 @@ const AddrSearch = React.createClass({
       );
       $typeahead.on('typeahead:selected', function (e, datum) {
         const positionParts = datum.position.split(' ');
-        console.log(positionParts);
-
+        eventEmitter.emit(EVENTS.START_FILTERING, {
+          lat: positionParts[1],
+          lon: positionParts[0],
+        });
       });
     });
   },
@@ -552,10 +561,14 @@ const LibFinder = React.createClass({
     this.itemsMap.setZoom(this.itemsMap.getZoom() - 1);
   },
   drowUserPosition(position = {}) {
+    let content = 'Ваше местоположение';
+    if (position.type === POSITION_TYPES.ADDRESS) {
+      content = 'Искомый адрес';
+    }
     if (position.latitude && position.longitude) {
       this.itemsMap.geoObjects.add(new window.ymaps.Placemark([position.latitude, position.longitude], {
-        hintContent: 'Ваше местоположение',
-        balloonContent: 'Ваше местоположение',
+        hintContent: content,
+        balloonContent: content,
       }, {
         preset: 'islands#redCircleIcon',
       }));
