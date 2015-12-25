@@ -5,110 +5,165 @@
         <div class="container">
             {% include 'main_menu.html' %}
         </div>
-        <hr class="bg__hr">
-        <div class="container">
-            <div class="select_lib"><a class="margin-none" href="{% url 'participants:frontend:geosearch' %}" title="тайтл">Ближайшая библотека</a>
-            </div>
-            <div class="my_address">Ваше местонахождение: Россия, Республика Татарстан, Казань, проезд Шейкмана</div>
-            <div class="search-box search-box_second">
-                <form>
-                    <div class="search-form">
-                        <input class="search-form__input" placeholder="Введите адрес...">
-                    <span class="input-form-group">
-                      <button class="search-form__submit" type="submit" title="Поиск"><img
-                              src="images/search.svg"></button>
-                    </span>
-                    </div>
-                    <div class="search-btn search-btn_abc-list">Алфавитный указатель муниципальных районов РТ:
-                        <a href="#" class="search-btn__link">Все</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a href="#" class="search-btn__link">A</a>
-                        <a title="Мое местоположение" href="#" class="search-btn__link_mygeo">
-                            <img src="images/geo_plain_min.svg">
-                        </a>
-
-                    </div>
-                </form>
-            </div>
-        </div>
     </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li><a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">Главная</a></li>
 
-
-
-
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-            <li class="active">hhhБиблиотеки</li>
-        </ul>
-        <div class="row">
-            <div class="span12">
-                <style>
-                    #map_canvas {
-                        background: white;
-
-                        box-shadow: 0 0 10px #999;
-                        border-radius: 2px;
-                    }
-                </style>
-                <div id="map_canvas" style="height: 400px"></div>
-                {% include 'participants/frontend/map_cbs_js.html' %}
-            </div>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a class="bread__crumbs_link bread__crumbs_link_active">
+                        Библиотеки
+                    </a>
+                </li>
+            </ul>
         </div>
-        <div class="row">
-            <div class="span12">
-                <hr/>
-                <ul class="nav nav-tabs">
-                    <li class="active">
-                        <a href="{% url 'participants:frontend:index' %}">Библиотеки</a>
-                    </li>
-                    <li><a href="{% url 'participants:frontend:geosearch' %}">Поиск по местоположению</a></li>
-                </ul>
-                <table class="table">
-                    {% for cbs in  cbs_list %}
-                        <tr>
-                            <td>
-                                {% if cbs.republican %}
-                                    <div>
-                                        <a href="{% url 'participant_site:frontend:index' cbs.code %}">{{ cbs.name }}</a>
-                                    </div>
-                                {% else %}
-                                    <div>
-                                        <a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}</a>
-                                    </div>
-                                {% endif %}
+        <hr class="footer-hr">
+        <div id="lib-finder">Загрузка карты библиотек...</div>
+        <table class="table">
+        {% for cbs in  cbs_list %}
+            <tr>
+                <td>
+                    {% if cbs.republican %}
+                        <div>
+                            <a href="{% url 'participant_site:frontend:index' cbs.code %}">{{ cbs.name }}</a>
+                        </div>
+                    {% else %}
+                        <div>
+                            <a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}</a>
+                        </div>
+                    {% endif %}
 
-                                <div>
-                                    <a class="btn btn-mini btn-info"
-                                       href="{% url 'ssearch:frontend:index' %}?library={{ cbs.code }}">поиск в
-                                        каталоге</a>
-                                </div>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        Список еще не сформирован
-                    {% endfor %}
-                </table>
-            </div>
-        </div>
+                    <div>
+                        <a class="btn btn-mini btn-info"
+                           href="{% url 'ssearch:frontend:index' %}?library={{ cbs.code }}">поиск в
+                            каталоге</a>
+                    </div>
+                </td>
+                </tr>
+            {% empty %}
+                Список еще не сформирован
+            {% endfor %}
+        </table>
+    </main>
 
-    </div>
+    {#    <nav class="bg bg_second">#}
+    {#        <div class="container">#}
+    {#            {% include 'main_menu.html' %}#}
+    {#        </div>#}
+    {#        <hr class="bg__hr">#}
+    {#        <div class="container">#}
+    {#            <div class="select_lib"><a class="margin-none" href="{% url 'participants:frontend:geosearch' %}" title="тайтл">Ближайшая библотека</a>#}
+    {#            </div>#}
+    {#            <div class="my_address">Ваше местонахождение: Россия, Республика Татарстан, Казань, проезд Шейкмана</div>#}
+    {#            <div class="search-box search-box_second">#}
+    {#                <form>#}
+    {#                    <div class="search-form">#}
+    {#                        <input class="search-form__input" placeholder="Введите адрес...">#}
+    {#                    <span class="input-form-group">#}
+    {#                      <button class="search-form__submit" type="submit" title="Поиск"><img#}
+    {#                              src="images/search.svg"></button>#}
+    {#                    </span>#}
+    {#                    </div>#}
+    {#                    <div class="search-btn search-btn_abc-list">Алфавитный указатель муниципальных районов РТ:#}
+    {#                        <a href="#" class="search-btn__link">Все</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a href="#" class="search-btn__link">A</a>#}
+    {#                        <a title="Мое местоположение" href="#" class="search-btn__link_mygeo">#}
+    {#                            <img src="images/geo_plain_min.svg">#}
+    {#                        </a>#}
+    {##}
+    {#                    </div>#}
+    {#                </form>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </nav>#}
+
+
+
+    {##}
+    {##}
+    {#    <div class="span12">#}
+    {#        <ul class="breadcrumb">#}
+    {#            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
+    {#            <li class="active">Библиотеки</li>#}
+    {#        </ul>#}
+    {#        <div class="row">#}
+    {#            <div class="span12">#}
+    {#                <style>#}
+    {#                    #map_canvas {#}
+    {#                        background: white;#}
+    {##}
+    {#                        box-shadow: 0 0 10px #999;#}
+    {#                        border-radius: 2px;#}
+    {#                    }#}
+    {#                </style>#}
+    {#                <div id="map_canvas" style="height: 400px"></div>#}
+    {#                {% include 'participants/frontend/map_cbs_js.html' %}#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="row">#}
+    {#            <div class="span12">#}
+    {#                <hr/>#}
+    {#                <ul class="nav nav-tabs">#}
+    {#                    <li class="active">#}
+    {#                        <a href="{% url 'participants:frontend:index' %}">Библиотеки</a>#}
+    {#                    </li>#}
+    {#                    <li><a href="{% url 'participants:frontend:geosearch' %}">Поиск по местоположению</a></li>#}
+    {#                </ul>#}
+    {#                <table class="table">#}
+    {#                    {% for cbs in  cbs_list %}#}
+    {#                        <tr>#}
+    {#                            <td>#}
+    {#                                {% if cbs.republican %}#}
+    {#                                    <div>#}
+    {#                                        <a href="{% url 'participant_site:frontend:index' cbs.code %}">{{ cbs.name }}</a>#}
+    {#                                    </div>#}
+    {#                                {% else %}#}
+    {#                                    <div>#}
+    {#                                        <a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}</a>#}
+    {#                                    </div>#}
+    {#                                {% endif %}#}
+    {##}
+    {#                                <div>#}
+    {#                                    <a class="btn btn-mini btn-info"#}
+    {#                                       href="{% url 'ssearch:frontend:index' %}?library={{ cbs.code }}">поиск в#}
+    {#                                        каталоге</a>#}
+    {#                                </div>#}
+    {#                            </td>#}
+    {#                        </tr>#}
+    {#                    {% empty %}#}
+    {#                        Список еще не сформирован#}
+    {#                    {% endfor %}#}
+    {#                </table>#}
+    {#            </div>#}
+    {#        </div>#}
+    {##}
+    {#    </div>#}
+{% endblock %}
+{% block scripts %}
+    <script>
+        System.import('participants/index.js');
+    </script>
 {% endblock %}
