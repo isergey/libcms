@@ -67,6 +67,8 @@ eventEmitter.on(EVENTS.GEO_DETECTION, () => {
 });
 
 
+
+
 function renderLoader(message = 'Загрузка...') {
   return <span>{message}</span>;
 }
@@ -452,7 +454,6 @@ const AddrSearch = React.createClass({
       alert('Ваше местоположение не определено');
       console.error('Error of user geo detection', error);
     }).then(() => {
-      console.log('typeahead');
       $typeahead.typeahead(
         {
           minLength: 3,
@@ -465,8 +466,10 @@ const AddrSearch = React.createClass({
       );
       $typeahead.on('typeahead:selected', function (e, datum) {
         const positionParts = datum.position.split(' ');
-        console.log(positionParts);
-
+        eventEmitter.emit(EVENTS.START_FILTERING, {
+          lat: positionParts[1],
+          lon: positionParts[0],
+        });
       });
     });
   },

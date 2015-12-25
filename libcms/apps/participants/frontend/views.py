@@ -108,6 +108,11 @@ def get_district_letters(request):
 
 
 def filter_by_districts(request):
+    lat = float(request.GET.get('lat', 0))
+    lon = float(request.GET.get('lon', 0))
+    if lat and lon:
+        return geo_nearest(request)
+
     district_id = request.GET.get('districtId', '')
 
     if not district_id:
