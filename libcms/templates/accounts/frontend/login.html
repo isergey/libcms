@@ -36,6 +36,11 @@
                     <div class="row">
                         <div class="col-6">
                             <div class="auth-box">
+                                {% if form.non_field_errors %}
+                                    {% for error in form.non_field_errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
                                 <p class="auth-box__info">Вход на портал с использованием идентификатора
                                     и пароля Единого Читательского билета.
                                 </p>

@@ -14,15 +14,15 @@ def index(request, day='', month='', year=''):
     q = Q(active=True)
 
     if filter_form.is_valid():
-        library = filter_form.cleaned_data['library']
+        # library = filter_form.cleaned_data['library']
         event_type = filter_form.cleaned_data['event_type']
         age_category = filter_form.cleaned_data['age_category']
 
-        if library:
-            libs = [library.id]
-            for item in list(library.get_children().values('id')):
-                libs.append(item['id'])
-            q = q & Q(library__in=libs)
+        # if library:
+        #     libs = [library.id]
+        #     for item in list(library.get_children().values('id')):
+        #         libs.append(item['id'])
+        #     q = q & Q(library__in=libs)
 
         if event_type:
             q_type = Q(event_type='')

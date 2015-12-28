@@ -1,0 +1,125 @@
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">(function (d, w, c) {
+    (w[c] = w[c] || []).push(function () {
+        try {
+            w.yaCounter17301607 = new Ya.Metrika({id: 17301607, enableAll: true, webvisor: true});
+        } catch (e) {
+        }
+    });
+    var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () {
+        n.parentNode.insertBefore(s, n);
+    };
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+    if (w.opera == "[object Opera]") {
+        d.addEventListener("DOMContentLoaded", f);
+    } else {
+        f();
+    }
+})(document, window, "yandex_metrika_callbacks");</script>
+<noscript>
+    <div><img src="//mc.yandex.ru/watch/17301607" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
+<!-- /Yandex.Metrika counter -->
+<!-- Yandex.Metrika informer -->
+<a href="https://metrika.yandex.ru/stat/?id=28345621&amp;from=informer"
+    target="_blank" rel="nofollow">
+    <img src="//bs.yandex.ru/informer/28345621/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
+       style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика"
+       title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)"
+       onclick="try{Ya.Metrika.informer({i:this,id:28345621,lang:'ru'});return false}catch(e){}"/>
+</a>
+<!-- /Yandex.Metrika informer -->
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function (d, w, c) {
+        (w[c] = w[c] || []).push(function () {
+            try {
+                w.yaCounter28345621 = new Ya.Metrika({
+                    id: 28345621,
+                    clickmap: true,
+                    trackLinks: true,
+                    accurateTrackBounce: true
+                });
+            } catch (e) {
+            }
+        });
+
+        var n = d.getElementsByTagName("script")[0],
+                s = d.createElement("script"),
+                f = function () {
+                    n.parentNode.insertBefore(s, n);
+                };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        } else {
+            f();
+        }
+    })(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript>
+    <div><img src="//mc.yandex.ru/watch/28345621" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
+<!-- /Yandex.Metrika counter -->
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36488484-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+<div style="float: left">
+    <!-- begin of Top100 code -->
+
+    <script id="top100Counter" type="text/javascript" src="//counter.rambler.ru/top100.jcn?2811425"></script>
+    <noscript>
+        <a href="//top100.rambler.ru/navi/2811425/">
+            <img src="//counter.rambler.ru/top100.cnt?2811425" alt="Rambler's Top100" border="0"/>
+        </a>
+
+    </noscript>
+    <!-- end of Top100 code -->
+</div>
+<script>
+    $(function () {
+        $.get('{% url 'statistics:api:watch' %}');
+    });
+</script>
+
+<!-- Piwik -->
+<script type="text/javascript">
+    var _paq = _paq || [];
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function () {
+        var u = "//ua.tatar.ru/";
+        _paq.push(['setTrackerUrl', u + 'piwik.php']);
+        _paq.push(['setSiteId', 22]);
+
+        <!-- "a0a0a0a0a0a0a0a0" should be replaced by a hash user id from your system -->
+        _paq.push(['setUserId', "{{ request.user.pk }}"]);
+
+        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+        g.type = 'text/javascript';
+        g.async = true;
+        g.defer = true;
+        g.src = u + 'piwik.js';
+        s.parentNode.insertBefore(g, s);
+    })();
+</script>
+<noscript><p><img src="//ua.tatar.ru/piwik.php?idsite=22" style="border:0;" alt=""/></p></noscript>
+<!-- End Piwik Code -->
