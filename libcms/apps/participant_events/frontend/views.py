@@ -12,6 +12,7 @@ import forms
 
 SUBSCRIBE_PER_DAY_LIMIT = 1000
 
+
 def index(request, library_code):
     library = get_object_or_404(Library, code=library_code)
     events_page = get_page(
@@ -38,7 +39,7 @@ def index(request, library_code):
         'library': library,
         'events_list': events_page.object_list,
         'events_page': events_page,
-        })
+    })
 
 
 def show(request, library_code, id):
@@ -46,7 +47,7 @@ def show(request, library_code, id):
     cur_language = translation.get_language()
     event = get_object_or_404(models.Event, id=id, library=library)
     difference = event.end_date - event.start_date
-    period = (difference.days, difference.seconds//3600, (difference.seconds//60)%60)
+    period = (difference.days, difference.seconds // 3600, (difference.seconds // 60) % 60)
     try:
         content = models.EventContent.objects.get(event=event, lang=cur_language[:2])
     except models.EventContent.DoesNotExist:
@@ -63,17 +64,18 @@ def show(request, library_code, id):
         'notification_form': notification_form
     })
 
+
 @transaction.atomic()
 def create_notification(request, library_code, id):
     now = datetime.now()
     today_count = models.EventSubscribe.objects.filter(
-            create_date__year=now.year,
-            create_date__month=now.month,
-            create_date__day=now.day
+        create_date__year=now.year,
+        create_date__month=now.month,
+        create_date__day=now.day
     ).count()
 
     if today_count > SUBSCRIBE_PER_DAY_LIMIT:
-        return  HttpResponse(u'Превышен дневной лимит заявок на напоминания')
+        return HttpResponse(u'Превышен дневной лимит заявок на напоминания')
 
     library = get_object_or_404(Library, code=library_code)
     cur_language = translation.get_language()
@@ -89,18 +91,19 @@ def create_notification(request, library_code, id):
         if notification_form.is_valid():
             notification = notification_form.save(commit=False)
             event_count = models.EventNotification.objects.filter(
-                    email=notification.email,
-                    items_count=notification.items_count,
-                    time_item=notification.time_item,
-                    event=event
-                ).count()
+                email=notification.email,
+                items_count=notification.items_count,
+                time_item=notification.time_item,
+                event=event
+            ).count()
 
             if not event_count:
                 notification.event = event
                 notification.make_notification_time()
                 notification.save()
 
-            return redirect('participant_events:frontend:create_notification_complete', library_code=library_code, id=id)
+            return redirect('participant_events:frontend:create_notification_complete', library_code=library_code,
+                            id=id)
     else:
         notification_form = forms.NotificationForm(initial={
             'email': getattr(request.user, 'email', u'')
@@ -112,6 +115,7 @@ def create_notification(request, library_code, id):
         'content': content,
         'notification_form': notification_form
     })
+
 
 def create_notification_complate(request, library_code, id):
     library = get_object_or_404(Library, code=library_code)
@@ -127,17 +131,18 @@ def create_notification_complate(request, library_code, id):
         'content': content
     })
 
+
 @transaction.atomic()
 def subscribe(request, library_code):
     now = datetime.now()
     today_count = models.EventSubscribe.objects.filter(
-            create_date__year=now.year,
-            create_date__month=now.month,
-            create_date__day=now.day
+        create_date__year=now.year,
+        create_date__month=now.month,
+        create_date__day=now.day
     ).count()
 
     if today_count > SUBSCRIBE_PER_DAY_LIMIT:
-        return  HttpResponse(u'Превышен дневной лимит подписок')
+        return HttpResponse(u'Превышен дневной лимит подписок')
 
     library = get_object_or_404(Library, code=library_code)
 
@@ -177,11 +182,13 @@ def subscribe(request, library_code):
         'form': form
     })
 
+
 def subscribe_complate(request, library_code):
     library = get_object_or_404(Library, code=library_code)
     return render(request, 'participant_events/frontend/subscribe_complate.html', {
         'library': library
     })
+
 
 def filer_by_date(request, library_code, day='', month='', year=''):
     library = get_object_or_404(Library, code=library_code)
@@ -194,7 +201,8 @@ def filer_by_date(request, library_code, day='', month='', year=''):
         start_date__day=day
     ).prefetch_related('age_category', 'event_type').order_by('-create_date'))
 
-    event_contents = list(models.EventContent.objects.filter(event__in=list(events_page.object_list), lang=get_language()[:2]))
+    event_contents = list(
+        models.EventContent.objects.filter(event__in=list(events_page.object_list), lang=get_language()[:2]))
 
     t_dict = {}
     for event in events_page.object_list:
@@ -213,11 +221,7 @@ def filer_by_date(request, library_code, day='', month='', year=''):
         'events_list': events_page.object_list,
         'events_page': events_page,
         'date': date
-        })
-
-
-
-
+    })
 
 
 def make_icalendar(request, library_code, id):
@@ -255,7 +259,8 @@ def favorit_events(request, library_code):
     return render(request, 'participant_events/frontend/favorites_list.html', {
         'events_list': events,
         'events_page': fav_events_page,
-        })
+    })
+
 
 @login_required
 def add_to_favorits(request, library_code, id):
@@ -266,8 +271,9 @@ def add_to_favorits(request, library_code, id):
         models.FavoriteEvent(user=request.user, event=event).save()
     return redirect('participant_events:frontend:favorit_events')
 
+
 @login_required
-def favorite_show(request, library_code,  id):
+def favorite_show(request, library_code, id):
     cur_language = translation.get_language()
     event = get_object_or_404(models.Event, id=id)
     try:
