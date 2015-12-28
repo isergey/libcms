@@ -643,6 +643,7 @@
         $(function () {
             $('.js_select_library').on('click', function () {
                 var $modal = $('#select_library');
+                console.log('modal');
                 $modal.modal();
                 $modalBody = $modal.find('.modal-body');
                 $.get('{% url 'ssearch:frontend:select_library' %}').done(function (data) {

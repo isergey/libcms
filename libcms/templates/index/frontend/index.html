@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load news_tags %}
 {% load participant_news_tags %}
+{% load participant_events_tags %}
 {% load events_tags %}
 {% load ssearch_tags %}
 {% load participiants_tags %}
@@ -14,11 +15,11 @@
         <div class="container">
             {% include 'main_menu.html' %}
               {% if LANGUAGE_CODE == 'ru' %}
-
-                        <h1>В электронном <a href="#" title="Электронный каталог">каталоге</a> вы сможете<br>
-                <a href="{% url 'ssearch:frontend:index' %}" title="Поиск в электронный каталоге">найти</a> и забронировать <a href="#" title="Забронировать книги">книги</a><sup>5854</sup><br>
-                в <a href="#" title="библиотеки Республики Татарстан">библиотеках</a><sup>5854</sup> Республики
-                Татарстан</h1>
+                  <h1>В электронном <a href="{% url 'ssearch:frontend:index' %}" title="Электронный каталог">каталоге</a> вы сможете<br>
+                    <a href="{% url 'ssearch:frontend:index' %}" title="Поиск в электронный каталоге">найти</a> и забронировать книги<br>
+                    в <a href="{% url 'participants:frontend:index' %}" title="библиотеки Республики Татарстан">библиотеках</a> Республики
+                    Татарстан
+                  </h1>
 
                     {% elif LANGUAGE_CODE == 'tt' %}
                         <h1>Электрон каталог һәм коллекцияләр буенча эзләү</h1>
@@ -84,160 +85,43 @@
 </ul>
 </div>
 <div class="container">
-<div class="row">
-<div class="col-7">
-    <div class="news-box news-box_border-right">
-        <div class="news-box__title">
-            {% if LANGUAGE_CODE == 'ru' %}
-                Новости
-            {% elif LANGUAGE_CODE == 'tt' %}
-                Яңалыклар
-            {% else %}
-                News
-            {% endif %}
-        </div>
-        <a href="{% url 'news:frontend:index' %}" class="news-box__all" title="Посмотреть архив новостей">
-            {% if LANGUAGE_CODE == 'ru' %}Архив
-                    новостей{% elif LANGUAGE_CODE == 'tt' %}Архив новостей{% else %}News archive{% endif %}
-        </a>
-        {% news_feed %}
-        <div class="news-box__title news-box__title_bib">
-            {% if LANGUAGE_CODE == 'ru' %}
-                        Карта библиотек
-                    {% elif LANGUAGE_CODE == 'tt' %}
-                        Китапханәләр картасы
-                    {% else %}Map of libraries{% endif %}
-        </div>
-        <a href="{% url 'participants:frontend:geosearch' %}" class="news-box__all">Найти ближайшую библиотеку</a>
-    </div>
-</div>
-<div class="col-5">
-    <div class="poster-box">
-        <div class="poster-box__title">Афиша</div>
-        <a href="#" class="poster-box__all" title="Посмотреть все мероприятия">Все мероприятия</a>
-
-        <div id="owl-poster" class="owl-carousel">
-            <div class="item-poster">
-                <div class="poster-box__item__date">
-                    <img title="Календарь" title="Календарь" src="{{ STATIC_URL }}dist/images/calendar.svg">
-                    22 октября 2015 / 08:00
-                </div>
-                <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">
-                    <img alt="Расположение на карте" src="{{ STATIC_URL }}dist/images/geo_pin.svg">
-                    Казань
-                </a>
-                <br>
-                <a href="#" title="Камско-Устьинская ЦБС" class="poster-box__item__bib-tag">
-                    Камско-Устьинская ЦБС
-                </a>
-
-                <h2 class="poster-box__item__title">
-                    <a href="#" title="Впервые пройдет слет молодых работников">
-                        Впервые пройдет слет молодых работников
-                        и участников мероприятий
-                    </a>
-                </h2>
-
-                <p class="poster-box__item__teaser">
-                    8 июля в библиотеках города и района пройдут праздничные
-                    мероприятия, посвящённые Всероссийскому дню семьи,
-                    любви и верности.
-                </p>
-                <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить напоминание</a>
-                <hr class="poster-box__item__hr">
-                <div class="poster-box__item__date">
-                    <img title="Календарь" title="Календарь" src="{{ STATIC_URL }}dist/images/calendar.svg">
-                    22 октября 2015 / 08:00
-                </div>
-                <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">
-                    <img alt="Расположение на карте" src="{{ STATIC_URL }}dist/images/geo_pin.svg">
-                    Казань
-                </a>
-                <br>
-                <a href="#" title="Камско-Устьинская ЦБС" class="poster-box__item__bib-tag">
-                    Камско-Устьинская ЦБС
-                </a>
-
-                <h2 class="poster-box__item__title">
-                    <a href="#" title="Впервые пройдет слет молодых работников">
-                        Впервые пройдет слет молодых работников
-                        и участников мероприятий
-                    </a>
-                </h2>
-
-                <p class="poster-box__item__teaser">
-                    8 июля в библиотеках города и района пройдут праздничные
-                    мероприятия, посвящённые Всероссийскому дню семьи,
-                    любви и верности.
-                </p>
-                <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить напоминание</a>
+    <div class="row">
+    <div class="col-7">
+        <div class="news-box news-box_border-right">
+            <div class="news-box__title">
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Новости
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Яңалыклар
+                {% else %}
+                    News
+                {% endif %}
             </div>
-            <div class="item-poster">
-                <div class="poster-box__item__date">
-                    <img title="Календарь" title="Календарь" src="{{ STATIC_URL }}dist/images/calendar.svg">
-                    22 октября 2015 / 08:00
-                </div>
-                <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">
-                    <img alt="Расположение на карте" src="{{ STATIC_URL }}dist/images/geo_pin.svg">
-                    Казань
-                </a>
-                <br>
-                <a href="#" title="Камско-Устьинская ЦБС" class="poster-box__item__bib-tag">
-                    Камско-Устьинская ЦБС
-                </a>
-
-                <h2 class="poster-box__item__title">
-                    <a href="#" title="Впервые пройдет слет молодых работников">
-                        Впервые пройдет слет молодых работников
-                        и участников мероприятий
-                    </a>
-                </h2>
-
-                <p class="poster-box__item__teaser">
-                    8 июля в библиотеках города и района пройдут праздничные
-                    мероприятия, посвящённые Всероссийскому дню семьи,
-                    любви и верности.
-                </p>
-                <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить напоминание</a>
-                <hr class="poster-box__item__hr">
-                <div class="poster-box__item__date">
-                    <img title="Календарь" title="Календарь" src="{{ STATIC_URL }}dist/images/calendar.svg">
-                    22 октября 2015 / 08:00
-                </div>
-                <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">
-                    <img alt="Расположение на карте" src="{{ STATIC_URL }}dist/images/geo_pin.svg">
-                    Казань
-                </a>
-                <br>
-                <a href="#" title="Камско-Устьинская ЦБС" class="poster-box__item__bib-tag">
-                    Камско-Устьинская ЦБС
-                </a>
-
-                <h2 class="poster-box__item__title">
-                    <a href="#" title="Впервые пройдет слет молодых работников">
-                        Впервые пройдет слет молодых работников
-                        и участников мероприятий
-                        Впервые пройдет слет молодых работников
-                        и участников мероприятий
-                        Впервые пройдет слет молодых работников
-                        и участников мероприятий
-                    </a>
-                </h2>
-
-                <p class="poster-box__item__teaser">
-                    8 июля в библиотеках города и района пройдут праздничные
-                    мероприятия, посвящённые Всероссийскому дню семьи,
-                    любви и верности.
-                    8 июля в библиотеках города и района пройдут праздничные
-                    мероприятия, посвящённые Всероссийскому дню семьи,
-                    любви и верности.
-                </p>
-                <a href="#" class="poster-box__item__btn-call" title="Напомнить">Установить напоминание</a>
+            <a href="{% url 'news:frontend:index' %}" class="news-box__all" title="Посмотреть архив новостей">
+                {% if LANGUAGE_CODE == 'ru' %}Архив
+                        новостей{% elif LANGUAGE_CODE == 'tt' %}Архив новостей{% else %}News archive{% endif %}
+            </a>
+            {% news_feed %}
+            <div class="news-box__title news-box__title_bib">
+                {% if LANGUAGE_CODE == 'ru' %}
+                            Карта библиотек
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Китапханәләр картасы
+                        {% else %}Map of libraries{% endif %}
+            </div>
+            <a href="{% url 'participants:frontend:index' %}" class="news-box__all">Все библиотеки</a>
+        </div>
+    </div>
+    <div class="col-5">
+        <div class="poster-box">
+            <div class="poster-box__title">Афиша</div>
+            <a href="#" class="poster-box__all" title="Посмотреть все мероприятия">Все мероприятия</a>
+            <div id="owl-poster" class="owl-carousel">
+                {% participant_events_nearest 0 %}
             </div>
         </div>
     </div>
-</div>
-</div>
+    </div>
 </div>
 <div id="lib-finder"></div>
 </main>
