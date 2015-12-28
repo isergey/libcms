@@ -639,7 +639,6 @@ def _get_person_addresses(oid, access_token):
 
 
 def _get_access_marker(code):
-    print '_get_access_marker', code
     timestamp = unicode(datetime.now().strftime('%Y.%m.%d %H:%M:%S +0300'))
     state = unicode(uuid.uuid4())
     client_secret = _get_client_secret(ESIA_SSO_SCOPE, timestamp, ESIA_SSO_CLIENT_ID, state)
@@ -656,7 +655,6 @@ def _get_access_marker(code):
         'timestamp': timestamp
 
     }, verify=VERIFY_REQUESTS)
-    print response.content
     response.raise_for_status()
     return response.json()
 
