@@ -62,41 +62,4 @@
             </div>
         </div>
     </main>
-
-
-
-
-
-
-
-
-
-
-    {#    <div class="span12">#}
-    {#        <ul class="breadcrumb">#}
-    {##}
-    {#            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
-    {#            <li class="active">Гостевая книга</li>#}
-    {##}
-    {#        </ul>#}
-    {#        <p>#}
-    {#            <a href="{% url 'guestbook:frontend:send_feedback' %}" class="btn btn-success">Написать отзыв</a>#}
-    {#        </p>#}
-    {#        <hr/>#}
-    {#        <ul class="feedbacks" style="list-style: none; margin: 0">#}
-    {#            {% for feedback in feedbacks_page.object_list %}#}
-    {#                <li>#}
-    {#                    <div>{{ feedback.content|safe }}</div>#}
-    {#                    {% if feedback.comment %}#}
-    {#                        <div class="alert alert-success">{{ feedback.comment|safe }}</div>#}
-    {#                    {% endif %}#}
-    {#                </li>#}
-    {#                {% if not forloop.last %}#}
-    {#                    <hr/>{% endif %}#}
-    {#            {% endfor %}#}
-    {#        </ul>#}
-    {#        {% admin_pagination feedbacks_page %}#}
-    {#    </div>#}
-
-
 {% endblock %}
