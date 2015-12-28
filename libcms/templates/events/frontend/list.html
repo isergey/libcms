@@ -40,7 +40,7 @@
                     {% for event in events_list %}
                         <div class="news-page-box">
                             <h1 class="news-page-box__title"><a target="_blank"
-                                    href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a>
+                                                                href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a>
                             </h1>
 
                             <p class="news-page-box__teaser">
@@ -60,11 +60,12 @@
                                     <h4 class="facet__title">Фильтр</h4>
                                 </div>
                                 <div class="facet__body">
-                                        <form method="GET">
-                                            {% include 'frontend/base_form_fields.html' with form=filter_form %}
-                                            <input class="btn btn-info" type="submit" value="Фильтровать">
-                                            <a href="{{ request.META.PATH_INFO }}" class="btn" title="Очистить фильтр">Очистить</a>
-                                        </form>
+                                    <form class="filter-form" method="GET">
+                                        {% include 'frontend/base_form_fields.html' with form=filter_form %}
+                                        <button class="filter-form__btn" type="submit">Фильтровать</button>
+                                        <a class="filter-form__btn filter-form__btn_clear"
+                                           href="{{ request.META.PATH_INFO }}" title="Очистить фильтр">Очистить</a>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -98,35 +99,35 @@
 
 {##}
 {#    <div class="span12">#}
-        {#        <div class="breadcrumb">#}
-        {#            <span><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></span>#}
-        {#            {% if not date_filtered %}#}
-        {#                <span class="active">Афиша</span>#}
-        {#            {% else %}#}
-        {#                <span><a href="{% url 'events:frontend:index' %}">Афиша</a></span>#}
-        {#                <span class="divider">/</span></span>#}
-        {#                <span class="active">события за: <b>{{ date_filtered|date:'j E Y' }}</b></span>#}
-        {#            {% endif %}#}
-        {#        </div>#}
-        {#        <style>#}
-        {#            ul.news {#}
-        {#                list-style: none;#}
-        {#                margin: 0;#}
-        {#            }#}
-        {##}
-        {#            .news .title {#}
-        {#                font-size: 16px;#}
-        {#                font-weight: bold;#}
-        {#            }#}
-        {##}
-        {#            .news .teaser {#}
-        {#                padding: 5px 0;#}
-        {#            }#}
-        {##}
-        {#            .news .create_date {#}
-        {#                color: #8c8c8c;#}
-        {#            }#}
-        {#        </style>#}
+{#        <div class="breadcrumb">#}
+{#            <span><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></span>#}
+{#            {% if not date_filtered %}#}
+{#                <span class="active">Афиша</span>#}
+{#            {% else %}#}
+{#                <span><a href="{% url 'events:frontend:index' %}">Афиша</a></span>#}
+{#                <span class="divider">/</span></span>#}
+{#                <span class="active">события за: <b>{{ date_filtered|date:'j E Y' }}</b></span>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#        <style>#}
+{#            ul.news {#}
+{#                list-style: none;#}
+{#                margin: 0;#}
+{#            }#}
+{##}
+{#            .news .title {#}
+{#                font-size: 16px;#}
+{#                font-weight: bold;#}
+{#            }#}
+{##}
+{#            .news .teaser {#}
+{#                padding: 5px 0;#}
+{#            }#}
+{##}
+{#            .news .create_date {#}
+{#                color: #8c8c8c;#}
+{#            }#}
+{#        </style>#}
 {#        <div class="row">#}
 {#            <div class="span9">#}
 {#                {% for event in events_list %}#}
@@ -159,15 +160,15 @@
 {#                {% admin_pagination events_page %}#}
 {#            </div>#}
 {#            <div class="span3">#}
-                {#                <div>#}
-                {#                    <form method="GET">#}
-                {#                        {% include 'frontend/base_form_fields.html' with form=filter_form %}#}
-                {#                        <input class="btn btn-info" type="submit" value="Фильтровать">#}
-                {#                        <a href="{{ request.META.PATH_INFO }}" class="btn" title="Очистить фильтр">Очистить</a>#}
-                {#                    </form>#}
-                {#                </div>#}
-                {#                <hr/>#}
-                {#                {% events_calendar %}#}
+{#                <div>#}
+{#                    <form method="GET">#}
+{#                        {% include 'frontend/base_form_fields.html' with form=filter_form %}#}
+{#                        <input class="btn btn-info" type="submit" value="Фильтровать">#}
+{#                        <a href="{{ request.META.PATH_INFO }}" class="btn" title="Очистить фильтр">Очистить</a>#}
+{#                    </form>#}
+{#                </div>#}
+{#                <hr/>#}
+{#                {% events_calendar %}#}
 {#            </div>#}
 {#        </div>#}
 {##}
