@@ -1,14 +1,26 @@
+{% for news in news_list %}
 
-    {% for news in news_list %}
-        <div class="news-box__item">
-            <div class="news-box__item__date">{{ news.create_date|date:"j N" }}</div>
-            <h2 class="news-box__item__title">
-                <a href="{% url 'news:frontend:show' news.id %}">
-                    {{ news.news_content.title }}
-                </a>
-            </h2>
+<div class="facet__body__news">
+    <h3 class="facet__body__news__title">
+        <a href="{% url 'news:frontend:show' news.id %}">{{ news.news_content.title }}</a>
+    </h3>
 
-            <div class="news-box__item__attr-box">
+    <div class="facet__body__news__date">{{ news.create_date|date:"j N" }}</div>
+</div>
+{% endfor %}
+
+
+
+{#    {% for news in news_list %}#}
+{#        <div class="news-box__item">#}
+{#            <div class="news-box__item__date">{{ news.create_date|date:"j N" }}</div>#}
+{#            <h2 class="news-box__item__title">#}
+{#                <a href="{% url 'news:frontend:show' news.id %}">#}
+{#                    {{ news.news_content.title }}#}
+{#                </a>#}
+{#            </h2>#}
+{##}
+{#            <div class="news-box__item__attr-box">#}
 {#                <a href="#" title="Камско-Устьинская ЦБС" class="news-box__item__attr-box__bib-tag">#}
 {#                    Камско-Устьинская ЦБС#}
 {#                </a>#}
@@ -18,9 +30,9 @@
 {#                <a href="#" title="Видео" class="news-box__item__attr-box__has-content">#}
 {#                    <img alt="Видео" src="static/dist/images/movie.svg">#}
 {#                </a>#}
-            </div>
-        </div>
-
+{#            </div>#}
+{#        </div>#}
+{##}
 {#        <li>#}
 {#            <div class="title"><a href="{% url news:frontend:show news.id %}">{{ news.news_content.title }}</a></div>#}
 {#            <div class="teaser">{{ news.news_content.teaser }}</div>#}
@@ -29,6 +41,6 @@
 {#        <p>#}
 {#            <span>{{ news.create_date|date:"d.m.Y" }}</span> <a href="{% url 'news:frontend:show' news.id %}">{{ news.news_content.teaser }}</a>#}
 {#        </p>#}
-    {% endfor %}
+{#    {% endfor %}#}
 
 

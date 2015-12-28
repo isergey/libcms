@@ -30,14 +30,14 @@
                         Новости
                     </a>
                 {% endif %}
-{#                <li>#}
-{#                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">#}
-{#                </li>#}
-{#                <li>#}
-{#                    <a class="bread__crumbs_link bread__crumbs_link_active">#}
-{#                        {{ content.title }}#}
-{#                    </a>#}
-{#                </li>#}
+                {#                <li>#}
+                {#                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">#}
+                {#                </li>#}
+                {#                <li>#}
+                {#                    <a class="bread__crumbs_link bread__crumbs_link_active">#}
+                {#                        {{ content.title }}#}
+                {#                    </a>#}
+                {#                </li>#}
             </ul>
         </div>
         <hr class="footer-hr">
@@ -51,95 +51,96 @@
                     </div>
                 </div>
                 <div class="col-5">
-                    {% other_news news.id %}
+
                     <div class="facets-container">
-{#                        <div class="facets-container__item">#}
-{#                            <div class="facet">#}
-{#                                <div class="facet__header">#}
-{#                                    <h4 class="facet__title">Другие новости</h4>#}
-{#                                </div>#}
-{#                                <div class="facet__body">#}
-{#                                    <div class="facet__body__news">#}
-{#                                        <h3 class="facet__body__news__title">#}
-{#                                            <a href="#">#}
-{#                                                В Татарстане стартовал#}
-{#                                                Республиканский этап конкурса#}
-{#                                                «Самый читающий школьник»#}
-{#                                            </a>#}
-{#                                        </h3>#}
-{##}
-{#                                        <div class="facet__body__news__date">#}
-{#                                            23 мая 2015 г. 14:28#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                    <div class="facet__body__news">#}
-{#                                        <h3 class="facet__body__news__title">#}
-{#                                            <a href="#">#}
-{#                                                В Татарстане стартовал#}
-{#                                                Республиканский этап конкурса#}
-{#                                                «Самый читающий школьник»#}
-{#                                            </a>#}
-{#                                        </h3>#}
-{##}
-{#                                        <div class="facet__body__news__date">#}
-{#                                            23 мая 2015 г. 14:28#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                    <div class="facet__body__news">#}
-{#                                        <h3 class="facet__body__news__title">#}
-{#                                            <a href="#">#}
-{#                                                В Татарстане стартовал#}
-{#                                                Республиканский этап конкурса#}
-{#                                                «Самый читающий школьник»#}
-{#                                            </a>#}
-{#                                        </h3>#}
-{##}
-{#                                        <div class="facet__body__news__date">#}
-{#                                            23 мая 2015 г. 14:28#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                    <div class="facet__body__news">#}
-{#                                        <h3 class="facet__body__news__title">#}
-{#                                            <a href="#">#}
-{#                                                В Татарстане стартовал#}
-{#                                                Республиканский этап конкурса#}
-{#                                                «Самый читающий школьник»#}
-{#                                            </a>#}
-{#                                        </h3>#}
-{##}
-{#                                        <div class="facet__body__news__date">#}
-{#                                            23 мая 2015 г. 14:28#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                    <div class="facet__body__news">#}
-{#                                        <h3 class="facet__body__news__title">#}
-{#                                            <a href="#">#}
-{#                                                В Татарстане стартовал#}
-{#                                                Республиканский этап конкурса#}
-{#                                                «Самый читающий школьник»#}
-{#                                            </a>#}
-{#                                        </h3>#}
-{##}
-{#                                        <div class="facet__body__news__date">#}
-{#                                            23 мая 2015 г. 14:28#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                    <div class="facet__body__news">#}
-{#                                        <h3 class="facet__body__news__title">#}
-{#                                            <a href="#">#}
-{#                                                В Татарстане стартовал#}
-{#                                                Республиканский этап конкурса#}
-{#                                                «Самый читающий школьник»#}
-{#                                            </a>#}
-{#                                        </h3>#}
-{##}
-{#                                        <div class="facet__body__news__date">#}
-{#                                            23 мая 2015 г. 14:28#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        </div>#}
+                        <div class="facets-container__item">
+                            <div class="facet">
+                                <div class="facet__header">
+                                    <h4 class="facet__title">Другие новости</h4>
+                                </div>
+                                <div class="facet__body">
+                                    {% other_news news.id %}
+                                    <div class="facet__body__news">
+                                        <h3 class="facet__body__news__title">
+                                            <a href="#">
+                                                В Татарстане стартовал
+                                                Республиканский этап конкурса
+                                                «Самый читающий школьник»
+                                            </a>
+                                        </h3>
+
+                                        <div class="facet__body__news__date">
+                                            23 мая 2015 г. 14:28
+                                        </div>
+                                    </div>
+                                    <div class="facet__body__news">
+                                        <h3 class="facet__body__news__title">
+                                            <a href="#">
+                                                В Татарстане стартовал
+                                                Республиканский этап конкурса
+                                                «Самый читающий школьник»
+                                            </a>
+                                        </h3>
+
+                                        <div class="facet__body__news__date">
+                                            23 мая 2015 г. 14:28
+                                        </div>
+                                    </div>
+                                    <div class="facet__body__news">
+                                        <h3 class="facet__body__news__title">
+                                            <a href="#">
+                                                В Татарстане стартовал
+                                                Республиканский этап конкурса
+                                                «Самый читающий школьник»
+                                            </a>
+                                        </h3>
+
+                                        <div class="facet__body__news__date">
+                                            23 мая 2015 г. 14:28
+                                        </div>
+                                    </div>
+                                    <div class="facet__body__news">
+                                        <h3 class="facet__body__news__title">
+                                            <a href="#">
+                                                В Татарстане стартовал
+                                                Республиканский этап конкурса
+                                                «Самый читающий школьник»
+                                            </a>
+                                        </h3>
+
+                                        <div class="facet__body__news__date">
+                                            23 мая 2015 г. 14:28
+                                        </div>
+                                    </div>
+                                    <div class="facet__body__news">
+                                        <h3 class="facet__body__news__title">
+                                            <a href="#">
+                                                В Татарстане стартовал
+                                                Республиканский этап конкурса
+                                                «Самый читающий школьник»
+                                            </a>
+                                        </h3>
+
+                                        <div class="facet__body__news__date">
+                                            23 мая 2015 г. 14:28
+                                        </div>
+                                    </div>
+                                    <div class="facet__body__news">
+                                        <h3 class="facet__body__news__title">
+                                            <a href="#">
+                                                В Татарстане стартовал
+                                                Республиканский этап конкурса
+                                                «Самый читающий школьник»
+                                            </a>
+                                        </h3>
+
+                                        <div class="facet__body__news__date">
+                                            23 мая 2015 г. 14:28
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="facets-container__item">
                             <div class="facet">
                                 <div class="facet__header facet__header_closed">
