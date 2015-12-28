@@ -34,9 +34,9 @@ ESIA_SSO_CERT_ALIAS = ESIA_SSO.get('cert_alias', 'RaUser-561d2f13-c72b-4018-a473
 ESIA_SSO_CERT_PASSWORD = ESIA_SSO.get('cert_password', '1234567890')
 ESIA_SSO_CLIENT_ID = unicode(ESIA_SSO.get('client_id', ''))
 ESIA_SSO_SCOPE = unicode(ESIA_SSO.get('scope', 'http://esia.gosuslugi.ru/usr_inf'))
-ESIA_SSO_ACCESS_TOKEN_URL = ESIA_SSO.get('access_token_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/ac')
-ESIA_SSO_ACCESS_MARKER_URL = ESIA_SSO.get('access_marker_url', 'https://esia-portal1.test.gosuslugi.ru/aas/oauth2/te')
-ESIA_SSO_PERSON_URL = ESIA_SSO.get('person_url', 'https://esia-portal1.test.gosuslugi.ru/rs/prns')
+ESIA_SSO_ACCESS_TOKEN_URL = ESIA_SSO.get('access_token_url', 'https://esia.gosuslugi.ru/aas/oauth2/ac')
+ESIA_SSO_ACCESS_MARKER_URL = ESIA_SSO.get('access_marker_url', 'https://esia.gosuslugi.ru/aas/oauth2/te')
+ESIA_SSO_PERSON_URL = ESIA_SSO.get('person_url', 'https://esia.gosuslugi.ru/rs/prns')
 ESIA_SSO_ASK_FOR_EXIST_READER = ESIA_SSO.get('ask_for_exist_reader', True)
 ESIA_SSO_PASSWORD_LENGTH = ESIA_SSO.get('password_length', 8)
 
