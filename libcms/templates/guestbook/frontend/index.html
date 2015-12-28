@@ -30,19 +30,17 @@
             <div class="row">
                 <div class="col-7">
                     <h1 class="content-page__title">Отзывы <span>({{ count_feedback }})</span></h1>
-                    {% admin_pagination feedbacks_page %}
-
-                    {% for feedback in feedbacks_page.object_list %}
+                     {% for feedback in feedbacks_page.object_list %}
                         <div class="answer-box">
-                            <div class="answer-box__index">
-                               {{ feedback.id }}
-                            </div>
+{#                            <div class="answer-box__index">#}
+{#                               {{ feedback.id }}#}
+{#                            </div>#}
                             <div class="answer-box__content_padding">
                                 <div class="answer-box__content">
-                                    <p class="answer-box__content__question">{{ feedback.content|striptags }}</p>
+                                    <div class="answer-box__content__question">{{ feedback.content|safe }}</div>
                                     {% if feedback.comment %}
                                         <hr class="answer-box__content__hr">
-                                        <p class="answer-box__content__answ">{{ feedback.comment|striptags }}</p>
+                                        <div class="answer-box__content__answ">{{ feedback.comment|safe }}</div>
                                     {% endif %}
                                 </div>
                             </div>
