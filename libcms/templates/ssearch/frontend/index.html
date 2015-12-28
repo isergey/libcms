@@ -306,20 +306,9 @@
                         </div>
 
                     {% endif %}
-
-                {% if docs %}
-
-                    {% admin_pagination results_page %}
-                {% endif %}
-
-
-
                 <div class="result-container">
-
                     {% if docs %}
-
                         {% for doc in docs %}
-
                             <div class="result">
                                 <div class="result__index">
                                     {{ forloop.counter0|add:results_page.start_index }}
