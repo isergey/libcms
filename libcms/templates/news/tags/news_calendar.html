@@ -1,38 +1,47 @@
-<table class="table-striped calendar">
+
+<table class="cal-table cal-table__margin-news">
+<caption class="cal-caption">
+    <form class="event_calendar_filter" name="event_calendar_filter" action="" method="POST">{% csrf_token %}
+    {{ form.month }}
+    {{ form.year }}
+</form>
+</caption>
     <thead>
     <tr>
-        <th><a href="" class="blue">←</a></th>
-        <th colspan="5" id="cal_month">
-            <form method="POST">{% csrf_token %}
-            {{ form.month }} {{ form.year }}
-            </form>
-        </th>
-        <th class="blue"><a href="" class="blue">→</a></th>
-    </tr>
-    <tr>
-        <th>пн</th>
-        <th>вт</th>
-        <th>ср</th>
-        <th>чт</th>
-        <th>пт</th>
-        <th>сб</th>
-        <th>вс</th>
+        <th>Пн</th>
+        <th>Вт</th>
+        <th>Ср</th>
+        <th>Чт</th>
+        <th>Пт</th>
+        <th>Сб</th>
+        <th>ВС</th>
     </tr>
     </thead>
-
-    <tbody>
+    <tbody class="cal-body">
 
     {% for week in calendar %}
         <tr>{% for day in week %}
             {% if day.day != 0 %}
-                <td class="{% if day.today %}current{% endif %}{% if day.events %} has_events{% endif %}">
-                    {% if  day.events %}
-                        <a href="{% url 'news:frontend:filer_by_date' 'main' year month day.day %}"
-                           title="Показать события дня"> <b>{{ day.day }}</b></a>
-                    {% else %}
-                        {{ day.day }}
-                    {% endif %}
-                    {% else %}
+                {% if day.today and not day.events %}
+                    <td class="cal-today">
+                {% endif %}
+            {% if day.events %}
+                <td class="">
+            {% endif %}
+            {% if not day.today and not day.events %}
+                <td>
+            {% endif %}
+
+            {% if  day.events %}
+                <a class="cal-check"
+                   href="{% url 'news:frontend:news_by_date' year month day.day %}"
+                   title="Показать события дня"> {{ day.day }}</a>
+
+            {% else %}
+                <a>{{ day.day }}</a>
+            {% endif %}
+            {% else %}
+
                 <td class="padding">
             {% endif %}
         </td>

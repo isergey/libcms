@@ -25,6 +25,24 @@ def index(request):
     })
 
 
+def filer_by_date(request, day='', month='', year=''):
+    query = Q(publicated=True, create_date__year=year, create_date__month=month, create_date__day=day)
+    news_page = get_page(request, News.objects.filter(query).exclude(type=1).order_by('-create_date'))
+    news_contents = list(NewsContent.objects.filter(news__in=list(news_page.object_list), lang=get_language()[:2]))
+    t_dict = {}
+    for news in news_page.object_list:
+        t_dict[news.id] = {'news': news}
+
+    for news_content in news_contents:
+        t_dict[news_content.news_id]['news'].news_content = news_content
+
+    return render(request, 'news/frontend/list.html', {
+        'news_list': news_page.object_list,
+        'news_page': news_page,
+    })
+
+
+
 def show(request, id):
     cur_language = translation.get_language()
     try:
