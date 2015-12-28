@@ -35,7 +35,7 @@ def participant_events_calendar(context, library, y=0, m=0):
     if y: year = y
     if m: month = m
     weeks = calendar.monthcalendar(year, month)
-    cache_key = 'events_y_m' + str(year) + str(month) + 'active=1'
+    cache_key = 'participant_events_y_m' + str(year) + str(month) + 'active=1'
     events = cache.get(cache_key, [])
     if not events:
         events = list(
