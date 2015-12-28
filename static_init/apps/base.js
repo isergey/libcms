@@ -67,7 +67,7 @@ $(function () {
     const $csaHead = $('.bg_first');
     const index = Math.floor(getRandomArbitrary(0, imgHead.length));
     $csaHead.css({ 'background': 'url(' + imgHead[index] + ') no-repeat #000' });
-    $csaHead.css({ 'background-size': '100% auto' });
+    //$csaHead.css({ 'background-size': '100% auto' });
   }
 
   csaHead();
