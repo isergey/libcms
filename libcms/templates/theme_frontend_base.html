@@ -20,7 +20,7 @@
     <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
     <script src="{{ STATIC_URL }}dist/vendors/bootstrap/bootstrap.min.js"></script>
 
-{#    <script src="{{ STATIC_URL }}dist/vendors/owl-carousel/owl.carousel.min.js"></script>#}
+    {#    <script src="{{ STATIC_URL }}dist/vendors/owl-carousel/owl.carousel.min.js"></script>#}
     <script src="{{ STATIC_URL }}js/lodash.compat.min.js"></script>
     <script src="{{ STATIC_URL }}js/browser-polyfill.min.js"></script>
     <script src="{{ STATIC_URL }}js/browser.min.js"></script>
@@ -53,7 +53,7 @@
     {#        <script src="{{ STATIC_URL }}js/jquery.pjax.js"></script>#}
     {#        <script src="{{ STATIC_URL }}js/lodash.compat.min.js"></script>#}
     {#        <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>#}
-{#    <script type="text/javascript" src="{{ STATIC_URL }}dist/vendors/bootstrap/bootstrap.min.js"></script>#}
+    {#    <script type="text/javascript" src="{{ STATIC_URL }}dist/vendors/bootstrap/bootstrap.min.js"></script>#}
     {#    <script src="{{ STATIC_URL }}js/typeahead.jquery.min.js"></script>#}
     {#        <script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>#}
     {#        {% block scripts %}{% endblock %}#}
@@ -114,6 +114,20 @@
                         alt="тайтл"></a>
                 <a class="footer-logo__min" href="#" title="тайтл"><img src="{{ STATIC_URL }}dist/images/logo_min.png"
                                                                         alt="тайтл"></a>
+
+                <!-- begin of Top100 code -->
+                <script id="top100Counter" type="text/javascript"
+                        src="//counter.rambler.ru/top100.jcn?2811425"></script>
+                <!-- end of Top100 code -->
+                <!-- Yandex.Metrika informer -->
+                <a href="https://metrika.yandex.ru/stat/?id=28345621&amp;from=informer"
+                   target="_blank" rel="nofollow">
+                    <img src="//bs.yandex.ru/informer/28345621/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
+                         style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика"
+                         title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)"
+                         onclick="try{Ya.Metrika.informer({i:this,id:28345621,lang:'ru'});return false}catch(e){}"/>
+                </a>
+                <!-- /Yandex.Metrika informer -->
             </div>
             <div class="col-6">
                 <a class="footer-logo__ask-lib" href="{% url 'ask_librarian:frontend:ask' %}"
@@ -179,7 +193,7 @@
             // load the template - and be sure to cache the result.
             var fn = !/\W/.test(str) ?
                     cache[str] = cache[str] ||
-                            tmpl(document.getElementById(str).innerHTML) :
+                    tmpl(document.getElementById(str).innerHTML) :
 
                 // Generate a reusable function that will serve as a template
                 // generator (and which will be cached).
@@ -230,15 +244,7 @@
     <div><img src="//mc.yandex.ru/watch/17301607" style="position:absolute; left:-9999px;" alt=""/></div>
 </noscript>
 <!-- /Yandex.Metrika counter -->
-<!-- Yandex.Metrika informer -->
-<a href="https://metrika.yandex.ru/stat/?id=28345621&amp;from=informer"
-    target="_blank" rel="nofollow">
-    <img src="//bs.yandex.ru/informer/28345621/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
-       style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика"
-       title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)"
-       onclick="try{Ya.Metrika.informer({i:this,id:28345621,lang:'ru'});return false}catch(e){}"/>
-</a>
-<!-- /Yandex.Metrika informer -->
+
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
@@ -290,18 +296,7 @@
     })();
 </script>
 
-<div style="float: left">
-    <!-- begin of Top100 code -->
 
-    <script id="top100Counter" type="text/javascript" src="//counter.rambler.ru/top100.jcn?2811425"></script>
-    <noscript>
-        <a href="//top100.rambler.ru/navi/2811425/">
-            <img src="//counter.rambler.ru/top100.cnt?2811425" alt="Rambler's Top100" border="0"/>
-        </a>
-
-    </noscript>
-    <!-- end of Top100 code -->
-</div>
 <script>
     $(function () {
         $.get('{% url 'statistics:api:watch' %}');
