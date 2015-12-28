@@ -3,86 +3,172 @@
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <div class="span12">
-        <div class="breadcrumb">
-            <span><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></span>
-            {% if not date_filtered %}
-                <span class="active">Афиша</span>
-            {% else %}
-                <span><a href="{% url 'events:frontend:index' %}">Афиша</a></span>
-                <span class="divider">/</span></span>
-                <span class="active">события за: <b>{{ date_filtered|date:'j E Y' }}</b></span>
-            {% endif %}
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
         </div>
-        <style>
-            ul.news {
-                list-style: none;
-                margin: 0;
-            }
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li><a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">Главная</a></li>
+                {% if not date_filtered %}
+                    <li>
+                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                    </li>
+                    <li><a class="bread__crumbs_link bread__crumbs_link_active">Афиша</a></li>
+                {% else %}
+                    <li>
+                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                    </li>
+                    <li><a class="bread__crumbs_link"
+                           href="{% url 'events:frontend:index' %}">Афиша</a></li>
+                    <li>
+                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                    </li>
+                    <li><a class="bread__crumbs_link bread__crumbs_link_active">Афиша события за:
+                        {{ date_filtered|date:'j E Y' }}</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <hr class="footer-hr">
+        <div class="container content-page">
+            <div class="row">
+                <div class="col-7">
+                    <h1 class="content-page__title">Афиша</h1>
+                    <br>
+                    {% for event in events_list %}
+                        <div class="news-page-box">
+                            <h1 class="news-page-box__title"><a target="_blank"
+                                    href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a>
+                            </h1>
 
-            .news .title {
-                font-size: 16px;
-                font-weight: bold;
-            }
-
-            .news .teaser {
-                padding: 5px 0;
-            }
-
-            .news .create_date {
-                color: #8c8c8c;
-            }
-        </style>
-        <div class="row">
-            <div class="span9">
-                {% for event in events_list %}
-                    <div class="event-block">
-                        <div>
-                    <span class="event-block__title">
-                        <a href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a>
-                    </span>
+                            <p class="news-page-box__teaser">
+                                {{ event.event_content.teaser }}<br>
+                                <b>Начало:</b> {{ event.start_date|date:'j E Y H:i' }}<br>
+                                <b>Библиотека:</b> {{ event.library.name }}
+                            </p>
                         </div>
-                        <div class="event-block__teaser">
-                            <table style="width: 100%">
-                                <tr>
-                                    {% if event.avatar %}
-                                        <td style="width: 100px; padding-right: 5px">
-                                            <img src="{{ MEDIA_URL }}{{ event.avatar }}"></td>
-                                    {% endif %}
-                                    <td style="vertical-align: top">
-                                        {{ event.event_content.teaser }}
-                                        <div class="create_date">Начало: <b>{{ event.start_date|date:'j E Y H:i' }}</b></div>
-                                        <div class="create_date">Библиотека: <b>{{ event.library.name }}</b></div>
-                                    </td>
-                                </tr>
-                            </table>
+                    {% endfor %}
+                    {% admin_pagination events_page %}
+                </div>
+                <div class="col-5">
+                    <div class="facets-container">
+                        <div class="facets-container__item">
+                            <div class="facet">
+                                <div class="facet__header">
+                                    <h4 class="facet__title">Фильтр</h4>
+                                </div>
+                                <div class="facet__body">
+                                        <form method="GET">
+                                            {% include 'frontend/base_form_fields.html' with form=filter_form %}
+                                            <input class="btn btn-info" type="submit" value="Фильтровать">
+                                            <a href="{{ request.META.PATH_INFO }}" class="btn" title="Очистить фильтр">Очистить</a>
+                                        </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="facets-container__item">
+                            <div class="facet">
+                                <div class="facet__header">
+                                    <h4 class="facet__title">Календарь</h4>
+                                </div>
+                                <div class="facet__body">
+                                    {% events_calendar %}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    {% if not forloop.last %}
-                        <hr/>{% endif %}
-                {% endfor %}
-                {% admin_pagination events_page %}
-            </div>
-            <div class="span3">
-                <div>
-                    <form method="GET">
-                        {% include 'frontend/base_form_fields.html' with form=filter_form %}
-                        <input class="btn btn-info" type="submit" value="Фильтровать">
-                        <a href="{{ request.META.PATH_INFO }}" class="btn" title="Очистить фильтр">Очистить</a>
-                    </form>
                 </div>
-                <hr/>
-                {% events_calendar %}
             </div>
         </div>
-
-    </div>
+    </main>
     <script>
-    $(function () {
-        var $eventFilterForm = $('.event-filter');
-        $('.event-filter select, .event-filter input').on('change', function () {
-            $eventFilterForm.submit();
+        $(function () {
+            var $eventFilterForm = $('.event-filter');
+            $('.event-filter select, .event-filter input').on('change', function () {
+                $eventFilterForm.submit();
+            });
         });
-    });
     </script>
 {% endblock %}
+
+
+
+
+{##}
+{#    <div class="span12">#}
+        {#        <div class="breadcrumb">#}
+        {#            <span><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></span>#}
+        {#            {% if not date_filtered %}#}
+        {#                <span class="active">Афиша</span>#}
+        {#            {% else %}#}
+        {#                <span><a href="{% url 'events:frontend:index' %}">Афиша</a></span>#}
+        {#                <span class="divider">/</span></span>#}
+        {#                <span class="active">события за: <b>{{ date_filtered|date:'j E Y' }}</b></span>#}
+        {#            {% endif %}#}
+        {#        </div>#}
+        {#        <style>#}
+        {#            ul.news {#}
+        {#                list-style: none;#}
+        {#                margin: 0;#}
+        {#            }#}
+        {##}
+        {#            .news .title {#}
+        {#                font-size: 16px;#}
+        {#                font-weight: bold;#}
+        {#            }#}
+        {##}
+        {#            .news .teaser {#}
+        {#                padding: 5px 0;#}
+        {#            }#}
+        {##}
+        {#            .news .create_date {#}
+        {#                color: #8c8c8c;#}
+        {#            }#}
+        {#        </style>#}
+{#        <div class="row">#}
+{#            <div class="span9">#}
+{#                {% for event in events_list %}#}
+{#                    <div class="event-block">#}
+{#                        <div>#}
+{#                    <span class="event-block__title">#}
+{#                        <a href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a>#}
+{#                    </span>#}
+{#                        </div>#}
+{#                        <div class="event-block__teaser">#}
+{#                            <table style="width: 100%">#}
+{#                                <tr>#}
+{#                                    {% if event.avatar %}#}
+{#                                        <td style="width: 100px; padding-right: 5px">#}
+{#                                            <img src="{{ MEDIA_URL }}{{ event.avatar }}"></td>#}
+{#                                    {% endif %}#}
+{#                                    <td style="vertical-align: top">#}
+{#                                        {{ event.event_content.teaser }}#}
+{#                                        <div class="create_date">Начало: <b>{{ event.start_date|date:'j E Y H:i' }}</b>#}
+{#                                        </div>#}
+{#                                        <div class="create_date">Библиотека: <b>{{ event.library.name }}</b></div>#}
+{#                                    </td>#}
+{#                                </tr>#}
+{#                            </table>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    {% if not forloop.last %}#}
+{#                        <hr/>{% endif %}#}
+{#                {% endfor %}#}
+{#                {% admin_pagination events_page %}#}
+{#            </div>#}
+{#            <div class="span3">#}
+                {#                <div>#}
+                {#                    <form method="GET">#}
+                {#                        {% include 'frontend/base_form_fields.html' with form=filter_form %}#}
+                {#                        <input class="btn btn-info" type="submit" value="Фильтровать">#}
+                {#                        <a href="{{ request.META.PATH_INFO }}" class="btn" title="Очистить фильтр">Очистить</a>#}
+                {#                    </form>#}
+                {#                </div>#}
+                {#                <hr/>#}
+                {#                {% events_calendar %}#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{#    </div>#}

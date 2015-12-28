@@ -61,7 +61,6 @@ $(function () {
 
   $('.bg-img img').each(function () {
     imgHead.push($(this).attr('src'));
-    console.log($(this).attr('src'));
   });
 
   function csaHead() {
