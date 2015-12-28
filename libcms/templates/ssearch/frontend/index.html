@@ -163,9 +163,6 @@
                                     <a href="{% url 'ssearch:frontend:save_search_request' %}?srequest={{ search_request|urlencode }}&catalog={{ catalog|urlencode }}"
                                        class="bread__crumbs_link" id="save_request_button">Сохранить запрос</a></li>
                             {% endif %}
-                            <li>
-                                <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                            </li>
                             <li><a class="bread__crumbs_link bread__crumbs_link_active">Поиск</a></li>
                             {% for search_breadcumb in search_breadcumbs %}
                                 {% if not forloop.last %}
@@ -204,7 +201,6 @@
                             {% endfor %}
 
                         </ul>
-                        <hr class="search-result-hr">
                         <form action="{{ request.path }}?{{ request.GET.urlencode }}" method="GET">
                             {% if library %}
                                 <input type="hidden" name="library" value="{{ library.code }}">

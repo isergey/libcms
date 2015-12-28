@@ -235,6 +235,7 @@ def _error_response(request, error, state, error_description, exception=None):
 def redirect_from_idp(request):
     error = request.GET.get('error')
     state = request.GET.get('state')
+    code = request.GET.get('code')
     error_description = request.GET.get('error_description')
 
     if error:
@@ -244,9 +245,6 @@ def redirect_from_idp(request):
             state=state,
             error_description=error_description
         )
-
-    code = request.GET.get('code')
-    state = request.GET.get('state')
 
     try:
         access_marker = _get_access_marker(code)
@@ -641,6 +639,7 @@ def _get_person_addresses(oid, access_token):
 
 
 def _get_access_marker(code):
+    print '_get_access_marker', code
     timestamp = unicode(datetime.now().strftime('%Y.%m.%d %H:%M:%S +0300'))
     state = unicode(uuid.uuid4())
     client_secret = _get_client_secret(ESIA_SSO_SCOPE, timestamp, ESIA_SSO_CLIENT_ID, state)
@@ -657,7 +656,7 @@ def _get_access_marker(code):
         'timestamp': timestamp
 
     }, verify=VERIFY_REQUESTS)
-
+    print response.content
     response.raise_for_status()
     return response.json()
 
