@@ -1,5 +1,5 @@
 'use strict';
-import $ from 'jquery';
+const $ = window.$;
 
 function getDistrictLetters() {
   return new Promise((resolve, reject) => {

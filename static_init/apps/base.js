@@ -1,5 +1,5 @@
 'use strict';
-import $ from 'jquery';
+const $ = window.$;
 
 $('.click-nav > ul').toggleClass('no-js js');
 $('.click-nav .js ul').hide();

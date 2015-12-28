@@ -1,5 +1,5 @@
-import $ from 'jquery';
 import 'owl-carousel';
+const $ = window.$;
 
 $('#owl-1').owlCarousel({
   autoPlay: true,
