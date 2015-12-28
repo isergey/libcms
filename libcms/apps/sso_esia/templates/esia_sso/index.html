@@ -5,24 +5,71 @@
 {% endblock %}
 {% block content %}
     {% url 'sso_esia:redirect_from_ip' as redirect_url %}
-    <div class="span12">
-        <div class="row">
-            <div class="span12">
-                <ul class="breadcrumb">
-                    <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-                    <li class="active">Вход на портал через ЕСИА</li>
-                </ul>
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li>
+                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                        Главная
+                    </a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a class="bread__crumbs_link bread__crumbs_link_active">
+                        Вход на портал через ЕСИА
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <hr class="footer-hr">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="content-page__title">ЕСИА</h1>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="esia-box">
+                                <a class="btn" href="{{ access_token_url|safe }}?access_type={{ access_type|urlencode }}&state={{ state|urlencode }}&timestamp={{ timestamp|urlencode }}&response_type=code&redirect_uri=https://{{ request.META.HTTP_HOST }}{{ redirect_url }}&client_id={{ client_id|urlencode }}&scope={{ scope|urlencode }}&client_secret={{ client_secret|urlencode }}"><span>Войти через ЕСИА</span> <img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="span6">
-
-                <div>
-
-                    <a class="btn" href="{{ access_token_url|safe }}?access_type={{ access_type|urlencode }}&state={{ state|urlencode }}&timestamp={{ timestamp|urlencode }}&response_type=code&redirect_uri=https://{{ request.META.HTTP_HOST }}{{ redirect_url }}&client_id={{ client_id|urlencode }}&scope={{ scope|urlencode }}&client_secret={{ client_secret|urlencode }}"><span>Войти через ЕСИА</span> <img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>
-                </div>
+    </main>
 
 
+
+
+
+
+{#    {% url 'sso_esia:redirect_from_ip' as redirect_url %}#}
+{#    <div class="span12">#}
+{#        <div class="row">#}
+{#            <div class="span12">#}
+{#                <ul class="breadcrumb">#}
+{#                    <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
+{#                    <li class="active">Вход на портал через ЕСИА</li>#}
+{#                </ul>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="row">#}
+{#            <div class="span6">#}
+{##}
+{#                <div>#}
+{##}
+{#                    <a class="btn" href="{{ access_token_url|safe }}?access_type={{ access_type|urlencode }}&state={{ state|urlencode }}&timestamp={{ timestamp|urlencode }}&response_type=code&redirect_uri=https://{{ request.META.HTTP_HOST }}{{ redirect_url }}&client_id={{ client_id|urlencode }}&scope={{ scope|urlencode }}&client_secret={{ client_secret|urlencode }}"><span>Войти через ЕСИА</span> <img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>#}
+{#                </div>#}
+{##}
+{##}
 {#                <form method="post">#}
 {#                    {% csrf_token %}#}
 {#                    <input name="cs" placeholder="client_secret" value="{{ client_secret }}"/><br/>#}
@@ -32,7 +79,7 @@
 {#                    <input name="scope" placeholder="scope" value="{{ scope }}" /><br/>#}
 {#                    <input type="submit" />#}
 {#                </form>#}
-            </div>
-        </div>
-    </div>
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
 {% endblock %}
