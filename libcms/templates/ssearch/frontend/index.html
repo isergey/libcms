@@ -18,10 +18,10 @@
                 Поиск по библиотеке:
                 {% if library %}
                     <a class="label label-warning" title="Убрать ограничение по библиотеке"
-                       onclick="removeLibraryParam();" href="#remove_library">x</a>
+                       onclick="removeLibraryParam();" href="#remove_library">[x]</a>
                     <span>Поиск по записям {{ library.name }}</span>
                     <a title="Выбрать другую библиотеку" class="js_select_library label label-info"
-                       href="#select_library">Выбрать другую</a>
+                       href="#select_library">[Выбрать другую]</a>
                 {% else %}
                     <a title="Ограничить результаты только по выбранной библиотеке"
                        class="js_select_library label label-info" href="#select_library">выбрать библиотеку</a>
