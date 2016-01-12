@@ -146,8 +146,8 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
     add_field_to_record('423', person_address.get('zipCode', ''))
     add_field_to_record('424', ' / '.join(region_city_parts))
     add_field_to_record('427', foreigner)
-    add_field_to_record('501', 'ЕСИА')
-    add_field_to_record('502', '2')
+    add_field_to_record('501', '2')
+    add_field_to_record('502', '1')
     add_field_to_record('503', str(int(person_info.get('trusted', False))))
 
     return record
