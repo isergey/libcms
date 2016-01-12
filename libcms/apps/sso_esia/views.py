@@ -235,6 +235,7 @@ def _error_response(request, error, state, error_description, exception=None):
 def redirect_from_idp(request):
     error = request.GET.get('error')
     state = request.GET.get('state')
+    code = request.GET.get('code')
     error_description = request.GET.get('error_description')
 
     if error:
@@ -244,9 +245,6 @@ def redirect_from_idp(request):
             state=state,
             error_description=error_description
         )
-
-    code = request.GET.get('code')
-    state = request.GET.get('state')
 
     try:
         access_marker = _get_access_marker(code)
@@ -657,7 +655,6 @@ def _get_access_marker(code):
         'timestamp': timestamp
 
     }, verify=VERIFY_REQUESTS)
-
     response.raise_for_status()
     return response.json()
 

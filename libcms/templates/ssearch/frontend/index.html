@@ -24,7 +24,7 @@
                        href="#select_library">Выбрать другую</a>
                 {% else %}
                     <a title="Ограничить результаты только по выбранной библиотеке"
-                       class="js_select_library label label-info" href="#select_library">рядом со мной</a>
+                       class="js_select_library label label-info" href="#select_library">выбрать библиотеку</a>
                 {% endif %}
             </div>
             <div class="search-box search-box_second">
@@ -163,9 +163,6 @@
                                     <a href="{% url 'ssearch:frontend:save_search_request' %}?srequest={{ search_request|urlencode }}&catalog={{ catalog|urlencode }}"
                                        class="bread__crumbs_link" id="save_request_button">Сохранить запрос</a></li>
                             {% endif %}
-                            <li>
-                                <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                            </li>
                             <li><a class="bread__crumbs_link bread__crumbs_link_active">Поиск</a></li>
                             {% for search_breadcumb in search_breadcumbs %}
                                 {% if not forloop.last %}
@@ -204,7 +201,6 @@
                             {% endfor %}
 
                         </ul>
-                        <hr class="search-result-hr">
                         <form action="{{ request.path }}?{{ request.GET.urlencode }}" method="GET">
                             {% if library %}
                                 <input type="hidden" name="library" value="{{ library.code }}">
