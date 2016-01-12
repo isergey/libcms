@@ -135,6 +135,29 @@
 {% endblock %}
 {% block scripts %}
     <script>
+        function getRandomArbitrary(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+
+        $(function () {
+          const imgHead = [];
+
+          $('.bg-img img').each(function () {
+            imgHead.push($(this).attr('src'));
+          });
+
+          function csaHead() {
+            const $csaHead = $('.bg_first');
+            const index = Math.floor(getRandomArbitrary(0, imgHead.length));
+            $csaHead.css({ 'background': 'url(' + imgHead[index] + ') no-repeat #000' });
+            $csaHead.css({ 'background-position': 'center top' });
+            //$csaHead.css({ 'background-size': '100% auto' });
+          }
+
+          csaHead();
+          setInterval(csaHead, 5000);
+        });
+
         System.import('index/index.js');
     </script>
 {% endblock %}
