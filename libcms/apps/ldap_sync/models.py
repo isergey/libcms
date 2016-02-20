@@ -1,4 +1,5 @@
 # coding=utf-8
+import logging
 import ldap
 from django.conf import settings
 from django.db import models
@@ -15,8 +16,9 @@ BIND_DN = LDAP_SYNC_SETTINGS.get('bind_dn', '')
 BIND_PASS = LDAP_SYNC_SETTINGS.get('bind_pass', '')
 BASE_DN = LDAP_SYNC_SETTINGS.get('base_dn', '')
 DOMAIN = LDAP_SYNC_SETTINGS.get('domain', '')
-ADD_TO_GROUP = LDAP_SYNC_SETTINGS.get('add_to_group', '')
+ADD_TO_GROUPS = LDAP_SYNC_SETTINGS.get('add_to_groups', [])
 
+logger = logging.getLogger(__name__)
 
 class SyncStatus(models.Model):
     sync_count = models.IntegerField(default=0)
@@ -63,6 +65,7 @@ def sync_account(password_model, already_ldap_session=None):
         try:
             ldap_session = api_client.connect()
         except ldap_api.LdapApiError as e:
+            logger.exception(e)
             password_sync.synchronized = False
             password_sync.last_error = e.message[:1024]
             password_sync.save()
@@ -75,6 +78,7 @@ def sync_account(password_model, already_ldap_session=None):
         if ldap_session.search_user(username, BASE_DN):
             user_already_exist = True
     except ldap_api.LdapApiError as e:
+        logger.exception(e)
         password_sync.synchronized = False
         password_sync.last_error = e.message[:1024]
         password_sync.save()
@@ -89,11 +93,12 @@ def sync_account(password_model, already_ldap_session=None):
                 first_name=user.first_name,
                 last_name=user.last_name,
                 email=user.email,
-                group=ADD_TO_GROUP
+                groups=ADD_TO_GROUPS
             )
             password_sync.synchronized = True
             password_sync.last_error = ''
         except ldap_api.LdapApiError as e:
+            logger.exception(e)
             password_sync.synchronized = False
             password_sync.last_error = e.message[:1024]
     else:
@@ -106,11 +111,12 @@ def sync_account(password_model, already_ldap_session=None):
                 first_name=user.first_name,
                 last_name=user.last_name,
                 email=user.email,
-                group=ADD_TO_GROUP
+                groups=ADD_TO_GROUPS
             )
             password_sync.synchronized = True
             password_sync.last_error = ''
         except ldap_api.LdapApiError as e:
+            logger.exception(e)
             password_sync.synchronized = False
             password_sync.last_error = e.message[:1024]
 
@@ -159,7 +165,7 @@ def post_delete_password_callback(sender, **kwargs):
         ldap_session = api_client.connect()
         ldap_session.delete_user(
             username=_truncate_username(user.username),
-            base_dn=BASE_DN,
+            base_dn=BASE_DN
         )
     except ldap_api.LdapApiError as e:
         if isinstance(e.message, ldap.NO_SUCH_OBJECT):

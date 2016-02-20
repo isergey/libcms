@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 import os
 import json
 import uuid
@@ -519,14 +519,26 @@ def _find_contacts_attr(type_name, contacts, only_verified=False):
             values.append(contact_value)
     return values
 
+def decode_base64(data):
+    """Decode base64, padding being optional.
 
+    :param data: Base64 data as an ASCII byte string
+    :returns: The decoded byte string.
+
+    """
+    missing_padding = 4 - len(data) % 4
+    if missing_padding:
+        data += b'='* missing_padding
+    return base64.decodestring(data)
+    
 def _get_oid(access_token):
-    access_token_parts = access_token.split('.')
+    access_token_parts = access_token.replace('-', '+').replace('_', '/').replace(',', '=').split('.')
 
     if len(access_token_parts) < 3:
         return ''
 
-    access_token_json = base64.urlsafe_b64decode(access_token_parts[1].encode('utf-8'))
+    access_token_json = decode_base64(access_token_parts[1])
+
     access_token_params = json.loads(access_token_json)
     access_token_scope = access_token_params.get('scope', '')
     oid_prefix = 'oid='
@@ -662,21 +674,21 @@ def _get_access_marker(code):
 def _get_client_secret(scope, timestamp, client_id, state):
     signed_data = (scope + timestamp + client_id + state).encode('utf-8')
     data_file_path = os.path.join(ESIA_SSO_TMP_DIR, state + '.esia')
-    signed_file_path = data_file_path + '.signed'
+    signed_file_path = os.path.join(ESIA_SSO_TMP_DIR, state + '.esia.sign')
     data_file = open(data_file_path, mode='w')
     data_file.write(signed_data)
     data_file.close()
+    # -nocert -nochain	
+    command = '/opt/cprocsp/bin/amd64/cryptcp -pin ' + ESIA_SSO_CERT_PASSWORD + u' -sign -nochain -dn \'OGRN=1091690014712, INN=001655174024, E=nebrt@tatar.ru, C=RU, S=16 Республика Татарстан, L=Казань, O="ГУП ""Центр информационных технологий РТ""", CN=kitap.tatar.ru, STREET="Петербургская ул, 52"\' -q ' + data_file_path + ' ' + signed_file_path
     os.system(
-        'java -jar "%s" -alias "%s" -password "%s" -file "%s" -sign "%s"' % (
-            ESIA_SSO_JAR_CERT_GENERATOR,
-            ESIA_SSO_CERT_ALIAS,
-            ESIA_SSO_CERT_PASSWORD,
-            data_file_path,
-            signed_file_path
-        )
+        command.encode('utf-8')
     )
     sign_file = open(signed_file_path)
     sign = sign_file.read().decode('utf-8')
-    os.unlink(data_file_path)
-    os.unlink(signed_file_path)
+    sign = sign.replace('+', '-').replace('/', '_').replace('=', ',')
+    #print sign
+    #os.unlink(data_file_path)
+    #os.unlink(signed_file_path)
+    #safe = base64.urlsafe_b64encode(sign)
+    #print safe
     return sign

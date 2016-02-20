@@ -54,7 +54,7 @@ class Session(object):
 
         return results
 
-    def create_user(self, username, base_dn, domain, password='', first_name='', last_name='', email='', group=''):
+    def create_user(self, username, base_dn, domain, password='', first_name='', last_name='', email='', groups=[]):
         """
         Create a new user account in Active Directory.
         """
@@ -63,7 +63,7 @@ class Session(object):
         lname = last_name.encode('utf-8')
         domain = domain.encode('utf-8')
         email = email.encode('utf-8')
-        group = group.encode('utf-8')
+
 
         user_dn = 'cn=%s,%s' % (username, base_dn)
 
@@ -74,7 +74,6 @@ class Session(object):
             'sAMAccountName': username,
             'givenName': fname,
             'sn': lname,
-            # 'member': 'CN=%s,CN=Users,DC=tatar,DC=local' % (group,),
             'displayName': '%s %s' % (fname, lname),
             'unicodePwd': (u'\"%s\"' % password).encode('utf-16-le'),
             'userAccountControl': '66048'
@@ -88,30 +87,33 @@ class Session(object):
         try:
             self._connection.add_s(user_dn, user_ldif)
         except ldap.LDAPError, error_message:
+            print 'error_message', error_message
             raise LdapApiError(error_message)
+    
+        if True:
+            modifs = []
+            modifs.append((
+                ldap.MOD_ADD, 'member', user_dn
+            ))
 
-        # if group:
-        #     # user_attrs['member'] = 'CN=%s,CN=Users,DC=tatar,DC=local' % [group]
-        #     user_ldif = modlist.addModlist({
-        #         'member': 'CN=%s,CN=Users,DC=tatar,DC=local' % (group,),
-        #     })
-        #     print user_ldif
-        #     try:
-        #         self._connection.add_s(user_dn, user_ldif)
-        #     except ldap.LDAPError, error_message:
-        #         raise LdapApiError(error_message)
+            try:
+                for group in groups:
+				    self._connection.modify_s(group.encode('utf-8'), modifs)
+            except ldap.LDAPError, error_message:
+                print 'error_message', error_message
+                raise LdapApiError(error_message)
 
 
-    def update_user(self, username, base_dn, domain='', password='', first_name='', last_name='', email='', group=''):
+    def update_user(self, username, base_dn, domain='', password='', first_name='', last_name='', email='', groups=[]):
         """
-        Create a new user account in Active Directory.
+        Update a new user account in Active Directory.
         """
+        print 'update', '111111111111111111222222222222222222222222222'
         username = username.encode('utf-8')
         fname = first_name.encode('utf-8')
         lname = last_name.encode('utf-8')
         domain = domain.encode('utf-8')
         mail = email.encode('utf-8')
-        group = group.encode('utf-8')
 
         user_dn = 'cn=%s,%s' % (username, base_dn)
 
@@ -163,6 +165,20 @@ class Session(object):
             except ldap.LDAPError, error_message:
                 raise LdapApiError(error_message)
 
+				
+        modifs = []
+        modifs.append((
+            ldap.MOD_ADD, 'member', user_dn
+        ))
+        
+        try:
+            for group in groups:
+                print '11111111111111', group
+                self._connection.modify_s(group.encode('utf-8'), modifs)
+        except ldap.LDAPError, error_message:
+            print 'error_message', error_message
+            raise LdapApiError(error_message)	
+			
         return True
 
     def delete_user(self, username, base_dn):
