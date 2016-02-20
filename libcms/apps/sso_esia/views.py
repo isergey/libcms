@@ -678,7 +678,6 @@ def _get_client_secret(scope, timestamp, client_id, state):
     data_file = open(data_file_path, mode='w')
     data_file.write(signed_data)
     data_file.close()
-    # -nocert -nochain	
     command = '/opt/cprocsp/bin/amd64/cryptcp -pin ' + ESIA_SSO_CERT_PASSWORD + u' -sign -nochain -dn \'OGRN=1091690014712, INN=001655174024, E=nebrt@tatar.ru, C=RU, S=16 Республика Татарстан, L=Казань, O="ГУП ""Центр информационных технологий РТ""", CN=kitap.tatar.ru, STREET="Петербургская ул, 52"\' -q ' + data_file_path + ' ' + signed_file_path
     os.system(
         command.encode('utf-8')
@@ -686,9 +685,6 @@ def _get_client_secret(scope, timestamp, client_id, state):
     sign_file = open(signed_file_path)
     sign = sign_file.read().decode('utf-8')
     sign = sign.replace('+', '-').replace('/', '_').replace('=', ',')
-    #print sign
-    #os.unlink(data_file_path)
-    #os.unlink(signed_file_path)
-    #safe = base64.urlsafe_b64encode(sign)
-    #print safe
+    os.unlink(data_file_path)
+    os.unlink(signed_file_path)
     return sign
