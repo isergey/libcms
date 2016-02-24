@@ -299,7 +299,6 @@ def redirect_from_idp(request):
             exception=e
         )
 
-
     user_attrs = {
         'person_info': person_info,
         'person_contacts': person_contacts,
@@ -307,9 +306,9 @@ def redirect_from_idp(request):
     }
 
     portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
-    #oid = u'erf'
-    #state = '112313'
-    #user_attrs = esia_response
+    # oid = u'erf'
+    # state = '112313'
+    # user_attrs = esia_response
     # person_info = user_attrs.get('person_info', {})
     # person_contacts = user_attrs.get('person_contacts', [])
 
@@ -340,7 +339,8 @@ def redirect_from_idp(request):
             if user:
                 if user.is_active:
                     login(request, user)
-                    request.session['logout_idp_url'] = 'https://esia-portal1.test.gosuslugi.ru/profile/user/saml/Logout'
+                    request.session[
+                        'logout_idp_url'] = 'https://esia-portal1.test.gosuslugi.ru/profile/user/saml/Logout'
                     return redirect('index:frontend:index')
                 else:
                     return _error_response(
@@ -519,6 +519,7 @@ def _find_contacts_attr(type_name, contacts, only_verified=False):
             values.append(contact_value)
     return values
 
+
 def decode_base64(data):
     """Decode base64, padding being optional.
 
@@ -528,9 +529,10 @@ def decode_base64(data):
     """
     missing_padding = 4 - len(data) % 4
     if missing_padding:
-        data += b'='* missing_padding
+        data += b'=' * missing_padding
     return base64.decodestring(data)
-    
+
+
 def _get_oid(access_token):
     access_token_parts = access_token.replace('-', '+').replace('_', '/').replace(',', '=').split('.')
 
