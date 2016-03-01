@@ -128,6 +128,7 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
     record = grs.Record()
 
     def add_field_to_record(tag, value):
+        print tag, value
         if not value:
             return
         record.add_field(grs.Field(tag, value))
@@ -212,6 +213,12 @@ def _create_or_update_ruslan_user(grs_user_record):
         record.add_field(field_100)
     else:
         field_100 = fields_100[0]
+
+    fields_115 = grs_user_record.get_field('115')
+    if fields_115:
+        exist_fields_115 = record.get_field('115')
+        if not exist_fields_115:
+            record.add_field(fields_115[0])
 
     field_100.content = RUSLAN_ID_MASK[:len(record_id) * -1] + record_id
     portal_client.update_grs(grs_record=record, database=RUSLAN_USERS_DATABASE, id=record_id)
