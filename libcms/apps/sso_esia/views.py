@@ -17,6 +17,7 @@ from ruslan import grs
 from . import models
 from . import forms
 
+SITE_DOMAIN = getattr(settings, 'SITE_DOMAIN', 'esia.gosuslugi.ru')
 RUSLAN = getattr(settings, 'RUSLAN', {})
 
 RUSLAN_API_ADDRESS = RUSLAN.get('api_address', 'http://localhost/')
@@ -347,7 +348,7 @@ def redirect_from_idp(request):
                 if user.is_active:
                     login(request, user)
                     request.session[
-                        'logout_idp_url'] = 'https://esia-portal1.test.gosuslugi.ru/profile/user/saml/Logout'
+                        'logout_idp_url'] = 'https://esia.gosuslugi.ru/idp/ext/Logout?client_id=%s&redirect_url=https://%s' % (ESIA_SSO_CLIENT_ID, SITE_DOMAIN)
                     return redirect('index:frontend:index')
                 else:
                     return _error_response(
