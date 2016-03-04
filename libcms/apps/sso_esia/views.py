@@ -129,7 +129,6 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
     record = grs.Record()
 
     def add_field_to_record(tag, value):
-        print tag, value
         if not value:
             return
         record.add_field(grs.Field(tag, value))
