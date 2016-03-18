@@ -66,14 +66,21 @@ def book(request, book):
     if request.is_secure():
         protocol = 'https'
     token1 = request.GET.get('token1')
+#     xml = """\
+# <Document Version="1.0">\
+# <Source File="source.xml" URL="%s://%s/dl/%s/draw/?part=Part0.zip&amp;book=%s&amp;version=1285566137"/>\
+# <FileURL>http://%s/dl/%s/draw/?part={part}&amp;book=%s</FileURL>\
+# <Token1>%s</Token1>\
+# <Permissions><AllowCopyToClipboard>true</AllowCopyToClipboard><AllowPrint>true</AllowPrint></Permissions>\
+# </Document>""" % (protocol, request.META['HTTP_HOST'],book, book, request.META['HTTP_HOST'], book, book, token1)
+
     xml = """\
 <Document Version="1.0">\
-<Source File="source.xml" URL="%s://%s/dl/%s/draw/?part=Part0.zip&amp;book=%s&amp;version=1285566137"/>\
-<FileURL>http://%s/dl/%s/draw/?part={part}&amp;book=%s</FileURL>\
-<Token1>%s</Token1>\
+<Source File="source.xml" URL="{protocol}://{host}/dl/{book}/draw/?part=Part0.zip&amp;book={book}&amp;version=1285566137"/>\
+<FileURL>{protocol}://{host}/dl/{book}/draw/?part={{part}}&amp;book={book}</FileURL>\
+<Token1>{token}</Token1>\
 <Permissions><AllowCopyToClipboard>true</AllowCopyToClipboard><AllowPrint>true</AllowPrint></Permissions>\
-</Document>""" % (protocol, request.META['HTTP_HOST'],book, book, request.META['HTTP_HOST'], book, book, token1)
-
+</Document>""".format(protocol=protocol, host=request.META['HTTP_HOST'],book=book, token=token1)
     zip_file_content = cStringIO.StringIO()
 
     zip_file = ZipFile(zip_file_content, 'w')
