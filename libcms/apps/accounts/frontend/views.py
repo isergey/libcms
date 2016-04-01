@@ -197,8 +197,7 @@ def wifi(request):
         orgs = participants_models.user_organizations(request.user)
         if orgs:
             return redirect('http://help.kitap.tatar.ru')
-    else:
-        return redirect('index:frontend:index')
+    return redirect('index:frontend:index')
 
 
 @transaction.atomic()
