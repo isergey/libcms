@@ -116,7 +116,8 @@ def login(request, template_name='registration/login.html',
                     username = form.cleaned_data['username']
                     suffix = '@tatar.ru'
                     if username.endswith(suffix):
-                        username = 'EDU\\' + username.replace(suffix, '')
+                        username = username.replace(suffix, '')
+                    username = u'EDU\\' + username
                     return render(request, 'accounts/frontend/to_wifi.html', {
                         'username': username,
                         'password': form.cleaned_data['password']
