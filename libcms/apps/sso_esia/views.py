@@ -314,14 +314,8 @@ def redirect_from_idp(request):
         'person_contacts': person_contacts,
         'person_addresses': person_addresses
     }
-    # print json.dumps(user_attrs, ensure_ascii=False)
-    portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
-    # oid = u'erf'
-    # state = '112313'
-    # user_attrs = esia_response
-    # person_info = user_attrs.get('person_info', {})
-    # person_contacts = user_attrs.get('person_contacts', [])
 
+    portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
 
     sru_response = portal_client.search(
         query='@attrset bib-1 @attr 1=403 "%s"' % (oid.replace('\\', '\\\\').replace('"', '\\"'),),
