@@ -1,9 +1,11 @@
 # encoding: utf-8
 import logging
+
 from django.conf import settings
 from django.db import transaction
-from django.contrib.auth.models import User, check_password, Group
-from ruslan import connection_pool, client, humanize
+from django.contrib.auth.models import User
+
+from ruslan import connection_pool, humanize
 from .models import RuslanUser
 from sso import models as sso_models
 
