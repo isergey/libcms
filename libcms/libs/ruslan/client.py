@@ -13,7 +13,6 @@ def dec(obj):
         obj = obj.decode('utf-8')
     return obj
 
-
 class DictUnicoder(object):
     @staticmethod
     def decode_value(value):
@@ -127,9 +126,25 @@ class HttpClient(object):
             accept=accept
         )
 
-    def create_or_update_grs(self, grs_record, database, id='0'):
+    def create_grs(self, grs_record, database):
         record_json = json.dumps({
-            'content': [grs_record.to_dict()]
+            'content': [dec(grs_record.to_dict())]
+        }, ensure_ascii=False, encoding='utf-8').encode('utf-8')
+
+        response = self._make_request(
+            'put',
+            self._base_url + self._db_path + database + '/0',
+            data=record_json,
+            headers={
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            })
+        response.raise_for_status()
+        return response.json()
+
+    def update_grs(self, grs_record, database, id):
+        record_json = json.dumps({
+            'content': [dec(grs_record.to_dict())]
         }, ensure_ascii=False, encoding='utf-8').encode('utf-8')
         response = self._make_request(
             'put',
@@ -139,7 +154,6 @@ class HttpClient(object):
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             })
-
         response.raise_for_status()
         return response
 
@@ -152,7 +166,6 @@ class HttpClient(object):
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             })
-
         response.raise_for_status()
         return response
 

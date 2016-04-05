@@ -196,7 +196,7 @@ esia_response = {
 
 def _create_or_update_ruslan_user(grs_user_record):
     portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
-    response = portal_client.create_or_update_grs(grs_user_record, RUSLAN_USERS_DATABASE)
+    response = portal_client.create_grs(grs_user_record, RUSLAN_USERS_DATABASE)
     grs_record = response.get('content', [{}])[0]
     record = grs.Record.from_dict(grs_record)
 
@@ -224,7 +224,7 @@ def _create_or_update_ruslan_user(grs_user_record):
             record.add_field(fields_115[0])
 
     field_100.content = RUSLAN_ID_MASK[:len(record_id) * -1] + record_id
-    portal_client.create_or_update_grs(grs_record=record, database=RUSLAN_USERS_DATABASE, id=record_id)
+    portal_client.update_grs(grs_record=record, database=RUSLAN_USERS_DATABASE, id=record_id)
     return record
 
 
@@ -316,6 +316,12 @@ def redirect_from_idp(request):
     }
 
     portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
+    # oid = u'erf'
+    # state = '112313'
+    # user_attrs = esia_response
+    # person_info = user_attrs.get('person_info', {})
+    # person_contacts = user_attrs.get('person_contacts', [])
+
 
     sru_response = portal_client.search(
         query='@attrset bib-1 @attr 1=403 "%s"' % (oid.replace('\\', '\\\\').replace('"', '\\"'),),
@@ -474,7 +480,7 @@ def ask_for_exist_reader(request, id):
                             )
                     else:
                         user_grs_record.add_field(grs.Field('403', esia_user.oid))
-                        portal_client.create_or_update_grs(
+                        portal_client.update_grs(
                             grs_record=user_grs_record,
                             database=RUSLAN_USERS_DATABASE,
                             id=reader_id
@@ -684,7 +690,7 @@ def _get_client_secret(scope, timestamp, client_id, state):
     data_file = open(data_file_path, mode='w')
     data_file.write(signed_data)
     data_file.close()
-    command = u'/opt/cprocsp/bin/amd64/cryptcp -pin ' + ESIA_SSO_CERT_PASSWORD + u' -sign -nochain -dn \'OGRN=1091690014712, INN=001655174024, E=nebrt@tatar.ru, C=RU, S=16 Республика Татарстан, L=Казань, O="ГУП ""Центр информационных технологий РТ""", CN=kitap.tatar.ru, STREET="Петербургская ул, 52"\' -q ' + data_file_path + ' ' + signed_file_path
+    command = '/opt/cprocsp/bin/amd64/cryptcp -pin ' + ESIA_SSO_CERT_PASSWORD + u' -sign -nochain -dn \'OGRN=1091690014712, INN=001655174024, E=nebrt@tatar.ru, C=RU, S=16 Республика Татарстан, L=Казань, O="ГУП ""Центр информационных технологий РТ""", CN=kitap.tatar.ru, STREET="Петербургская ул, 52"\' -q ' + data_file_path + ' ' + signed_file_path
     os.system(
         command.encode('utf-8')
     )
