@@ -148,8 +148,11 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
     add_field_to_record('424', ' / '.join(region_city_parts))
     add_field_to_record('427', foreigner)
     add_field_to_record('501', '2')
-    add_field_to_record('502', '1')
-    add_field_to_record('503', str(int(person_info.get('trusted', False))))
+
+    trusted = person_info.get('trusted', False)
+    if trusted is True:
+        add_field_to_record('502', '1')
+        add_field_to_record('503', '1')
 
     return record
 
@@ -311,7 +314,7 @@ def redirect_from_idp(request):
         'person_contacts': person_contacts,
         'person_addresses': person_addresses
     }
-    print json.dumps(user_attrs, ensure_ascii=False)
+    # print json.dumps(user_attrs, ensure_ascii=False)
     portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
     # oid = u'erf'
     # state = '112313'
