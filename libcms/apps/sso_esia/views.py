@@ -108,6 +108,11 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
     add_to_registration_address(person_address.get('street', ''))
     add_to_registration_address(person_address.get('house', ''))
 
+    flat = person_address.get('flat', '')
+    if flat:
+        flat = u'кв. ' + flat
+        add_to_registration_address(flat)
+
     region_city_parts = []
     region = person_address.get('region', '')
     city = person_address.get('city', '')
