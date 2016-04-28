@@ -154,6 +154,7 @@ class UserLibrary(models.Model):
     library = models.ForeignKey(Library)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     middle_name = models.CharField(verbose_name=u'Отчество', max_length=255)
+    birth_date = models.DateField(verbose_name=u'Дата рождения', null=True, help_text='Формат дд.мм.гггг')
     department = TreeForeignKey(Department, verbose_name=u'Отдел')
     position = models.ForeignKey(UserLibraryPosition, verbose_name=u'Должность')
     phone = models.CharField(verbose_name=u'Телефон', max_length=32)
