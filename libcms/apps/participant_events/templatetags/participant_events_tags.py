@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import calendar
 from django import template
 from django.core.cache import cache
@@ -74,9 +74,12 @@ def participant_events_calendar(context, library, y=0, m=0):
 
 @register.inclusion_tag('participant_events/tags/events_nearest.html')
 def participant_events_nearest(library_id, count=5):
+    now = datetime.now()
+    end = now + timedelta(days=32)
     query = Q(
         active=True,
-        end_date__gte=datetime.now()
+        start_date__gte=now,
+        end_date__lte=datetime(end.year, end.month, end.day),
     )
     if library_id:
         query &= Q(library_id=library_id)
@@ -85,7 +88,7 @@ def participant_events_nearest(library_id, count=5):
             .select_related('library')
             .filter(query)
             .prefetch_related('age_category', 'event_type')
-            .order_by('-start_date')[:count]
+            .order_by('start_date')[:count]
     )
     event_contents = list(EventContent.objects.filter(event__in=events, lang=get_language()[:2]))
 

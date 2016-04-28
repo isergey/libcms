@@ -117,7 +117,9 @@
             <div class="poster-box__title">Афиша</div>
             <a href="{% url 'events:frontend:index' %}" class="poster-box__all" title="Посмотреть все мероприятия">Все мероприятия</a>
             <div id="owl-poster" class="owl-carousel">
-                {% participant_events_nearest 0 %}
+                {% cache 600 'participant_events_nearest' %}
+                    {% participant_events_nearest 0 10 %}
+                {% endcache %}
             </div>
         </div>
     </div>
