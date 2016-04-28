@@ -747,6 +747,7 @@ def doc_tree_to_dict(doc_tree):
             doc_dict[attrib] = [value]
         else:
             values.append(value)
+
     return doc_dict
 
 
