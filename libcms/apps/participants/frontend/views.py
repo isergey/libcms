@@ -28,7 +28,7 @@ def make_library_dict(library):
 
 
 def index(request):
-    cbs_list = Library.objects.filter(parent=None).order_by('weight')
+    cbs_list = Library.objects.filter(parent=None, hidden=False).order_by('weight')
     js_orgs = []
     for org in cbs_list:
         js_orgs.append(make_library_dict(org))
@@ -46,7 +46,7 @@ def branches(request, code=None):
     library = None
     if code:
         library = get_object_or_404(Library, code=code)
-    libraries = Library.objects.filter(parent=library).order_by('weight')
+    libraries = Library.objects.filter(parent=library, hidden=False).order_by('weight')
 
     js_orgs = []
     for org in libraries:
@@ -125,7 +125,7 @@ def filter_by_districts(request):
 
     districts = District.objects.filter(id=district_id)
     fields = ('id', 'code', 'name', 'latitude', 'longitude', 'postal_address')
-    libraries = list(Library.objects.filter(district__in=districts).exclude(parent=None).order_by('-republican').order_by('name').values(*fields))
+    libraries = list(Library.objects.filter(district__in=districts, hidden=False).exclude(parent=None).order_by('-republican').order_by('name').values(*fields))
 
     geo_libraries = []
     for library in libraries:
@@ -162,7 +162,7 @@ def geo_nearest(request):
     cached_libraies = cache.get(cache_key)
 
     if not cached_libraies:
-        libraries = list(Library.objects.all().exclude(parent=None).values(*fields))
+        libraries = list(Library.objects.filter(hidden=False).exclude(parent=None).values(*fields))
         cached_libraies = json.dumps(libraries).encode('zlib')
         cache.set(cache_key, cached_libraies, timeout=60)
 

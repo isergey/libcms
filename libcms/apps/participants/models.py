@@ -58,6 +58,7 @@ class Library(MPTTModel):
         blank=True,
         related_name='children',
     )
+    hidden = models.BooleanField(default=False, verbose_name='Не выводит в списке на портале', db_index=True)
     name = models.CharField(max_length=255, verbose_name=u'Название')
     code = models.CharField(
         verbose_name=u'Сигла',
