@@ -91,6 +91,7 @@
                     </xsl:for-each>
             <xsl:text> </xsl:text>
             <xsl:call-template name="Title-former"/>
+            <xsl:text> </xsl:text>
         </field>
     </xsl:template>
     <xsl:template name="Title-former">
@@ -100,6 +101,7 @@
             2001#$i
             -->
             <xsl:if test="(subfield[@id='a'] or subfield[@id='i'])">
+                <xsl:text> </xsl:text>
                 <xsl:value-of select="subfield[@id='a']"/>
                 <xsl:for-each select="subfield">
                     <xsl:choose>
