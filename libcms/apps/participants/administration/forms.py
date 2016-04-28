@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from dateutil.relativedelta import relativedelta
 import re
+import datetime
 from django import forms
 from django.contrib.auth.models import User, Group
 from accounts.models import GroupTitle
@@ -79,7 +81,6 @@ class UserForm(forms.ModelForm):
         if email_check.lower().find(password.lower()) > -1:
             self.add_error('password', u'В пароле не должно содержаться часть логина')
 
-
     def check_psw(self, psw):
         return len(psw) >= 6 and \
                bool(re.match("^.*[A-Z]+.*$", psw) and \
@@ -94,6 +95,21 @@ class UserLibraryForm(forms.ModelForm):
         widgets = {
             'roles': forms.CheckboxSelectMultiple()
         }
+
+    def clean_birth_date(self):
+        now = datetime.datetime.now()
+        birth_date = self.cleaned_data['birth_date']
+        if not birth_date:
+            return birth_date
+        max_birth_date = now - relativedelta(years=10)
+        min_birth_date = now - relativedelta(years=100)
+        if birth_date > datetime.date(max_birth_date.year, max_birth_date.month, max_birth_date.day):
+            raise forms.ValidationError(u'Дата рождения должна быть меньше %s' % (max_birth_date, ))
+
+        if birth_date < datetime.date(min_birth_date.year, min_birth_date.month, min_birth_date.day):
+            raise forms.ValidationError(u'Дата рождения должна быть больше %s' % (min_birth_date, ))
+
+        return birth_date
 
 
 def get_role_choices():
