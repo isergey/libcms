@@ -1,11 +1,37 @@
 # -*- coding: utf-8 -*-
 import hashlib
+import collections
 from django import template
+
 register = template.Library()
 from participants.models import Library
 from zgate.models import ZCatalog
 from django.core.cache import cache
 from ..frontend.forms import DeliveryOrderForm, CopyOrderForm
+
+
+# def get_holders(record):
+#     holders = []
+#     f999 = record['999']
+#     exist_codes = set()
+#     if f999:
+#         for field in f999:
+#             org = field['a']
+#             # branch = field['b']
+#             # item_id = field['p']
+#             if org:
+#                 exist_codes.add(org[0].get_data().strip())
+#                 # 'branch': branch[0].get_data(),
+#                 # 'item_id': item_id[0].get_data(),
+#
+#     for exist_code in exist_codes:
+#         holders.append({
+#             'org': {
+#                 'code': exist_code,
+#                 'title': titles.get_attr_value_title('holder', exist_code)
+#             },
+#         })
+
 @register.simple_tag
 def org_by_id(org_id):
     hash_id = hashlib.md5(org_id.encode('utf-8')).hexdigest()
@@ -13,11 +39,10 @@ def org_by_id(org_id):
     if org_info:
         return org_info
 
-
     org_info = {
-        'code':'',
-        'name':'',
-        'type':''
+        'code': '',
+        'name': '',
+        'type': ''
     }
 
     try:
@@ -30,14 +55,27 @@ def org_by_id(org_id):
             org_info['type'] = 'library'
     except Library.DoesNotExist:
         org_info = {
-            'code':org_id,
-            'name':org_id,
-            'type':None
+            'code': org_id,
+            'name': org_id,
+            'type': None
         }
     cache.set(hash_id, org_info)
     return org_info
 
 
+replacers = [
+    u'мбук ', u'гбук ', u'рмук ', u'цбс ', u'мбу ', u' рт', u'рт ', u' г.', u'центральная', u'централизованная', u'библиотечная', u'библиотека',
+    u'система', u'муниципального', u'района', u'межпоселенческая', u'«', u'»', u'"'
+]
+
+
+def sorter(holder):
+    title = holder['name'].lower()
+    for replacer in replacers:
+        title = title.replace(replacer, u'')
+    title = title.strip()
+    print title
+    return holder['weight'], title
 
 
 @register.inclusion_tag('orders/tags/drow_el_order_menu.html')
@@ -50,11 +88,10 @@ def drow_el_order_menu(owners_codes, record_id):
     record_id - идентификатор записи, которую необходимо заказать
     """
 
-
-    owners_dict = {}
-    empty_codes = [] # Сиглы, которые указаны в записе но не зарегистрированны в системе
-    owners = list(Library.objects.filter(code__in=owners_codes).values('id','name','code'))
-
+    owners_dict = collections.OrderedDict()
+    empty_codes = []  # Сиглы, которые указаны в записе но не зарегистрированны в системе
+    owners = list(Library.objects.filter(code__in=owners_codes, hidden=False).values('id', 'name', 'code', 'weight'))
+    owners = sorted(owners, key=sorter)
     for owner in owners:
         owners_dict[owner['code']] = {
             'owner': owner,
@@ -68,7 +105,6 @@ def drow_el_order_menu(owners_codes, record_id):
         # в latin_title хранится сигла держателя
         if zcatalog['latin_title'] in owners_dict:
             owners_dict[zcatalog['latin_title']]['has_catalog'] = True
-
 
     for owner_code in owners_codes:
         if owner_code not in owners_dict:
@@ -88,10 +124,10 @@ def drow_mba_order_menu(user, gen_id):
     Тег отрисовки меню для заказа в мба
     """
     delivery_form = DeliveryOrderForm(prefix='delivery', initial={
-        'gen_id':gen_id
+        'gen_id': gen_id
     })
     copy_form = CopyOrderForm(prefix='copy', initial={
-        'gen_id':gen_id
+        'gen_id': gen_id
     })
 
     return {

@@ -613,6 +613,18 @@ def detail(request, gen_id):
         'access_count': access_count
     })
 
+    def clean_holder_title(holder):
+        return holder.get('org', {}).get('title', '')\
+            .lower()\
+            .replace(u'цбс', '')\
+            .replace(u'го', '')\
+            .replace(u'г.', '')\
+            .strip()
+
+    holders.sort(key=clean_holder_title)
+
+    return holders
+
 
 def to_print(request, gen_id):
     catalog = None
