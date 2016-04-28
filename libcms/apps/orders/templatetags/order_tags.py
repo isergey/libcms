@@ -74,7 +74,6 @@ def sorter(holder):
     for replacer in replacers:
         title = title.replace(replacer, u'')
     title = title.strip()
-    print title
     return holder['weight'], title
 
 
