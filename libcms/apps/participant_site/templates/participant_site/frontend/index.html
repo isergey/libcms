@@ -343,7 +343,7 @@
                     coords,
                     {
                         content: '{{ library.name }}',
-                        balloonContent: '<p>Адрес: {{ library.postal_address|default:'не указан' }}</p>'
+                        balloonContent: '<p>Адрес: {{ library.postal_address|linebreaks|default:'не указан' }}</p>'
                     }
             );
             orgMap.geoObjects.add(orgPlacemark);
