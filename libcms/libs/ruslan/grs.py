@@ -134,7 +134,7 @@ class Record(object):
 
         record = Record(syntax=record_dict.get('syntax', DEFAULT_RECORD_SYNTAX))
 
-        for field_dict in record_dict.get('GRSTag', []):
+        for field_dict in record_dict.get('tag', []):
             record.add_field(Field(
                 value=field_dict.get('tagValue', ''),
                 content=field_dict.get('value', ''),
