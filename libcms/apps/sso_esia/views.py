@@ -340,9 +340,9 @@ def redirect_from_idp(request):
         esia_user = models.create_or_update_esia_user(oid, user_attrs)
         return redirect('sso_esia:ask_for_exist_reader', id=esia_user.id)
     else:
-        print humanize.get_record_content(sru_records[0])
         user_grs_record = grs.Record.from_dict(humanize.get_record_content(sru_records[0]))
         fields_100 = user_grs_record.get_field('100')
+        print 'fields_100',  fields_100
         if not fields_100:
             return _error_response(
                 request=request,
