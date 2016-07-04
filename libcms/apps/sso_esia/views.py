@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
-import os
+import base64
 import json
+import logging
+import os
 import uuid
 from datetime import datetime
-import base64
-import logging
 
-import requests
 from django.conf import settings
-from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import authenticate, login
 from django.db import transaction
-from ruslan import connection_pool, client, humanize
-from sso import models as sso_models
+from django.shortcuts import render, redirect
+
+import requests
+from ruslan import connection_pool, humanize
 from ruslan import grs
-from . import models
 from . import forms
+from . import models
 
 SITE_DOMAIN = getattr(settings, 'SITE_DOMAIN', 'esia.gosuslugi.ru')
 RUSLAN = getattr(settings, 'RUSLAN', {})
@@ -342,7 +342,7 @@ def redirect_from_idp(request):
     else:
         user_grs_record = grs.Record.from_dict(humanize.get_record_content(sru_records[0]))
         fields_100 = user_grs_record.get_field('100')
-        print 'fields_100',  fields_100
+
         if not fields_100:
             return _error_response(
                 request=request,

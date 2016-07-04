@@ -62,11 +62,11 @@ class Field(object):
 
     def to_dict(self):
         return {
-            'type': self.__type,
-            'value': self.__value,
-            'occurrence': self.__occurrence,
+            'tagType': self.__type,
+            'tagValue': self.__value,
+            'tagOccurrence': self.__occurrence,
             'contentType': self.__content_type,
-            'content': self.__content
+            'value': self.__content
         }
 
 
@@ -136,10 +136,10 @@ class Record(object):
 
         for field_dict in record_dict.get('GRSTag', []):
             record.add_field(Field(
-                value=field_dict.get('value', ''),
-                content=field_dict.get('content', ''),
-                type=field_dict.get('type', 3),
-                occurrence=field_dict.get('occurrence', 1),
+                value=field_dict.get('tagValue', ''),
+                content=field_dict.get('value', ''),
+                type=field_dict.get('tagType', 3),
+                occurrence=field_dict.get('tagOccurrence', 1),
                 content_type=field_dict.get('contentType', CONTENT_TYPES['string'])
             ))
         record.sort_fields()
