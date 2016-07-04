@@ -342,7 +342,7 @@ def redirect_from_idp(request):
     else:
         user_grs_record = grs.Record.from_dict(humanize.get_record_content(sru_records[0]))
         fields_100 = user_grs_record.get_field('100')
-
+        print 'fields_100', fields_100
         if not fields_100:
             return _error_response(
                 request=request,
@@ -355,8 +355,7 @@ def redirect_from_idp(request):
             if user:
                 if user.is_active:
                     login(request, user)
-                    request.session[
-                        'logout_idp_url'] = 'https://esia.gosuslugi.ru/idp/ext/Logout?client_id=%s&redirect_url=http://%s' % (ESIA_SSO_CLIENT_ID, SITE_DOMAIN)
+                    request.session['logout_idp_url'] = 'https://esia.gosuslugi.ru/idp/ext/Logout?client_id=%s&redirect_url=http://%s' % (ESIA_SSO_CLIENT_ID, SITE_DOMAIN)
                     return redirect('index:frontend:index')
                 else:
                     return _error_response(
