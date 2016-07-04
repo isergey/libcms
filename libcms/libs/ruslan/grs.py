@@ -123,7 +123,7 @@ class Record(object):
                 field_dicts.append(field.to_dict())
 
         return {
-            'GRSTag': field_dicts,
+            'tag': field_dicts,
             'syntax': self.__syntax
         }
 
