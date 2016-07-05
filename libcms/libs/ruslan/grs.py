@@ -124,7 +124,7 @@ class Record(object):
 
         return {
             'tag': field_dicts,
-            'syntax': self.__syntax
+            'syntax': 'grs-1'
         }
 
     @staticmethod
