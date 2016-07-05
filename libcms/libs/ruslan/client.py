@@ -140,9 +140,7 @@ class HttpClient(object):
         return response.json()
 
     def update_grs(self, grs_record, database, id):
-        record_json = json.dumps({
-            'content': [dec(grs_record.to_dict())]
-        }, ensure_ascii=False, encoding='utf-8').encode('utf-8')
+        record_json = json.dumps(dec(grs_record.to_dict()), ensure_ascii=False, encoding='utf-8').encode('utf-8')
         response = self._make_request(
             'put',
             self._base_url + self._db_path + database + '/' + id,
