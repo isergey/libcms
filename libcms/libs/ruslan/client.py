@@ -128,7 +128,6 @@ class HttpClient(object):
 
     def create_grs(self, grs_record, database):
         record_json = json.dumps(dec(grs_record.to_dict()), ensure_ascii=False, encoding='utf-8').encode('utf-8')
-        print record_json
         response = self._make_request(
             'put',
             self._base_url + self._db_path + database + '/0',
@@ -137,7 +136,6 @@ class HttpClient(object):
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             })
-        print response.content
         response.raise_for_status()
         return response.json()
 
