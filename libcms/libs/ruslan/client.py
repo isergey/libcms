@@ -138,6 +138,7 @@ class HttpClient(object):
                 'Content-Type': 'application/json',
             })
         response.raise_for_status()
+        response.content
         return response.json()
 
     def update_grs(self, grs_record, database, id):
