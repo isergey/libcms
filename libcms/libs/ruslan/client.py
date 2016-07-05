@@ -130,7 +130,7 @@ class HttpClient(object):
         record_json = json.dumps({
             'content': [dec(grs_record.to_dict())]
         }, ensure_ascii=False, encoding='utf-8').encode('utf-8')
-
+        print record_json
         response = self._make_request(
             'put',
             self._base_url + self._db_path + database + '/0',
