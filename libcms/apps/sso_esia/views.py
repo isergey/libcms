@@ -88,6 +88,7 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
 
     person_info = user_attrs.get('person_info', {})
     person_addresses = user_attrs.get('person_addresses', [])
+    rf_passports = filter(lambda doc: doc['type'] == 'RF_PASSPORT' and 'Identifiable' in doc['stateFacts'], user_attrs.get('person_docs', []))
     person_address = {}
 
     if person_addresses:
@@ -150,10 +151,21 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
     add_field_to_record('402', person_info.get('snils', ''))
     add_field_to_record('403', oid)
     add_field_to_record('404', gender_map.get(person_info.get('gender', '').lower(), u''))
+
+    if rf_passports:
+        rf_passport = rf_passports[-1]
+        add_field_to_record('417', u'Паспорт')
+        add_field_to_record('418', rf_passport.get('series', ''))
+        add_field_to_record('419', rf_passport.get('number', ''))
+        add_field_to_record('420', rf_passport.get('issuedBy', ''))
+        add_field_to_record('421', rf_passport.get('issueDate', ''))
+        add_field_to_record('422', rf_passport.get('issueId', ''))
+
     add_field_to_record('423', person_address.get('zipCode', ''))
     add_field_to_record('424', ' / '.join(region_city_parts))
     add_field_to_record('427', foreigner)
     add_field_to_record('501', '2')
+
 
     trusted = person_info.get('trusted', False)
     if trusted is True:
