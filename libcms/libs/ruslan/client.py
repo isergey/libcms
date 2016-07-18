@@ -137,7 +137,9 @@ class HttpClient(object):
                 'Content-Type': 'application/json',
             })
         response.raise_for_status()
-        print response.content
+        print 'r.headers', response.headers
+        print 'r.location', response.headers.get('Location')
+        print 'response.content', response.content
         return response.json()
 
     def update_grs(self, grs_record, database, id):
