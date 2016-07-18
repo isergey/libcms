@@ -1,11 +1,11 @@
 # encoding: utf-8
 import logging
-
+import json
 from django.conf import settings
 from django.db import transaction
 from django.contrib.auth.models import User
 
-from ruslan import connection_pool, humanize
+from ruslan import connection_pool, humanize, grs
 from .models import RuslanUser
 from sso import models as sso_models
 
@@ -76,6 +76,7 @@ class RuslanAuthBackend(object):
 
     @transaction.atomic()
     def get_or_create_user(self, username, password, user_info):
+        print 'user_info', json.dumps(user_info, ensure_ascii=False)
         first_name = user_info.get(u'102', [{}])[0].get('value', '')[:30]
         last_name = user_info.get(u'101', [{}])[0].get('value', '')[:30]
         email = user_info.get(u'122', [{}])[0].get('value', '')[:75]
