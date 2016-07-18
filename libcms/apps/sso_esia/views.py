@@ -43,6 +43,7 @@ ESIA_SSO_PASSWORD_LENGTH = ESIA_SSO.get('password_length', 8)
 
 PERSON_CONTACTS_URL_SUFFIX = 'ctts'
 PERSON_ADDRESS_URL_SUFFIX = 'addrs'
+PERSON_DOCS_URL_SUFFIX = 'docs'
 
 RESPONSE_TYPE = 'code'
 REDIRECT_URI = 'https://kitap.tatar.ru/esia_sso/redirect'
@@ -304,6 +305,7 @@ def redirect_from_idp(request):
         person_info = _get_person_info(oid, access_token)
         person_contacts = _get_person_contacts(oid, access_token)
         person_addresses = _get_person_addresses(oid, access_token)
+        person_docs = _get_person_docs(oid, access_token)
     except Exception as e:
         return _error_response(
             request=request,
@@ -316,7 +318,8 @@ def redirect_from_idp(request):
     user_attrs = {
         'person_info': person_info,
         'person_contacts': person_contacts,
-        'person_addresses': person_addresses
+        'person_addresses': person_addresses,
+        'person_docs': person_docs,
     }
 
     portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
@@ -353,7 +356,9 @@ def redirect_from_idp(request):
             if user:
                 if user.is_active:
                     login(request, user)
-                    request.session['logout_idp_url'] = 'https://esia.gosuslugi.ru/idp/ext/Logout?client_id=%s&redirect_url=http://%s' % (ESIA_SSO_CLIENT_ID, SITE_DOMAIN)
+                    request.session[
+                        'logout_idp_url'] = 'https://esia.gosuslugi.ru/idp/ext/Logout?client_id=%s&redirect_url=http://%s' % (
+                    ESIA_SSO_CLIENT_ID, SITE_DOMAIN)
                     return redirect('index:frontend:index')
                 else:
                     return _error_response(
@@ -378,6 +383,7 @@ def register_new_user(request, id):
     except models.EsiaUser.DoesNotExist:
         return redirect('sso_esia:index')
 
+    print 'esia_user.user_attrs', esia_user.user_attrs
     user_attrs = json.loads(esia_user.user_attrs)
     person_contacts = user_attrs.get('person_contacts', [])
 
@@ -663,6 +669,45 @@ def _get_person_addresses(oid, access_token):
         adresses.append(response.json())
 
     return adresses
+
+
+def _get_person_docs(oid, access_token):
+    """
+    :param oid:
+    :param access_token:
+    :return:
+    [
+        {
+            "city": "Воронеж Город",
+            "countryId": "RUS",
+            "fiasCode": "36-0-000-001-000-000-0856-0000-000",
+            "house": "23 \"a\"",
+            "region": "Воронежская Область",
+            "zipCode": "369000",
+            "addressStr": "Воронежская область, Воронеж город, Станкевича улица",
+            "eTag": "A476F27783D0A6DA3B4E270CF3B71701BE5E57FA",
+            "street": "Станкевича Улица",
+            "stateFacts": ["Identifiable"],
+            "type": "PLV",
+            "id": 15842
+        }
+    ]
+    """
+    response = requests.get('%s/%s/%s' % (ESIA_SSO_PERSON_URL, oid, PERSON_DOCS_URL_SUFFIX), headers={
+        'Authorization': 'Bearer ' + access_token
+    }, verify=VERIFY_REQUESTS)
+    response.raise_for_status()
+    response_dict = response.json()
+
+    docs = []
+    for element in response_dict['elements']:
+        response = requests.get(element, headers={
+            'Authorization': 'Bearer ' + access_token
+        }, verify=VERIFY_REQUESTS)
+        response.raise_for_status()
+        docs.append(response.json())
+
+    return docs
 
 
 def _get_access_marker(code):
