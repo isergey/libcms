@@ -60,7 +60,7 @@ class RuslanAuthBackend(object):
         # 101 - фамилия
         # 102 - имя
         # 103 - отчество
-        grs_record = humanize.grs_to_dict(humanize.get_record_content(records[0]).get('tag', [{}]))
+        grs_record = grs.Record.from_dict(humanize.get_record_content(records[0]))
         user_password = password
 
         if need_check_password and user_password != password:
@@ -75,11 +75,11 @@ class RuslanAuthBackend(object):
             return None
 
     @transaction.atomic()
-    def get_or_create_user(self, username, password, user_info):
-        print 'user_info', json.dumps(user_info, ensure_ascii=False)
-        first_name = user_info.get(u'102', [{}])[0].get('value', '')[:30]
-        last_name = user_info.get(u'101', [{}])[0].get('value', '')[:30]
-        email = user_info.get(u'122', [{}])[0].get('value', '')[:75]
+    def get_or_create_user(self, username, password, grs_record):
+
+        first_name = grs_record.get_field_value('102')[:30]
+        last_name = grs_record.get_field_value('101')[:30]
+        email = grs_record.get_field_value('122')[:75]
         groups = ['users']
 
         user = sso_models.create_or_update_external_user(

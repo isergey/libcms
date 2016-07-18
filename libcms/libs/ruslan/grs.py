@@ -87,6 +87,12 @@ class Record(object):
     def get_field(self, value):
         return self.__fields.get(value, [])
 
+    def get_field_value(self, value, default=u''):
+        fields = self.get_field(value)
+        if not fields:
+            return default
+        return fields[0].content
+
     def remove_field(self, field):
         exist_fields = self.__fields.get(field.value)
 
