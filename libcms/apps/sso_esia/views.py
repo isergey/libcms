@@ -203,6 +203,7 @@ def _create_or_update_ruslan_user(grs_user_record):
     portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
     response = portal_client.create_grs(grs_user_record, RUSLAN_USERS_DATABASE)
     grs_record = response.get('content', [{}])[0]
+    print json.dumps(grs_record, ensure_ascii=False)
     record = grs.Record.from_dict(grs_record)
 
     fields_1 = record.get_field('1')
