@@ -158,7 +158,11 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
         add_field_to_record('418', rf_passport.get('series', ''))
         add_field_to_record('419', rf_passport.get('number', ''))
         add_field_to_record('420', rf_passport.get('issuedBy', ''))
-        add_field_to_record('421', rf_passport.get('issueDate', ''))
+        issue_date_parts = rf_passport.get('issueDate', '').split('.')
+        issue_date = ''
+        if len(issue_date_parts) == 3:
+            issue_date = issue_date_parts[2] + issue_date_parts[1] + issue_date_parts[0]
+        add_field_to_record('421', issue_date)
         add_field_to_record('422', rf_passport.get('issueId', ''))
 
     add_field_to_record('423', person_address.get('zipCode', ''))
