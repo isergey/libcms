@@ -383,7 +383,6 @@ def register_new_user(request, id):
     except models.EsiaUser.DoesNotExist:
         return redirect('sso_esia:index')
 
-    print 'esia_user.user_attrs', esia_user.user_attrs
     user_attrs = json.loads(esia_user.user_attrs)
     person_contacts = user_attrs.get('person_contacts', [])
 
