@@ -126,7 +126,7 @@ class HttpClient(object):
             accept=accept
         )
 
-    def create_grs(self, grs_record, database):
+    def create_grs(self, grs_record, database, return_created_record=True):
         record_json = json.dumps(dec(grs_record.to_dict()), ensure_ascii=False, encoding='utf-8').encode('utf-8')
         response = self._make_request(
             'put',
@@ -137,10 +137,18 @@ class HttpClient(object):
                 'Content-Type': 'application/json',
             })
         response.raise_for_status()
-        print 'r.headers', response.headers
-        print 'r.location', response.headers.get('Location')
-        print 'response.content', response.content
-        return response.json()
+        if return_created_record:
+            record_response = self._make_request(
+                method='get',
+                url=response.headers['Location'],
+                headers={
+                    'Accept': 'application/json'
+                }
+            )
+            record_response.raise_for_status()
+            return record_response.json()
+        else:
+            return response
 
     def update_grs(self, grs_record, database, id):
         record_json = json.dumps(dec(grs_record.to_dict()), ensure_ascii=False, encoding='utf-8').encode('utf-8')

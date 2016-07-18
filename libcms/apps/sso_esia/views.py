@@ -203,7 +203,6 @@ def _create_or_update_ruslan_user(grs_user_record):
     portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
     response = portal_client.create_grs(grs_user_record, RUSLAN_USERS_DATABASE)
     grs_record = response.get('content', [{}])[0]
-    print json.dumps(grs_record, ensure_ascii=False)
     record = grs.Record.from_dict(grs_record)
 
     fields_1 = record.get_field('1')
@@ -218,7 +217,6 @@ def _create_or_update_ruslan_user(grs_user_record):
     fields_100 = record.get_field('100')
 
     if not fields_100:
-        print 'add 100 field'
         field_100 = grs.Field('100')
         record.add_field(field_100)
     else:
@@ -231,7 +229,6 @@ def _create_or_update_ruslan_user(grs_user_record):
             record.add_field(fields_115[0])
 
     field_100.content = RUSLAN_ID_MASK[:len(record_id) * -1] + record_id
-    print 'field_100.content', field_100.content
     portal_client.update_grs(grs_record=record, database=RUSLAN_USERS_DATABASE, id=record_id)
     return record
 
