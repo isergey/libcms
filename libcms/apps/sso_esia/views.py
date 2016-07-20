@@ -79,25 +79,7 @@ def _generate_password(length=ESIA_SSO_PASSWORD_LENGTH):
     return "".join([chars[ord(c) % len(chars)] for c in os.urandom(length)])
 
 
-def _create_grs_from_esia(oid, email='', user_attrs=None):
-    user_attrs = user_attrs or {}
-    gender_map = {
-        'm': u'М',
-        'f': u'Ж'
-    }
-
-    person_info = user_attrs.get('person_info', {})
-    person_addresses = user_attrs.get('person_addresses', [])
-    rf_passports = filter(lambda doc: doc['type'] == 'RF_PASSPORT' and 'Identifiable' in doc['stateFacts'], user_attrs.get('person_docs', []))
-    person_address = {}
-
-    if person_addresses:
-        person_address = person_addresses[0]
-
-    birth_date = person_info.get('birthDate', '')
-    if birth_date:
-        birth_date = datetime.strptime(birth_date, '%d.%m.%Y').strftime('%Y%m%d')
-
+def _generate_registraion_address(person_address):
     registration_address_parts = []
 
     def add_to_registration_address(item):
@@ -115,6 +97,10 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
         flat = u'кв. ' + flat
         add_to_registration_address(flat)
 
+    return ', '.join(registration_address_parts)
+
+
+def _generate_region_city(person_address):
     region_city_parts = []
     region = person_address.get('region', '')
     city = person_address.get('city', '')
@@ -123,6 +109,34 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
         region_city_parts.append(region)
     if city:
         region_city_parts.append(city)
+    return ' / '.join(region_city_parts)
+
+
+def _create_grs_from_esia(oid, email='', user_attrs=None):
+    user_attrs = user_attrs or {}
+    gender_map = {
+        'm': u'М',
+        'f': u'Ж'
+    }
+
+    person_info = user_attrs.get('person_info', {})
+    person_contacts = user_attrs.get('person_contacts', {})
+    person_addresses = user_attrs.get('person_addresses', [])
+    rf_passports = filter(lambda doc: doc['type'] == 'RF_PASSPORT' and 'Identifiable' in doc['stateFacts'],
+                          user_attrs.get('person_docs', []))
+    reg_address = {}
+    prozhiv_address = {}
+
+    for person_address in person_addresses:
+        if person_address.get('type', '') == 'PRG':
+            reg_address = person_address
+        elif person_address.get('type', '') == 'PLV':
+            prozhiv_address = person_address
+
+    phone_contact = {}
+    for person_contact in person_contacts:
+        if person_contact.get('type', '') == 'MBT':
+            phone_contact = person_contact
 
     foreigner = u''
     citizenship = person_info.get('citizenship', '').lower()
@@ -132,6 +146,10 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
             foreigner = u'0'
         else:
             foreigner = u'1'
+
+    birth_date = person_info.get('birthDate', '')
+    if birth_date:
+        birth_date = datetime.strptime(birth_date, '%d.%m.%Y').strftime('%Y%m%d')
 
     record = grs.Record()
 
@@ -145,8 +163,10 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
     add_field_to_record('103', person_info.get('middleName', ''))
     add_field_to_record('105', datetime.now().strftime('%Y%m%d'))
     add_field_to_record('115', _generate_password())
+    add_field_to_record('120', phone_contact.get('value', ''))
+    add_field_to_record('121', _generate_registraion_address(prozhiv_address))
     add_field_to_record('122', email)
-    add_field_to_record('130', ', '.join(registration_address_parts))
+    add_field_to_record('130', _generate_registraion_address(reg_address))
     add_field_to_record('234', birth_date)
     add_field_to_record('402', person_info.get('snils', ''))
     add_field_to_record('403', oid)
@@ -165,11 +185,12 @@ def _create_grs_from_esia(oid, email='', user_attrs=None):
         add_field_to_record('421', issue_date)
         add_field_to_record('422', rf_passport.get('issueId', ''))
 
-    add_field_to_record('423', person_address.get('zipCode', ''))
-    add_field_to_record('424', ' / '.join(region_city_parts))
+    add_field_to_record('423', reg_address.get('zipCode', ''))
+    add_field_to_record('424', _generate_region_city(reg_address))
+    add_field_to_record('425', prozhiv_address.get('zipCode', ''))
+    add_field_to_record('426', _generate_region_city(prozhiv_address))
     add_field_to_record('427', foreigner)
     add_field_to_record('501', '2')
-
 
     trusted = person_info.get('trusted', False)
     if trusted is True:
@@ -374,7 +395,7 @@ def redirect_from_idp(request):
                     login(request, user)
                     request.session[
                         'logout_idp_url'] = 'https://esia.gosuslugi.ru/idp/ext/Logout?client_id=%s&redirect_url=http://%s' % (
-                    ESIA_SSO_CLIENT_ID, SITE_DOMAIN)
+                        ESIA_SSO_CLIENT_ID, SITE_DOMAIN)
                     return redirect('index:frontend:index')
                 else:
                     return _error_response(
