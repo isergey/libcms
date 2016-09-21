@@ -60,7 +60,7 @@ def create_news(request, library_code, managed_libraries=[]):
         if news_form.is_valid():
             news = news_form.save(commit=False)
             if 'news_form_avatar' in request.FILES:
-                print 'files', request.FILES['news_form_avatar']
+                print 'files', dir(request.FILES['news_form_avatar'])
                 # avatar_img_name, avatar_img_extension = os.path.splitext('yourImage.png')
                 avatar_img_name = handle_uploaded_file(request.FILES['news_form_avatar'])
                 news.avatar_img_name = avatar_img_name
