@@ -44,6 +44,7 @@ def news_list(request, library_code, managed_libraries=[]):
         'news_page': news_page,
     })
 
+IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'bmp']
 
 @login_required
 @permission_required_or_403('participant_news.add_news')
@@ -56,12 +57,13 @@ def create_news(request, library_code, managed_libraries=[]):
 
     if request.method == 'POST':
         news_form = forms.NewsForm(request.POST, prefix='news_form')
-
+        if 'news_form_avatar' in request.FILES:
+            avatar_img_name, avatar_img_extension = os.path.splitext(request.FILES['news_form_avatar'].name.lower())
+            if avatar_img_extension not in IMAGE_EXTENSIONS:
+                news_form.add_error("show_avatar", u'Картинка должна быть в формате JPEG, PNG или BMP')
         if news_form.is_valid():
             news = news_form.save(commit=False)
             if 'news_form_avatar' in request.FILES:
-                print 'files', request.FILES['news_form_avatar'].name
-                # avatar_img_name, avatar_img_extension = os.path.splitext('yourImage.png')
                 avatar_img_name = handle_uploaded_file(request.FILES['news_form_avatar'])
                 news.avatar_img_name = avatar_img_name
             news.library = library
@@ -91,7 +93,10 @@ def edit_news(request, library_code, id, managed_libraries=[]):
     news = get_object_or_404(News, library=library, id=id)
     if request.method == 'POST':
         news_form = forms.NewsForm(request.POST, prefix='news_form', instance=news)
-
+        if 'news_form_avatar' in request.FILES:
+            avatar_img_name, avatar_img_extension = os.path.splitext(request.FILES['news_form_avatar'].name.lower())
+            if avatar_img_extension not in IMAGE_EXTENSIONS:
+                news_form.add_error("show_avatar", u'Картинка должна быть в формате JPEG, PNG или BMP')
         if news_form.is_valid():
             news = news_form.save(commit=False)
             if 'news_form_avatar' in request.FILES:
