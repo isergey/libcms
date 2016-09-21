@@ -62,7 +62,7 @@ def create_news(request, library_code, managed_libraries=[]):
             avatar_img_name, avatar_img_extension = os.path.splitext(request.FILES['news_form_avatar'].name.lower())
             if avatar_img_extension not in IMAGE_EXTENSIONS:
                 news_form.add_error("show_avatar", u'Картинка должна быть в формате JPEG, PNG или BMP')
-            
+
         if news_form.is_valid():
             news = news_form.save(commit=False)
             if 'news_form_avatar' in request.FILES:
