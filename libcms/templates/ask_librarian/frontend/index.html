@@ -3,7 +3,15 @@
 {% load cache %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-{% block title %}Спроси библиотекаря{% endblock %}
+{% block title %}
+    {% if LANGUAGE_CODE == 'ru' %}
+        Спроси библиотекаря
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Китапханәчедән сора
+    {% else %}
+        Ask librarian
+    {% endif %}
+{% endblock %}
 
 {% block content %}
     <nav class="bg bg_second">
@@ -17,7 +25,13 @@
                 <ul class="bread__crumbs">
                     <li>
                         <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                            Главная
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
                         </a>
                     </li>
                     <li>

@@ -1,7 +1,7 @@
 ﻿{% load i18n %}
 {% load localeurl_tags %}
 {% load menu_tags %}
-
+{% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -98,7 +98,15 @@
         </div>
         <div id="footer-links">
             <div class="column">
-                <a href="#">Главная</a>
+                <a href="#">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
+                </a>
                 <a href="#">О проекте</a>
             </div>
             <div class="column">

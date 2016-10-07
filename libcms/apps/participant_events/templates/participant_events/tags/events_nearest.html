@@ -1,3 +1,5 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% for group in groups %}
     <div class="item-poster">
     {% for event in group %}
@@ -17,7 +19,9 @@
                 </a>
             </h2>
             <p class="poster-box__item__teaser">{{ event.event_content.teaser }}</p>
-            <a href="{% url 'participant_events:frontend:create_notification' event.library.code event.id %}" class="poster-box__item__btn-call" title="Напомнить">Установить напоминание</a>
+            <a href="{% url 'participant_events:frontend:create_notification' event.library.code event.id %}" class="poster-box__item__btn-call" title="Напомнить">
+                {% if LANGUAGE_CODE == 'ru' %}Установить напоминание{% elif LANGUAGE_CODE == 'tt' %}Искә төшерү кую{% else %}Set reminder{% endif %}
+            </a>
     {% endfor %}
     </div>
 {% endfor %}

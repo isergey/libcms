@@ -1,4 +1,6 @@
 {% extends 'theme_frontend_base.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% load news_tags %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
@@ -12,7 +14,13 @@
             <ul class="bread__crumbs">
                 <li>
                     <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                        Главная
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Главная
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Төп бит
+                        {% else %}
+                            Home
+                        {% endif %}
                     </a>
                 </li>
                 {% if request.GET.back %}
@@ -20,14 +28,26 @@
                         <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
                     </li>
                     <a href="{{ request.GET.back }}" class="bread__crumbs_link">
-                        Новости
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Новости
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Яңалыклар
+                        {% else %}
+                            News
+                        {% endif %}
                     </a>
                 {% else %}
                     <li>
                         <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
                     </li>
                     <a href="{% url 'news:frontend:index' %}" class="bread__crumbs_link">
-                        Новости
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Новости
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Яңалыклар
+                        {% else %}
+                            News
+                        {% endif %}
                     </a>
                 {% endif %}
                 {#                <li>#}

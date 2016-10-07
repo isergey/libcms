@@ -1,10 +1,28 @@
 {% extends 'ask_librarian/frontend/index.html' %}
 {% load cache %}
-{% block title %}Спроси библиотекаря{% endblock %}
+{% block title %}
+    {% if LANGUAGE_CODE == 'ru' %}
+        Спроси библиотекаря
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Китапханәчедән сора
+    {% else %}
+        Ask librarian
+    {% endif %}
+{% endblock %}
 {% block breadcrumb %}
     <ul class="breadcrumb">
         <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url 'ask_librarian:frontend:index' %}">Спроси библиотекаря</a> <span class="divider">/</span></li>
+        <li>
+            <a href="{% url 'ask_librarian:frontend:index' %}">
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Спроси библиотекаря
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Китапханәчедән сора
+                {% else %}
+                    Ask librarian
+                {% endif %}
+            </a>
+            <span class="divider">/</span></li>
         <li>Вопрос № {{ question.id }}</li>
     </ul>
 {% endblock %}

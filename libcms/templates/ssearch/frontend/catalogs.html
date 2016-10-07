@@ -1,8 +1,18 @@
 {% load hash %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <div class="container content-page">
     <div class="row">
         <div class="col-7">
-            <h1 class="content-page__title">Статистика по коллекциям:</h1>
+            <h1 class="content-page__title">
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Статистика по коллекциям:
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Коллекцияләр буенча статистика
+                {% else %}
+                    Collections statistics:
+                {% endif %}
+            </h1>
 
             <div class="content-page__text">
                 <div>
@@ -39,9 +49,36 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <div>Всего документов в коллекции: <b>{{ stats.count_all }}</b></div>
-                <div>Добавлено за текущий месяц: <b>{{ stats.count_last_month }}</b></div>
-                <div>Добавлено за последние 30 дней: <b>{{ stats.count_last_30 }}</b></div>
+                <div>
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Всего документов в коллекции:
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Коллекциядә барлык документлар саны
+                    {% else %}
+                        Total documents:
+                    {% endif %}
+                    <b>{{ stats.count_all }}</b>
+                </div>
+                <div>
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Добавлено за текущий месяц:
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Бу ай эчендә өстәлгән:
+                    {% else %}
+                        Added for the current month:
+                    {% endif %}
+                    <b>{{ stats.count_last_month }}</b>
+                </div>
+                <div>
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Добавлено за последние 30 дней:
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Соңгы 30 көн эчендә өстәлгән:
+                    {% else %}
+                        Added in the last 30 days:
+                    {% endif %}
+                    <b>{{ stats.count_last_30 }}</b>
+                </div>
 
                 {#<a href="#tukay" role="button" class="btn" data-toggle="modal">Launch demo modal</a>#}
 

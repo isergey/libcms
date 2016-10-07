@@ -71,7 +71,15 @@
             {% endcache %}
             {% cache 60 news LANGUAGE_CODE %}
             <div class="row news">
-                <h3>Новости</h3>
+                <h3>
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Новости
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Яңалыклар
+                    {% else %}
+                        News
+                    {% endif %}
+                </h3>
                 {% news_feed %}
                 <br/>
                 <a href="{% url 'news:frontend:index' %}">Остальные новости</a>

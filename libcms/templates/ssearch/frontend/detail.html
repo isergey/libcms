@@ -18,8 +18,15 @@
         <div class="container">
             <ul class="bread__crumbs">
 
-                <li><a class="bread__crumbs_link" href="{% url 'index:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}
-                    Главная{% elif LANGUAGE_CODE == 'tt' %}Главная{% else %}Home{% endif %}</a></li>
+                <li><a class="bread__crumbs_link" href="{% url 'index:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
+                </a></li>
                 <li>
                     <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
                 </li>

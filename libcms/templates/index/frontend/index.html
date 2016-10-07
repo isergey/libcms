@@ -31,7 +31,7 @@
                 <form action="{% url 'ssearch:frontend:index' %}" method="get">
                     <div class="search-form">
                         <input type="hidden" name="attr" value="text_t">
-                        <input class="search-form__input" name="q" id="appendedInputButton" type="text" placeholder="Введите автора, заглавие, тему...">
+                        <input class="search-form__input" name="q" id="appendedInputButton" type="text" placeholder="{% if LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}...">
                           <span class="input-form-group">
                               <button class="search-form__submit" type="submit" title="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}"><img
                                       src="{{ STATIC_URL }}dist/images/search.svg"></button>
@@ -52,7 +52,7 @@
 {#    </li>#}
     <li class="active">
         {% if LANGUAGE_CODE == 'ru' %}Новые оцифрованные издания
-        {% elif LANGUAGE_CODE == 'tt' %}Новые оцифрованные издания
+        {% elif LANGUAGE_CODE == 'tt' %}Яңа цифрлаштырылган басмалар
         {% else %}New e-resources{% endif %}
     </li>
 </ul>
@@ -98,8 +98,13 @@
                 {% endif %}
             </div>
             <a href="{% url 'news:frontend:index' %}" class="news-box__all" title="Посмотреть архив новостей">
-                {% if LANGUAGE_CODE == 'ru' %}Архив
-                        новостей{% elif LANGUAGE_CODE == 'tt' %}Архив новостей{% else %}News archive{% endif %}
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Архив новостей
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Яңалыклар архивы
+                {% else %}
+                    News archive
+                {% endif %}
             </a>
             {% news_feed %}
             <div class="news-box__title news-box__title_bib">
@@ -109,7 +114,15 @@
                             Китапханәләр картасы
                         {% else %}Map of libraries{% endif %}
             </div>
-            <a href="{% url 'participants:frontend:index' %}" class="news-box__all">Все библиотеки</a>
+            <a href="{% url 'participants:frontend:index' %}" class="news-box__all">
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Все библиотеки
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Барлык китапханәләр
+                {% else %}
+                    All libraries
+                {% endif %}
+            </a>
         </div>
     </div>
     <div class="col-5">

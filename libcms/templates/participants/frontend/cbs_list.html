@@ -1,5 +1,15 @@
 {% extends 'theme_frontend_base.html' %}
-{% block title %}Библиотеки{% endblock %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block title %}
+{% if LANGUAGE_CODE == 'ru' %}
+    Библиотеки
+{% elif LANGUAGE_CODE == 'tt' %}
+    Китапханәләре
+{% else %}
+    Libraries
+{% endif %}
+{% endblock %}
 {% block content %}
     <nav class="bg bg_second">
         <div class="container">
@@ -9,14 +19,28 @@
     <main>
         <div class="container">
             <ul class="bread__crumbs">
-                <li><a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">Главная</a></li>
+                <li><a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
+                </a></li>
 
                 <li>
                     <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
                 </li>
                 <li>
                     <a class="bread__crumbs_link bread__crumbs_link_active">
-                        Библиотеки
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Библиотеки
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Китапханәләре
+                        {% else %}
+                            Libraries
+                        {% endif %}
                     </a>
                 </li>
             </ul>
@@ -25,10 +49,28 @@
         <div class="container content-page">
             <div class="row">
                 <div class="col-12">
-                    <h1 class="content-page__title">Библиотеки Республики Татарстан</h1>
+                    <h1 class="content-page__title">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Библиотеки Республики Татарстан
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Татарстан Республикасының китапханәләре
+                        {% else %}
+                            Libraries of the Republic of Tatarstan
+                        {% endif %}
+                    </h1>
 
                     <div class="content-page__text">
-                        <p><a href="#list">Список</a></p>
+                        <p>
+                            <a href="#list">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Список
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Исемлек
+                                {% else %}
+                                    List
+                                {% endif %}
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>

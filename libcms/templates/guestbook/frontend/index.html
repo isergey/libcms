@@ -1,4 +1,6 @@
 {% extends 'index/frontend/index.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
@@ -12,7 +14,13 @@
             <ul class="bread__crumbs">
                 <li>
                     <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                        Главная
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Главная
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Төп бит
+                        {% else %}
+                            Home
+                        {% endif %}
                     </a>
                 </li>
                 <li>
@@ -20,7 +28,13 @@
                 </li>
                 <li>
                     <a class="bread__crumbs_link bread__crumbs_link_active">
-                        Гостевая книга
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Гостевая книга
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Кунаклар китабы
+                        {% else %}
+                            Guest book
+                        {% endif %}
                     </a>
                 </li>
             </ul>
@@ -29,7 +43,9 @@
         <div class="container content-page">
             <div class="row">
                 <div class="col-7">
-                    <h1 class="content-page__title">Отзывы <span>({{ count_feedback }})</span></h1>
+                    <h1 class="content-page__title">
+                        {% if LANGUAGE_CODE == 'ru' %}Отзывы{% elif LANGUAGE_CODE == 'tt' %}Бәяләмәләр{% else %}Feedbacks{% endif %}
+                        <span>({{ count_feedback }})</span></h1>
                      {% for feedback in feedbacks_page.object_list %}
                         <div class="answer-box">
 {#                            <div class="answer-box__index">#}
@@ -54,7 +70,15 @@
 
                         <form class="side-box__form" method="POST">{% csrf_token %}
                             {% include 'frontend/base_form_fields.html' %}
-                            <button class="side-box__form__btn" type="submit">Добавить отзыв</button>
+                            <button class="side-box__form__btn" type="submit">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Добавить отзыв
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Бәяләмә өстәү
+                                {% else %}
+                                    Add feedback
+                                {% endif %}
+                            </button>
                         </form>
                     </div>
 

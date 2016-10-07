@@ -1,4 +1,6 @@
 {% extends 'theme_frontend_base.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% load news_tags %}
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
@@ -13,7 +15,13 @@
             <ul class="bread__crumbs">
                 <li>
                     <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                        Главная
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Главная
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Төп бит
+                        {% else %}
+                            Home
+                        {% endif %}
                     </a>
                 </li>
                 <li>
@@ -21,7 +29,13 @@
                 </li>
                 <li>
                     <a class="bread__crumbs_link bread__crumbs_link_active">
-                        Новости
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Новости
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Яңалыклар
+                        {% else %}
+                            News
+                        {% endif %}
                     </a>
                 </li>
             </ul>
@@ -30,7 +44,15 @@
         <div class="container content-page">
             <div class="row">
                 <div class="col-7">
-                    <h1 class="content-page__title">Новости</h1>
+                    <h1 class="content-page__title">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Новости
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Яңалыклар
+                        {% else %}
+                            News
+                        {% endif %}
+                    </h1>
                     {% for news in news_list %}
                         <div class="news-page-box">
                             <div class="news-page-box__date">{{ news.create_date }}</div>
@@ -46,7 +68,13 @@
                         <div class="facets-container__item">
                             <div class="facet">
                                 <div class="facet__header">
-                                    <h4 class="facet__title">Архив новостей</h4>
+                                    <h4 class="facet__title">
+                                        {% if LANGUAGE_CODE == 'ru' %}
+                                            Архив новостей
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Яңалыклар архивы
+                                        {% else %}News archive{% endif %}
+                                    </h4>
                                 </div>
                                 <div class="facet__body">
                                     {% news_calendar %}

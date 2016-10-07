@@ -1,6 +1,8 @@
 {% load accounts_tags %}
 {% load participiants_tags %}
 {% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {#{% get_user_org request.user as user_org %}#}
 
 {% if request.user.is_authenticated %}
@@ -56,8 +58,20 @@
     <div class="col-4">
 
         <div class="user-block">
-            <a class="user-block__auth" href="{% url 'accounts:frontend:login' %}">Вход</a>
-            <a class="user-block__auth" href="{% url 'accounts:frontend:registration' %}">Регистрация</a>
+            <a class="user-block__auth" href="{% url 'accounts:frontend:login' %}">
+                {% if LANGUAGE_CODE == 'tt' %}
+                    Керү
+                {% else %}
+                    Вход
+                {% endif %}
+            </a>
+            <a class="user-block__auth" href="{% url 'accounts:frontend:registration' %}">
+                {% if LANGUAGE_CODE == 'tt' %}
+                    Теркәлү
+                {% else %}
+                    Регистрация
+                {% endif %}
+            </a>
 {#            <a class="user-block__auth" href="{% url 'accounts:frontend:password_reset' %}">Забыли пароль?</a>#}
         </div>
     </div>

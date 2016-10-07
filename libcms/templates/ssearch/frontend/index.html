@@ -15,7 +15,13 @@
         <hr class="bg__hr">
         <div class="container">
             <div class="select_lib">
-                Поиск по библиотеке:
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Поиск по библиотеке:
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Китапханә буенча эзләү:
+                {% else %}
+                    Search in library:
+                {% endif %}
                 {% if library %}
                     <a class="label label-warning" title="Убрать ограничение по библиотеке"
                        onclick="removeLibraryParam();" href="#remove_library">[ x ]</a>
@@ -24,7 +30,15 @@
                        href="#select_library">[ Выбрать другую ]</a>
                 {% else %}
                     <a title="Ограничить результаты только по выбранной библиотеке"
-                       class="js_select_library label label-info" href="#select_library">выбрать библиотеку</a>
+                       class="js_select_library label label-info" href="#select_library">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        выбрать библиотеку
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        китапханәне сайлау
+                    {% else %}
+                        select a library:
+                    {% endif %}
+                    </a>
                 {% endif %}
             </div>
             <div class="search-box search-box_second">
@@ -102,7 +116,15 @@
     <main>
         <div class="container">
             <ul class="bread__crumbs">
-                <li><a class="bread__crumbs_link" href="{% url 'index:frontend:index' %}">Главная</a></li>
+                <li><a class="bread__crumbs_link" href="{% url 'index:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
+                </a></li>
                 {% if request.GET.q %}
                     <li>
                         <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">

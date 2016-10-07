@@ -3,12 +3,26 @@
 {% load cache %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-{% block title %}Спроси библиотекаря{% endblock %}
+{% block title %}
+    {% if LANGUAGE_CODE == 'ru' %}
+        Спроси библиотекаря
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Китапханәчедән сора
+    {% else %}
+        Ask librarian
+    {% endif %}
+{% endblock %}
 {% block breadcrumb %}
     <ul class="bread__crumbs">
         <li>
             <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                Главная
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Главная
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Төп бит
+                {% else %}
+                    Home
+                {% endif %}
             </a>
         </li>
         {% if category %}
@@ -46,7 +60,13 @@
             </li>
             <li>
                 <a class="bread__crumbs_link bread__crumbs_link_active">
-                    Спроси библиотекаря
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Спроси библиотекаря
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Китапханәчедән сора
+                    {% else %}
+                        Ask librarian
+                    {% endif %}
                 </a>
             </li>
         {% endif %}
@@ -57,21 +77,51 @@
         {% if category.is_root_node %}
             {{ category }}
         {% else %}
-            Спроси библиотекаря
+            {% if LANGUAGE_CODE == 'ru' %}
+                Спроси библиотекаря
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Китапханәчедән сора
+            {% else %}
+                Ask librarian
+            {% endif %}
         {% endif %}
     </h1>
 
     <div class="answer-search">
         <div class="answer-search__box">
             <form action="" method="GET">
-                <label for="number">Перейти к вопросу №:</label>
+                <label for="number">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Перейти к вопросу №:
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Номерлы сорауга күчү:
+                    {% else %}
+                        Go to question id:
+                    {% endif %}
+                </label>
                 <input id="number" type="number" name="id">
-                <button type="submit">Перейти</button>
+                <button type="submit">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Перейти
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Күчү
+                    {% else %}
+                        Go
+                    {% endif %}
+                </button>
             </form>
         </div>
         <div class="answer-search__box">
             <form action="" method="POST">{% csrf_token %}
-                <label for="date">Найти вопросы по дате:</label>
+                <label for="date">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Найти вопросы по дате:
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Сорауны дата буенча табу:
+                    {% else %}
+                        Filter by date:
+                    {% endif %}
+                </label>
                 {#                <input id="date" type="date" placeholder="формат даты: дд.мм.гггг">#}
                 {% for field in date_filter_form.visible_fields %}
                     <div class="control-group {% if field.errors %}error{% endif %}">
@@ -87,7 +137,15 @@
 
                     </div>
                 {% endfor %}
-                <button type="submit">Найти</button>
+                <button type="submit">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Найти
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Эзләргә
+                    {% else %}
+                        Search
+                    {% endif %}
+                </button>
             </form>
         </div>
     </div>

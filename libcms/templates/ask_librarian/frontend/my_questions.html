@@ -1,4 +1,6 @@
 {% extends 'ask_librarian/frontend/index.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% load cache %}
 {% load pagination_tag %}
 {% block title %}Мои вопросы{% endblock %}
@@ -6,7 +8,13 @@
     <ul class="bread__crumbs">
         <li>
             <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                {% if LANGUAGE_CODE == 'ru' %}Главная{% else %}Home{% endif %}
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Главная
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Төп бит
+                {% else %}
+                    Home
+                {% endif %}
             </a>
         </li>
         <li>

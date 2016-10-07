@@ -110,9 +110,25 @@
             </div>
             <div class="col-6">
                 <a class="footer-logo__ask-lib" href="{% url 'ask_librarian:frontend:ask' %}"
-                   title="Спроси библиотекаря">Задать вопрос библиотекарю</a>
+                   title="Спроси библиотекаря">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Задать вопрос библиотекарю
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Китапханәчегә сорау бирү
+                    {% else %}
+                        Ask question
+                    {% endif %}
+                </a>
                 <a class="footer-logo__ask-all" href="{% url 'ask_librarian:frontend:index' %}"
-                   title="Спроси библиотекаря все вопросы">Все вопросы</a>
+                   title="Спроси библиотекаря все вопросы">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Все вопросы
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Барлык сораулар
+                    {% else %}
+                        All questions
+                    {% endif %}
+                </a>
             </div>
         </div>
     </div>

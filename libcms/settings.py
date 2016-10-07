@@ -78,6 +78,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     #'django.contrib.messages.context_processors.messages',
 )
 
+
+
 MIDDLEWARE_CLASSES = (
     'localeurl.middleware.LocaleURLMiddleware',
     'oauth2_provider.middleware.OauthSessionMiddleware',
