@@ -108,6 +108,9 @@ const ContextMenu = React.createClass({
     });
   },
   open(position = {}) {
+    if (this.state.open) {
+      return;
+    }
     const calculatePosition = this._calculatePosition(position);
     this.setState({
       open: true,
