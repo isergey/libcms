@@ -165,7 +165,7 @@ def _create_grs_from_user(oid, email='', user_attrs=None):
     # add_field_to_record('130', _generate_registraion_address(reg_address))
     add_field_to_record('234', birth_date)
     # add_field_to_record('402', person_info.get('snils', ''))
-    add_field_to_record('503', oid)
+    add_field_to_record('506', oid)
     add_field_to_record('404', gender_map.get(person_info.get('gender', '').lower(), u''))
 
     # if rf_passports:
@@ -365,8 +365,8 @@ def redirect_from_idp(request):
                     state=state,
                     error_description=u'Система не может сопоставить вашу учетную запись ЕСИА'
                 )
-    # """
-    # return HttpResponse(json.dumps(person_info, ensure_ascii=False), content_type='application/json')
+                # """
+                # return HttpResponse(json.dumps(person_info, ensure_ascii=False), content_type='application/json')
 
 
 @transaction.atomic()
@@ -381,7 +381,7 @@ def register_new_user(request, id):
 
     portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
     # oid = u'777'
-    query = u'@attrset bib-1 @attr 1=503 "%s"' % (tatedu_user.oid.replace('\\', '\\\\'))
+    query = u'@attrset bib-1 @attr 1=506 "%s"' % (tatedu_user.oid.replace('\\', '\\\\'))
     sru_response = portal_client.search(database=RUSLAN_USERS_DATABASE, query=query, start_record=1, maximum_records=1)
     sru_records = humanize.get_records(sru_response)
 
@@ -518,7 +518,6 @@ def ask_for_exist_reader(request, id):
     })
 
 
-
 def _get_person_info(access_token):
     """
     :param access_token:
@@ -555,4 +554,3 @@ def _get_access_marker(code):
     }, verify=VERIFY_REQUESTS)
     response.raise_for_status()
     return response.json()
-
