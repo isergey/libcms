@@ -1,0 +1,51 @@
+{% extends 'theme_frontend_base.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans 'Login' %}
+{% endblock %}
+{% block content %}
+    {% url 'sso_tatedu:redirect_from_ip' as redirect_url %}
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li>
+                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                        Главная
+                    </a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a class="bread__crumbs_link bread__crumbs_link_active">
+                        Вход на портал через портал электронного образования РТ
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <hr class="footer-hr">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="content-page__title">Электронное образование в Республике Татарстан</h1>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="esia-box">
+                                <a class="btn" href="{{ auth_url|safe }}?client_id={{ client_id|urlencode }}&response_type=code"><span>Войти через ЭО РТ</span>
+{#                                    <img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png">#}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}
