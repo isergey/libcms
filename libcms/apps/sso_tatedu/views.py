@@ -323,7 +323,7 @@ def redirect_from_idp(request):
 
 
     sru_response = portal_client.search(
-        query='@attrset bib-1 @attr 1=506 "%s"' % (user_id.replace('\\', '\\\\').replace('"', '\\"'),),
+        query=u'@attrset bib-1 @attr 1=506 "%s"' % (unicode(user_id).replace('\\', '\\\\').replace('"', '\\"'),),
         database=RUSLAN_USERS_DATABASE,
         maximum_records=1
     )
