@@ -57,7 +57,7 @@ SECRET = SSO_TATEDU.get('secret', '')
 AUTH_URL = SSO_TATEDU.get('authorize_url', '')
 TOKEN_URL = SSO_TATEDU.get('token_url', '')
 USER_INFO_URL = SSO_TATEDU.get('user_info_url', '')
-
+LOGOUT_URL = 'https://edu.tatar.ru/logoff'
 logger = logging.getLogger('sso_tatedu')
 
 
@@ -329,7 +329,6 @@ def redirect_from_idp(request):
     )
 
     sru_records = humanize.get_records(sru_response)
-
     if not sru_records:
         tatedu_user = models.create_or_update_user(user_id, user_attrs)
         return register_new_user(request, tatedu_user.id)
@@ -340,7 +339,6 @@ def redirect_from_idp(request):
             return _error_response(
                 request=request,
                 error='no_user',
-                state=state,
                 error_description=u'Система в данный момент не может произвести авторизацию'
             )
         else:
@@ -349,7 +347,7 @@ def redirect_from_idp(request):
                 if user.is_active:
                     login(request, user)
                     request.session[
-                        'logout_idp_url'] = 'https://edu.tatar.ru/logoff'
+                        'logout_idp_url'] = LOGOUT_URL
                     return redirect('index:frontend:index')
                 else:
                     return _error_response(
@@ -414,6 +412,8 @@ def register_new_user(request, id):
     if user:
         if user.is_active:
             login(request, user)
+            request.session[
+                'logout_idp_url'] = LOGOUT_URL
             return render(request, 'sso_tatedu/register_new_user.html', {
                 'reader_id': reader_id,
                 'password': password
