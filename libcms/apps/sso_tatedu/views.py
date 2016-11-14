@@ -57,6 +57,7 @@ CLIENT_ID = SSO_TATEDU.get('client_id', '')
 SECRET = SSO_TATEDU.get('secret', '')
 AUTH_URL = SSO_TATEDU.get('authorize_url', '')
 TOKEN_URL = SSO_TATEDU.get('token_url', '')
+USER_INFO_URL = SSO_TATEDU.get('user_info_url', '')
 
 logger = logging.getLogger('sso_tatedu')
 
@@ -602,7 +603,7 @@ def _get_oid(access_token):
     return oid
 
 
-def _get_person_info(oid, access_token):
+def _get_person_info(access_token):
     """
     :param oid:
     :param access_token:
@@ -622,7 +623,7 @@ def _get_person_info(oid, access_token):
         "trusted": False
     }
     """
-    person_response = requests.get(ESIA_SSO_PERSON_URL + '/' + oid, headers={
+    person_response = requests.get(USER_INFO_URL, headers={
         'Authorization': 'Bearer ' + access_token
     }, verify=VERIFY_REQUESTS)
     person_response.raise_for_status()
