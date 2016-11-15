@@ -192,8 +192,8 @@ def _create_grs_from_user(oid, email='', user_attrs=None):
     add_field_to_record('501', '3')
 
     # Trusted
-    add_field_to_record('502', '1')
-    add_field_to_record('503', '1')
+    # add_field_to_record('502', '1')
+    # add_field_to_record('503', '1')
 
     return record
 
