@@ -168,7 +168,7 @@ def _create_grs_from_user(oid, email='', user_attrs=None):
     # add_field_to_record('130', _generate_registraion_address(reg_address))
     add_field_to_record('234', birth_date)
     # add_field_to_record('402', person_info.get('snils', ''))
-    add_field_to_record('506', oid)
+    add_field_to_record(OID_FIELD, oid)
     add_field_to_record('404', gender_map.get(person_info.get('gender', '').lower(), u''))
 
     # if rf_passports:
