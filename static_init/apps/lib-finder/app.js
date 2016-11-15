@@ -457,7 +457,7 @@ const AddrSearch = React.createClass({
     utils.detectUserGeoPosition().then(result => {
       position = result;
     }).catch(error => {
-      alert('Ваше местоположение не определено');
+      // alert('Ваше местоположение не определено');
       console.error('Error of user geo detection', error);
     }).then(() => {
       $typeahead.typeahead(
