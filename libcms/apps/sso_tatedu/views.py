@@ -58,6 +58,9 @@ AUTH_URL = SSO_TATEDU.get('authorize_url', '')
 TOKEN_URL = SSO_TATEDU.get('token_url', '')
 USER_INFO_URL = SSO_TATEDU.get('user_info_url', '')
 LOGOUT_URL = 'https://edu.tatar.ru/logoff'
+OID_FIELD = '507'
+
+
 logger = logging.getLogger('sso_tatedu')
 
 
@@ -323,7 +326,7 @@ def redirect_from_idp(request):
 
 
     sru_response = portal_client.search(
-        query=u'@attrset bib-1 @attr 1=506 "%s"' % (unicode(user_id).replace('\\', '\\\\').replace('"', '\\"'),),
+        query=u'@attrset bib-1 @attr 1=%s "%s"' % (OID_FIELD, unicode(user_id).replace('\\', '\\\\').replace('"', '\\"'),),
         database=RUSLAN_USERS_DATABASE,
         maximum_records=1
     )
@@ -379,7 +382,7 @@ def register_new_user(request, id):
 
     portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
     # oid = u'777'
-    query = u'@attrset bib-1 @attr 1=506 "%s"' % (tatedu_user.oid.replace('\\', '\\\\'))
+    query = u'@attrset bib-1 @attr 1=%s "%s"' % (OID_FIELD, tatedu_user.oid.replace('\\', '\\\\'))
     sru_response = portal_client.search(database=RUSLAN_USERS_DATABASE, query=query, start_record=1, maximum_records=1)
     sru_records = humanize.get_records(sru_response)
 
