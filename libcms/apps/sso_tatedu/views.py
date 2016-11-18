@@ -27,18 +27,6 @@ RUSLAN_USERS_DATABASE = RUSLAN.get('users_database', 'allusers')
 RUSLAN_ID_MASK = RUSLAN.get('id_mask', '000000000')
 
 AUTH_SOURCE = 'tatedu'
-
-# ESIA_SSO = getattr(settings, 'ESIA_SSO', {})
-# ESIA_SSO_TMP_DIR = ESIA_SSO.get('tmp_dir', '/tmp')
-# ESIA_SSO_JAR_CERT_GENERATOR = ESIA_SSO.get('jar_cert_generator')
-# ESIA_SSO_CERT_ALIAS = ESIA_SSO.get('cert_alias', 'RaUser-561d2f13-c72b-4018-a473-48017a4622d2')
-# ESIA_SSO_CERT_PASSWORD = ESIA_SSO.get('cert_password', '1234567890')
-# ESIA_SSO_CLIENT_ID = unicode(ESIA_SSO.get('client_id', ''))
-# ESIA_SSO_SCOPE = unicode(ESIA_SSO.get('scope', 'http://esia.gosuslugi.ru/usr_inf'))
-# ESIA_SSO_ACCESS_TOKEN_URL = ESIA_SSO.get('access_token_url', 'https://esia.gosuslugi.ru/aas/oauth2/ac')
-# ESIA_SSO_ACCESS_MARKER_URL = ESIA_SSO.get('access_marker_url', 'https://esia.gosuslugi.ru/aas/oauth2/te')
-# ESIA_SSO_PERSON_URL = ESIA_SSO.get('person_url', 'https://esia.gosuslugi.ru/rs/prns')
-# ESIA_SSO_ASK_FOR_EXIST_READER = ESIA_SSO.get('ask_for_exist_reader', True)
 PASSWORD_LENGTH = 8
 
 # PERSON_CONTACTS_URL_SUFFIX = 'ctts'
@@ -171,6 +159,10 @@ def _create_grs_from_user(oid, email='', user_attrs=None):
     add_field_to_record(OID_FIELD, oid)
     add_field_to_record('404', gender_map.get(person_info.get('gender', '').lower(), u''))
 
+    organisations = person_info.get('organizations', [])
+    for organisation in organisations:
+        add_field_to_record('505', unicode(organisation.get('id', '')))
+        add_field_to_record('506', unicode(organisation.get('region', {}).get('id')))
     # if rf_passports:
     #     rf_passport = rf_passports[-1]
     #     add_field_to_record('417', u'Паспорт')
@@ -301,6 +293,14 @@ def redirect_from_idp(request):
         )
     # return HttpResponse(json.dumps(person_info_resp, ensure_ascii=False), content_type='application/json')
     person_info = person_info_resp.get('data', {})
+
+    if person_info.get('status', '') != 'active':
+        return _error_response(
+            request=request,
+            error='user_not_active',
+            error_description=u'Учетная запись неактивна. Обратитесь к администратору портала ЭО'
+        )
+
     user_id = person_info.get('id')
 
     if not user_id:
@@ -525,19 +525,31 @@ def _get_person_info(access_token):
     """
     :param access_token:
     :return: {
-        "status": "success",
-        "message": "",
-        "data": {
-            "status": "active",
-            "organizations": [],
-            "gender": "male|female",
-            "email": "user@edu.tatar.ru",
-            "lname": "Ф",
-            "pname": "О",
-            "fname": "И",
-            "id": 1231231,
-            "birth_year": "2005"
-        }
+      "status": "success",
+      "message": "",
+      "data": {
+        "status": "active",
+        "organizations": [
+          {
+            "region": {
+              "of_kazan": true,
+              "ate_code": "159",
+              "id": 48,
+              "title": "Приволжский"
+            },
+            "title_short": "МБОУ \"Школа\"",
+            "id": 2298,
+            "title": "Муниципальное бюджетное общеобразовательное учреждение"
+          }
+        ],
+        "gender": "male",
+        "email": "1236@edu.tatar.ru",
+        "lname": "Ф",
+        "pname": "О",
+        "fname": "И",
+        "id": 123213,
+        "birth_year": "2001"
+      }
     }
     """
     person_response = requests.get(USER_INFO_URL, headers={
