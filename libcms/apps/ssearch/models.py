@@ -2,6 +2,7 @@
 from collections import OrderedDict
 import datetime
 import zlib
+import zipfile
 from django.db import connection
 from django.db import models
 from django.contrib.auth.models import User
@@ -58,16 +59,13 @@ class Source(models.Model):
     def __unicode__(self):
         return self.title
 
-
+import io
 class ZippedTextField(models.BinaryField):
     __metaclass__ = models.SubfieldBase
 
     def to_python(self, value):
-        try:
-            value = zlib.decompress(value, -15)
-            value = value.decode('utf-8')
-        except zlib.error:
-            pass
+        zf = zipfile.ZipFile(io.BytesIO(value))
+        value = zf.read('1.xml')
         return value
 
     def get_db_prep_save(self, value, connection):
@@ -95,7 +93,7 @@ class Record(models.Model):
     gen_id = models.CharField(max_length=32, unique=True)
     record_id = models.CharField(max_length=32, db_index=True)
     scheme = models.CharField(max_length=16, choices=RECORD_SCHEMES, default='rusmarc', verbose_name=u"Scheme")
-    content = ZippedTextField(verbose_name=u'Xml content')
+    content = ZippedTextField(verbose_name=u'Xml content', null=True)
     add_date = models.DateTimeField(auto_now_add=True, db_index=True)
     update_date = models.DateTimeField(auto_now_add=True, db_index=True)
     deleted = models.BooleanField(default=False)
@@ -123,7 +121,7 @@ class Ebook(models.Model):
     gen_id = models.CharField(max_length=32, unique=True)
     record_id = models.CharField(max_length=32, db_index=True)
     scheme = models.CharField(max_length=16, choices=RECORD_SCHEMES, default='rusmarc', verbose_name=u"Scheme")
-    content = ZippedTextField(verbose_name=u'Xml content')
+    content = ZippedTextField(verbose_name=u'Xml content', null=True)
     add_date = models.DateTimeField(auto_now_add=True, db_index=True)
     update_date = models.DateTimeField(auto_now_add=True, db_index=True)
     deleted = models.BooleanField(default=False)
@@ -138,7 +136,7 @@ class Ebook(models.Model):
 
 def get_records(doc_ids=[]):
     records_dict = {}
-    records = list(Record.objects.using('records').filter(gen_id__in=doc_ids, source_id__in=[1, 2, 3, 4]))
+    records = list(Record.objects.using('records').filter(gen_id__in=doc_ids, source_id__in=[1, 2, 3, 4]).exclude(content=None))
 
     for record in records:
         records_dict[record.gen_id] = record
@@ -150,6 +148,7 @@ def get_records(doc_ids=[]):
             result_records.append(rec)
 
     return result_records
+
 
 class Collection(models.Model):
     source = models.ForeignKey(Source, null=True, blank=True)
