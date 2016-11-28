@@ -1,4 +1,5 @@
 # coding: utf-8
+import io
 from collections import OrderedDict
 import datetime
 import zlib
