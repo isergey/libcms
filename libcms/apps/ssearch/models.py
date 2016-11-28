@@ -108,6 +108,16 @@ class Record(models.Model):
         db_table = 'records'
 
 
+class Holdings(models.Model):
+    original_id = models.CharField(max_length=255, db_index=True)
+    department = models.CharField(max_length=255, db_index=True)
+    source = models.CharField(max_length=32, db_index=True)
+
+    class Meta:
+        unique_together = ['original_id', 'department', 'source']
+        index_together = ['original_id', 'department', 'source']
+
+
 class Ebook(models.Model):
     source = models.ForeignKey(Source, null=True, blank=True)
     gen_id = models.CharField(max_length=32, unique=True)
@@ -128,7 +138,7 @@ class Ebook(models.Model):
 
 def get_records(doc_ids=[]):
     records_dict = {}
-    records = list(Record.objects.using('records').filter(gen_id__in=doc_ids))
+    records = list(Record.objects.using('records').filter(gen_id__in=doc_ids, source_id__in=[1, 2, 3, 4]))
 
     for record in records:
         records_dict[record.gen_id] = record

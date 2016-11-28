@@ -8,6 +8,7 @@ import titles
 
 DB_CONNECTION = getattr(settings, 'SEARCH', {}).get('db_connection', 'default')
 
+
 class Records(models.Model):
     id = models.CharField(primary_key=True, max_length=32)
     original_id = models.CharField(max_length=32)
@@ -34,6 +35,15 @@ class RecordsContent(models.Model):
         db_table = 'records_content'
 
 
+# class Holdings(models.Model):
+#     original_id = models.CharField(max_length=255, db_index=True)
+#     department = models.CharField(max_length=255, db_index=True)
+#     source = models.CharField(max_length=32, db_index=True)
+#
+#     class Meta:
+#         unique_together = ['record_id', 'department_sigla', 'source']
+
+
 def get_records(ids=list()):
     records = list(RecordsContent.objects.using(DB_CONNECTION).filter(record_id__in=ids))
     records_dict = {}
@@ -45,6 +55,7 @@ def get_records(ids=list()):
         if not record: continue
         result_records.append(record)
     return result_records
+
 
 ACTION_CHOICES = (
     ('detail', u'Детальная информация'),
@@ -93,7 +104,7 @@ def dictfetchall(cursor):
     return [
         dict(zip([col[0] for col in desc], row))
         for row in cursor.fetchall()
-    ]
+        ]
 
 
 def execute(query, params):
@@ -331,7 +342,6 @@ def log_search_request(last_search_value):
 
         n_term = u' '.join(n_terms)
         return (nn_term, n_term)
-
 
     search_request_id = uuid.uuid4().hex
     term_groups = []
