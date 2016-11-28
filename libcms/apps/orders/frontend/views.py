@@ -62,7 +62,7 @@ def books_on_hand(request):
         args = []
         for library in libraries:
             args.append({'id': library.id, 'url': RUSLAN_ORDER_URLS['books'] % (
-            ruslan_user.username, ruslan_user.password, library.z_service,  ruslan_user.username)})
+                ruslan_user.username, ruslan_user.password, library.z_service, ruslan_user.username)})
 
         results = ThreadWorker(_get_content, args).do()
         for result in results:
@@ -88,11 +88,10 @@ def reservations(request):
     if ruslan_user:
         libraries = list(Library.objects.filter(z_service__gt=''))
 
-
         args = []
         for library in libraries:
             args.append({'id': library.id, 'url': RUSLAN_ORDER_URLS['orders'] % (
-            ruslan_user.username, ruslan_user.password, library.z_service, ruslan_user.username)})
+                ruslan_user.username, ruslan_user.password, library.z_service, ruslan_user.username)})
 
         results = ThreadWorker(_get_content, args).do()
         for result in results:
@@ -134,20 +133,19 @@ def lib_orders(request, id):
         return HttpResponse(
             u'Отсутвуют параметры связи с базой заказаов библиотеки. Если Вы видите это сообщение, пожалуйста, сообщите администратору портала.')
 
-
     lib_reader = get_object_or_404(LibReader, library=library, user=request.user)
 
     urls = [
         RUSLAN_ORDER_URLS['orders'] % (
-        lib_reader.lib_login, lib_reader.lib_password, library.z_service, lib_reader.lib_login),
+            lib_reader.lib_login, lib_reader.lib_password, library.z_service, lib_reader.lib_login),
         RUSLAN_ORDER_URLS['books'] % (
-        lib_reader.lib_login, lib_reader.lib_password, library.z_service, lib_reader.lib_login),
+            lib_reader.lib_login, lib_reader.lib_password, library.z_service, lib_reader.lib_login),
     ]
     results = ThreadWorker(_get_content, urls).do()
     for result in results:
         if isinstance(result, BaseException):
             raise result
-        #    print results[0].value
+            #    print results[0].value
     orders = _get_orders(results[1].value)
     books = _get_books(results[0].value)
 
@@ -190,7 +188,8 @@ def zorder(request, library_id):
     )
     session_id = zworker.get_zgate_session_id(zgate_form)
     form_params = zworker.get_form_dict(zgate_form)
-    del (form_params['scan'])  # удаляем, иначе происходит сканирование :-)
+    if form_params.has_key('scan'):
+        del (form_params['scan'])  # удаляем, иначе происходит сканирование :-)
     form_params['use_1'] = '12:1.2.840.10003.3.1'
     form_params['term_1'] = record_id
     (result, cookies) = zworker.request(zcatalog.url, data=form_params, cookies=cookies)
@@ -453,8 +452,6 @@ def mba_orders(request):
                     apdu_map['unfilled_results_title'] = ''
                     if apdu_map['unfilled_results'] in apdu_unfilled_results:
                         apdu_map['unfilled_results_title'] = apdu_unfilled_results[apdu_map['unfilled_results']]
-
-
 
             # apdu_map['record'] = res
             order['apdus'].append(apdu_map)
