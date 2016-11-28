@@ -531,11 +531,19 @@ const LibFinder = React.createClass({
     });
   },
   initMap() {
+    var self = this;
     this.itemsMap = new window.ymaps.Map(this.refs.map.getDOMNode(), {
       center: [55.797746, 49.115573],
       zoom: 10,
       controls: [],
     });
+    this.itemsMap.behaviors.disable('scrollZoom');
+
+    function initClick() {
+      self.itemsMap.behaviors.enable('scrollZoom');
+      self.itemsMap.events.remove('click', initClick);
+    }
+    this.itemsMap.events.add('click', initClick);
     this.itemsMap.controls.add('zoomControl', { float: 'left' });
     this.itemsMap.controls.add('searchControl', { float: 'left' });
     this.itemsMap.controls.add('typeSelector', { float: 'left' });
