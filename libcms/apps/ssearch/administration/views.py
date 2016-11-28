@@ -16,17 +16,19 @@ from django.contrib.auth.decorators import login_required
 from guardian.decorators import permission_required_or_403
 from django.shortcuts import render, redirect, HttpResponse, Http404
 from pymarc2 import reader, record, field, marcxml
-from django.db import transaction#, connection, connections
+from django.db import transaction  # , connection, connections
 
 from forms import AttributesForm, GroupForm, PeriodForm, CatalogForm
-from ..models import requests_count, requests_by_attributes, requests_by_term
+from ..models import requests_count, requests_by_attributes, requests_by_term, Source
+
 
 @login_required
 @permission_required_or_403('ssearch.view_statistics')
 def index(request):
     return render(request, 'ssearch/administration/index.html')
 
-#def statistics(request, catalog=None):
+
+# def statistics(request, catalog=None):
 #    return HttpResponse(u'Статистика')
 
 @login_required
@@ -45,17 +47,16 @@ def statistics(request, catalog=None):
     row_title = u'Параметр'
     y_title = u'Ось Y'
 
-
     statistics = request.GET.get('statistics', 'requests')
     catalogs = []
     if not catalog:
         catalogs += ['sc2', 'ebooks']
     else:
         catalogs.append(catalog)
-#    catalogs = ZCatalog.objects.all()
+    # catalogs = ZCatalog.objects.all()
     start_date = datetime.datetime.now()
     end_date = datetime.datetime.now()
-    date_group = u'2' # группировка по дням
+    date_group = u'2'  # группировка по дням
     attributes = []
 
     period_form = PeriodForm()
@@ -81,14 +82,13 @@ def statistics(request, catalog=None):
         if catalog_form.is_valid():
             catalogs = catalog_form.cleaned_data['catalogs']
 
-
     if statistics == 'requests':
         attributes_form = None
         rows = requests_count(
-            start_date = start_date,
-            end_date = end_date,
-            group = date_group,
-            catalogs = catalogs
+            start_date=start_date,
+            end_date=end_date,
+            group=date_group,
+            catalogs=catalogs
         )
         chart_title = u'Число поисковых запросов по дате'
         row_title = u'Число поисковых запросов'
@@ -97,10 +97,10 @@ def statistics(request, catalog=None):
     elif statistics == 'attributes':
         group_form = None
         rows = requests_by_attributes(
-            start_date = start_date,
-            end_date = end_date,
-            attributes = attributes,
-            catalogs = catalogs
+            start_date=start_date,
+            end_date=end_date,
+            attributes=attributes,
+            catalogs=catalogs
         )
 
         chart_title = u'Число поисковых запросов по поисковым атрибутам'
@@ -111,10 +111,10 @@ def statistics(request, catalog=None):
     elif statistics == 'terms':
         group_form = None
         rows = requests_by_term(
-            start_date = start_date,
-            end_date = end_date,
-            attributes = attributes,
-            catalogs = catalogs
+            start_date=start_date,
+            end_date=end_date,
+            attributes=attributes,
+            catalogs=catalogs
         )
 
         chart_title = u'Число поисковых запросов по фразам'
@@ -124,12 +124,10 @@ def statistics(request, catalog=None):
     else:
         return HttpResponse(u'Неправильный тип статистики')
 
-
-    data_rows =  json.dumps(rows, ensure_ascii=False)
-
+    data_rows = json.dumps(rows, ensure_ascii=False)
 
     return render(request, 'ssearch/administration/statistics.html', {
-        'data_rows':data_rows,
+        'data_rows': data_rows,
         'catalog_form': catalog_form,
         'period_form': period_form,
         'group_form': group_form,
@@ -140,9 +138,6 @@ def statistics(request, catalog=None):
         'row_title': row_title,
         'active_module': 'zgate'
     })
-
-
-
 
 
 def return_record_class(scheme):
@@ -166,14 +161,15 @@ def check_xml(source):
     except Exception as e:
         raise Exception(u'Wrong XML records file. Error: ' + e.message)
 
-#Our initial page
+
+# Our initial page
 def initial(request):
     return render(request, 'ssearch/administration/upload.html', {
         'form': UploadForm(),
-        })
+    })
 
 
-#Our file upload handler that the form will post to
+# Our file upload handler that the form will post to
 def upload(request):
     if request.method == 'POST':
         form = UploadForm(request.POST, request.FILES)
@@ -228,14 +224,13 @@ def pocess(request):
 def inset_records(records, scheme):
     for record in records:
         # gen id md5 hash of original marc record encoded in utf-8
-        gen_id =  unicode(hashlib.md5(record.as_marc()).hexdigest())
+        gen_id = unicode(hashlib.md5(record.as_marc()).hexdigest())
         if record['001']:
             record_id = record['001'][0].data
             record['001'][0].data = gen_id
         else:
             record.add_field(field.ControlField(tag=u'001', data=gen_id))
             record_id = gen_id
-
 
         filter_attrs = {
             'record_id': record_id
@@ -253,14 +248,13 @@ def inset_records(records, scheme):
             attrs.update(filter_attrs)
             obj = Record.objects.create(**attrs)
 
-def convert(request):
 
+def convert(request):
     pass
+
 
 xslt_root = etree.parse('libcms/xsl/record_indexing.xsl')
 xslt_transformer = etree.XSLT(xslt_root)
-
-
 
 
 def indexing(request):
@@ -270,23 +264,28 @@ def indexing(request):
     else:
         reset = False
 
-
     for slug in settings.SOLR['catalogs'].keys():
         _indexing(slug, reset)
 
     return HttpResponse('Ok')
 
 
-
 # регулярки, с помощью которых вычленяются номера томов
-re_t1_t2 = re.compile(ur"(?P<t1>\d+)\D+(?P<t2>\d+)" ,re.UNICODE)
-re_t1 = re.compile(ur"(?P<t1>\d+)" ,re.UNICODE)
+re_t1_t2 = re.compile(ur"(?P<t1>\d+)\D+(?P<t2>\d+)", re.UNICODE)
+re_t1 = re.compile(ur"(?P<t1>\d+)", re.UNICODE)
+
 
 @transaction.atomic
 def _indexing(slug, reset=False):
+    sources_index = {}
+    sources = list(Source.objects.using('records').all())
+
+    for source in sources:
+        sources_index[source.id] = source
+
     try:
         solr_address = settings.SOLR['host']
-        db_conf =  settings.DATABASES.get(settings.SOLR['catalogs'][slug]['database'], None)
+        db_conf = settings.DATABASES.get(settings.SOLR['catalogs'][slug]['database'], None)
     except KeyError:
         raise Http404(u'Catalog not founded')
 
@@ -302,8 +301,8 @@ def _indexing(slug, reset=False):
             passwd=db_conf['PASSWORD'],
             db=db_conf['NAME'],
             port=int(db_conf['PORT']
-            ),
-            cursorclass =MySQLdb.cursors.SSDictCursor
+                     ),
+            cursorclass=MySQLdb.cursors.SSDictCursor
         )
     except MySQLdb.OperationalError as e:
         conn = MySQLdb.connect(
@@ -312,10 +311,9 @@ def _indexing(slug, reset=False):
             passwd=db_conf['PASSWORD'],
             db=db_conf['NAME'],
             port=int(db_conf['PORT']
-            ),
-            cursorclass =MySQLdb.cursors.SSDictCursor
+                     ),
+            cursorclass=MySQLdb.cursors.SSDictCursor
         )
-
 
     try:
         index_status = IndexStatus.objects.get(catalog=slug)
@@ -323,10 +321,10 @@ def _indexing(slug, reset=False):
         index_status = IndexStatus(catalog=slug)
 
     if not getattr(index_status, 'last_index_date', None):
-        select_query = "SELECT * FROM records where deleted = 0"
+        select_query = "SELECT * FROM records where deleted = 0 and content != NULL"
     else:
-        select_query = "SELECT * FROM records where update_date >= '%s' and deleted = 0" % (str(index_status.last_index_date))
-
+        select_query = "SELECT * FROM records where update_date >= '%s' and deleted = 0 and content != NULL" % (
+            str(index_status.last_index_date))
 
     solr = sunburnt.SolrInterface(solr_address)
     docs = list()
@@ -334,12 +332,12 @@ def _indexing(slug, reset=False):
     start_index_date = datetime.datetime.now()
 
     conn.query(select_query)
-    rows=conn.use_result()
+    rows = conn.use_result()
     res = rows.fetch_row(how=1)
 
     i = 0
     while res:
-        content = zlib.decompress(res[0]['content'],-15).decode('utf-8')
+        content = zlib.decompress(res[0]['content'], -15).decode('utf-8')
         doc_tree = etree.XML(content)
         doc_tree = xslt_transformer(doc_tree)
         doc = doc_tree_to_dict(doc_tree)
@@ -352,7 +350,7 @@ def _indexing(slug, reset=False):
 
         tom = doc.get('tom_s', None)
         if tom and isinstance(tom, unicode):
-            tom = tom.strip().replace(u' ',u'')
+            tom = tom.strip().replace(u' ', u'')
             r = re_t1_t2.search(tom)
             if r:
                 groups = r.groups()
@@ -364,45 +362,40 @@ def _indexing(slug, reset=False):
 
         try:
             record_create_date = doc.get('record-create-date_dt', None)
-            #print 'record_create_date1', record_create_date
+            # print 'record_create_date1', record_create_date
             if record_create_date:
                 doc['record-create-date_dts'] = record_create_date
         except Exception as e:
             print 'Error record-create-date_dt'
-
 
         doc['system-add-date_dt'] = res[0]['add_date']
         doc['system-add-date_dts'] = res[0]['add_date']
         doc['system-update-date_dt'] = res[0]['update_date']
         doc['system-update-date_dts'] = res[0]['update_date']
         doc['system-catalog_s'] = res[0]['source_id']
-
-
-
-
+        doc['source-type_s'] = sources_index[res[0]['source_id']].source_type
         if str(doc['system-catalog_s']) == '2':
-            full_text_file =None
-#            doc['system-update-date_dt'] = res[0]['doc-id_s']
+            full_text_file = None
+            #            doc['system-update-date_dt'] = res[0]['doc-id_s']
             urls = doc.get('doc-id_s', None)
             if urls and type(urls) == list:
                 for url in doc.get('doc-id_s', None):
                     if url:
-                        full_text_file =  url.split('/')[-1]
+                        full_text_file = url.split('/')[-1]
             else:
                 if urls:
-                    full_text_file =  urls.split('/')[-1]
+                    full_text_file = urls.split('/')[-1]
             if full_text_file:
-                text =  full_text_extract(full_text_file)
+                text = full_text_extract(full_text_file)
                 if text:
                     doc['full-text'] = text
 
         docs.append(doc)
-        i+=1
+        i += 1
         if len(docs) > 100:
             solr.add(docs)
             docs = list()
         res = rows.fetch_row(how=1)
-
 
     if docs:
         solr.add(docs)
@@ -414,14 +407,16 @@ def _indexing(slug, reset=False):
     records = []
 
     if getattr(index_status, 'last_index_date', None):
-        records = Record.objects.using('records').filter(deleted=True, update_date__gte=index_status.last_index_date).values('gen_id')
+        records = Record.objects.using('records').filter(
+            deleted=True,
+            update_date__gte=index_status.last_index_date
+        ).values('gen_id')
     else:
         records = Record.objects.using('records').filter(deleted=True).values('gen_id', 'update_date')
 
     record_gen_ids = []
     for record in list(records):
         record_gen_ids.append(record['gen_id'])
-
 
     if record_gen_ids:
         solr.delete(record_gen_ids)
@@ -439,7 +434,7 @@ def local_records_indexing(request):
     slug = 'local_records'
     try:
         solr_address = settings.SOLR['local_records_host']
-        db_conf =  settings.DATABASES.get('local_records')
+        db_conf = settings.DATABASES.get('local_records')
     except KeyError:
         raise Http404(u'Catalog not founded')
 
@@ -455,8 +450,8 @@ def local_records_indexing(request):
             passwd=db_conf['PASSWORD'],
             db=db_conf['NAME'],
             port=int(db_conf['PORT']
-            ),
-            cursorclass =MySQLdb.cursors.SSDictCursor
+                     ),
+            cursorclass=MySQLdb.cursors.SSDictCursor
         )
     except MySQLdb.OperationalError as e:
         conn = MySQLdb.connect(
@@ -465,8 +460,8 @@ def local_records_indexing(request):
             passwd=db_conf['PASSWORD'],
             db=db_conf['NAME'],
             port=int(db_conf['PORT']
-            ),
-            cursorclass =MySQLdb.cursors.SSDictCursor
+                     ),
+            cursorclass=MySQLdb.cursors.SSDictCursor
         )
 
     print 'indexing start',
@@ -476,9 +471,10 @@ def local_records_indexing(request):
         index_status = IndexStatus(catalog=slug)
 
     if not getattr(index_status, 'last_index_date', None):
-        select_query = "SELECT * FROM records where deleted = 0"
+        select_query = "SELECT * FROM records where deleted = 0 and content != NULL"
     else:
-        select_query = "SELECT * FROM records where update_date >= '%s' and deleted = 0" % (str(index_status.last_index_date))
+        select_query = "SELECT * FROM records where update_date >= '%s' and deleted = 0 and content != NULL" % (
+            str(index_status.last_index_date))
 
     print 'records finded',
     solr = sunburnt.SolrInterface(solr_address)
@@ -487,12 +483,12 @@ def local_records_indexing(request):
     start_index_date = datetime.datetime.now()
 
     conn.query(select_query)
-    rows=conn.use_result()
+    rows = conn.use_result()
     res = rows.fetch_row(how=1)
     print 'records fetched',
     i = 0
     while res:
-        content = zlib.decompress(res[0]['content'],-15).decode('utf-8')
+        content = zlib.decompress(res[0]['content'], -15).decode('utf-8')
         doc_tree = etree.XML(content)
         doc_tree = xslt_transformer(doc_tree)
         doc = doc_tree_to_dict(doc_tree)
@@ -505,7 +501,7 @@ def local_records_indexing(request):
 
         tom = doc.get('tom_s', None)
         if tom and isinstance(tom, unicode):
-            tom = tom.strip().replace(u' ',u'')
+            tom = tom.strip().replace(u' ', u'')
             r = re_t1_t2.search(tom)
             if r:
                 groups = r.groups()
@@ -516,12 +512,11 @@ def local_records_indexing(request):
                     doc['tom_f'] = float(r.groups()[0])
         try:
             record_create_date = doc.get('record-create-date_dt', None)
-            #print 'record_create_date1', record_create_date
+            # print 'record_create_date1', record_create_date
             if record_create_date:
                 doc['record-create-date_dts'] = record_create_date
         except Exception as e:
             print 'Error record-create-date_dt', e.message
-
 
         doc['system-add-date_dt'] = res[0]['add_date']
         doc['system-add-date_dts'] = res[0]['add_date']
@@ -529,33 +524,29 @@ def local_records_indexing(request):
         doc['system-update-date_dts'] = res[0]['update_date']
         doc['system-catalog_s'] = res[0]['source_id']
 
-
-
-
         if str(doc['system-catalog_s']) == '2':
-            full_text_file =None
-#            doc['system-update-date_dt'] = res[0]['doc-id_s']
+            full_text_file = None
+            #            doc['system-update-date_dt'] = res[0]['doc-id_s']
             urls = doc.get('doc-id_s', None)
             if urls and type(urls) == list:
                 for url in doc.get('doc-id_s', None):
                     if url:
-                        full_text_file =  url.split('/')[-1]
+                        full_text_file = url.split('/')[-1]
             else:
                 if urls:
-                    full_text_file =  urls.split('/')[-1]
+                    full_text_file = urls.split('/')[-1]
             if full_text_file:
-                text =  full_text_extract(full_text_file)
+                text = full_text_extract(full_text_file)
                 if text:
                     doc['full-text'] = text
 
         docs.append(doc)
-        i+=1
+        i += 1
         if len(docs) > 25:
             solr.add(docs)
             print i
             docs = list()
         res = rows.fetch_row(how=1)
-
 
     if docs:
         solr.add(docs)
@@ -567,14 +558,14 @@ def local_records_indexing(request):
     records = []
 
     if getattr(index_status, 'last_index_date', None):
-        records = Record.objects.using('records').filter(deleted=True, update_date__gte=index_status.last_index_date).values('gen_id')
+        records = Record.objects.using('records').filter(deleted=True,
+                                                         update_date__gte=index_status.last_index_date).values('gen_id')
     else:
         records = Record.objects.using('records').filter(deleted=True).values('gen_id', 'update_date')
 
     record_gen_ids = []
     for record in list(records):
         record_gen_ids.append(record['gen_id'])
-
 
     if record_gen_ids:
         solr.delete(record_gen_ids)
@@ -586,7 +577,9 @@ def local_records_indexing(request):
     conn.query('DELETE FROM records WHERE deleted = 1')
     return True
 
+
 from ..common import resolve_date
+
 # распознование типа
 resolvers = {
     'dt': resolve_date,
@@ -603,7 +596,7 @@ def doc_tree_to_dict(doc_tree):
         attrib = element.attrib['name']
         value = element.text
 
-        #если поле пустое, пропускаем
+        # если поле пустое, пропускаем
         if not value: continue
 
         value_type = attrib.split('_')[-1]
@@ -616,7 +609,6 @@ def doc_tree_to_dict(doc_tree):
             except ValueError:
                 # если значение не соответвует объявленному типу, то пропускаем
                 continue
-
 
         old_value = doc_dict.get(attrib, None)
 
@@ -635,6 +627,8 @@ def doc_tree_to_dict(doc_tree):
 
 
 replace_pattern = re.compile(ur'\W', re.UNICODE)
+
+
 def add_sort_fields(doc):
     for key in doc.keys():
         splited_key = key.split('_')
@@ -651,10 +645,11 @@ def add_sort_fields(doc):
     return doc
 
 
-
 import zipfile
+
+
 def full_text_extract(zip_file_name):
-#    zip_file_name = settings.EBOOKS_STORE + zip_file_name
+    #    zip_file_name = settings.EBOOKS_STORE + zip_file_name
     book_pathes = (
         settings.EBOOKS_STORE + zip_file_name + '.edoc',
         settings.EBOOKS_STORE + zip_file_name + '.2.edoc',
@@ -667,12 +662,11 @@ def full_text_extract(zip_file_name):
             book_file = book_path
 
     if book_file:
-        file = zipfile.ZipFile( book_file, "r")
+        file = zipfile.ZipFile(book_file, "r")
         # читаем содержимое, попутно вырезая ять в коне слова
-        text =  file.read("Text.txt").decode('utf-8').replace(u'ъ ', u'').replace(u'ъ,', u',').replace(u'ъ.', u'.').replace(u'ъ:', u':').replace(u'ъ;', u';')
+        text = file.read("Text.txt").decode('utf-8').replace(u'ъ ', u'').replace(u'ъ,', u',').replace(u'ъ.',
+                                                                                                      u'.').replace(
+            u'ъ:', u':').replace(u'ъ;', u';')
         file.close()
         return text
     return None
-
-
-

@@ -52,14 +52,15 @@ class Upload(models.Model):
 
 
 class Source(models.Model):
-    title = models.CharField(max_length=256, verbose_name=u"Source title")
-    index_rule = models.TextField(verbose_name=u"Index rule")
-    add_date = models.DateTimeField(auto_now_add=True, verbose_name=u"Add date")
+    source_type = models.CharField(max_length=32, verbose_name=u"Тип источника")
 
     def __unicode__(self):
-        return self.title
+        return self.source_type
 
-import io
+    class Meta:
+        db_table = 'source'
+
+
 class ZippedTextField(models.BinaryField):
     __metaclass__ = models.SubfieldBase
 
@@ -136,7 +137,7 @@ class Ebook(models.Model):
 
 def get_records(doc_ids=[]):
     records_dict = {}
-    records = list(Record.objects.using('records').filter(gen_id__in=doc_ids, source_id__in=[1, 2, 3, 4]).exclude(content=None))
+    records = list(Record.objects.using('records').filter(gen_id__in=doc_ids).exclude(content=None))
 
     for record in records:
         records_dict[record.gen_id] = record

@@ -18,15 +18,18 @@ from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transforme
 from participants.models import Library
 from ..models import Record, SavedRequest, DetailAccessLog, Collection, get_records
 from .. import rusmarc_template
+from ..common import resolve_date
+
+
 # # на эти трансформаторы ссылаются из других модулей
-#xslt_root = etree.parse('libcms/xsl/record_in_search.xsl')
-#xslt_transformer = etree.XSLT(xslt_root)
+# xslt_root = etree.parse('libcms/xsl/record_in_search.xsl')
+# xslt_transformer = etree.XSLT(xslt_root)
 #
-#xslt_marc_dump = etree.parse('libcms/xsl/marc_dump.xsl')
-#xslt_marc_dump_transformer = etree.XSLT(xslt_marc_dump)
+# xslt_marc_dump = etree.parse('libcms/xsl/marc_dump.xsl')
+# xslt_marc_dump_transformer = etree.XSLT(xslt_marc_dump)
 #
-#xslt_bib_draw = etree.parse('libcms/xsl/full_document.xsl')
-#xslt_bib_draw_transformer = etree.XSLT(xslt_bib_draw)
+# xslt_bib_draw = etree.parse('libcms/xsl/full_document.xsl')
+# xslt_bib_draw_transformer = etree.XSLT(xslt_bib_draw)
 
 class RecordObject(object):
     id = None
@@ -233,14 +236,12 @@ def replace_doc_attrs(doc):
     return doc
 
 
-from ..common import resolve_date
 # распознование типа
 resolvers = {
     'dt': resolve_date,
     'dts': resolve_date,
     'dtf': resolve_date,
 }
-
 
 # тип поля, которое может быть только одно в документе
 origin_types = ['ts', 'ss', 'dts', 'f']
@@ -282,8 +283,6 @@ def search(request, catalog=None, library=None):
     qs = request.GET.getlist('q', [])
     attrs = request.GET.getlist('attr', [])
     sort = request.GET.getlist('sort', [])
-
-
 
     sort_attrs = []
 
@@ -529,6 +528,7 @@ def select_library(request):
         'libraries': libraries,
     })
 
+
 from levenshtein import levenshtein
 
 
@@ -555,7 +555,7 @@ def detail(request, gen_id):
     except Record.DoesNotExist:
         raise Http404()
 
-    #    DetailAccessLog(catalog=catalog, gen_id=record.gen_id).save()
+    # DetailAccessLog(catalog=catalog, gen_id=record.gen_id).save()
     DetailAccessLog.objects.create(catalog=catalog, gen_id=gen_id, date_time=datetime.datetime.now())
 
     doc_tree = etree.XML(record.content)
@@ -599,8 +599,8 @@ def detail(request, gen_id):
             linked_docs.append(record_dict)
 
 
-        #        for doc in mlt_docs:
-        #            doc['record'] = records_dict.get(doc['id'])
+            #        for doc in mlt_docs:
+            #            doc['record'] = records_dict.get(doc['id'])
 
     access_count = DetailAccessLog.objects.filter(catalog=catalog, gen_id=record.gen_id).count()
 
@@ -614,11 +614,11 @@ def detail(request, gen_id):
     })
 
     def clean_holder_title(holder):
-        return holder.get('org', {}).get('title', '')\
-            .lower()\
-            .replace(u'цбс', '')\
-            .replace(u'го', '')\
-            .replace(u'г.', '')\
+        return holder.get('org', {}).get('title', '') \
+            .lower() \
+            .replace(u'цбс', '') \
+            .replace(u'го', '') \
+            .replace(u'г.', '') \
             .strip()
 
     holders.sort(key=clean_holder_title)
@@ -634,8 +634,8 @@ def to_print(request, gen_id):
     except Record.DoesNotExist:
         raise Http404()
 
-    #    DetailAccessLog(catalog=catalog, gen_id=record.gen_id).save()
-    #DetailAccessLog.objects.create(catalog=catalog, gen_id=gen_id, date_time=datetime.datetime.now())
+    # DetailAccessLog(catalog=catalog, gen_id=record.gen_id).save()
+    # DetailAccessLog.objects.create(catalog=catalog, gen_id=gen_id, date_time=datetime.datetime.now())
 
     doc_tree = etree.XML(record.content)
     # leader8 = doc_tree.xpath('/record/leader/leader08')
@@ -649,7 +649,7 @@ def to_print(request, gen_id):
     bib_tree = xslt_bib_draw_transformer(doc_tree)
     marct_tree = xslt_marc_dump_transformer(doc_tree)
     bib_dump = etree.tostring(bib_tree, encoding='utf-8')
-    #marc_dump =  etree.tostring(marct_tree, encoding='utf-8')
+    # marc_dump =  etree.tostring(marct_tree, encoding='utf-8')
     doc_tree_t = xslt_transformer(doc_tree)
     doc = doc_tree_to_dict(doc_tree_t)
     # holders = doc.get('holders', list())
@@ -684,15 +684,15 @@ def to_print(request, gen_id):
 
 
 
-    #access_count = DetailAccessLog.objects.filter(catalog=catalog, gen_id=record.gen_id).count()
+    # access_count = DetailAccessLog.objects.filter(catalog=catalog, gen_id=record.gen_id).count()
 
     return render(request, 'ssearch/frontend/print.html', {
         'doc_dump': bib_dump.replace('<b/>', ''),
-        #'marc_dump': marc_dump,
+        # 'marc_dump': marc_dump,
         'doc': doc,
         'gen_id': gen_id,
-        #'linked_docs': linked_docs,
-        #'access_count': access_count
+        # 'linked_docs': linked_docs,
+        # 'access_count': access_count
     })
 
 
@@ -751,7 +751,7 @@ def doc_tree_to_dict(doc_tree):
     for element in doc_tree.getroot().getchildren():
         attrib = element.attrib['name']
         value = element.text
-        #если поле пустое, пропускаем
+        # если поле пустое, пропускаем
         if not value: continue
         #        value = beautify(value)
         values = doc_dict.get(attrib, None)
@@ -785,10 +785,12 @@ def beautify(value):
     return value
 
 
-#import pymorphy
+# import pymorphy
 import uuid
 from ..models import SearchRequestLog
-#morph = pymorphy.get_morph(settings.PYMORPHY_CDB_DICTS, 'cdb')
+
+
+# morph = pymorphy.get_morph(settings.PYMORPHY_CDB_DICTS, 'cdb')
 def log_search_request(last_search_value, catalog, library_code=u''):
     def clean_term(term):
         """
@@ -798,9 +800,9 @@ def log_search_request(last_search_value, catalog, library_code=u''):
         nn_term = u' '.join(terms)
 
         n_terms = []
-        #нормализация
+        # нормализация
         for t in terms:
-            n_term = t  #morph.normalize(t.upper())
+            n_term = t  # morph.normalize(t.upper())
             if isinstance(n_term, set):
                 n_terms.append(n_term.pop().lower())
             elif isinstance(n_term, unicode):
@@ -808,7 +810,6 @@ def log_search_request(last_search_value, catalog, library_code=u''):
 
         n_term = u' '.join(n_terms)
         return (nn_term, n_term)
-
 
     search_request_id = uuid.uuid4().hex
     term_groups = []
