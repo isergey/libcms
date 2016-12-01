@@ -36,4 +36,9 @@ urlpatterns = patterns('',
     url(r'^find_library_by_district/$', views.find_library_by_district, name="find_library_by_district"),
     url(r'^load_libs/$', views.load_libs, name="load_libs"),
 
+   url(r'^wifi/$', views.library_wifi_list, name="library_wifi_list"),
+   url(r'^wifi/(?P<library_id>\d+)/create/$', views.add_library_wifi, name="add_library_wifi"),
+   url(r'^wifi/(?P<library_id>\d+)/edit/(?P<id>\d+)/$', views.edit_library_wifi, name="edit_library_wifi"),
+   url(r'^wifi/(?P<library_id>\d+)/delete/(?P<id>\d+)/$', views.delete_library_wifi, name="delete_library_wifi"),
+
 )

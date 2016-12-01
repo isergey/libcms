@@ -1,10 +1,14 @@
 # encoding: utf-8
+import re
+from django.core import validators
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User, Group
 from mptt.models import MPTTModel, TreeForeignKey
+
+MAC_REGEXP = re.compile('^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$')
 
 
 #
@@ -96,7 +100,6 @@ class Library(MPTTModel):
     longitude = models.FloatField(db_index=True, blank=True, null=True, verbose_name=u'Географическая долгота')
 
     weight = models.IntegerField(verbose_name=u'Порядок вывода в списке', default=100, db_index=True)
-
 
     def __unicode__(self):
         return self.name
@@ -199,6 +202,37 @@ class LibraryContentEditor(models.Model):
         verbose_name = u"Редактор контента ЦБС"
         verbose_name_plural = u"Редакторы контента ЦБС"
         unique_together = ('library', 'user')
+
+
+WIFI_POINT_STATUSES = (
+    ('enabled', u'активна'),
+    ('disabled', u'неактивна'),
+)
+
+
+class WiFiPoint(models.Model):
+    library = models.ForeignKey(Library)
+    mac = models.CharField(
+        max_length=17,
+        verbose_name=u'MAC адрес',
+        help_text=u'Пример: 84:80:2d:2b:be:b0',
+        db_index=True,
+        unique=True,
+        validators=[validators.MinLengthValidator(limit_value=17)]
+    )
+    status = models.CharField(
+        max_length=16,
+        verbose_name=u'Статус',
+        choices=WIFI_POINT_STATUSES,
+        default=WIFI_POINT_STATUSES[0][0],
+        db_index=True
+    )
+    comments = models.TextField(max_length=10 * 1024, verbose_name=u'Комментарии', blank=True)
+
+    def clean(self):
+        self.mac = self.mac.strip().lower()
+        if not MAC_REGEXP.match(self.mac):
+            raise ValidationError({'mac': u'Неправильный фортам MAC адреса'})
 
 
 def get_role_groups(user=None):

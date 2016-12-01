@@ -3,6 +3,7 @@ from dateutil.relativedelta import relativedelta
 import re
 import datetime
 from django import forms
+from django.db.models.fields import BLANK_CHOICE_DASH
 from django.contrib.auth.models import User, Group
 from accounts.models import GroupTitle
 
@@ -191,3 +192,28 @@ def get_add_user_library_form(queryset=None):
         )
 
     return AddUserDistrictForm
+
+
+class WiFiPointForm(forms.ModelForm):
+    class Meta:
+        model = models.WiFiPoint
+        exclude = ['library']
+
+
+class WiFiPointAttrForm(forms.Form):
+    mac = forms.CharField(
+        label=u'MAC адрес',
+        max_length=17,
+        required=False
+    )
+    status = forms.ChoiceField(
+        label=u'Статус',
+        choices=BLANK_CHOICE_DASH + list(models.WIFI_POINT_STATUSES),
+        required=False,
+
+    )
+    comments = forms.CharField(
+        label=u'Комментарии',
+        max_length=255,
+        required=False
+    )

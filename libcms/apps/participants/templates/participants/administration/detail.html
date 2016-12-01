@@ -31,6 +31,7 @@
         <li title="Филиалы организации" class="active"><a href="#home">Филиалы</a></li>
         <li title="Отделы"><a href="#departments">Отделы</a></li>
         <li title="Сотрудники"><a href="#users">Сотрудники</a></li>
+        <li title="Точки доступа WiFi"><a href="#wifi">Точки доступа WiFi</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="home">
@@ -117,6 +118,39 @@
                         <td>{{ library_user.department }}</td>
                         <td><a href="{% url 'participants:administration:edit_library_user' library_user.id %}" class="btn btn-small">редактировать</a></td>
                         <td><a href="{% url 'participants:administration:delete_library_user' library_user.id %}" class="btn btn-small btn-danger">удалить</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="tab-pane" id="wifi">
+            <div class="well well-small">
+                <a class="btn btn-success" href="{% url 'participants:administration:add_library_wifi' org.id %}">
+                    <i class="icon-plus icon-white"></i> Добавить WiFi точку
+                </a>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>MAC адрес</th>
+                    <th>Статус</th>
+                    <th>Комментарии</th>
+                    <th>Действия</th>
+                </tr>
+                {% for wifi_point in wifi_points %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'participants:administration:edit_library_wifi' org.id wifi_point.id %}">
+                                {{ wifi_point.mac }}
+                            </a>
+                        </td>
+                        <td>
+                        <span class="label {% if wifi_point.status == 'enabled' %}label-success{% else %}label-important{% endif %}"
+                            title="{{ wifi_point.get_status_display }}"
+                    >
+                        {{ wifi_point.get_status_display }}
+                    </span>
+                        </td>
+                        <td>{{ wifi_point.comments }}</td>
+                        <td><a href="{% url 'participants:administration:delete_library_wifi' org.id wifi_point.id %}" class="btn btn-small btn-danger">удалить</a></td>
                     </tr>
                 {% endfor %}
             </table>

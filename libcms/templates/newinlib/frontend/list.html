@@ -57,7 +57,7 @@
                             <div class="result__detail_box">
                                 {% if item.avatar_img_name %}
                                     <a href="{{ item_url }}"><img class="result__detail_img"
-                                         src="http://elib.spbstu.ru/main/picture?url=http://dl.unilib.neva.ru/dl/002082.pdf&amp;size=1"/>
+                                         src="{{ MEDIA_URL }}uploads/newinlib/itemavatars/{{ item.avatar_img_name }}"/>
                                     </a>
                                 {% endif %}
                             </div>

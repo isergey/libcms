@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
 import json
-from django.core import serializers
+
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
+from django.core import serializers
 from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404, redirect, HttpResponse, resolve_url
 from django.http import HttpResponseForbidden
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponse, resolve_url
 from guardian.decorators import permission_required_or_403
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User, Group
 
+from accounts import models as accounts_models
 from common.pagination import get_page
-from .. import models
 from . import forms
 from .. import decorators
-from accounts import models as accounts_models
+from .. import models
 
 SITE_DOMAIN = getattr(settings, 'SITE_DOMAIN', 'http://localhost')
 
@@ -44,7 +45,8 @@ def index(request):
 
 @login_required
 @decorators.must_be_org_user
-def detail(request, id, managed_libraries=[]):
+def detail(request, id, managed_libraries=None):
+    managed_libraries = managed_libraries or []
     managed_libraries_id = [managed_library.id for managed_library in managed_libraries]
     can_manage = False
     if int(id) in managed_libraries_id:
@@ -54,11 +56,13 @@ def detail(request, id, managed_libraries=[]):
     branches = models.Library.objects.filter(parent=org)
     departments = models.Department.objects.filter(library=org)
     library_users = models.UserLibrary.objects.filter(library=org)
+    wifi_points = models.WiFiPoint.objects.filter(library=org)
     return render(request, 'participants/administration/detail.html', {
         'org': org,
         'branches': branches,
         'departments': departments,
         'library_users': library_users,
+        'wifi_points': wifi_points,
         'can_manage': can_manage
     })
 
@@ -580,187 +584,6 @@ def delete_library_user(request, id, managed_libraries=[]):
     return redirect('participants:administration:detail', id=user_library.library_id)
 
 
-#
-# @login_required
-# @transaction.atomic()
-# @permission_required_or_403('participants.add_userlibrary')
-# @decorators.must_be_org_user
-# def add_library_user(request, managed_libraries=[]):
-#     districts = []
-#     for managed_library in managed_libraries:
-#         districts.append(managed_library.library.district_id)
-#
-#     select_libraries_qs = _get_user_manager_orgs_qs(managed_libraries)
-#
-#     select_district_form = forms.get_district_form(districts)(prefix='sdf')
-#     library = None
-#     errors = []
-#     SelectLibraryForm = forms.get_add_user_library_form(select_libraries_qs)
-#     if request.method == 'POST':
-#         all_valid = True
-#         select_library_form = SelectLibraryForm(request.POST, prefix='slf')
-#
-#         if not select_library_form.is_valid():
-#             all_valid = False
-#             errors.append({'message': 'Выберите организацию'})
-#         else:
-#             library = select_library_form.cleaned_data['library']
-#
-#         user_library_form = forms.UserLibraryForm(request.POST, prefix='ulf')
-#         if not user_library_form.is_valid():
-#             all_valid = False
-#
-#         user_form = forms.UserForm(request.POST, prefix='uf')
-#         if not user_form.is_valid():
-#             all_valid = False
-#
-#         user_library_group_form = forms.UserLibraryGroupsFrom(request.POST, prefix='ulgp')
-#         if not user_library_group_form.is_valid():
-#             all_valid = False
-#
-#         if all_valid:
-#             user = User(
-#                 username=user_form.cleaned_data['email'],
-#                 email=user_form.cleaned_data['email'],
-#                 first_name=user_form.cleaned_data['first_name'],
-#                 last_name=user_form.cleaned_data['last_name'],
-#                 is_active=True
-#             )
-#
-#             user.set_password(user_form.cleaned_data['password'])
-#             user.save()
-#             accounts_models.create_or_update_password(user, user_form.cleaned_data['password'])
-#
-#             users_group = Group.objects.get(name='users')
-#             users_group.user_set.add(user)
-#
-#             selected_groups = set(Group.objects.filter(id__in=user_library_group_form.cleaned_data['groups']))
-#             for selected_group in selected_groups:
-#                 selected_group.user_set.add(user)
-#
-#             user_library = user_library_form.save(commit=False)
-#             user_library.user = user
-#             user_library.library = select_library_form.cleaned_data['library']
-#             user_library.save()
-#             user_library_form.save_m2m()
-#             send_user_create_email(user, user_form.cleaned_data['password'])
-#             return redirect('participants:administration:library_user_list')
-#     else:
-#         select_library_form = SelectLibraryForm(request.POST, prefix='slf')
-#         user_library_group_form = forms.UserLibraryGroupsFrom(prefix='ulgp')
-#         select_district_form = forms.get_district_form(districts)(prefix='sdf')
-#         user_library_form = forms.UserLibraryForm(prefix='ulf')
-#         user_form = forms.UserForm(prefix='uf')
-#
-#     return render(request, 'participants/administration/add_library_user.html', {
-#         'select_district_form': select_district_form,
-#         'select_library_form': select_library_form,
-#         'user_library_form': user_library_form,
-#         'user_form': user_form,
-#         'user_library_group_form':user_library_group_form,
-#         'library': library,
-#         'errors': errors,
-#         'managed_libraries': managed_libraries
-#     })
-#
-#
-#
-#
-# @login_required
-# @transaction.atomic()
-# @permission_required_or_403('participants.change_userlibrary')
-# @decorators.must_be_org_user
-# def edit_library_user(request, id, managed_libraries=[]):
-#     districts = []
-#     for managed_library in managed_libraries:
-#         districts.append(managed_library.library.district_id)
-#
-#     select_libraries_qs = _get_user_manager_orgs_qs(managed_libraries)
-#
-#     select_district_form = forms.get_district_form(districts)(prefix='sdf')
-#
-#     library_user = get_object_or_404(models.UserLibrary, id=id)
-#
-#     errors = []
-#     if request.method == 'POST':
-#         all_valid = True
-#         select_library_form = forms.get_add_user_library_form(select_libraries_qs)(request.POST, prefix='slf', )
-#
-#         if not select_library_form.is_valid():
-#             all_valid = False
-#             errors.append({'message': 'Выберите организацию'})
-#
-#         user_library_form = forms.UserLibraryForm(request.POST, prefix='ulf', instance=library_user)
-#         if not user_library_form.is_valid():
-#             all_valid = False
-#
-#         user_form = forms.UserForm(request.POST, prefix='uf', instance=library_user.user)
-#         if not user_form.is_valid():
-#             all_valid = False
-#
-#         user_library_group_form = forms.UserLibraryGroupsFrom(request.POST, prefix='ulgp')
-#         if not user_library_group_form.is_valid():
-#             all_valid = False
-#
-#         if all_valid:
-#             user = user_form.save(commit=False)
-#             if user_form.cleaned_data['password']:
-#                 user.set_password(user_form.cleaned_data['password'])
-#                 accounts_models.create_or_update_password(user, user_form.cleaned_data['password'])
-#             user.save()
-#
-#             role_groups = set(models.get_role_groups())
-#             selected_groups = set(Group.objects.filter(id__in=user_library_group_form.cleaned_data['groups']))
-#             remove_groups = role_groups - selected_groups
-#
-#             for selected_group in selected_groups:
-#                 selected_group.user_set.add(user)
-#
-#             for remove_group in remove_groups:
-#                 remove_group.user_set.remove(user)
-#
-#             user_library = user_library_form.save(commit=False)
-#             user_library.library = select_library_form.cleaned_data['library']
-#             user_library.save()
-#             user_library_form.save_m2m()
-#             return redirect('participants:administration:library_user_list')
-#     else:
-#         user_library_group_form = forms.UserLibraryGroupsFrom(prefix='ulgp', initial={
-#             'groups': [group.id for group in models.get_role_groups(library_user.user)]
-#         })
-#         select_library_form = forms.get_add_user_library_form(select_libraries_qs)(prefix='slf', initial={
-#             'library': library_user.library
-#         })
-#         user_library_form = forms.UserLibraryForm(prefix='ulf', instance=library_user)
-#         user_form = forms.UserForm(prefix='uf', instance=library_user.user, initial={
-#             'password': ''
-#         })
-#
-#     return render(request, 'participants/administration/edit_library_user.html', {
-#         'select_district_form': select_district_form,
-#         'select_library_form': select_library_form,
-#         'user_library_form': user_library_form,
-#         'user_library_group_form': user_library_group_form,
-#         'user_form': user_form,
-#         'library_user': library_user,
-#         'managed_libraries': managed_libraries
-#     })
-#
-#
-# @login_required
-# @transaction.atomic()
-# @permission_required_or_403('participants.delete_userlibrary')
-# @decorators.must_be_org_user
-# def delete_library_user(request, id, managed_libraries=[]):
-#     districts = []
-#     for managed_library in managed_libraries:
-#         districts.append(managed_library.library.district_id)
-#
-#     library_user = get_object_or_404(models.UserLibrary, id=id)
-#     library_user.delete()
-#     return redirect('participants:administration:library_user_list')
-
-
 @login_required
 @transaction.atomic()
 @decorators.must_be_org_user
@@ -851,6 +674,126 @@ def managed_districts(request, managed_libraries=[]):
         q = Q(id__in=districts_id)
     districts = serializers.serialize("json", models.District.objects.filter(q))
     return HttpResponse(districts, content_type='application/json')
+
+
+@login_required
+@transaction.atomic()
+@decorators.must_be_org_user
+def library_wifi_list(request, managed_libraries=[]):
+    districts = []
+    for managed_library in managed_libraries:
+        districts.append(managed_library.district_id)
+    districts_form = forms.get_district_form(districts)(request.GET, prefix='sdf')
+
+    select_libraries_qs = _get_user_manager_orgs_qs(managed_libraries)
+
+    select_library_form = forms.get_add_user_library_form(select_libraries_qs)(request.GET, prefix='slf')
+
+    wifi_attr_form = forms.WiFiPointAttrForm(request.GET, prefix='waf')
+
+    q = Q()
+
+    if districts:
+        q &= Q(library__in=select_libraries_qs)
+
+    if districts_form.is_valid():
+        district = districts_form.cleaned_data['district']
+        if district:
+            q &= Q(library__district=district)
+
+    if select_library_form.is_valid():
+        q &= Q(library=select_library_form.cleaned_data['library'])
+
+    if wifi_attr_form.is_valid():
+        if wifi_attr_form.cleaned_data['mac']:
+            q &= Q(mac__icontains=wifi_attr_form.cleaned_data['mac'])
+        if wifi_attr_form.cleaned_data['comments']:
+            comment_parts = wifi_attr_form.cleaned_data['comments'].split(' ')
+            q_comments = Q()
+            for comment_part in comment_parts:
+                q_comments &= Q(comments__icontains=comment_part)
+            q &= q_comments
+        if wifi_attr_form.cleaned_data['status']:
+            q &= Q(status=wifi_attr_form.cleaned_data['status'])
+
+    library_wifi_page = get_page(
+        request,
+        models.WiFiPoint.objects.select_related('library', 'library__district').filter(q),
+        20
+    )
+
+    return render(request, 'participants/administration/library_wifi_list.html', {
+        'select_library_form': select_library_form,
+        'districts_form': districts_form,
+        'wifi_attr_form': wifi_attr_form,
+        'library_wifi_page': library_wifi_page
+    })
+
+
+@login_required
+@transaction.atomic()
+@permission_required_or_403('participants.add_wifipoint')
+@decorators.must_be_org_user
+def add_library_wifi(request, library_id, managed_libraries=[]):
+    managed_libray_ids = [unicode(managed_library.id) for managed_library in managed_libraries]
+
+    if managed_libray_ids and library_id not in managed_libray_ids:
+        return HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
+    library = get_object_or_404(models.Library, id=library_id)
+
+    if request.method == 'POST':
+        form = forms.WiFiPointForm(request.POST)
+        if form.is_valid():
+            wifi_point = form.save(commit=False)
+            wifi_point.library = library
+            wifi_point.save()
+            return redirect('participants:administration:detail', id=library.id)
+    else:
+        form = forms.WiFiPointForm()
+    return render(request, 'participants/administration/wifi_form.html', {
+        'form': form,
+        'org': library,
+    })
+
+
+@login_required
+@transaction.atomic()
+@permission_required_or_403('participants.edit_wifipoint')
+@decorators.must_be_org_user
+def edit_library_wifi(request, library_id, id, managed_libraries=[]):
+    managed_libray_ids = [unicode(managed_library.id) for managed_library in managed_libraries]
+    if managed_libray_ids and library_id not in managed_libray_ids:
+        return HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
+    library = get_object_or_404(models.Library, id=library_id)
+    wifi_point = get_object_or_404(models.WiFiPoint, id=id, library_id=library_id)
+    if request.method == 'POST':
+        form = forms.WiFiPointForm(request.POST, instance=wifi_point)
+        if form.is_valid():
+            wifi_point = form.save(commit=False)
+            wifi_point.library = library
+            wifi_point.save()
+            return redirect('participants:administration:detail', id=library.id)
+    else:
+        form = forms.WiFiPointForm(instance=wifi_point)
+    return render(request, 'participants/administration/wifi_form.html', {
+        'form': form,
+        'edit': True,
+        'org': library,
+    })
+
+
+@login_required
+@transaction.atomic()
+@permission_required_or_403('participants.edit_wifipoint')
+@decorators.must_be_org_user
+def delete_library_wifi(request, library_id, id, managed_libraries=[]):
+    managed_libray_ids = [unicode(managed_library.id) for managed_library in managed_libraries]
+    if managed_libray_ids and library_id not in managed_libray_ids:
+        return HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
+    library = get_object_or_404(models.Library, id=library_id)
+    wifi_point = get_object_or_404(models.WiFiPoint, id=id, library_id=library_id)
+    wifi_point.delete()
+    return redirect('participants:administration:detail', id=library.id)
 
 
 def send_user_create_email(user, password):

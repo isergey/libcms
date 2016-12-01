@@ -1,0 +1,113 @@
+{% extends 'participants/administration/index.html' %}
+{% load mptt_tags %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    <li>
+        <a href="{% url 'participants:administration:index' %}">Библиотеки</a>
+        <span class="divider">/</span>
+    </li>
+    <li class="active">WiFi точки доступа библиотек</li>
+{% endblock %}
+
+{% block action_content %}
+    <div class="alert alert-warning">
+        {% if managed_libraries %}
+            Вы можете управлять WiFi следующих организаций:
+            <ul>
+                {% recursetree managed_libraries %}
+                    <li>
+                        <a href="{% url 'participants:administration:detail' node.id %}">{{ node.name }}</a>
+                        {% if not node.is_leaf_node %}
+                            <ul class="children">
+                                {{ children }}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endrecursetree %}
+            </ul>
+        {% else %}
+            Вы можете управлять WiFi любой организации
+        {% endif %}
+    </div>
+{#    <div class="well well-small">#}
+{#        <a class="btn btn-success" href="{% url 'participants:administration:add_library_user' %}"><i class="icon-plus icon-white"></i> Добавить сотрудника</a>#}
+{#    </div>#}
+    <div class="well well-small">
+        <form style="margin: 0">
+            <input id="id_slf-library" type="hidden" name="slf-library" value=""/>
+            <div class="row">
+                <div class="span6">
+                    <div class="row">
+                        <div class="span3">
+{#                            <label>Атрибуты точки</label>#}
+                            {{ wifi_attr_form }}
+                        </div>
+{#                        <div class="span3">#}
+{#                            {{ role_form }}#}
+{#                            {{ position_form }}#}
+{#                        </div>#}
+                    </div>
+                    <div class="row">
+                        <div class="span6">
+                            <a class="btn" href="{% url 'participants:administration:library_wifi_list' %}">
+                                Очистить фильтр
+                            </a>
+                            <button class="btn btn-success" type="submit">
+                                Найти
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span3">
+                    {{ districts_form }}
+                    <label>Выберите организацию:</label>
+                    <div class="lib_select"></div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <div>
+        Найдено: {{ library_wifi_page.paginator.count }}
+    </div>
+    <table class="table">
+        <tr>
+            <th>MAC адрес</th>
+            <th>Статус</th>
+            <th>Организация</th>
+            <th>Район</th>
+        </tr>
+        {% for library_wifi in library_wifi_page.object_list %}
+            <tr>
+                <td>
+                    <a href="{% url 'participants:administration:edit_library_wifi' library_wifi.library_id  library_wifi.id %}">{{ library_wifi.mac }}</a>
+                </td>
+                <td>
+                    <span class="label {% if library_wifi.status == 'enabled' %}label-success{% else %}label-important{% endif %}"
+                            title="{{ library_wifi.get_status_display }}"
+                    >
+                        {{ library_wifi.get_status_display }}
+                    </span>
+                </td>
+                <td><span title="{{ library_wifi.library.name }}">{{ library_wifi.library.name }}</span></td>
+                <td><span title="{{ library_wifi.library.district.name }}">{{ library_wifi.library.district.name }}</span></td>
+{#                <td>#}
+{#                    <span title="{{ lib_user.user.last_name }} {{ lib_user.user.first_name }} {{ lib_user.middle_name }}">#}
+{#                    {{ lib_user.user.last_name }} {{ lib_user.user.first_name }} {{ lib_user.middle_name }}#}
+{#                    </span>#}
+{#                </td>#}
+{#                <td><span title="{{ lib_user.position }}">{{ lib_user.position|default:'---' }}</span></td>#}
+{#                <td><span title="{{ lib_user.user.username }}">{{ lib_user.user.username }}</span></td>#}
+{#                <td style="width: 100px">#}
+{#                    <span title="{{ lib_user.user.last_login }}">{{ lib_user.user.last_login }}</span>#}
+{#                </td>#}
+            </tr>
+        {% endfor %}
+    </table>
+    {% admin_pagination library_wifi_page %}
+    {% include 'participants/administration/lib_select_js.html' %}
+{% endblock %}
