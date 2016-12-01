@@ -200,6 +200,111 @@
                             <h4 class="facet__title">Информация</h4>
                         </div>
                         <div class="facet__body">
+                          <form class="filter-form" method="GET">
+                            <style type="text/css">
+                              .controls ul li label input {
+                                display: inline;
+                              }
+                              .controls ul {
+                                list-style: none;
+                              }
+                            </style>
+
+
+                            <div class="control-group ">
+                              <label class="control-label" for="id_filter-library">Укажите библиотеку</label>
+                              <div class="controls">
+                                <select id="id_filter-library" name="filter-library">
+                                  <option value="" selected="selected">выберите из списка</option>
+                                  <option value="2">ГБУК РТ «Национальная библиотека  Республики Татарстан»</option>
+                                  <option value="14">ГБУК РТ «Республиканская юношеская библиотека»</option>
+                                  <option value="3">ГБУК РТ «Республиканская детская библиотека»</option>
+                                  <option value="4">ГБУК РТ «Республиканская специальная библиотека для слепых и слабовидящих»</option>
+                                  <option value="26">МБУК «Централизованная библиотечная система  г.Казани»</option>
+                                  <option value="27">МБУ «Централизованная библиотечная система» г.Набережные Челны</option>
+                                  <option value="1067">МБУК «Агрызская централизованная библиотечная система»</option>
+                                  <option value="1069">МБУ «Централизованная библиотечная система» Азнакаевского муниципального района РТ</option>
+                                  <option value="21">МБУ «Аксубаевская межпоселенческая центральная библиотека»</option>
+                                  <option value="446">МБУ «Актанышская межпоселенческая центральная библиотека»</option>
+                                  <option value="1236">МБУ «Централизованная библиотечная система Алексеевского муниципального района Республики Татарстан»</option>
+                                  <option value="1240">МБУК «Алькеевская межпоселенческая  центральная библиотека» </option>
+                                  <option value="22">МБУ «Централизованная библиотечная система Альметьевского муниципального района РТ»</option>
+                                  <option value="485">МБУ «Централизованная библиотечная система»  Апастовского муниципального района РТ</option>
+                                  <option value="486">МБУ «Арская централизованная библиотечная система» Арского муниципального района РТ</option>
+                                  <option value="1245">МБУ «Атнинская централизованная библиотечная система» </option>
+                                  <option value="487">МБУ «Централизованная библиотечная система»  Бавлинского муниципального района РТ</option>
+                                  <option value="488">РМУК «Балтасинская межпоселенческая центральная библиотека»</option>
+                                  <option value="23">МБУК «Межпоселенческая центральная библиотека» Бугульминского муниципального района РТ</option>
+                                  <option value="24">МБУ «Межпоселенческая центральная библиотека» Буинского муниципального района РТ</option>
+                                  <option value="489">МБУ «Централизованная библиотечная система Верхнеуслонского муниципального района»</option>
+                                  <option value="1070">МБУ «Высокогорская Централизованная библиотечная система»</option>
+                                  <option value="1244">МБУ «Межпоселенческая библиотека» Дрожжановского муниципального района РТ</option>
+                                  <option value="25">МБУ «Централизованная библиотечная система Елабужского муниципального района»</option>
+                                  <option value="490">МБУК «Централизованная библиотечная система» Заинского муниципального района РТ</option>
+                                  <option value="12">МБУ «Централизованная библиотечная система Зеленодольского муниципального района»</option>
+                                  <option value="1243">МБУ «Централизованная библиотечная система Кайбицкого муниципального района»</option>
+                                  <option value="1238">МБУ «Межпоселнческая центральная библиотека» Камско-Устьинского муниципального района</option>
+                                  <option value="491">МБУ «Централизованная библиотечная система Кукморского муниципального района»</option>
+                                  <option value="1242">МБУК «Лаишевская централизованная библиотечная система»  </option>
+                                  <option value="492">МБУ«Централизованная библиотечная система» муниципального образования «Лениногорский муниципальный район» РТ</option>
+                                  <option value="1071">МБУ «Централизованная библиотечная система» Мамадышского муниципального района РТ</option>
+                                  <option value="1075">МБУК «Централизованная библиотечная система Менделеевского муниципального района РТ»</option>
+                                  <option value="493">МБУК «Межпоселенческая центральная библиотека» Мензелинского муниципального района РТ</option>
+                                  <option value="494">МБУК «Централизованная библиотека» Муслюмовского муниципального района РТ</option>
+                                  <option value="28">МБУ «Межпоселенческая библиотечная система Нижнекамского муниципального района РТ»</option>
+                                  <option value="1077">МБУК «Централизованная библиотечная система» Новошешминского муниципального района РТ</option>
+                                  <option value="495">МБУ «Межпоселенческая центральная библиотека» Нурлатского муниципального района РТ</option>
+                                  <option value="29">МБУ «Централизованная библиотечная система  Пестречинского муниципального района»</option>
+                                  <option value="496">МБУ «Централизованная библиотечная система»  Рыбно-Слободского муниципального района РТ</option>
+                                  <option value="30">МБУ «Сабинская централизованная библиотечная система» Сабинского муниципального района</option>
+                                  <option value="1079">МБУ «Централизованная библиотека» Сармановского муниципального района РТ </option>
+                                  <option value="497">МБУ «Межпоселенческая центральная библиотека» Спасского муниципального района РТ</option>
+                                  <option value="498">МБУ «Тетюшская межпоселенческая библиотека» Тетюшского муниципального района РТ</option>
+                                  <option value="1081">МБУ «Централизованная библиотечная система Тукаевского муниципального района РТ»</option>
+                                  <option value="1241">МБУ «Тюлячинская межпоселенческая библиотека»   Тюлячинского муниципального района РТ  </option>
+                                  <option value="1083">МБУ «Черемшанская межпоселенческая центральная библиотека» Черемшанского муниципального района РТ</option>
+                                  <option value="499">МБУК «Чистопольская межпоселенческая центральная библиотека» Чистопольского муниципального района РТ</option>
+                                  <option value="500">МБУ «Ютазинская централизованная библиотечная система»</option>
+                                </select>
+
+                                <p class="help-block"></p>
+                              </div>
+
+                            </div>
+
+                            <div class="control-group ">
+                              <label class="control-label" for="id_filter-event_type">Тип события</label>
+                              <div class="controls">
+                                <ul id="id_filter-event_type"><li><label for="id_filter-event_type_0"><input id="id_filter-event_type_0" name="filter-event_type" type="checkbox" value="2"> Выставка</label></li>
+                                  <li><label for="id_filter-event_type_1"><input id="id_filter-event_type_1" name="filter-event_type" type="checkbox" value="3"> Конференция/круглый стол</label></li>
+                                  <li><label for="id_filter-event_type_2"><input id="id_filter-event_type_2" name="filter-event_type" type="checkbox" value="5"> Литературная гостинная</label></li>
+                                  <li><label for="id_filter-event_type_3"><input id="id_filter-event_type_3" name="filter-event_type" type="checkbox" value="4"> Мастер-класс</label></li>
+                                  <li><label for="id_filter-event_type_4"><input id="id_filter-event_type_4" name="filter-event_type" type="checkbox" value="7"> Музыкальная гостинная</label></li>
+                                  <li><label for="id_filter-event_type_5"><input id="id_filter-event_type_5" name="filter-event_type" type="checkbox" value="1"> Презентация</label></li>
+                                  <li><label for="id_filter-event_type_6"><input id="id_filter-event_type_6" name="filter-event_type" type="checkbox" value="6"> Театральная гостинная</label></li></ul>
+
+                                <p class="help-block"></p>
+                              </div>
+
+                            </div>
+
+                            <div class="control-group ">
+                              <label class="control-label" for="id_filter-age_category">Возрастная категория</label>
+                              <div class="controls">
+                                <ul id="id_filter-age_category"><li><label for="id_filter-age_category_0"><input id="id_filter-age_category_0" name="filter-age_category" type="checkbox" value="1"> 0+</label></li>
+                                  <li><label for="id_filter-age_category_1"><input id="id_filter-age_category_1" name="filter-age_category" type="checkbox" value="2"> 12+</label></li>
+                                  <li><label for="id_filter-age_category_2"><input id="id_filter-age_category_2" name="filter-age_category" type="checkbox" value="3"> 18+</label></li>
+                                  <li><label for="id_filter-age_category_3"><input id="id_filter-age_category_3" name="filter-age_category" type="checkbox" value="4"> 6+</label></li></ul>
+
+                                <p class="help-block"></p>
+                              </div>
+
+                            </div>
+
+                            <input class="filter-form__btn" type="submit" value="Фильтровать">
+                            <a href="/ru/events/" class="filter-form__btn filter-form__btn_clear" title="Очистить фильтр">Очистить</a>
+                          </form>
+
                             <img class="lib-info__avatar" src="images/testdelete.jpg" alt="">
                             <h2 class="lib-info__title"><a href="#">О библиотеке</a></h2>
                             <ul class="lib-info__list">
