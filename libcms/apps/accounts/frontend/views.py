@@ -84,6 +84,7 @@ def login(request, template_name='registration/login.html',
     """
     Displays the login form and handles the login action.
     """
+    ap_mac = request.GET.get('ap_mac', '')
     wifi = request.GET.get('wifi', '')
     remote_addr = request.META.get('REMOTE_ADDR', '')
     redirect_to = request.REQUEST.get(redirect_field_name, '')
@@ -112,6 +113,8 @@ def login(request, template_name='registration/login.html',
                     u'У вас не работают cookies. Пожалуйста, включите их в браузере или очистите кеш браузера.')
 
             if request.user.is_authenticated():
+                if ap_mac:
+                    request.session['ap_mac'] = ap_mac
                 if wifi:
                     username = form.cleaned_data['username']
                     suffix = '@tatar.ru'
@@ -193,7 +196,10 @@ def logout(request, next_page=None,
 
 
 def wifi(request):
+    ap_mac = request.GET.get('ap_mac', '')
     if request.user.is_authenticated():
+        if ap_mac:
+            request.session['ap_mac'] = ap_mac
         orgs = participants_models.user_organizations(request.user)
         if orgs:
             return redirect('http://help.kitap.tatar.ru')
