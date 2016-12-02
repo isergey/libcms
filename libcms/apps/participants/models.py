@@ -235,6 +235,43 @@ class WiFiPoint(models.Model):
             raise ValidationError({'mac': u'Неправильный фортам MAC адреса'})
 
 
+IS_EXIST_CHOICES = (
+    ('none', u'нет'),
+    ('gist', u'ГИСТ'),
+    ('other', u'прочее'),
+)
+
+CONNECTION_TYPE_CHOICES = (
+    ('adsl', u'ADSL'),
+    ('vols', u'ВОЛС'),
+    ('3g5g', u'3G-4G'),
+)
+
+
+class InternetConnection(models.Model):
+    library = models.ForeignKey(Library)
+    is_exist = models.CharField(
+        verbose_name=u'Наличие подключения',
+        max_length=16,
+        choices=IS_EXIST_CHOICES,
+        db_index=True
+    )
+    connection_type = models.CharField(
+        verbose_name=u'Тип подключения',
+        max_length=16,
+        db_index=True,
+        choices=CONNECTION_TYPE_CHOICES
+    )
+    incoming_speed = models.IntegerField(
+        verbose_name=u'Входящая скорость Мб/сек',
+        default=0
+    )
+    outbound_speed = models.IntegerField(
+        verbose_name=u'Исходящая скорость (Мб/сек)',
+        default=0
+    )
+
+
 def get_role_groups(user=None):
     if user:
         return user.groups.filter(name__startswith='role_')
@@ -331,4 +368,3 @@ def get_org_by_ap_mac(ap_mac):
 
 def _reverse(request, url, args=[]):
     return u'%s://%s%s' % (request.scheme, request.get_host(), reverse(url, args=args))
-
