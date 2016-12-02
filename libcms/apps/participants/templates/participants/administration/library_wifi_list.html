@@ -93,7 +93,14 @@
                         {{ library_wifi.get_status_display }}
                     </span>
                 </td>
-                <td><span title="{{ library_wifi.library.name }}">{{ library_wifi.library.name }}</span></td>
+                <td>
+                    <span title="{{ library_wifi.library.name }}">
+                        {% for ancestor in library_wifi.library.get_ancestors %}
+                            {{ ancestor }} →
+                        {% endfor %}
+                        {{ library_wifi.library.name }}
+                    </span>
+                </td>
                 <td><span title="{{ library_wifi.library.district.name }}">{{ library_wifi.library.district.name }}</span></td>
 {#                <td>#}
 {#                    <span title="{{ lib_user.user.last_name }} {{ lib_user.user.first_name }} {{ lib_user.middle_name }}">#}
