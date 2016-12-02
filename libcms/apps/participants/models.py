@@ -321,5 +321,14 @@ def user_organizations(user):
     return orgs
 
 
+def get_org_by_ap_mac(ap_mac):
+    try:
+        wifi_point = WiFiPoint.objects.get(mac=ap_mac)
+        return wifi_point.library
+    except WiFiPoint.DoesNotExist:
+        return None
+
+
 def _reverse(request, url, args=[]):
     return u'%s://%s%s' % (request.scheme, request.get_host(), reverse(url, args=args))
+

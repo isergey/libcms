@@ -5,6 +5,15 @@
     {% trans 'Login' %}
 {% endblock %}
 {% block content %}
+    <style>
+        .org_button {
+            color: #1d609b;
+            padding: 10px 20px;
+            border: 1px solid #77a0c3;
+            border-radius: 5px;
+            margin: 20px 0 40px 40px;
+        }
+    </style>
     <nav class="bg bg_second">
         <div class="container">
             {% include 'main_menu.html' %}
@@ -36,8 +45,20 @@
         </div>
         <hr class="footer-hr">
         <div class="container">
+
             <div class="row">
                 <div class="col-12">
+                    {% if library %}
+                        {% with library.get_root as cbs %}
+                            <div>
+                                <a class="footer-logo__ask-lib"
+                                  href="{% url 'ssearch:frontend:ecatalog' %}?library={{ cbs.code }}">
+                                Выполнить поиск по каталогу: {{ cbs }}
+                                </a>
+                            </div>
+                        {% endwith %}
+                    {% endif %}
+
                     <h1 class="content-page__title">Авторизация</h1>
 
                     <div class="row">
@@ -56,11 +77,11 @@
                                     {% csrf_token %}
                                     <label>
                                         <img src="{{ STATIC_URL }}dist/images/login.png">
-                                        <input name="username"  type="text" placeholder="Логин">
+                                        <input name="username" type="text" placeholder="Логин">
                                     </label>
                                     <label>
                                         <img src="{{ STATIC_URL }}dist/images/pass.png">
-                                        <input name="password"  type="password" placeholder="Пароль">
+                                        <input name="password" type="password" placeholder="Пароль">
                                     </label>
                                     <button type="submit">Войти</button>
                                     <a href="{% url 'accounts:frontend:password_reset' %}">Забыли пароль?</a>
@@ -81,7 +102,8 @@
                                 <p class="esia-box__info">
                                     Вход с использованием учетной записи на портале электронного образования РТ.
                                 </p>
-                                <a href="{% url 'sso_tatedu:index' %}" title="Войти через ЕСИА">Войти через портал ЭО РТ</a>
+                                <a href="{% url 'sso_tatedu:index' %}" title="Войти через ЕСИА">Войти через портал ЭО
+                                    РТ</a>
                             </div>
                         </div>
                     </div>

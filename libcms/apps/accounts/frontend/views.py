@@ -138,14 +138,21 @@ def login(request, template_name='registration/login.html',
 
     current_site = get_current_site(request)
 
+    library = None
+    if ap_mac:
+        library = participants_models.get_org_by_ap_mac(ap_mac)
+
     context = {
         'form': form,
+        'library': library,
         redirect_field_name: redirect_to,
         'site': current_site,
         'site_name': current_site.name,
     }
     if extra_context is not None:
         context.update(extra_context)
+
+
     return render(request, template_name, context, current_app=current_app)
 
 
