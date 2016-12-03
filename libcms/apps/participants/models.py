@@ -235,7 +235,7 @@ class WiFiPoint(models.Model):
             raise ValidationError({'mac': u'Неправильный фортам MAC адреса'})
 
 
-IS_EXIST_CHOICES = (
+IS_CONNECTION_EXIST_CHOICES = (
     ('none', u'нет'),
     ('gist', u'ГИСТ'),
     ('other', u'прочее'),
@@ -253,7 +253,7 @@ class InternetConnection(models.Model):
     is_exist = models.CharField(
         verbose_name=u'Наличие подключения',
         max_length=16,
-        choices=IS_EXIST_CHOICES,
+        choices=IS_CONNECTION_EXIST_CHOICES,
         db_index=True
     )
     connection_type = models.CharField(
@@ -263,7 +263,7 @@ class InternetConnection(models.Model):
         choices=CONNECTION_TYPE_CHOICES
     )
     incoming_speed = models.IntegerField(
-        verbose_name=u'Входящая скорость Мб/сек',
+        verbose_name=u'Входящая скорость (Мб/сек)',
         default=0
     )
     outbound_speed = models.IntegerField(

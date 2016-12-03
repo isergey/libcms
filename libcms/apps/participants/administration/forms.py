@@ -105,10 +105,10 @@ class UserLibraryForm(forms.ModelForm):
         max_birth_date = now - relativedelta(years=10)
         min_birth_date = now - relativedelta(years=100)
         if birth_date > datetime.date(max_birth_date.year, max_birth_date.month, max_birth_date.day):
-            raise forms.ValidationError(u'Дата рождения должна быть меньше %s' % (max_birth_date, ))
+            raise forms.ValidationError(u'Дата рождения должна быть меньше %s' % (max_birth_date,))
 
         if birth_date < datetime.date(min_birth_date.year, min_birth_date.month, min_birth_date.day):
-            raise forms.ValidationError(u'Дата рождения должна быть больше %s' % (min_birth_date, ))
+            raise forms.ValidationError(u'Дата рождения должна быть больше %s' % (min_birth_date,))
 
         return birth_date
 
@@ -200,20 +200,30 @@ class WiFiPointForm(forms.ModelForm):
         exclude = ['library']
 
 
-class WiFiPointAttrForm(forms.Form):
-    mac = forms.CharField(
-        label=u'MAC адрес',
-        max_length=17,
-        required=False
-    )
-    status = forms.ChoiceField(
-        label=u'Статус',
-        choices=BLANK_CHOICE_DASH + list(models.WIFI_POINT_STATUSES),
-        required=False,
+class InternetConnectionForm(forms.ModelForm):
+    class Meta:
+        model = models.InternetConnection
+        exclude = ['library']
 
+
+class InternetConnectionAttrForm(forms.Form):
+    is_exist = forms.ChoiceField(
+        label=u'Наличие подключения',
+        required=False,
+        choices=BLANK_CHOICE_DASH + list(models.IS_CONNECTION_EXIST_CHOICES)
     )
-    comments = forms.CharField(
-        label=u'Комментарии',
-        max_length=255,
-        required=False
+    connection_type = forms.ChoiceField(
+        label=u'Тип подключения',
+        required=False,
+        choices=BLANK_CHOICE_DASH + list(models.CONNECTION_TYPE_CHOICES)
+    )
+    incoming_speed = forms.CharField(
+        label=u'Входящая скорость Мб/сек',
+        required=False,
+        help_text=u'Диапазон указать через "-". Например: 10-20'
+    )
+    outbound_speed = forms.CharField(
+        label=u'Исходящая скорость (Мб/сек)',
+        required=False,
+        help_text=u'Диапазон указать через "-". Например: 10-20'
     )

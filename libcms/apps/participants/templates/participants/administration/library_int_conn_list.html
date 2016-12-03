@@ -9,13 +9,13 @@
         <a href="{% url 'participants:administration:index' %}">Библиотеки</a>
         <span class="divider">/</span>
     </li>
-    <li class="active">WiFi точки доступа библиотек</li>
+    <li class="active">Интернет соединения библиотек</li>
 {% endblock %}
 
 {% block action_content %}
     <div class="alert alert-warning">
         {% if managed_libraries %}
-            Вы можете управлять WiFi следующих организаций:
+            Вы можете управлять справочником Интернет соединений следующих организаций:
             <ul>
                 {% recursetree managed_libraries %}
                     <li>
@@ -29,12 +29,9 @@
                 {% endrecursetree %}
             </ul>
         {% else %}
-            Вы можете управлять WiFi любой организации
+            Вы можете управлять справочником Интернет соединений любой организации
         {% endif %}
     </div>
-{#    <div class="well well-small">#}
-{#        <a class="btn btn-success" href="{% url 'participants:administration:add_library_user' %}"><i class="icon-plus icon-white"></i> Добавить сотрудника</a>#}
-{#    </div>#}
     <div class="well well-small">
         <form style="margin: 0">
             <input id="id_slf-library" type="hidden" name="slf-library" value=""/>
@@ -42,17 +39,12 @@
                 <div class="span6">
                     <div class="row">
                         <div class="span3">
-{#                            <label>Атрибуты точки</label>#}
-                            {{ wifi_attr_form }}
+                            {{ int_conn_attr_form }}
                         </div>
-{#                        <div class="span3">#}
-{#                            {{ role_form }}#}
-{#                            {{ position_form }}#}
-{#                        </div>#}
                     </div>
                     <div class="row">
                         <div class="span6">
-                            <a class="btn" href="{% url 'participants:administration:library_wifi_list' %}">
+                            <a class="btn" href="{% url 'participants:administration:library_int_conn_list' %}">
                                 Очистить фильтр
                             </a>
                             <button class="btn btn-success" type="submit">
@@ -72,41 +64,43 @@
 
     </div>
     <div>
-        Найдено: {{ library_wifi_page.paginator.count }}
+        Найдено: {{ library_int_conn_page.paginator.count }}
     </div>
     <table class="table">
         <tr>
-            <th>MAC адрес</th>
-            <th>Статус</th>
+            <th>Наличие подключения</th>
+            <th>Тип</th>
+            <th>Вх. скорость (Мб/сек)</th>
+            <th>Исх. скорость (Мб/сек)</th>
             <th>Организация</th>
             <th>Район</th>
         </tr>
-        {% for library_wifi in library_wifi_page.object_list %}
+        {% for library_int_conn in library_int_conn_page.object_list %}
             <tr>
                 <td>
-                    <a href="{% url 'participants:administration:edit_library_wifi' library_wifi.library_id  library_wifi.id %}">
-                        {{ library_wifi.mac }}
-                    </a>
+                    <a href="{% url 'participants:administration:edit_library_int_conn' library_int_conn.library_id  library_int_conn.id %}">{{ library_int_conn.get_is_exist_display }}</a>
                 </td>
                 <td>
-                    <span class="label {% if library_wifi.status == 'enabled' %}label-success{% else %}label-important{% endif %}"
-                            title="{{ library_wifi.get_status_display }}"
-                    >
-                        {{ library_wifi.get_status_display }}
-                    </span>
+                    {{ library_int_conn.get_connection_type_display }}
                 </td>
                 <td>
-                    <span title="{{ library_wifi.library.name }}">
-                        {% for ancestor in library_wifi.library.get_ancestors %}
+                    {{ library_int_conn.incoming_speed }}
+                </td>
+                <td>
+                    {{ library_int_conn.outbound_speed }}
+                </td>
+                <td>
+                    <span title="{{ library_int_conn.library.name }}">
+                        {% for ancestor in library_int_conn.library.get_ancestors %}
                             {{ ancestor }} →
                         {% endfor %}
-                        {{ library_wifi.library.name }}
+                        {{ library_int_conn.library.name }}
                     </span>
                 </td>
-                <td><span title="{{ library_wifi.library.district.name }}">{{ library_wifi.library.district.name }}</span></td>
+                <td><span title="{{ library_int_conn.library.district.name }}">{{ library_int_conn.library.district.name }}</span></td>
             </tr>
         {% endfor %}
     </table>
-    {% admin_pagination library_wifi_page %}
+    {% admin_pagination library_int_conn_page %}
     {% include 'participants/administration/lib_select_js.html' %}
 {% endblock %}

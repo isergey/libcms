@@ -32,6 +32,7 @@
         <li title="Отделы"><a href="#departments">Отделы</a></li>
         <li title="Сотрудники"><a href="#users">Сотрудники</a></li>
         <li title="Точки доступа WiFi"><a href="#wifi">Точки доступа WiFi</a></li>
+        <li title="Интернет соединения"><a href="#int_conn">Интернет соединения</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="home">
@@ -151,6 +152,39 @@
                         </td>
                         <td>{{ wifi_point.comments }}</td>
                         <td><a href="{% url 'participants:administration:delete_library_wifi' org.id wifi_point.id %}" class="btn btn-small btn-danger">удалить</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="tab-pane" id="int_conn">
+            <div class="well well-small">
+                <a class="btn btn-success" href="{% url 'participants:administration:add_library_int_conn' org.id %}">
+                    <i class="icon-plus icon-white"></i> Добавить интернет соединение
+                </a>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>Наличие подключения</th>
+                    <th>Тип</th>
+                    <th>Вх. скорость (Мб/сек)</th>
+                    <th>Исх. скорость (Мб/сек)</th>
+                    <th>Действия</th>
+                </tr>
+                {% for int_connection in int_connections %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'participants:administration:edit_library_int_conn' int_connection.library_id  int_connection.id %}">{{ int_connection.get_is_exist_display }}</a>
+                        </td>
+                        <td>
+                            {{ int_connection.get_connection_type_display }}
+                        </td>
+                        <td>
+                            {{ int_connection.incoming_speed }}
+                        </td>
+                        <td>
+                            {{ int_connection.outbound_speed }}
+                        </td>
+                        <td><a href="{% url 'participants:administration:delete_library_int_conn' org.id int_connection.id %}" class="btn btn-small btn-danger">удалить</a></td>
                     </tr>
                 {% endfor %}
             </table>
