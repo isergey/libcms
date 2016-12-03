@@ -227,3 +227,12 @@ class InternetConnectionAttrForm(forms.Form):
         required=False,
         help_text=u'Диапазон указать через "-". Например: 10-20'
     )
+
+
+class OracleConnectionForm(forms.ModelForm):
+    class Meta:
+        model=models.OracleConnection
+        exclude = ['library']
+        widgets = {
+            'password': forms.PasswordInput()
+        }

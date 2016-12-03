@@ -46,4 +46,9 @@ urlpatterns = patterns(
     url(r'^intconn/(?P<library_id>\d+)/create/$', views.add_library_int_conn, name="add_library_int_conn"),
     url(r'^intconn/(?P<library_id>\d+)/edit/(?P<id>\d+)/$', views.edit_library_int_conn, name="edit_library_int_conn"),
     url(r'^intconn/(?P<library_id>\d+)/delete/(?P<id>\d+)/$', views.delete_library_int_conn, name="delete_library_int_conn"),
+
+    url(r'^oraconn/(?P<library_id>\d+)/create/$', views.add_library_ora_conn, name="add_library_ora_conn"),
+    url(r'^oraconn/(?P<library_id>\d+)/edit/(?P<id>\d+)/$', views.edit_library_ora_conn, name="edit_library_ora_conn"),
+    url(r'^oraconn/(?P<library_id>\d+)/delete/(?P<id>\d+)/$', views.delete_library_ora_conn, name="delete_library_ora_conn"),
+
 )

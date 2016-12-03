@@ -58,6 +58,7 @@ def detail(request, id, managed_libraries=None):
     library_users = models.UserLibrary.objects.filter(library=org)
     wifi_points = models.WiFiPoint.objects.filter(library=org)
     int_connections = models.InternetConnection.objects.filter(library=org)
+    ora_connections = models.OracleConnection.objects.filter(library=org)
     return render(request, 'participants/administration/detail.html', {
         'org': org,
         'branches': branches,
@@ -65,6 +66,7 @@ def detail(request, id, managed_libraries=None):
         'library_users': library_users,
         'wifi_points': wifi_points,
         'int_connections': int_connections,
+        'ora_connections': ora_connections,
         'can_manage': can_manage
     })
 
@@ -838,14 +840,16 @@ def library_int_conn_list(request, managed_libraries=[]):
             if len(incoming_speed_parts) == 1:
                 q &= Q(incoming_speed=int(incoming_speed_parts[0]))
             if len(incoming_speed_parts) == 2:
-                q &= Q(incoming_speed__gte=int(incoming_speed_parts[0]), incoming_speed__lte=int(incoming_speed_parts[1]))
+                q &= Q(incoming_speed__gte=int(incoming_speed_parts[0]),
+                       incoming_speed__lte=int(incoming_speed_parts[1]))
 
         if int_conn_attr_form.cleaned_data['outbound_speed']:
             outbound_speed_parts = int_conn_attr_form.cleaned_data['outbound_speed'].split('-')
             if len(outbound_speed_parts) == 1:
                 q &= Q(outbound_speed=int(outbound_speed_parts[0]))
             if len(outbound_speed_parts) == 2:
-                q &= Q(outbound_speed__gte=int(outbound_speed_parts[0]), outbound_speed__lte=int(outbound_speed_parts[1]))
+                q &= Q(outbound_speed__gte=int(outbound_speed_parts[0]),
+                       outbound_speed__lte=int(outbound_speed_parts[1]))
 
     library_int_conn_page = get_page(
         request,
@@ -924,6 +928,76 @@ def delete_library_int_conn(request, library_id, id, managed_libraries=[]):
     library = get_object_or_404(models.Library, id=library_id)
     int_conn_point = get_object_or_404(models.InternetConnection, id=id, library_id=library_id)
     int_conn_point.delete()
+    return redirect('participants:administration:detail', id=library.id)
+
+
+
+@login_required
+@transaction.atomic()
+@permission_required_or_403('participants.add_oracleconnection')
+@decorators.must_be_org_user
+def add_library_ora_conn(request, library_id, managed_libraries=[]):
+    managed_libray_ids = [unicode(managed_library.id) for managed_library in managed_libraries]
+
+    if managed_libray_ids and library_id not in managed_libray_ids:
+        return HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
+    library = get_object_or_404(models.Library, id=library_id)
+
+    if request.method == 'POST':
+        form = forms.OracleConnectionForm(request.POST)
+        if form.is_valid():
+            ora_conn_point = form.save(commit=False)
+            ora_conn_point.library = library
+            ora_conn_point.save()
+            return redirect('participants:administration:detail', id=library.id)
+    else:
+        form = forms.OracleConnectionForm()
+    return render(request, 'participants/administration/ora_conn_form.html', {
+        'form': form,
+        'org': library,
+    })
+
+
+@login_required
+@transaction.atomic()
+@permission_required_or_403('participants.change_oracleconnection')
+@decorators.must_be_org_user
+def edit_library_ora_conn(request, library_id, id, managed_libraries=[]):
+    managed_libray_ids = [unicode(managed_library.id) for managed_library in managed_libraries]
+    if managed_libray_ids and library_id not in managed_libray_ids:
+        return HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
+    library = get_object_or_404(models.Library, id=library_id)
+    ora_conn_point = get_object_or_404(models.OracleConnection, id=id, library_id=library_id)
+    old_password = ora_conn_point.password
+    if request.method == 'POST':
+        form = forms.OracleConnectionForm(request.POST, instance=ora_conn_point)
+        if form.is_valid():
+            ora_conn = form.save(commit=False)
+            ora_conn.library = library
+            if not ora_conn.password:
+                ora_conn.password = old_password
+            ora_conn.save()
+            return redirect('participants:administration:detail', id=library.id)
+    else:
+        form = forms.OracleConnectionForm(instance=ora_conn_point)
+    return render(request, 'participants/administration/ora_conn_form.html', {
+        'form': form,
+        'edit': True,
+        'org': library,
+    })
+
+
+@login_required
+@transaction.atomic()
+@permission_required_or_403('participants.delete_oracleconnection')
+@decorators.must_be_org_user
+def delete_library_ora_conn(request, library_id, id, managed_libraries=[]):
+    managed_libray_ids = [unicode(managed_library.id) for managed_library in managed_libraries]
+    if managed_libray_ids and library_id not in managed_libray_ids:
+        return HttpResponseForbidden(u'Вы не можете обслуживать эту организацию')
+    library = get_object_or_404(models.Library, id=library_id)
+    ora_conn_point = get_object_or_404(models.OracleConnection, id=id, library_id=library_id)
+    ora_conn_point.delete()
     return redirect('participants:administration:detail', id=library.id)
 
 

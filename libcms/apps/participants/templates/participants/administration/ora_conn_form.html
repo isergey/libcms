@@ -1,0 +1,44 @@
+{% extends 'participants/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    <li>
+        <a href="{% url 'participants:administration:index' %}">Библиотеки</a>
+        <span class="divider">/</span>
+    </li>
+    {% if org.parent_id %}
+        {% for ancestor in org.get_ancestors %}
+            <li>
+                <a href="{% url 'participants:administration:detail' ancestor.id %}">{{ ancestor.name }}</a>
+                <span class="divider">/</span>
+            </li>
+        {% endfor %}
+        <a href="{% url 'participants:administration:detail' org.id %}">{{ org.name }}</a>
+        <span class="divider">/</span>
+    {% endif %}
+    {% if edit %}
+        <li class="active">Редактирование Oracle соединения</li>
+    {% else %}
+        <li class="active">Добавление Oracle соединения</li>
+    {% endif %}
+
+
+{% endblock %}
+
+{% block action_content %}
+    <style>
+    form textarea, form input {
+        width: 99%;
+    }
+    </style>
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+        <fieldset>
+            {% include 'administration/base_form_fields.html' %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

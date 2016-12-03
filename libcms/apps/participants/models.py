@@ -272,6 +272,24 @@ class InternetConnection(models.Model):
     )
 
 
+class OracleConnection(models.Model):
+    library = models.ForeignKey(Library)
+    active = models.BooleanField(verbose_name=u'Активно', default=True)
+    connection_string = models.CharField(verbose_name=u'Строка подключения', max_length=1024)
+    username = models.CharField(verbose_name=u'Имя пользователя', max_length=64, blank=True)
+    password = models.CharField(
+        verbose_name=u'Пароль',
+        max_length=64,
+        blank=True,
+        help_text=u'Если оставить пустым, будет действовать старый'
+    )
+    bib_databases = models.TextField(
+        verbose_name=u'Список библиографических баз данных',
+        max_length=1024,
+        help_text=u'Имя базы с новой строки'
+    )
+
+
 def get_role_groups(user=None):
     if user:
         return user.groups.filter(name__startswith='role_')

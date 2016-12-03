@@ -33,6 +33,7 @@
         <li title="Сотрудники"><a href="#users">Сотрудники</a></li>
         <li title="Точки доступа WiFi"><a href="#wifi">Точки доступа WiFi</a></li>
         <li title="Интернет соединения"><a href="#int_conn">Интернет соединения</a></li>
+        <li title="Oracle соединения"><a href="#ora_conn">Oracle соединения</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="home">
@@ -189,6 +190,47 @@
                 {% endfor %}
             </table>
         </div>
+        <div class="tab-pane" id="ora_conn">
+                <div class="well well-small">
+                    <a class="btn btn-success" href="{% url 'participants:administration:add_library_ora_conn' org.id %}">
+                        <i class="icon-plus icon-white"></i> Добавить Oracle соединение
+                    </a>
+                </div>
+                <table class="table">
+                    <tr>
+                        <th>Строка подключения</th>
+                        <th>Биб базы</th>
+                        <th>Активно</th>
+                        <th>Имя пользователя</th>
+                        <th>Пароль</th>
+                        <th>Действия</th>
+                    </tr>
+                    {% for ora_connection in ora_connections %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'participants:administration:edit_library_ora_conn' ora_connection.library_id  ora_connection.id %}">{{ ora_connection.connection_string }}</a>
+                            </td>
+                            <td>
+                                {{ ora_connection.bib_databases|linenumbers|linebreaksbr }}
+                            </td>
+                            <td>
+                                {% if ora_connection.active %}
+                                    <span class="label label-success">да</span>
+                                {% else %}
+                                    <span class="label label-important">нет</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ ora_connection.username|default:"не указан" }}
+                            </td>
+                            <td>
+                                {% if ora_connection.password %}***********{% else %}не указан{% endif %}
+                            </td>
+                            <td><a href="{% url 'participants:administration:delete_library_ora_conn' org.id ora_connection.id %}" class="btn btn-small btn-danger">удалить</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
     </div>
     <script>
         $('#myTab a').click(function (e) {
