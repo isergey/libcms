@@ -276,6 +276,10 @@ class OracleConnection(models.Model):
     library = models.ForeignKey(Library)
     active = models.BooleanField(verbose_name=u'Активно', default=True)
     connection_string = models.CharField(verbose_name=u'Строка подключения', max_length=1024)
+    schema = models.CharField(
+        verbose_name=u'Схема данных',
+        max_length=64
+    )
     username = models.CharField(verbose_name=u'Имя пользователя', max_length=64, blank=True)
     password = models.CharField(
         verbose_name=u'Пароль',
