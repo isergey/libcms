@@ -480,7 +480,7 @@ def request_group_by_date(from_date, to_date, period, catalog='', library_code='
     if period == 'y':
         date_format = "to_char(datetime, 'YYYY-01-01')"
     elif period == 'm':
-        date_format = "date_format(datetime, 'YYYY-MM-01')"
+        date_format = "to_char(datetime, 'YYYY-MM-01')"
     else:
         pass
 
