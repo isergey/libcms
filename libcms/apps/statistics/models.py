@@ -51,7 +51,7 @@ def get_view_count_stats(from_date, to_date, period, visit_type='view', url_filt
     args += [from_date, to_date + datetime.timedelta(days=1)]
 
     if url_filter:
-        where += " AND path REGEXP %s"
+        where += " AND path ~* %s"
         args += [url_filter]
     query = u' '.join(['SELECT', select, 'FROM', frm, 'WHERE', where, 'GROUP BY', group_by])
 
