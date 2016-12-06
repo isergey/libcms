@@ -1,7 +1,7 @@
 import datetime
 from collections import OrderedDict
 from django.db import models, connection
-
+from django.contrib.auth.models import User
 
 class Statistics(models.Model):
     class Meta:
@@ -12,6 +12,7 @@ class Statistics(models.Model):
 
 
 class PageView(models.Model):
+    user = models.ForeignKey(User, null=True)
     path = models.CharField(max_length=1024, blank=True)
     query = models.CharField(max_length=1024, blank=True)
     url_hash = models.CharField(max_length=32, db_index=True)
@@ -19,9 +20,9 @@ class PageView(models.Model):
     datetime = models.DateTimeField(auto_now_add=True, db_index=True)
 
 
-def log_page_view(path, query, url_hash, session):
+def log_page_view(path, query, url_hash, session, user=None):
     PageView.objects.bulk_create([
-        PageView(path=path[:1024], query=query[:1024], url_hash=url_hash[:32], session=session[:32])
+        PageView(path=path[:1024], query=query[:1024], url_hash=url_hash[:32], session=session[:32], user=user)
     ])
 
 

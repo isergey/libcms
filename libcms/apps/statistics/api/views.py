@@ -148,10 +148,13 @@ def watch(request):
     url_hash = hashlib.md5((path + query).encode('utf-8')).hexdigest()
 
     before = (datetime.datetime.now() - datetime.timedelta(minutes=URL_TIMEOUT))
-    if models.PageView.objects.filter(datetime__gt=before, session=session, url_hash=url_hash).exists():
-        ignore = True
+    # if models.PageView.objects.filter(datetime__gt=before, session=session, url_hash=url_hash).exists():
+    #     ignore = True
 
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
     if session and not ignore:
-        models.log_page_view(path=path, query=query, url_hash=url_hash, session=session)
+        models.log_page_view(path=path, query=query, url_hash=url_hash, session=session, user=user)
 
     return response

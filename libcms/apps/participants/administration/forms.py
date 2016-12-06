@@ -200,6 +200,25 @@ class WiFiPointForm(forms.ModelForm):
         exclude = ['library']
 
 
+class WiFiPointAttrForm(forms.Form):
+    mac = forms.CharField(
+        label=u'MAC адрес',
+        max_length=17,
+        required=False
+    )
+    status = forms.ChoiceField(
+        label=u'Статус',
+        choices=BLANK_CHOICE_DASH + list(models.WIFI_POINT_STATUSES),
+        required=False,
+
+    )
+    comments = forms.CharField(
+        label=u'Комментарии',
+        max_length=255,
+        required=False
+    )
+
+
 class InternetConnectionForm(forms.ModelForm):
     class Meta:
         model = models.InternetConnection
