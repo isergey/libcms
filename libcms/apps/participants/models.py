@@ -73,8 +73,8 @@ class Library(MPTTModel):
     )
     sigla = models.CharField(
         verbose_name=u'Сигла из подполя 999b',
-        max_length=32, db_index=True, blank=True,
-        unique=True)
+        max_length=1024, db_index=True, blank=True,
+    )
     republican = models.BooleanField(verbose_name=u'Руспубликанская библиотека', default=False, db_index=True)
     types = models.ManyToManyField(LibraryType, verbose_name=u'Тип библиотеки', blank=True)
 
@@ -111,11 +111,13 @@ class Library(MPTTModel):
     class Meta:
         verbose_name = u"Библиотека"
         verbose_name_plural = u"Библиотеки"
+        unique_together = ('code', 'sigla')
         permissions = (
             ("add_cbs", "Can create cbs"),
             ("change_cbs", "Can change cbs"),
             ("delete_cbs", "Can delete cbs"),
         )
+
 
     class MPTTMeta:
         order_insertion_by = ['weight']
