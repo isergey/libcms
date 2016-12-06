@@ -29,14 +29,12 @@ def log_page_view(path, query, url_hash, session, user=None):
 def get_view_count_stats(from_date, to_date, period, visit_type='view', url_filter=''):
     date_range = _generate_dates(from_date, to_date, period)
 
-    group_by = 'year(datetime), month(datetime), day(datetime)'
-    date_format = "date_format(datetime, '%%Y-%%m-%%d')"
+    group_by = 'date'
+    date_format = "to_char(datetime, 'YYYY-MM-DD')"
     if period == 'y':
-        group_by = 'year(datetime)'
-        date_format = "date_format(datetime, '%%Y-01-01')"
+        date_format = "to_char(datetime, 'YYYY-01-01')"
     elif period == 'm':
-        group_by = 'year(datetime), month(datetime)'
-        date_format = "date_format(datetime, '%%Y-%%m-01')"
+        date_format = "to_char(datetime, 'YYYY-MM-01')"
     else:
         pass
 
