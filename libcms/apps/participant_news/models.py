@@ -39,7 +39,6 @@ class News(models.Model):
         ordering = ['order', '-create_date']
 
 
-
 def get_image_file_name(instance, arg_filename):
     filename= arg_filename.lower()
     filename_hash = str(binascii.crc32(filename.encode('utf-8')) & 0xffffffff)

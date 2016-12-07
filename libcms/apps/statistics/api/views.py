@@ -3,10 +3,11 @@ import json
 import hashlib
 import datetime
 import dicttoxml
+import collections
 from urlparse import urlparse
 from localeurl import utils
 from django.views.decorators.cache import never_cache
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, get_object_or_404
 from .. import models
 from . import forms
 from participants.models import Library
@@ -236,3 +237,73 @@ def orgs_statistic(request):
     else:
         response = dicttoxml.dicttoxml(result, custom_root='fields', attr_type=False)
     return HttpResponse(response, content_type='application/' + scheme)
+
+
+def org_statistic(request):
+    now = datetime.datetime.now()
+    scheme = request.GET.get('scheme', 'xml')
+    schemes = ['xml', 'json']
+
+    if scheme not in schemes:
+        scheme = 'xml'
+
+    code = request.GET.get('code', '')
+    library = get_object_or_404(Library, code=code)
+    period_form = forms.PeriodForm(request.GET, prefix='pe')
+    if not period_form.is_valid():
+        return HttpResponse(json.dumps(period_form.errors, ensure_ascii=False))
+
+    from_date = period_form.cleaned_data['from_date']
+    to_date = period_form.cleaned_data['to_date']
+    period = period_form.cleaned_data['period']
+    dates = models._generate_dates(from_date=from_date, to_date=to_date, period=period)
+
+    date_groups = collections.OrderedDict()
+    for date in dates:
+        date_groups[date.strftime('%Y-%m-%d')] = collections.Counter({
+            'news_count': 0,
+            'events_count': 0,
+            'event_subscribes_count': 0
+        })
+
+    news_iterator = pnmodels.News.objects.values('create_date').filter(
+        library=library,
+        create_date__gte=from_date,
+        create_date__lt=to_date + datetime.timedelta(days=1)
+    ).iterator()
+
+    for news in news_iterator:
+        create_date = news['create_date']
+        date_groups[_get_date_str(create_date, period)]['news_count'] += 1
+
+    events_iterator = pemodels.Event.objects.values('create_date').filter(
+        library=library,
+        create_date__gte=from_date,
+        create_date__lt=to_date + datetime.timedelta(days=1)
+    ).iterator()
+
+    for event in events_iterator:
+        create_date = event['create_date']
+        date_groups[_get_date_str(create_date, period)]['events_count'] += 1
+
+    event_subscribes_iterator = pemodels.EventSubscribe.objects.values('create_date').filter(library=library).iterator()
+    for event_subscribe in event_subscribes_iterator:
+        create_date = event_subscribe['create_date']
+        date_groups[_get_date_str(create_date, period)]['event_subscribes_count'] += 1
+
+    response = ''
+    if scheme == 'json':
+        response = json.dumps(date_groups, ensure_ascii=False)
+    else:
+        response = dicttoxml.dicttoxml(date_groups, custom_root='fields', attr_type=False)
+    return HttpResponse(response, content_type='application/' + scheme)
+
+
+def _get_date_str(date, period):
+    if period == 'y':
+        res_date = datetime.date(year=date.year, month=1, day=1)
+    elif period == 'm':
+        res_date = datetime.date(year=date.year, month=date.month, day=1)
+    else:
+        res_date = datetime.date(year=date.year, month=date.month, day=date.day)
+    return res_date.strftime('%Y-%m-%d')
