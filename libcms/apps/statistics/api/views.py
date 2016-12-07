@@ -2,6 +2,7 @@ import uuid
 import json
 import hashlib
 import datetime
+import dicttoxml
 from urlparse import urlparse
 from localeurl import utils
 from django.views.decorators.cache import never_cache
@@ -10,6 +11,11 @@ from .. import models
 from . import forms
 from participants.models import Library
 from ssearch.models import request_group_by_date
+from participants import models as pmodels
+from participant_pages import models as ppmodels
+from participant_news import models as pnmodels
+from participant_events import models as pemodels
+from sso_ruslan import models as sso_ruslan_models
 
 URL_TIMEOUT = 1  # mins
 
@@ -192,3 +198,41 @@ def users_at_mini_sites(request):
     else:
         return HttpResponse(json.dumps(period_form.errors, ensure_ascii=False))
 
+
+def orgs_statistic(request):
+    now = datetime.datetime.now()
+    scheme = request.GET.get('scheme', 'xml')
+    schemes = ['xml', 'json']
+
+    if scheme not in schemes:
+        scheme = 'xml'
+
+    total_orgs = pmodels.Library.objects.all().count()
+    page_libs = set()
+    for page in ppmodels.Page.objects.values('library_id').filter(parent=None).iterator():
+        page_libs.add(page['library_id'])
+
+    news_count = pnmodels.News.objects.all().count()
+    ruslan_users = sso_ruslan_models.RuslanUser.objects.all().count()
+    events_count = pemodels.Event.objects.all().count()
+    evet_subscibe_users = set()
+    for subscribe in pemodels.EventSubscribe.objects.values('user_id').all().iterator():
+        evet_subscibe_users.add(subscribe['user_id'])
+    site_views_count = models.PageView.objects.filter(path__startswith='/site/').count()
+    result = {
+        'total_orgs': total_orgs,
+        'total_sites': len(page_libs),
+        'ruslan_users': ruslan_users,
+        'news_count': news_count,
+        'events_count': events_count,
+        'event_subscribe_users_count': len(evet_subscibe_users),
+        'site_views_count': site_views_count,
+        'date_time': now.strftime('%Y-%m-%dT%H:%M:%S')
+    }
+
+    response = ''
+    if scheme == 'json':
+        response = json.dumps(result, ensure_ascii=False)
+    else:
+        response = dicttoxml.dicttoxml(result, custom_root='fields', attr_type=False)
+    return HttpResponse(response, content_type='application/' + scheme)
