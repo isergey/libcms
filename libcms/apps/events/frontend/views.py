@@ -25,20 +25,18 @@ def index(request, day='', month='', year=''):
         #     q = q & Q(library__in=libs)
 
         if event_type:
-            q_type = Q(event_type='')
-            for item in event_type:
-                q = q & Q(event_type__in=event_type)
-            q = q & q_type
+            q &= Q(event_type__in=event_type)
 
         if age_category:
-            q = q & Q(age_category__in=age_category)
+            q &= Q(age_category__in=age_category)
     date_filtered = None
     if year and month and day:
         q = q & Q(start_date__year=year, start_date__month=month, start_date__day=day)
         date_filtered = datetime(year=int(year), month=int(month), day=int(day))
-    #print unicode(q)
+    # print unicode(q)
     events_page = get_page(
-        request, Event.objects.select_related('library').prefetch_related('age_category', 'event_type').filter(q).distinct()
+        request,
+        Event.objects.select_related('library').prefetch_related('age_category', 'event_type').filter(q).distinct()
     )
     events = list(events_page.object_list)
     event_contents = list(
@@ -59,11 +57,12 @@ def index(request, day='', month='', year=''):
         'events_page': events_page,
         'filter_form': filter_form,
         'date_filtered': date_filtered
-        })
+    })
 
 
 def filer_by_date(request, day='', month='', year=''):
-    events_page = get_page(request, Event.objects.filter(active=True, start_date__year=year, start_date__month=month, start_date__day=day).order_by('-create_date'))
+    events_page = get_page(request, Event.objects.filter(active=True, start_date__year=year, start_date__month=month,
+                                                         start_date__day=day).order_by('-create_date'))
     event_contents = list(EventContent.objects.filter(event__in=list(events_page.object_list), lang=get_language()[:2]))
 
     t_dict = {}
@@ -76,7 +75,8 @@ def filer_by_date(request, day='', month='', year=''):
         'events_list': events_page.object_list,
         'events_page': events_page,
 
-        })
+    })
+
 
 def show(request, id):
     cur_language = translation.get_language()
