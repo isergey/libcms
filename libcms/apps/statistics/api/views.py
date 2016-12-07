@@ -158,3 +158,37 @@ def watch(request):
         models.log_page_view(path=path, query=query, url_hash=url_hash, session=session, user=user)
 
     return response
+
+
+@never_cache
+def users_at_mini_sites(request):
+    formats = ['txt', 'json']
+    format = request.GET.get('format', formats[0])
+    if format not in formats:
+        format = 'txt'
+    period_form = forms.PeriodForm(request.GET, prefix='pe')
+    if period_form.is_valid():
+        from_date = period_form.cleaned_data['from_date']
+        to_date = period_form.cleaned_data['to_date']
+        period = period_form.cleaned_data['period']
+        results = models.get_users_at_mini_sites(from_date, to_date)
+        if format == 'json':
+            return HttpResponse(json.dumps(results, ensure_ascii=False), content_type='application/json')
+        else:
+            lines = []
+            for result in results:
+                lines.append(
+                    u'\t'.join([
+                        result['date'],
+                        unicode(result['reader_id']),
+                        result['target'],
+                        result['user_data'],
+                        result['org_id'],
+                        unicode(result['count']),
+                    ])
+                )
+            lines = u'\n'.join(lines)
+            return HttpResponse(lines, content_type='text/plain; charset=utf-8')
+    else:
+        return HttpResponse(json.dumps(period_form.errors, ensure_ascii=False))
+
