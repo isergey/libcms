@@ -220,8 +220,8 @@ def orgs_statistic(request):
         evet_subscibe_users.add(subscribe['user_id'])
     site_views_count = models.PageView.objects.filter(path__startswith='/site/').count()
     result = {
-        'total_orgs': total_orgs,
-        'total_sites': len(page_libs),
+        'orgs_count': total_orgs,
+        'sites_count': len(page_libs),
         'ruslan_users': ruslan_users,
         'news_count': news_count,
         'events_count': events_count,
