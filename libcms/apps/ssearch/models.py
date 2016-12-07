@@ -475,14 +475,12 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
 def request_group_by_date(from_date, to_date, period, catalog='', library_code=''):
     date_range = _generate_dates(from_date, to_date, period)
 
-    group_by = 'year(datetime), month(datetime), day(datetime)'
-    date_format = "date_format(datetime, '%%Y-%%m-%%d')"
+    group_by = 'date'
+    date_format = "to_char(datetime, 'YYYY-MM-DD')"
     if period == 'y':
-        group_by = 'year(datetime)'
-        date_format = "date_format(datetime, '%%Y-01-01')"
+        date_format = "to_char(datetime, 'YYYY-01-01')"
     elif period == 'm':
-        group_by = 'year(datetime), month(datetime)'
-        date_format = "date_format(datetime, '%%Y-%%m-01')"
+        date_format = "to_char(datetime, 'YYYY-MM-01')"
     else:
         pass
 
