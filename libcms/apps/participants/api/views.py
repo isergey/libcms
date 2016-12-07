@@ -397,6 +397,23 @@ def export_ora_conns(request):
     data = ser.serialize(connections)
     return HttpResponse(data, content_type='application/' + scheme)
 
+@api
+def export_int_conns(request):
+    scheme = request.GET.get('scheme', 'xml')
+    schemes = ['xml', 'json']
+
+    if scheme not in schemes:
+        scheme = 'xml'
+
+    connections = models.InternetConnection.objects.all()
+
+    ser = xml_serializer.Serializer()
+    if scheme == 'json':
+        ser = json_serializer.Serializer()
+
+    data = ser.serialize(connections)
+    return HttpResponse(data, content_type='application/' + scheme)
+
 
 @login_required_ajax
 def user_organizations(request):
