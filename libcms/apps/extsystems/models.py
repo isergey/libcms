@@ -49,7 +49,10 @@ class Party(models.Model):
 
     notify = models.BooleanField(verbose_name=u'Уведомлять систему', default=False)
     status = models.BooleanField(verbose_name=u'Активно', default=False)
-    token = models.CharField(max_length=255, blank=True, default=generate_uuid)
+    token = models.CharField(
+        verbose_name=u'Токен аутентификации',
+        max_length=255, blank=True, default=generate_uuid
+    )
 
     class Meta:
         managed = False
