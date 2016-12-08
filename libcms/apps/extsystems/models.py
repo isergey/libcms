@@ -1,9 +1,12 @@
 # coding=utf-8
+import uuid
 from django.db import models
 
+def generate_uuid():
+   return uuid.uuid4()
 
 class Party(models.Model):
-    contactemail = models.CharField(
+    contactemail = models.EmailField(
         verbose_name=u'Контатный email',
         max_length=255,
         blank=True,
@@ -31,9 +34,12 @@ class Party(models.Model):
     )
     notify = models.NullBooleanField()
     status = models.NullBooleanField()
-    token = models.CharField(max_length=255, blank=True, null=True)
+    token = models.CharField(max_length=255, blank=True, null=True, default=generate_uuid)
 
     class Meta:
         managed = False
         verbose_name = u'Система'
         verbose_name_plural = u'Системы'
+
+    def __unicode__(self):
+        return self.name or u"без названия"
