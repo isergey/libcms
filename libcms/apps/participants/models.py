@@ -83,7 +83,13 @@ class Library(MPTTModel):
         max_length=1024, db_index=True, blank=True,
     )
     republican = models.BooleanField(verbose_name=u'Руспубликанская библиотека', default=False, db_index=True)
-    org_type = models.CharField(verbose_name=u'Тип организации', choices=ORG_TYPES, max_length=16, db_index=True)
+    org_type = models.CharField(
+        verbose_name=u'Тип организации',
+        choices=ORG_TYPES,
+        max_length=16,
+        db_index=True,
+        default=ORG_TYPES[0][0]
+    )
     types = models.ManyToManyField(LibraryType, verbose_name=u'Тип библиотеки', blank=True)
 
     #    country = models.ForeignKey(Country, verbose_name=u'Страна', db_index=True, blank=True, null=True)
