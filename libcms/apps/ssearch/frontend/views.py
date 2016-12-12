@@ -13,8 +13,9 @@ from django.core.cache import cache
 from django.shortcuts import render, HttpResponse, get_object_or_404, Http404, urlresolvers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import QueryDict
+from django.db.models import Q
 from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
-
+from sso_tatedu.views import AUTH_SOURCE as TATEDU_AUTH_SOURCE
 from participants.models import Library
 from ..models import Record, SavedRequest, DetailAccessLog, Collection, get_records
 from .. import rusmarc_template
@@ -523,6 +524,12 @@ def participant_income(request):
 
 
 def select_library(request):
+    # q = Q(parent=None)
+    # org_type = 'library'
+    # if request.user.is_authenticated():
+    #     if request.session.get('auth_source', TATEDU_AUTH_SOURCE) == TATEDU_AUTH_SOURCE:
+    #         org_type = 'school'
+
     libraries = Library.objects.filter(parent=None, org_type='library').values('code', 'name', 'id')
     return render(request, 'ssearch/frontend/select_library.html', {
         'libraries': libraries,

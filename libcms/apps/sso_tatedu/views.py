@@ -349,8 +349,8 @@ def redirect_from_idp(request):
             if user:
                 if user.is_active:
                     login(request, user)
-                    request.session[
-                        'logout_idp_url'] = LOGOUT_URL
+                    request.session['logout_idp_url'] = LOGOUT_URL
+                    request.session['auth_source'] = AUTH_SOURCE
                     return redirect('index:frontend:index')
                 else:
                     return _error_response(

@@ -133,7 +133,6 @@ class Library(MPTTModel):
             ("delete_cbs", "Can delete cbs"),
         )
 
-
     class MPTTMeta:
         order_insertion_by = ['weight']
 
@@ -321,6 +320,7 @@ class InteractionJournal(models.Model):
     class Meta:
         verbose_name = u'Запись журнала взаимодействий'
         verbose_name_plural = u'Записи журнала взаимодействий'
+
 
 def get_role_groups(user=None):
     if user:
