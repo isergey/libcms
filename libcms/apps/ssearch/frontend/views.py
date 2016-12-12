@@ -745,6 +745,10 @@ def xml_doc_to_dict(xmlstring_doc):
     doc_tree_t = xslt_transformer(doc_tree)
     return doc_tree_to_dict(doc_tree_t)
 
+def content_to_xml(xmlstring_doc):
+    doc_tree = etree.XML(xmlstring_doc)
+    doc_tree_t = xslt_transformer(doc_tree)
+
 
 def doc_tree_to_dict(doc_tree):
     doc_dict = {}

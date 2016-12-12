@@ -74,6 +74,18 @@
         <div class="content-page__text">
             {% if question.is_ready %}
                 {{ question.answer|safe }}
+                {% if bib_records %}
+                    <h3>Библиографические записи к ответу:</h3>
+                    <ul>
+                    {% for bib_record in bib_records %}
+                        <li>
+                            {{ bib_record.card|safe }}
+                            <div><a href="{% url 'ssearch:frontend:detail' bib_record.record.gen_id %}">подробнее</a></div>
+                            {% if not forloop.last %}<hr/>{% endif %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
             {% else %}
                 Ответа на вопрос еще нет.
             {% endif %}
