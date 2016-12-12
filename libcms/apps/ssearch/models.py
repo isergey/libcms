@@ -53,12 +53,13 @@ class Upload(models.Model):
 
 
 class Source(models.Model):
-    source_type = models.CharField(max_length=32, verbose_name=u"Тип источника")
-
-    def __unicode__(self):
-        return self.source_type
+    source_type = models.CharField(max_length=32)
+    organization_code = models.CharField(max_length=32)
+    database_group = models.CharField(max_length=32)
+    databse_name = models.CharField(max_length=45)
 
     class Meta:
+        managed = False
         db_table = 'source'
 
 
@@ -114,8 +115,11 @@ class Holdings(models.Model):
     source = models.CharField(max_length=32, db_index=True)
 
     class Meta:
+        managed = False
         unique_together = ['original_id', 'department', 'source']
         index_together = ['original_id', 'department', 'source']
+        db_table = 'ssearch_holdings'
+
 
 
 class Ebook(models.Model):
@@ -134,7 +138,6 @@ class Ebook(models.Model):
 
     class Meta:
         db_table = 'ebooks'
-
 
 def get_records(doc_ids=[]):
     records_dict = {}
@@ -194,6 +197,7 @@ class SearchRequestLog(models.Model):
     use = models.CharField(max_length=32, verbose_name=u"Точка доступа", db_index=True)
     not_normalize = models.CharField(max_length=256, verbose_name=u'Ненормализованный терм', db_index=True)
     datetime = models.DateTimeField(auto_now_add=True, db_index=True)
+
 
 
 

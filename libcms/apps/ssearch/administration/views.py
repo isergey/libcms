@@ -1,10 +1,15 @@
 # coding: utf-8
 import os
+import io
+import hashlib
+import zipfile
+import sys
 import json
 import MySQLdb
 import zlib
 import re
 import datetime
+import binascii
 import hashlib
 import sunburnt
 from lxml import etree
@@ -18,8 +23,12 @@ from django.shortcuts import render, redirect, HttpResponse, Http404
 from pymarc2 import reader, record, field, marcxml
 from django.db import transaction  # , connection, connections
 
+from ..common import resolve_date
 from forms import AttributesForm, GroupForm, PeriodForm, CatalogForm
+from participants.models import Library
 from ..models import requests_count, requests_by_attributes, requests_by_term, Source
+
+SIGLA_DELIMITER = "\n"
 
 
 @login_required
@@ -275,6 +284,19 @@ re_t1_t2 = re.compile(ur"(?P<t1>\d+)\D+(?P<t2>\d+)", re.UNICODE)
 re_t1 = re.compile(ur"(?P<t1>\d+)", re.UNICODE)
 
 
+def gs(obj):
+    size = 0
+    size += sys.getsizeof(obj)
+    if isinstance(obj, dict):
+        for key, val in obj.items():
+            size += gs(val)
+            size += gs(key)
+    elif isinstance(obj, list) or isinstance(obj, tuple):
+        for item in obj:
+            size += gs(item)
+    return size
+
+
 @transaction.atomic
 def _indexing(slug, reset=False):
     sources_index = {}
@@ -300,8 +322,8 @@ def _indexing(slug, reset=False):
             user=db_conf['USER'],
             passwd=db_conf['PASSWORD'],
             db=db_conf['NAME'],
-            port=int(db_conf['PORT']
-                     ),
+            port=int(db_conf['PORT']),
+            compress=True,
             cursorclass=MySQLdb.cursors.SSDictCursor
         )
     except MySQLdb.OperationalError as e:
@@ -310,23 +332,26 @@ def _indexing(slug, reset=False):
             user=db_conf['USER'],
             passwd=db_conf['PASSWORD'],
             db=db_conf['NAME'],
-            port=int(db_conf['PORT']
-                     ),
+            port=int(db_conf['PORT']),
+            compress=True,
             cursorclass=MySQLdb.cursors.SSDictCursor
         )
+    holdings_index = _load_holdings(conn)
+    orgs_index = _load_orgs()
+    sources_index = _load_sources()
 
     try:
         index_status = IndexStatus.objects.get(catalog=slug)
     except IndexStatus.DoesNotExist:
         index_status = IndexStatus(catalog=slug)
+    select_query = "SELECT * FROM records where deleted = 0 AND LENGTH(content) > 0"
+    # if not getattr(index_status, 'last_index_date', None):
+    #     select_query = "SELECT * FROM records where deleted = 0 and content != NULL"
+    # else:
+    #     select_query = "SELECT * FROM records where update_date >= '%s' and deleted = 0" % (
+    #         str(index_status.last_index_date))
 
-    if not getattr(index_status, 'last_index_date', None):
-        select_query = "SELECT * FROM records where deleted = 0 and content != NULL"
-    else:
-        select_query = "SELECT * FROM records where update_date >= '%s' and deleted = 0 and content != NULL" % (
-            str(index_status.last_index_date))
-
-    solr = sunburnt.SolrInterface(solr_address)
+    # solr = sunburnt.SolrInterface(solr_address)
     docs = list()
 
     start_index_date = datetime.datetime.now()
@@ -337,7 +362,11 @@ def _indexing(slug, reset=False):
 
     i = 0
     while res:
-        content = zlib.decompress(res[0]['content'], -15).decode('utf-8')
+        if not res[0]['content']:
+            res = rows.fetch_row(how=1)
+            continue
+        zf = zipfile.ZipFile(io.BytesIO((res[0]['content'])))
+        content = zf.read('1.xml').decode('utf-8')
         doc_tree = etree.XML(content)
         doc_tree = xslt_transformer(doc_tree)
         doc = doc_tree_to_dict(doc_tree)
@@ -368,12 +397,22 @@ def _indexing(slug, reset=False):
         except Exception as e:
             print 'Error record-create-date_dt'
 
+        holder_codes = _get_holdings(
+            source_id=res[0]['source_id'],
+            record_id=res[0]['record_id'],
+            orgs_index=orgs_index,
+            holdings_index=holdings_index,
+            sources_index=sources_index
+        )
+        if holder_codes:
+            print holder_codes
+
         doc['system-add-date_dt'] = res[0]['add_date']
         doc['system-add-date_dts'] = res[0]['add_date']
         doc['system-update-date_dt'] = res[0]['update_date']
         doc['system-update-date_dts'] = res[0]['update_date']
         doc['system-catalog_s'] = res[0]['source_id']
-        doc['source-type_s'] = sources_index[res[0]['source_id']].source_type
+        # doc['source-type_s'] = sources_index[res[0]['source_id']].source_type
         if str(doc['system-catalog_s']) == '2':
             full_text_file = None
             #            doc['system-update-date_dt'] = res[0]['doc-id_s']
@@ -392,15 +431,19 @@ def _indexing(slug, reset=False):
 
         docs.append(doc)
         i += 1
+        if i % 100 == 0:
+            print 'indexed', i
         if len(docs) > 100:
-            solr.add(docs)
+            pass
+            # solr.add(docs)
             docs = list()
         res = rows.fetch_row(how=1)
 
     if docs:
-        solr.add(docs)
+        pass
+        # solr.add(docs)
 
-    solr.commit()
+    # solr.commit()
     index_status.indexed = i
 
     # удаление
@@ -414,18 +457,18 @@ def _indexing(slug, reset=False):
     else:
         records = Record.objects.using('records').filter(deleted=True).values('gen_id', 'update_date')
 
-    record_gen_ids = []
-    for record in list(records):
-        record_gen_ids.append(record['gen_id'])
+    # record_gen_ids = []
+    # for record in list(records):
+    #     record_gen_ids.append(record['gen_id'])
+    #
+    # if record_gen_ids:
+    #     solr.delete(record_gen_ids)
+    #     solr.commit()
 
-    if record_gen_ids:
-        solr.delete(record_gen_ids)
-        solr.commit()
-
-    index_status.deleted = len(record_gen_ids)
-    index_status.last_index_date = start_index_date
-    index_status.save()
-    conn.query('DELETE FROM records WHERE deleted = 1')
+    # index_status.deleted = len(record_gen_ids)
+    # index_status.last_index_date = start_index_date
+    # index_status.save()
+    # conn.query('DELETE FROM records WHERE deleted = 1')
     return True
 
 
@@ -578,8 +621,6 @@ def local_records_indexing(request):
     return True
 
 
-from ..common import resolve_date
-
 # распознование типа
 resolvers = {
     'dt': resolve_date,
@@ -670,3 +711,145 @@ def full_text_extract(zip_file_name):
         file.close()
         return text
     return None
+
+
+def _calculate_holdings_hash(record_id, source_id):
+    return record_id
+    # return binascii.crc32(record_id)
+    # return hashlib.md5(record_id + str(source_id)).digest()
+
+
+def _load_holdings(conn):
+    select_query = "SELECT * FROM ssearch_holdings"
+    conn.query(select_query)
+    rows = conn.use_result()
+    holdings_index = {}
+    res = rows.fetch_row(how=1)
+    i = 0
+    while res:
+        if i % 100000 == 0:
+            print i
+        i += 1
+        id = res[0]['id']
+        record_id = res[0]['record_id']
+        source_id = res[0]['source_id']
+        department = res[0]['department']
+        hash = _calculate_holdings_hash(record_id, source_id)
+        departments = holdings_index.get(hash, None)
+        if not departments:
+            # departments = ''
+            holdings_index[hash] = department
+        else:
+            holdings_index[hash] += (SIGLA_DELIMITER + department)
+        # departments.append(department)
+        # source_records = holdings_index.get(source_id, None)
+        # if source_records is None:
+        #     source_records = {}
+        #     holdings_index[source_id] = source_records
+        # departments = source_records.get(record_id, None)
+        # if departments is None:
+        #     departments = set()
+        #     source_records[record_id] = departments
+        # departments.add(department)
+        res = rows.fetch_row(how=1)
+    return holdings_index
+
+
+def _get_holdings(source_id, record_id, holdings_index, orgs_index, sources_index):
+    holding_codes = []
+    department_siglas = _get_departments(source_id, record_id, holdings_index)
+    if not department_siglas:
+        return holding_codes
+    for department_sigla in department_siglas:
+        code = _get_org_code_by_departament(
+            orgs_index=orgs_index,
+            sources_index=sources_index,
+            source_id=source_id,
+            department_sigla=department_sigla
+        )
+        if code:
+            holding_codes.append(code)
+    return holding_codes
+
+
+def _get_departments(source_id, record_id, holdings_index):
+    # holdings_hash = _calculate_holdings_hash(source_id, record_id)
+    holdings_hash = record_id
+    departments_string = holdings_index.get(holdings_hash, '')
+    if not departments_string:
+        return []
+    return departments_string.split(SIGLA_DELIMITER)
+
+
+def _get_org_code_by_departament(orgs_index, sources_index, source_id, department_sigla):
+    exist_source = sources_index.get(source_id, None)
+    if not exist_source:
+        return ''
+    organization_code = exist_source.organization_code
+    organization = orgs_index['code'].get(organization_code)
+    if not organization:
+        return organization_code
+
+    departament_org = orgs_index['sigla'].get(organization['code'] + department_sigla, None)
+    if departament_org:
+        return departament_org['code']
+
+    for leaf_org in _get_org_leafs(organization, orgs_index):
+        sigla_org = orgs_index['sigla'].get(leaf_org['code'] + department_sigla, None)
+        if sigla_org:
+            return sigla_org['code']
+    return organization_code
+
+
+def _load_sources():
+    sources = list(Source.objects.using('records').all())
+    sources_index = {}
+    for source in sources:
+        sources_index[str(source.id)] = source
+    return sources_index
+
+
+def _get_org_ancestors(org, orgs_index):
+    ancestors = []
+    parent_id = org['parent_id']
+    while parent_id:
+        parent_org = orgs_index['id'].get(parent_id, None)
+        if not parent_org:
+            break
+        ancestors.append(parent_org)
+        parent_id = parent_org['id']
+    return ancestors
+
+
+def _get_org_children(org, orgs_index):
+    children = []
+    for child_id, child_org in orgs_index['parent_id'].get(org['id'], {}).items():
+        children.append(child_org)
+    return children
+
+
+def _get_org_leafs(org, org_index):
+    leafs = []
+    for child in _get_org_children(org, org_index):
+        leafs.append(child)
+        leafs += _get_org_leafs(child, org_index)
+    return leafs
+
+
+def _load_orgs():
+    orgs = Library.objects.values('id', 'parent_id', 'code', 'sigla').all()
+    orgs_index = {
+        'id': {},
+        'parent_id': {},
+        'code': {},
+        'sigla': {}
+    }
+    for org in orgs:
+        orgs_index['id'][org['id']] = org
+        if org['parent_id']:
+            orgs_index['parent_id'][org['parent_id']] = org
+        orgs_index['code'][org['code']] = org
+        if org['sigla']:
+            for sigla in org['sigla'].strip().split(u';'):
+                orgs_index['code'][org['code'] + sigla] = org
+    return orgs_index
