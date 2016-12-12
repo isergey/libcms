@@ -8,6 +8,7 @@ from django.db import connection
 from django.db import models
 from django.contrib.auth.models import User
 
+
 RECORD_SCHEMES = (
     ('rusmarc', u"Rusmarc"),
     ('usmarc', u"Usmarc"),

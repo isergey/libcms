@@ -3,6 +3,7 @@ import uuid
 from django.db import models
 from django.core import validators
 
+
 def generate_uuid():
     return uuid.uuid4()
 
@@ -61,3 +62,4 @@ class Party(models.Model):
 
     def __unicode__(self):
         return self.name or u"без названия"
+
