@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <meta name="description" content>
+  <meta name="keywords" content>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+  <!--[if lte IE 10]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="styles/index.css">
+</head>
+<body>
+<header>
+  <div class="container">
+    <div class="row">
+
+      <div class="col-8">
+        <a href="/ru/" title="На главную!">
+          <div class="logo">
+            <div class="logo__img">
+              <img src="/static/dist/images/logo.png">
+            </div>
+            <div class="logo__text">
+              <span>Национальная электронная библиотека</span><br>Республики Татарстан
+            </div>
+          </div>
+        </a>
+
+        <div class="language">
+          <a href="/ru/ask_librarian/ask" class="language__btn language__btn_active" title="Русский">Рус</a>
+          <a href="/tt/ask_librarian/ask" class="language__btn " title="Татарский">Тат</a>
+          <a href="/en/ask_librarian/ask" class="language__btn " title="English">Eng</a>
+        </div>
+      </div>
+
+
+
+
+
+
+      <div class="col-4">
+
+        <div class="user-block">
+
+          <a href="/ru/personal/" class="user-block__btn" title="Перейти в личный кабинет"><img src="/static/dist/images/user_block_key2.svg" alt="Вы вошли как:">
+
+            root
+
+          </a>
+
+
+
+
+          <div class="click-nav">
+            <ul class="js">
+              <li>
+                <a href="#" class="clicker"><img src="/static/dist/images/user_block_drop.svg" alt="Icon"></a>
+                <ul style="display: none;">
+                  <li><a href="/ru/orders/on_hand">Выданные книги</a></li>
+                  <li><a href="/ru/orders/reservations">Заказы на бронирование</a></li>
+                  <li><a href="/ru/mydocs/">Мои документы</a></li>
+                  <li><a href="/ru/ask_librarian/my/">Мои вопросы</a></li>
+                  <li><a href="/ru/ssearch/requests/">Поисковые запросы</a></li>
+                  <hr>
+
+
+
+                  <li><a href="http://127.0.0.1:8000/en/statistics/">Статистика</a></li>
+
+
+                  <li class="divider"></li>
+
+
+                  <hr>
+                  <li><a href="/ru/accounts/logout/">Выход</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</header>
+
+<nav class="bg bg_second">
+  <div class="container">
+
+
+    <ul class="menu-box menu-box_second">
+      <li><a href="/ru/pages/index/" class="header-link ">О проекте</a></li>
+      <li><a href="/ru/participants/" class="header-link ">Библиотеки</a></li>
+      <li><a href="/ru/ssearch/ecatalog/" class="header-link  ">Каталог</a></li>
+      <li><a href="/ru/ssearch/ecollection/" class="header-link  ">Коллекции</a></li>
+      <li><a href="/ru/guestbook/" class="header-link ">Отзывы</a></li>
+      <li><a href="/ru/news/" class="header-link ">Новости</a></li>
+      <li><a href="/ru/ask_librarian/" class="header-link header-link_active">Спроси библиотекаря </a></li>
+
+      <li><a href="/ru/pages/for_professional/" class="header-link ">Профессионалам </a></li>
+    </ul>
+  </div>
+</nav>
+<main>
+  <div class="container">
+
+    <ul class="bread__crumbs">
+      <li>
+        <a href="/ru/" class="bread__crumbs_link">
+          Главная
+        </a>
+      </li>
+      <li>
+        <img src="/static/dist/images/br_crumbs.svg">
+      </li>
+      <li>
+        <a href="/ru/ask_librarian/" class="bread__crumbs_link">
+          Спроси библиотекар
+        </a>
+      </li>
+      <li>
+        <img src="/static/dist/images/br_crumbs.svg">
+      </li>
+      <li>
+        <a href="/ru/ask_librarian/" class="bread__crumbs_link bread__crumbs_link_active">
+          Задать вопрос
+        </a>
+      </li>
+    </ul>
+
+
+  </div>
+  <hr class="footer-hr">
+  <div class="content-page__text">
+    <form method="post" class="form-all">
+      <input type="hidden" name="csrfmiddlewaretoken" value="XvqTKeTXsoByFLHAI4y9SPlTSUjE4yVl">
+      <style type="text/css">
+        .control-label {
+          font-weight: bold;
+        }
+      </style>
+
+
+      <div class="control-group ">
+        <label class="control-label" for="id_email">Email <span title="Обязательное поле">*</span></label>
+        <div class="controls">
+          <input id="id_email" maxlength="255" name="email" type="email">
+
+
+          <p class="help-block">На этот адрес будет выслано напоминание</p>
+        </div>
+
+      </div>
+
+      <div class="control-group ">
+        <label class="control-label" for="id_items_count">Напомнить за <span title="Обязательное поле">*</span></label>
+        <div class="controls">
+          <input id="id_items_count" min="0" name="items_count" type="number" value="1">
+
+
+
+        </div>
+
+      </div>
+
+      <div class="control-group ">
+        <label class="control-label" for="id_time_item">Интервал <span title="Обязательное поле">*</span></label>
+        <div class="controls">
+          <select id="id_time_item" name="time_item">
+            <option value="min">мин.</option>
+            <option value="hour">ч.</option>
+            <option value="day" selected="selected">дн.</option>
+          </select>
+
+
+
+        </div>
+
+      </div>
+
+      <br>
+      <button type="submit" class="side-box__form__btn">Создать напоминание</button>
+    </form>
+  </div>
+  <div class="container content-page">
+    <div class="row">
+      <div class="col-7">
+
+        <div class="side-box">
+          <form class="side-box__form" method="POST"><input type="hidden" name="csrfmiddlewaretoken" value="p31wOb9gG3dk5VQd15pigkdsX234Zglp">
+            <style type="text/css">
+              .controls ul li label input {
+                display: inline;
+              }
+              .controls ul {
+                list-style: none;
+              }
+            </style>
+
+
+            <div class="control-group ">
+              <label class="control-label" for="id_fio">ФИО</label>
+              <div class="controls">
+                <input id="id_fio" maxlength="128" name="fio" type="text" value=" ">
+
+                <p class="help-block"></p>
+              </div>
+
+            </div>
+
+            <div class="control-group ">
+              <label class="control-label" for="id_email">Email</label>
+              <div class="controls">
+                <input id="id_email" maxlength="256" name="email" type="email" value="dostovalov@gmail.com">
+
+                <ul class="errorlist">
+                  <li>Обязательное поле.</li>
+                  <li>Обязательное поле.</li>
+                </ul>
+              </div>
+
+            </div>
+
+            <div class="control-group ">
+              <label class="control-label" for="id_city">Город</label>
+              <div class="controls">
+                <input id="id_city" maxlength="64" name="city" type="text">
+
+                <p class="help-block"></p>
+              </div>
+
+            </div>
+
+            <div class="control-group ">
+              <label class="control-label" for="id_country">Страна</label>
+              <div class="controls">
+                <input id="id_country" maxlength="64" name="country" type="text">
+
+                <p class="help-block"></p>
+              </div>
+
+            </div>
+
+            <div class="control-group ">
+              <label class="control-label" for="id_category">Тематика</label>
+              <div class="controls">
+                <select id="id_category" name="category">
+                  <option value="" selected="selected">---------</option>
+                  <option value="27"> Архитектура</option>
+                  <option value="9"> Библиотечное дело</option>
+                  <option value="10"> Биология</option>
+                  <option value="12"> Военные науки</option>
+                  <option value="13"> Естествознание</option>
+                  <option value="14"> Здравоохранение</option>
+                  <option value="15"> Информатика</option>
+                  <option value="16"> Искусство. Искусствознание</option>
+                  <option value="25"> История</option>
+                  <option value="26"> Книжное дело</option>
+                  <option value="28"> Культура</option>
+                  <option value="29"> Литературоведение</option>
+                  <option value="30"> Медицинские науки</option>
+                  <option value="31"> Наука. Науковедение</option>
+                  <option value="32"> Науки о земле</option>
+                  <option value="33"> Обществознание</option>
+                  <option value="34"> Педагогика</option>
+                  <option value="35"> Пищевые производства</option>
+                  <option value="36"> Политика</option>
+                  <option value="22"> Право</option>
+                  <option value="19"> Психология</option>
+                  <option value="37"> Радиоэлектроника</option>
+                  <option value="20"> Религия. Атеизм</option>
+                  <option value="38"> Сельское и лесное хозяйство</option>
+                  <option value="39"> Социальные науки</option>
+                  <option value="40"> Страноведение</option>
+                  <option value="41"> Строительство</option>
+                  <option value="21"> Техника</option>
+                  <option value="42"> Технические науки</option>
+                  <option value="43"> Транспорт</option>
+                  <option value="44"> Филологические науки</option>
+                  <option value="18"> Философские науки</option>
+                  <option value="45"> Химическая технология</option>
+                  <option value="46"> Художественная литература</option>
+                  <option value="17"> Экономика</option>
+                  <option value="47"> Энергетика</option>
+                  <option value="48"> Юридические науки</option>
+                  <option value="49"> Языкознание</option>
+                </select>
+
+                <p class="help-block">Выберите тему, к которой относиться задаваемый вопрос. Если подходящей темы нет, оставьте поле темы пустым.</p>
+              </div>
+
+            </div>
+
+            <div class="control-group ">
+              <label class="control-label" for="id_question">Вопрос</label>
+              <div class="controls">
+                <textarea cols="40" id="id_question" maxlength="2048" name="question" rows="10"></textarea>
+
+                <p class="help-block"></p>
+              </div>
+
+            </div>
+
+            <button class="side-box__form__btn" type="submit">Спросить</button>
+          </form>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+      </div>
+      <div class="col-5">
+        <div class="side-box">
+          <h2 class="side-box__title">Категории вопросов</h2>
+          <a class="side-box__btn__ask" title="Задать вопрос библиотекарю" href="/ru/ask_librarian/ask">Задать вопрос</a>
+
+
+
+
+
+
+
+          <ul class="side-box__list-category">
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=27">Архитектура
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=9">Библиотечное дело
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=10">Биология
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=12">Военные науки
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=13">Естествознание
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=14">Здравоохранение
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=15">Информатика
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=16">Искусство. Искусствознание
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=25">История
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=26">Книжное дело
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=28">Культура
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=29">Литературоведение
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=30">Медицинские науки
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=31">Наука. Науковедение
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=32">Науки о земле
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=33">Обществознание
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=34">Педагогика
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=35">Пищевые производства
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=36">Политика
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=22">Право
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=19">Психология
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=37">Радиоэлектроника
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=20">Религия. Атеизм
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=38">Сельское и лесное хозяйство
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=39">Социальные науки
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=40">Страноведение
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=41">Строительство
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=21">Техника
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=42">Технические науки
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=43">Транспорт
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=44">Филологические науки
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=18">Философские науки
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=45">Химическая технология
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=46">Художественная литература
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=17">Экономика
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=47">Энергетика
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=48">Юридические науки
+
+              </a>
+            </li>
+
+
+            <li>
+              <a href="/ru/ask_librarian/?category=49">Языкознание
+
+              </a>
+            </li>
+
+
+
+          </ul>
+
+
+
+
+
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <hr class="footer-hr">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+
+
+        <ul class="menu-box menu-box_first">
+          <li><a href="/ru/pages/index/" class="footer-link">О проекте</a></li>
+          <li><a href="/ru/participants/" class="footer-link">Библиотеки</a></li>
+          <li><a href="/ru/ssearch/ecatalog/" class="footer-link">Каталог</a></li>
+          <li><a href="/ru/ssearch/ecollection/" class="footer-link">Коллекции</a></li>
+          <li><a href="/ru/guestbook/" class="footer-link">Отзывы</a></li>
+          <li><a href="/ru/news/" class="footer-link">Новости</a></li>
+          <li><a href="/ru/ask_librarian/" class="footer-link">Спроси библиотекаря </a></li>
+
+          <li><a href="/ru/pages/for_professional/" class="footer-link">Профессионалам </a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <hr class="footer-hr">
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+        <a class="footer-logo__bib" href="/ru/" title="На главную!"><img src="/static/dist/images/logo_bib.png" alt="тайтл"></a>
+        <a class="footer-logo__min" href="#" title="тайтл"><img src="/static/dist/images/logo_min.png" alt="тайтл"></a>
+      </div>
+      <div class="col-6">
+        <a class="footer-logo__ask-lib" href="/ru/ask_librarian/" title="Спроси библиотекаря">Задать вопрос библиотекарю</a>
+        <a class="footer-logo__ask-all" href="/ru/ask_librarian/ask" title="Спроси библиотекаря все вопросы">Все вопросы</a>
+      </div>
+    </div>
+  </div>
+
+</footer>
+
+
+
+</body>
+</html>
