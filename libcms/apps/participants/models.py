@@ -58,6 +58,7 @@ ORG_TYPES = (
     ('library', u'Библиотека'),
     ('school', u'Школа'),
     ('participant', u'Участник'),
+    ('external', u'Внешняя'),
 )
 
 
@@ -309,6 +310,17 @@ class OracleConnection(models.Model):
         help_text=u'Имя базы с новой строки'
     )
 
+
+class InteractionJournal(models.Model):
+    library = models.ForeignKey(Library, verbose_name=u'Организация')
+    records_created = models.IntegerField(verbose_name=u'Записей создано', default=0)
+    records_updated = models.IntegerField(verbose_name=u'Записей обновлено', default=0)
+    records_delete = models.IntegerField(verbose_name=u'Записей удалено', default=0)
+    datetime = models.DateTimeField(verbose_name=u'Дата/время', auto_now_add=True)
+
+    class Meta:
+        verbose_name = u'Запись журнала взаимодействий'
+        verbose_name_plural = u'Записи журнала взаимодействий'
 
 def get_role_groups(user=None):
     if user:

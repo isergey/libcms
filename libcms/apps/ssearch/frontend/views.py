@@ -523,7 +523,7 @@ def participant_income(request):
 
 
 def select_library(request):
-    libraries = Library.objects.filter(parent=None).values('code', 'name', 'id')
+    libraries = Library.objects.filter(parent=None, org_type='library').values('code', 'name', 'id')
     return render(request, 'ssearch/frontend/select_library.html', {
         'libraries': libraries,
     })

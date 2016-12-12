@@ -3,32 +3,37 @@
 from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
 
-from models import Library, UserLibrary, LibraryContentEditor, UserLibraryPosition  # , Country, City, District
+from . import models
 
 
-admin.site.register(Library, MPTTModelAdmin)
+admin.site.register(models.Library, MPTTModelAdmin)
 
 
 class UserLibraryAdmin(admin.ModelAdmin):
     list_display = ["user", 'library']
 
 
-admin.site.register(UserLibrary, UserLibraryAdmin)
+admin.site.register(models.UserLibrary, UserLibraryAdmin)
 
 
 class LibraryContentEditorAdmin(admin.ModelAdmin):
     list_display = ["user", 'library']
 
 
-admin.site.register(LibraryContentEditor, LibraryContentEditorAdmin)
+admin.site.register(models.LibraryContentEditor, LibraryContentEditorAdmin)
 
 
 class UserLibraryPositionAdmin(admin.ModelAdmin):
     list_display = ["name"]
 
 
-admin.site.register(UserLibraryPosition, UserLibraryPositionAdmin)
+admin.site.register(models.UserLibraryPosition, UserLibraryPositionAdmin)
 
+
+class InteractionJournalAdmin(admin.ModelAdmin):
+    list_display = ['library', 'records_created', 'records_updated', 'records_delete', 'datetime']
+
+admin.site.register(models.InteractionJournal, InteractionJournalAdmin)
 
 #
 # class CountryAdmin(admin.ModelAdmin):
