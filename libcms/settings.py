@@ -153,6 +153,8 @@ INSTALLED_APPS = (
     'forum',
     # 'urt',
     'orders',
+    'ruslan_cabinet',
+    'external_orders',
     'zgate',
     'mydocs',
     'guestbook',

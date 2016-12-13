@@ -1,0 +1,5 @@
+{% load active_link %}
+<ul class="nav nav-list">
+    <li class="nav-header">Инструменты</li>
+    <li class="{% active 'transformers_pool:administration:xslt'  %}"><a href="{% url 'transformers_pool:administration:xslt' %}">XSLT перобразование</a></li>
+</ul>

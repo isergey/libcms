@@ -1,16 +1,88 @@
-# encoding: utf-8
-import json
+# coding=utf-8
 import time
+from functools import wraps
 from django.conf import settings
-from django.utils.cache import patch_vary_headers
-from django.utils.http import cookie_date
 from django.utils.importlib import import_module
 from django.shortcuts import HttpResponse
-from django.http import HttpResponseForbidden
-from django.utils.decorators import available_attrs
+from django.utils.cache import patch_vary_headers
+from django.utils.http import cookie_date
 
 from exceptions import ApiException
-from common import response
+import responses
+
+
+def login_required(message='Login required'):
+    def decorator(view_func):
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            if request.user.is_authenticated():
+                return view_func(request, *args, **kwargs)
+            return responses.error_response(
+                message=message,
+                code='auth.not_authenticated',
+                status=401
+            )
+
+        return _wrapped_view
+
+    return decorator
+
+
+def permission_required(perm, message='Access denied'):
+    def _check_perms(user):
+        if not isinstance(perm, (list, tuple)):
+            perms = (perm,)
+        else:
+            perms = perm
+        if user.has_perms(perms):
+            return True
+        return False
+
+    def decorator(view_func):
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            if _check_perms(request.user):
+                return view_func(request, *args, **kwargs)
+            return responses.error_response(
+                message=message,
+                code='auth.no_have_permission',
+                status=403,
+                explain={
+                    'permissions': unicode(perm)
+                }
+            )
+
+        return _wrapped_view
+
+    return decorator
+
+
+def api(func):
+    """
+    декоратор для обработки вызовов api
+    """
+
+    def wrapper(*args, **kwargs):
+        args = list(args)
+        args[0] = process_request(args[0])
+
+        try:
+            data = func(*args, **kwargs)
+            if isinstance(data, HttpResponse):
+                return data
+            vars = {
+                'status': 'ok',
+                'response': data
+            }
+
+        except ApiException as e:
+            vars = {
+                'status': 'error',
+                'error': e.message
+            }
+        return process_response(args[0], responses.response(vars))
+
+    return wrapper
 
 
 def process_request(request):
@@ -23,6 +95,7 @@ def process_request(request):
 
     request.session = engine.SessionStore(session_key)
     return request
+
 
 def process_response(request, response):
     """
@@ -48,88 +121,9 @@ def process_response(request, response):
                 # Save the session data and refresh the client cookie.
             request.session.save()
             response.set_cookie(settings.SESSION_COOKIE_NAME,
-                request.session.session_key, max_age=max_age,
-                expires=expires, domain=settings.SESSION_COOKIE_DOMAIN,
-                path=settings.SESSION_COOKIE_PATH,
-                secure=settings.SESSION_COOKIE_SECURE or None,
-                httponly=settings.SESSION_COOKIE_HTTPONLY or None)
+                                request.session.session_key, max_age=max_age,
+                                expires=expires, domain=settings.SESSION_COOKIE_DOMAIN,
+                                path=settings.SESSION_COOKIE_PATH,
+                                secure=settings.SESSION_COOKIE_SECURE or None,
+                                httponly=settings.SESSION_COOKIE_HTTPONLY or None)
     return response
-
-
-def api(func):
-    """
-    декоратор для обработки вызовов api
-    """
-    def wrapper(*args, **kwargs):
-        args = list(args)
-        args[0] = process_request(args[0])
-
-        try:
-            data = func(*args, **kwargs)
-            if isinstance(data, HttpResponse):
-                return data
-            vars = {
-                'status':'ok',
-                'response': data
-            }
-
-        except ApiException as e:
-            vars = {
-                'status':'error',
-                'error': e.message
-            }
-        return process_response(args[0], response(vars))
-
-    return wrapper
-
-
-try:
-    from functools import wraps
-except ImportError:
-    from django.utils.functional import wraps  # Python 2.4 fallback.
-
-
-def user_passes_test(test_func):
-
-    def decorator(view_func):
-        @wraps(view_func, assigned=available_attrs(view_func))
-        def _wrapped_view(request, *args, **kwargs):
-            if test_func(request.user):
-                return view_func(request, *args, **kwargs)
-
-            return HttpResponseForbidden()
-        return _wrapped_view
-    return decorator
-
-
-def login_required_or_403(function=None):
-
-    actual_decorator = user_passes_test(
-        lambda u: u.is_authenticated()
-    )
-    if function:
-        return actual_decorator(function)
-    return actual_decorator
-
-
-def login_required_ajax(function=None,redirect_field_name=None):
-    def _decorator(view_func):
-        def _wrapped_view(request, *args, **kwargs):
-            if request.user.is_authenticated():
-                return view_func(request, *args, **kwargs)
-            else:
-                return HttpResponse(json.dumps({
-                    'status': 'error',
-                    'code': 'auth_required',
-                    'message': 'You need logged in'
-                }), status=401)
-        return _wrapped_view
-
-    if function is None:
-        return _decorator
-    else:
-        return _decorator(function)
-
-
-def permission_required_or_403(perm):
-    return user_passes_test(lambda u: u.has_perm(perm))

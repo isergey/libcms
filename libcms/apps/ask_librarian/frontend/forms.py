@@ -7,7 +7,9 @@ from django.forms.extras import widgets
 
 from captcha.fields import CaptchaField
 
+
 def get_question_form(show_captch=False):
+    fields = ['fio', 'email', 'city', 'country', 'category', 'question']
     if show_captch:
         class QuestionForm(forms.ModelForm):
             category = TreeNodeChoiceField(
@@ -17,9 +19,10 @@ def get_question_form(show_captch=False):
                 help_text=u'Выберите тему, к которой относиться задаваемый вопрос. Если подходящей темы нет, оставьте поле темы пустым.'
             )
             captcha = CaptchaField(label=u'Защита от спама')
+
             class Meta:
                 model = Question
-                exclude = ('user', 'answer', 'status', 'create_date', 'manager', 'start_process_date', 'end_process_date')
+                fields = ['fio', 'email', 'city', 'country', 'category', 'question']
     else:
         class QuestionForm(forms.ModelForm):
             category = TreeNodeChoiceField(
@@ -28,9 +31,10 @@ def get_question_form(show_captch=False):
                 label=u"Тематика",
                 help_text=u'Выберите тему, к которой относиться задаваемый вопрос. Если подходящей темы нет, оставьте поле темы пустым.'
             )
+
             class Meta:
                 model = Question
-                exclude = ('user', 'answer', 'status', 'create_date', 'manager', 'start_process_date', 'end_process_date')
+                fields = ['fio', 'email', 'city', 'country', 'category', 'question']
     return QuestionForm
 
 

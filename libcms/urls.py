@@ -30,6 +30,8 @@ urlpatterns = patterns(
     (r'^ssearch/', include('ssearch.urls', namespace='ssearch')),
     (r'^dl/', include('rbooks.urls', namespace='rbooks')),
     (r'^orders/', include('orders.urls', namespace='orders')),
+    (r'^rorders/', include('ruslan_cabinet.urls', namespace='ruslan_cabinet')),
+    (r'^extorders/', include('external_orders.urls', namespace='external_orders')),
     # (r'^urt/', include('urt.urls', namespace='urt')),
     (r'^mydocs/', include('mydocs.urls', namespace='mydocs')),
     (r'^zgate/', include('zgate.urls')),

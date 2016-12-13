@@ -1,0 +1,65 @@
+{% if holding_groups %}
+    <table>
+        <tr>
+            <th>Организация</th>
+            <th>Отдел</th>
+            <th>Полочные индексы</th>
+            <th>Статус</th>
+        </tr>
+    {% for org, holding_group in holding_groups.items %}
+        <tr>
+            <td rowspan="{{ holding_group.keys|length|add:1 }}">{{ org }}</td>
+        </tr>
+        {% for branch, items in holding_group.items %}
+            <tr>
+                <td>{{ branch }}</td>
+                <td>
+                    {% for item_id, info in items.items %}
+                        {{ info.shelving_data }} {{ info.items_status }}
+                    {% endfor %}
+                </td>
+            </tr>
+
+        {% endfor %}
+    {% endfor %}
+    </table>
+{% endif %}
+
+{#{% for holding in holdings %}#}
+{#    {%  if holding.group_by_locations.items  %}#}
+{#    <table class="table table-bordered">#}
+{#        <tr>#}
+{#            <th style="width: 100px">Организация</th>#}
+{#            <th>Отдел</th>#}
+{#            <th style="width: 70px">Свободно</th>#}
+{#            <th style="width: 70px">Всего</th>#}
+{#            <th style="width: 200px">Шифры хранения</th>#}
+{#            <th style="width: 100px">Полочный индекс</th>#}
+{#            <th>Действия</th>#}
+{#        </tr>#}
+{#        {% for nuc_code, groups in  holding.group_by_locations.items %}#}
+{##}
+{#            <tr>#}
+{#                <td rowspan="{{ groups.keys|length|add:1 }}">{{ nuc_code }} </td>#}
+{#            </tr>#}
+{#            {% for location, group in groups.items %}#}
+{#                <tr>#}
+{#                    <td>{{ location }}</td>#}
+{#                    <td>#}
+{#                        {{ group.available }} / <span title="доступно при личной явке">{{ group.restricted }}</span>#}
+{#                    </td>#}
+{#                    <td>{{ group.total }}</td>#}
+{#                    <td>{% for call_number in group.call_number %}{{ call_number }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>#}
+{#                    <td>{% for shelving_data in group.shelving_data %}{{ shelving_data }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>#}
+{#                    <td>#}
+{#                        {% if not group.available and group.restricted %}#}
+{#                            <span class="alert alert-warning">недоступно для электронного заказа</span>#}
+{#                        {% endif %}#}
+{#                        {% if group.available  %} <a href="#1"  class="make_order_btn btn btn-success btn-sm">Заказать</a> {% endif %}#}
+{#                    </td>#}
+{#                </tr>#}
+{#            {% endfor %}#}
+{#        {% endfor %}#}
+{#    </table>#}
+{#    {% endif %}#}
+{#{% endfor %}#}

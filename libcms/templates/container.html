@@ -1,0 +1,38 @@
+{% extends 'theme_frontend_base.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% load news_tags %}
+{% block title %}{% endblock %}
+{% block content %}
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li>
+                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Главная
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Төп бит
+                        {% else %}
+                            Home
+                        {% endif %}
+                    </a>
+                </li>
+                {% block breadcrumbs %}{% endblock %}
+            </ul>
+        </div>
+        <hr class="footer-hr">
+        <div class="container content-page">
+            <div class="row">
+                {% block container_content %}{% endblock %}
+            </div>
+
+        </div>
+    </main>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head lang="ru">
+    <meta charset="UTF-8">
+    <title>Заказ</title>
+</head>
+<body>
+<div id="app"></div>
+<script src="{{ STATIC_URL }}js/react-with-addons.min.js"></script>
+<script src="{{ STATIC_URL }}js/JSXTransformer.js"></script>
+<script src="{{ STATIC_URL }}site/js/jquery-2.1.4.min.js"></script>
+<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+<script src="{{ STATIC_URL }}js/csrftoken.js"></script>
+<script type="text/jsx" src="{{ STATIC_URL }}ruslan_cabinet/js/ruslan_commons.js"></script>
+<script type="text/jsx" src="{{ STATIC_URL }}ruslan_cabinet/js/ruslan_humanize.js"></script>
+<script type="text/jsx" src="{{ STATIC_URL }}ruslan_cabinet/js/ruslan_make_order.js"></script>
+<script type="text/jsx">
+    $(function () {
+        Ruslan.MakeOrderApp({
+            element: document.getElementById('app'),
+            recordId: 'RU\\SPSTU\\books\\185655',
+            urls: {
+                getRecordsUrl: '{% url 'ruslan_cabinet:api:get_records' %}'
+            }
+        });
+    });
+</script>
+</body>
+</html>

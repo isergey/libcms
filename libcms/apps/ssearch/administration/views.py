@@ -324,6 +324,8 @@ def _indexing(slug, reset=False):
             db=db_conf['NAME'],
             port=int(db_conf['PORT']),
             compress=True,
+            charset='utf8',
+            use_unicode=True,
             cursorclass=MySQLdb.cursors.SSDictCursor
         )
     except MySQLdb.OperationalError as e:
@@ -334,6 +336,8 @@ def _indexing(slug, reset=False):
             db=db_conf['NAME'],
             port=int(db_conf['PORT']),
             compress=True,
+            charset='utf8',
+            use_unicode=True,
             cursorclass=MySQLdb.cursors.SSDictCursor
         )
     holdings_index = _load_holdings(conn)
@@ -344,6 +348,7 @@ def _indexing(slug, reset=False):
         index_status = IndexStatus.objects.get(catalog=slug)
     except IndexStatus.DoesNotExist:
         index_status = IndexStatus(catalog=slug)
+    # select_query = "SELECT * FROM records where deleted = 0 AND LENGTH(content) > 0 and record_id='ru\\\\nlrt\\\\1359411'"
     select_query = "SELECT * FROM records where deleted = 0 AND LENGTH(content) > 0"
     # if not getattr(index_status, 'last_index_date', None):
     #     select_query = "SELECT * FROM records where deleted = 0 and content != NULL"
@@ -351,7 +356,7 @@ def _indexing(slug, reset=False):
     #     select_query = "SELECT * FROM records where update_date >= '%s' and deleted = 0" % (
     #         str(index_status.last_index_date))
 
-    # solr = sunburnt.SolrInterface(solr_address)
+    solr = sunburnt.SolrInterface(solr_address)
     docs = list()
 
     start_index_date = datetime.datetime.now()
@@ -404,9 +409,12 @@ def _indexing(slug, reset=False):
             holdings_index=holdings_index,
             sources_index=sources_index
         )
-        if holder_codes:
-            print holder_codes
+        # print 'holder_codes', holder_codes
+        # if holder_codes:
+        #     print holder_codes
 
+        if holder_codes:
+            doc['system-holder_s'] = holder_codes
         doc['system-add-date_dt'] = res[0]['add_date']
         doc['system-add-date_dts'] = res[0]['add_date']
         doc['system-update-date_dt'] = res[0]['update_date']
@@ -435,15 +443,15 @@ def _indexing(slug, reset=False):
             print 'indexed', i
         if len(docs) > 100:
             pass
-            # solr.add(docs)
+            solr.add(docs)
             docs = list()
         res = rows.fetch_row(how=1)
 
     if docs:
         pass
-        # solr.add(docs)
+        solr.add(docs)
 
-    # solr.commit()
+    solr.commit()
     index_status.indexed = i
 
     # удаление
@@ -457,19 +465,20 @@ def _indexing(slug, reset=False):
     else:
         records = Record.objects.using('records').filter(deleted=True).values('gen_id', 'update_date')
 
-    # record_gen_ids = []
-    # for record in list(records):
-    #     record_gen_ids.append(record['gen_id'])
-    #
-    # if record_gen_ids:
-    #     solr.delete(record_gen_ids)
-    #     solr.commit()
+    record_gen_ids = []
+    for record in list(records):
+        record_gen_ids.append(record['gen_id'])
 
-    # index_status.deleted = len(record_gen_ids)
-    # index_status.last_index_date = start_index_date
-    # index_status.save()
-    # conn.query('DELETE FROM records WHERE deleted = 1')
+    if record_gen_ids:
+        solr.delete(record_gen_ids)
+        solr.commit()
+
+    index_status.deleted = len(record_gen_ids)
+    index_status.last_index_date = start_index_date
+    index_status.save()
+    conn.query('DELETE FROM records WHERE deleted = 1')
     return True
+
 
 
 @transaction.atomic
@@ -492,8 +501,9 @@ def local_records_indexing(request):
             user=db_conf['USER'],
             passwd=db_conf['PASSWORD'],
             db=db_conf['NAME'],
-            port=int(db_conf['PORT']
-                     ),
+            port=int(db_conf['PORT']),
+            charset='utf8',
+            use_unicode=True,
             cursorclass=MySQLdb.cursors.SSDictCursor
         )
     except MySQLdb.OperationalError as e:
@@ -502,8 +512,9 @@ def local_records_indexing(request):
             user=db_conf['USER'],
             passwd=db_conf['PASSWORD'],
             db=db_conf['NAME'],
-            port=int(db_conf['PORT']
-                     ),
+            port=int(db_conf['PORT']),
+            charset='utf8',
+            use_unicode=True,
             cursorclass=MySQLdb.cursors.SSDictCursor
         )
 
@@ -721,6 +732,8 @@ def _calculate_holdings_hash(record_id, source_id):
 
 def _load_holdings(conn):
     select_query = "SELECT * FROM ssearch_holdings"
+    # select_query = "SELECT * FROM ssearch_holdings WHERE record_id='ru\\\\nlrt\\\\1359411'"
+
     conn.query(select_query)
     rows = conn.use_result()
     holdings_index = {}
@@ -733,79 +746,77 @@ def _load_holdings(conn):
         id = res[0]['id']
         record_id = res[0]['record_id']
         source_id = res[0]['source_id']
-        department = res[0]['department']
+        department = _clean_sigla(res[0]['department'])
         hash = _calculate_holdings_hash(record_id, source_id)
         departments = holdings_index.get(hash, None)
         if not departments:
-            # departments = ''
-            holdings_index[hash] = department
-        else:
-            holdings_index[hash] += (SIGLA_DELIMITER + department)
-        # departments.append(department)
-        # source_records = holdings_index.get(source_id, None)
-        # if source_records is None:
-        #     source_records = {}
-        #     holdings_index[source_id] = source_records
-        # departments = source_records.get(record_id, None)
-        # if departments is None:
-        #     departments = set()
-        #     source_records[record_id] = departments
-        # departments.add(department)
+            departments = {}
+            holdings_index[hash] = departments
+
+        source_ids = departments.get(department, None)
+        if not source_ids:
+            source_ids = []
+            departments[department] = source_ids
+        source_ids.append(source_id)
         res = rows.fetch_row(how=1)
     return holdings_index
 
 
 def _get_holdings(source_id, record_id, holdings_index, orgs_index, sources_index):
-    holding_codes = []
-    department_siglas = _get_departments(source_id, record_id, holdings_index)
-    if not department_siglas:
-        return holding_codes
-    for department_sigla in department_siglas:
-        code = _get_org_code_by_departament(
-            orgs_index=orgs_index,
-            sources_index=sources_index,
-            source_id=source_id,
-            department_sigla=department_sigla
-        )
-        if code:
-            holding_codes.append(code)
+    holding_codes = set()
+    department_siglas = holdings_index.get(_calculate_holdings_hash(record_id, source_id), {})
+
+    for department_sigla, source_ids in department_siglas.items():
+        for source_id in source_ids:
+            code = _get_org_code_by_departament(
+                orgs_index=orgs_index,
+                sources_index=sources_index,
+                source_id=source_id,
+                department_sigla=department_sigla
+            )
+            if code:
+                holding_codes.add(code)
+
     return holding_codes
 
 
-def _get_departments(source_id, record_id, holdings_index):
-    # holdings_hash = _calculate_holdings_hash(source_id, record_id)
-    holdings_hash = record_id
-    departments_string = holdings_index.get(holdings_hash, '')
-    if not departments_string:
-        return []
-    return departments_string.split(SIGLA_DELIMITER)
-
-
 def _get_org_code_by_departament(orgs_index, sources_index, source_id, department_sigla):
+    cleaned_sigla = _clean_sigla(department_sigla)
     exist_source = sources_index.get(source_id, None)
     if not exist_source:
         return ''
     organization_code = exist_source.organization_code
-    organization = orgs_index['code'].get(organization_code)
+    organization = orgs_index['code'].get(organization_code, None)
     if not organization:
+        return ''
+
+    if _is_exist_sigla_in_org(organization, cleaned_sigla):
         return organization_code
 
-    departament_org = orgs_index['sigla'].get(organization['code'] + department_sigla, None)
-    if departament_org:
-        return departament_org['code']
+    leaf_orgs = _get_org_leafs(organization, orgs_index)
+    for leaf_org in leaf_orgs:
+        if _is_exist_sigla_in_org(leaf_org, cleaned_sigla):
+            return leaf_org['code']
 
-    for leaf_org in _get_org_leafs(organization, orgs_index):
-        sigla_org = orgs_index['sigla'].get(leaf_org['code'] + department_sigla, None)
-        if sigla_org:
-            return sigla_org['code']
+    if organization['default_holder']:
+        return organization_code
+
+    for leaf_org in leaf_orgs:
+        if leaf_org['default_holder']:
+            return leaf_org['code']
     return organization_code
+
+
+def _is_exist_sigla_in_org(organization, sigla):
+    siglas = _extract_siglas(organization['sigla'])
+    return sigla in siglas
 
 
 def _load_sources():
     sources = list(Source.objects.using('records').all())
     sources_index = {}
     for source in sources:
-        sources_index[str(source.id)] = source
+        sources_index[source.id] = source
     return sources_index
 
 
@@ -823,7 +834,7 @@ def _get_org_ancestors(org, orgs_index):
 
 def _get_org_children(org, orgs_index):
     children = []
-    for child_id, child_org in orgs_index['parent_id'].get(org['id'], {}).items():
+    for child_org in orgs_index['parent_id'].get(org['id'], []):
         children.append(child_org)
     return children
 
@@ -837,7 +848,7 @@ def _get_org_leafs(org, org_index):
 
 
 def _load_orgs():
-    orgs = Library.objects.values('id', 'parent_id', 'code', 'sigla').all()
+    orgs = Library.objects.values('id', 'parent_id', 'code', 'sigla', 'default_holder', 'name').all()
     orgs_index = {
         'id': {},
         'parent_id': {},
@@ -847,9 +858,26 @@ def _load_orgs():
     for org in orgs:
         orgs_index['id'][org['id']] = org
         if org['parent_id']:
-            orgs_index['parent_id'][org['parent_id']] = org
+            orgs = orgs_index['parent_id'].get(org['parent_id'], None)
+            if not orgs:
+                orgs = []
+                orgs_index['parent_id'][org['parent_id']] = orgs
+            orgs.append(org)
         orgs_index['code'][org['code']] = org
         if org['sigla']:
-            for sigla in org['sigla'].strip().split(u';'):
-                orgs_index['code'][org['code'] + sigla] = org
+            for sigla in _extract_siglas(org['sigla']):
+                orgs_index['code'][org['code'] + _clean_sigla(sigla)] = org
     return orgs_index
+
+
+def _clean_sigla(sigla):
+    return sigla.strip().lower()
+
+
+def _extract_siglas(siglas_str):
+    cleaned_siglas = []
+    for sigla in siglas_str.strip().replace("\r", "").split(SIGLA_DELIMITER):
+        cleaned_sigla = _clean_sigla(sigla)
+        if cleaned_sigla:
+            cleaned_siglas.append(cleaned_sigla)
+    return cleaned_siglas

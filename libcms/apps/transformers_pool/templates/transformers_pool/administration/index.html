@@ -1,0 +1,18 @@
+{% extends 'administration/base.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% block module_title %}Новости{% endblock %}
+{% block module_menu %}
+    {% include 'transformers_pool/administration/module_menu.html' %}
+{% endblock %}
+{% block module_content %}
+    <ul class="breadcrumb">
+    {% block breadcrumb %}
+        {% breadcrumb "Шаблонизация"  %}
+    {% endblock %}
+    </ul>
+    {% block action_content %}
+        Summary
+    {% endblock %}
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'transformers_pool/administration/index.html' %}
+{% load bootstrap %}
+{% block action_content %}
+    <form novalidate method="post">
+        {% csrf_token %}
+        {{ form|bootstrap }}
+        <button type="submit">Преобразовать</button>
+    </form>
+    {% if transform_result %}
+    <div class="well well-sm">
+        {{ transform_result|safe }}
+    </div>
+    <div class="well well-sm">
+        <pre><code>{{ transform_result_pretty }}</code></pre>
+    </div>
+    {% endif %}
+{% endblock %}

@@ -408,7 +408,7 @@ def register_new_user(request, id):
     if fields_100:
         reader_id = fields_100[0].content
 
-    tatedu_user.delete()
+    # tatedu_user.delete()
 
     user = authenticate(username=reader_id, password=password, need_check_password=False)
 

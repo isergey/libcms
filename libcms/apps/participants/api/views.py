@@ -7,7 +7,7 @@ from django.forms.models import model_to_dict
 from django.shortcuts import HttpResponse, resolve_url
 
 import unicodecsv
-from api.decorators import api, login_required_ajax
+from api.decorators import login_required, api
 from api.exceptions import WrongArguments, ApiException
 from .. import models
 
@@ -415,14 +415,15 @@ def export_int_conns(request):
 
 
 
-
-@login_required_ajax
+@api
+@login_required
 def user_organizations(request):
     orgs = models.user_organizations(request.user)
     return HttpResponse(json.dumps(orgs, ensure_ascii=False), content_type='application/json')
 
 
-@login_required_ajax
+@api
+@login_required
 def personal_cabinet_links(request):
     return HttpResponse(json.dumps(models.personal_cabinet_links(request), ensure_ascii=False),
                         content_type='application/json')

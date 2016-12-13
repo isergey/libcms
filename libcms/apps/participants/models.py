@@ -79,10 +79,17 @@ class Library(MPTTModel):
         unique=True,
         validators=[RegexValidator(regex=r'^[/_\-0-9A-Za-z]+$', message=u'Допускаются цифры, _, -, латинские буквы')]
     )
-    sigla = models.CharField(
+    sigla = models.TextField(
         verbose_name=u'Сигла из подполя 999b',
         max_length=1024, db_index=True, blank=True,
+        help_text=u'Каждая сигла на отдельной строке'
     )
+    default_holder = models.BooleanField(
+        verbose_name=u'Держатель по умолчанию',
+        default=False,
+        help_text=u'Если сиглы не совпадают ни с одним филиалом, то держателем становится этот'
+    )
+
     republican = models.BooleanField(verbose_name=u'Руспубликанская библиотека', default=False, db_index=True)
     org_type = models.CharField(
         verbose_name=u'Тип организации',
@@ -104,6 +111,12 @@ class Library(MPTTModel):
     postal_address = models.TextField(verbose_name=u'Адрес', max_length=512, blank=True)
 
     http_service = models.URLField(max_length=255, verbose_name=u'Альтернативный адрес сайта', blank=True)
+    ext_order_mail = models.EmailField(
+        max_length=255,
+        verbose_name=u'Адрес электронной почты для заказа',
+        blank=True,
+        help_text=u'На тот адрес будет высылаться заявка на бронирование от читателя'
+    )
     z_service = models.CharField(max_length=255, verbose_name=u'Адрес Z сервера', blank=True,
                                  help_text=u'Укажите адрес Z сревера в формате host:port (например localhost:210)')
     ill_service = models.EmailField(max_length=255, verbose_name=u'Адрес ILL сервиса', blank=True)
