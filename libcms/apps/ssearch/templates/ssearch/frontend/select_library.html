@@ -1,9 +1,49 @@
-<table class="table table-bordered">
-    {% for library in libraries %}
-    <tr>
-        <td style="padding: 0">
-            <a style="display: block;padding: 5px;" code="{{ library.code }}" href="#select_by_code">{{ library.name }}</a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+{% load mptt_tags %}
+
+<style>
+    .org_tree, .org_tree__children {
+        list-style: none;
+    }
+    .org_tree__children {
+        display: none;
+    }
+    .org_tree__expander {
+        display: inline-block;
+        width: 19px;
+        cursor: pointer;
+    }
+    .org_tree__expander:after {
+        content: "]";
+    }
+    .org_tree__expander:before {
+        content: "[";
+    }
+    .org_tree__expander:hover {
+        background: yellow;
+    }
+</style>
+<ul class="org_tree">
+    {% recursetree libraries %}
+        <li class="org_tree__node">
+            {% if not node.is_leaf_node %}<span class="org_tree__expander">+</span>{% endif %}
+            <a code="{{ node.code }}" href="#select_by_code"> {{ node.name }}</a>
+            {% if not node.is_leaf_node %}
+                <ul class="org_tree__children">
+                    {{ children }}
+                </ul>
+            {% endif %}
+        </li>
+    {% endrecursetree %}
+</ul>
+<script>
+    $(".org_tree__expander").on("click", function (e) {
+        $expander = $(this);
+        if ($expander.text() === '+') {
+            $expander.text('-')
+        } else {
+            $expander.text('+')
+        }
+        e.stopPropagation();
+        $expander.parent().children('ul').toggle();
+    });
+</script>

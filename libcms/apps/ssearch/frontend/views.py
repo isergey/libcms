@@ -547,7 +547,7 @@ def select_library(request):
     #     if request.session.get('auth_source', TATEDU_AUTH_SOURCE) == TATEDU_AUTH_SOURCE:
     #         org_type = 'school'
 
-    libraries = Library.objects.filter(parent=None)
+    libraries = Library.objects.filter(hidden=False)
     return render(request, 'ssearch/frontend/select_library.html', {
         'libraries': libraries,
     })

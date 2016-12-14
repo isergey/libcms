@@ -560,7 +560,7 @@
 
     <div id="select_library" class="modal" tabindex="-1" role="dialog" aria-labelledby="select_library"
          aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg" style="width: 80%">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="detail-page__options__btn" data-dismiss="modal" aria-hidden="true">×
@@ -569,7 +569,7 @@
                         поиск</h1>
                 </div>
                 <div class="modal-body content-page__text">
-                    <a href="/ru">Начало</a>
+                    Загрузка списка библиотек...
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="detail-page__options__btn" data-dismiss="modal">Закрыть</button>
@@ -665,6 +665,7 @@
                 $.get('{% url 'ssearch:frontend:select_library' %}').done(function (data) {
                     $modalBody.html(data);
                     $modalBody.find('a').one('click', function () {
+                        console.log("$(this).attr('code')", $(this).attr('code'));
                         changeLibrart($(this).attr('code'));
 
                         return false;
