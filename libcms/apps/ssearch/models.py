@@ -8,6 +8,7 @@ from django.db import connection
 from django.db import models
 from django.contrib.auth.models import User
 
+RECORDS_DB_CONFIG_KEY = 'records'
 
 RECORD_SCHEMES = (
     ('rusmarc', u"Rusmarc"),
@@ -53,17 +54,6 @@ class Upload(models.Model):
         return filesizeformat(self.file.size)
 
 
-class Source(models.Model):
-    source_type = models.CharField(max_length=32)
-    organization_code = models.CharField(max_length=32)
-    database_group = models.CharField(max_length=32)
-    databse_name = models.CharField(max_length=45)
-
-    class Meta:
-        managed = False
-        db_table = 'source'
-
-
 class ZippedTextField(models.BinaryField):
     __metaclass__ = models.SubfieldBase
 
@@ -92,6 +82,17 @@ class IndexStatus(models.Model):
     deleted = models.IntegerField(default=0)
 
 
+class Source(models.Model):
+    source_type = models.CharField(max_length=32)
+    organization_code = models.CharField(max_length=32)
+    database_group = models.CharField(max_length=32)
+    databse_name = models.CharField(max_length=45)
+
+    class Meta:
+        managed = False
+        db_table = 'source'
+
+
 class Record(models.Model):
     source = models.ForeignKey(Source, null=True, blank=True)
     gen_id = models.CharField(max_length=32, unique=True)
@@ -111,16 +112,31 @@ class Record(models.Model):
 
 
 class Holdings(models.Model):
-    original_id = models.CharField(max_length=255, db_index=True)
+    record_id = models.CharField(max_length=255, db_index=True)
     department = models.CharField(max_length=255, db_index=True)
-    source = models.CharField(max_length=32, db_index=True)
+    source = models.ForeignKey(Source, db_index=True, null=True)
 
     class Meta:
         managed = False
-        unique_together = ['original_id', 'department', 'source']
-        index_together = ['original_id', 'department', 'source']
+        unique_together = ['record_id', 'department', 'source']
+        index_together = ['record_id', 'department', 'source']
         db_table = 'ssearch_holdings'
 
+    def __unicode__(self):
+        return u'%s %s %s' % (self.record_id, self.department, self.source_id)
+
+
+def get_holdres(record_id):
+    print 'get_holdres', record_id
+    sources = set()
+    organization_codes = set()
+    holdings = Holdings.objects.using(RECORDS_DB_CONFIG_KEY).filter(record_id=record_id).select_related('source')
+    for holding in holdings:
+        sources.add(holding.source)
+        organization_codes.add(holding.source.organization_code)
+    print 'source_ids', sources
+    print 'organization_codes', organization_codes
+    return []
 
 
 class Ebook(models.Model):
@@ -139,6 +155,7 @@ class Ebook(models.Model):
 
     class Meta:
         db_table = 'ebooks'
+
 
 def get_records(doc_ids=[]):
     records_dict = {}
@@ -198,9 +215,6 @@ class SearchRequestLog(models.Model):
     use = models.CharField(max_length=32, verbose_name=u"Точка доступа", db_index=True)
     not_normalize = models.CharField(max_length=256, verbose_name=u'Ненормализованный терм', db_index=True)
     datetime = models.DateTimeField(auto_now_add=True, db_index=True)
-
-
-
 
 
 DUBLET_STATUSES = (

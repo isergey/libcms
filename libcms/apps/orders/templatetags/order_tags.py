@@ -8,7 +8,7 @@ from participants.models import Library
 from zgate.models import ZCatalog
 from django.core.cache import cache
 from ..frontend.forms import DeliveryOrderForm, CopyOrderForm
-
+from ssearch.models import get_holdres
 
 # def get_holders(record):
 #     holders = []
@@ -114,6 +114,14 @@ def drow_el_order_menu(owners_codes, record_id):
         'owners': owners,
         'record_id': record_id,
         'empty_codes': empty_codes,
+    }
+
+@register.inclusion_tag('orders/tags/drow_holders_menu.html')
+def drow_holders_menu(record_id):
+    holders = get_holdres(record_id)
+    print holders
+    return {
+
     }
 
 
