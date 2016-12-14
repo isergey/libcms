@@ -1,0 +1,19 @@
+{% if owners %}
+    <div class="reserv-box__title">Бронирование <span>({{ owners|length }})</span></div>
+    {% for owner in owners %}
+        <a class="reserv-box__geo" href="{% url 'participants:frontend:detail' owner.owner.code %}" title="Посмотреть на карте">
+            <img alt="Информация о библиотеке" src="/static/dist/images/geo_pin.svg">
+        <span>{{ owner.owner.name }}</span>
+        </a>
+        {% if owner.has_catalog %}
+            <a title="Забронировать в: {{ owner.owner.name }}" class="reserv-box__btn" href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">Забронировать</a>
+        {% else %}
+           Заказ отключен
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{% if empty_codes %}
+    {% for empty_code in empty_codes %}
+        <li>{{ empty_code }}</li>
+    {% endfor %}
+{% endif %}
