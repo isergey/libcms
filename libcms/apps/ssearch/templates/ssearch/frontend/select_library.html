@@ -34,7 +34,7 @@
     {% recursetree libraries %}
         <li class="org_tree__node">
             {% if not node.is_leaf_node %}<span class="org_tree__expander">+</span>{% endif %}
-            <a class="org_tree__org_link" code="{{ node.code }}" href="#select_by_code"> {{ node.name }}</a>
+            <a title="Осуществить поиск по записям организации" class="org_tree__org_link" code="{{ node.code }}" href="#select_by_code"> {{ node.name }}</a>
             <a class="org_tree__info-link detail-page__options__btn" target="_blank" href="{% url 'participants:frontend:branches' node.code %}">Информация</a>
             {% if not node.is_leaf_node %}
                 <ul class="org_tree__children">
