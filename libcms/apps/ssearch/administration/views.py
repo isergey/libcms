@@ -415,6 +415,8 @@ def _indexing(slug, reset=False):
 
         if holder_codes:
             doc['system-holder_s'] = holder_codes
+
+
         doc['system-add-date_dt'] = res[0]['add_date']
         doc['system-add-date_dts'] = res[0]['add_date']
         doc['system-update-date_dt'] = res[0]['update_date']

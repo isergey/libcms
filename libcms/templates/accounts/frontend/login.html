@@ -49,14 +49,16 @@
             <div class="row">
                 <div class="col-12">
                     {% if library %}
-                        {% with library.get_root as cbs %}
-                            <div>
-                                <a class="footer-logo__ask-lib"
-                                  href="{% url 'ssearch:frontend:ecatalog' %}?library={{ cbs.code }}">
-                                Выполнить поиск по каталогу: {{ cbs }}
-                                </a>
-                            </div>
-                        {% endwith %}
+                        <h3>Выполнить поиск по каталогу:</h3>
+                        <div>
+                            <a class="footer-logo__ask-lib"
+                               href="{% url 'ssearch:frontend:ecatalog' %}?library={{ library.code }}">
+                                {% for ancestor in library.get_ancestors %}
+                                    {{ ancestor.name }} →
+                                {% endfor %}
+                                <b>{{ library }}</b>
+                            </a>
+                        </div>
                     {% endif %}
 
                     <h1 class="content-page__title">Авторизация</h1>
