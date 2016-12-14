@@ -266,7 +266,6 @@ def search(request, catalog=None, library=None):
         leaf_libraries = library.get_leafnodes()
         for leaf_library in leaf_libraries:
             holders.append(getattr(leaf_library, 'code'))
-
     facet_fields = [
         'fond_sf',
         'author_sf',
@@ -345,10 +344,16 @@ def search(request, catalog=None, library=None):
     if qs and attrs:
         log_search_request({'attr': attrs[0], 'value': qs[0]}, catalog, getattr(library, 'code', u''))
 
+    # if holders:
+    #     holders_query = solr.Q(**{'holder-sigla_s': holders[0]})
+    #     for holder in holders[1:]:
+    #         holders_query |= solr.Q(**{'holder-sigla_s': holder})
+    #     query = query & holders_query
+
     if holders:
-        holders_query = solr.Q(**{'holder-sigla_s': holders[0]})
+        holders_query = solr.Q(**{'system-holder_s': holders[0]})
         for holder in holders[1:]:
-            holders_query |= solr.Q(**{'holder-sigla_s': holder})
+            holders_query |= solr.Q(**{'system-holder_s': holder})
         query = query & holders_query
 
     solr_searcher = solr.query(query)
