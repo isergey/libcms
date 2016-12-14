@@ -290,6 +290,7 @@ def _get_books(xml):
     #    opener = urllib2.build_opener()
     #    result = opener.open(url)
     #    results = result.read()
+    xml = xml.replace('<record syntax="">', '<record syntax="RUSmarc">')
     try:
         rcords_root = etree.XML(xml)
     except etree.XMLSyntaxError:
@@ -297,7 +298,6 @@ def _get_books(xml):
     books = []
     record_trees = rcords_root.xpath('/records/*')
     for record_tree in record_trees:
-
         rcord_root = copy.deepcopy(record_tree)  # иначе возникнет ошибка трансформации
         book = {}
         bib_record = xslt_bib_draw_transformer(rcord_root, abstract='false()')

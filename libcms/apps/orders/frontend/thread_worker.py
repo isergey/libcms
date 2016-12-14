@@ -5,15 +5,14 @@ import threading
 import urllib2
 
 
-
-
 class ThreadResult(object):
     def __init__(self, value):
         self.value = value
 
+
 # Threads form a thread-pool waiting for compute requests in the request_queue
 class ComputeThread(threading.Thread):
-    def __init__(self, func, arg,request_queue):
+    def __init__(self, func, arg, request_queue):
         threading.Thread.__init__(self)
         self.request_queue = request_queue
         self.func = func
@@ -68,16 +67,16 @@ class ThreadWorker(object):
         return results
 
 
-#def compute(host):
-#    url = urllib2.urlopen(host, timeout=2)
-#    result = url.read()
-#    return result
-#
-#hosts = ["http://yahoo.com:8080", "http://google.com", "http://amazon.com",
-#         "http://ibm.com", "http://apple.com"]
-#
-#from time import time as t
-#if __name__ == "__main__":
-#    s = t()
-#    print ThreadWorker(compute, hosts).do()
-#    print 'time:', t() -s
+        # def compute(host):
+        #    url = urllib2.urlopen(host, timeout=2)
+        #    result = url.read()
+        #    return result
+        #
+        # hosts = ["http://yahoo.com:8080", "http://google.com", "http://amazon.com",
+        #         "http://ibm.com", "http://apple.com"]
+        #
+        # from time import time as t
+        # if __name__ == "__main__":
+        #    s = t()
+        #    print ThreadWorker(compute, hosts).do()
+        #    print 'time:', t() -s
