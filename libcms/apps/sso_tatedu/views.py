@@ -436,89 +436,89 @@ def register_new_user(request, id):
             error_description=u'Система не может сопоставить вашу учетную запись ОЭ РТ'
         )
 
-
-@transaction.atomic()
-def ask_for_exist_reader(request, id):
-    try:
-        esia_user = models.EsiaUser.objects.get(id=id)
-    except models.EsiaUser.DoesNotExist:
-        return redirect('sso_esia:index')
-
-    portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
-
-    if request.method == 'POST':
-        ruslan_auth_form = forms.RuslanAuthForm(request.POST)
-        if ruslan_auth_form.is_valid():
-            reader_id = ruslan_auth_form.cleaned_data['reader_id'].replace('\\', '\\\\').replace('"', '\\"')
-            password = ruslan_auth_form.cleaned_data['password'].replace('\\', '\\\\').replace('"', '\\"')
-
-            sru_response = portal_client.search(
-                query='@attrset bib-1 @attr 1=100 "%s"' % (reader_id,),
-                database=RUSLAN_USERS_DATABASE,
-                maximum_records=1
-            )
-
-            sru_records = humanize.get_records(sru_response)
-
-            if not sru_records:
-                ruslan_auth_form.add_error('reader_id', u'Идентификатор читателя не найден')
-            else:
-                sru_response = portal_client.search(
-                    query='@attrset bib-1 @and @attr 1=100 "%s" @attr 1=115 "%s"' % (reader_id, password),
-                    database=RUSLAN_USERS_DATABASE,
-                    maximum_records=1
-                )
-                sru_records = humanize.get_records(sru_response)
-                if not sru_records:
-                    ruslan_auth_form.add_error('reader_id', u'Неверный пароль')
-                else:
-                    user_record = humanize.get_record_content(sru_records[0])
-                    user_grs_record = grs.Record.from_dict(user_record)
-                    fields_403 = user_grs_record.get_field('403')
-
-                    if fields_403:
-                        if fields_403[0].content != esia_user.oid:
-                            ruslan_auth_form.add_error(
-                                'reader_id',
-                                u'Идентификатор читателя уже связан с учетной записью ЕСИА'
-                            )
-                    else:
-                        user_grs_record.add_field(grs.Field('403', esia_user.oid))
-                        portal_client.update_grs(
-                            grs_record=user_grs_record,
-                            database=RUSLAN_USERS_DATABASE,
-                            id=reader_id
-                        )
-                        esia_user.delete()
-                        user = authenticate(
-                            username=ruslan_auth_form.cleaned_data['reader_id'],
-                            password=ruslan_auth_form.cleaned_data['password']
-                        )
-                        if user:
-                            if user.is_active:
-                                login(request, user)
-                                return redirect('index:frontend:index')
-                            else:
-                                return _error_response(
-                                    request=request,
-                                    error='no_access_toke',
-                                    state='',
-                                    error_description=u'Ваша учетная запись читателя не активна'
-                                )
-                        else:
-                            return _error_response(
-                                request=request,
-                                error='no_user',
-                                state='',
-                                error_description=u'Система не может сопоставить вашу учетную запись ЕСИА'
-                            )
-    else:
-        ruslan_auth_form = forms.RuslanAuthForm()
-
-    return render(request, 'esia_sso/ask_for_exist_reader.html', {
-        'ruslan_auth_form': ruslan_auth_form,
-        'esia_id': id
-    })
+#
+# @transaction.atomic()
+# def ask_for_exist_reader(request, id):
+#     try:
+#         esia_user = models.EsiaUser.objects.get(id=id)
+#     except models.EsiaUser.DoesNotExist:
+#         return redirect('sso_esia:index')
+#
+#     portal_client = connection_pool.get_client(RUSLAN_API_ADDRESS, RUSLAN_API_USERNAME, RUSLAN_API_PASSWORD)
+#
+#     if request.method == 'POST':
+#         ruslan_auth_form = forms.RuslanAuthForm(request.POST)
+#         if ruslan_auth_form.is_valid():
+#             reader_id = ruslan_auth_form.cleaned_data['reader_id'].replace('\\', '\\\\').replace('"', '\\"')
+#             password = ruslan_auth_form.cleaned_data['password'].replace('\\', '\\\\').replace('"', '\\"')
+#
+#             sru_response = portal_client.search(
+#                 query='@attrset bib-1 @attr 1=100 "%s"' % (reader_id,),
+#                 database=RUSLAN_USERS_DATABASE,
+#                 maximum_records=1
+#             )
+#
+#             sru_records = humanize.get_records(sru_response)
+#
+#             if not sru_records:
+#                 ruslan_auth_form.add_error('reader_id', u'Идентификатор читателя не найден')
+#             else:
+#                 sru_response = portal_client.search(
+#                     query='@attrset bib-1 @and @attr 1=100 "%s" @attr 1=115 "%s"' % (reader_id, password),
+#                     database=RUSLAN_USERS_DATABASE,
+#                     maximum_records=1
+#                 )
+#                 sru_records = humanize.get_records(sru_response)
+#                 if not sru_records:
+#                     ruslan_auth_form.add_error('reader_id', u'Неверный пароль')
+#                 else:
+#                     user_record = humanize.get_record_content(sru_records[0])
+#                     user_grs_record = grs.Record.from_dict(user_record)
+#                     fields_403 = user_grs_record.get_field('403')
+#
+#                     if fields_403:
+#                         if fields_403[0].content != esia_user.oid:
+#                             ruslan_auth_form.add_error(
+#                                 'reader_id',
+#                                 u'Идентификатор читателя уже связан с учетной записью ЕСИА'
+#                             )
+#                     else:
+#                         user_grs_record.add_field(grs.Field('403', esia_user.oid))
+#                         portal_client.update_grs(
+#                             grs_record=user_grs_record,
+#                             database=RUSLAN_USERS_DATABASE,
+#                             id=reader_id
+#                         )
+#                         esia_user.delete()
+#                         user = authenticate(
+#                             username=ruslan_auth_form.cleaned_data['reader_id'],
+#                             password=ruslan_auth_form.cleaned_data['password']
+#                         )
+#                         if user:
+#                             if user.is_active:
+#                                 login(request, user)
+#                                 return redirect('index:frontend:index')
+#                             else:
+#                                 return _error_response(
+#                                     request=request,
+#                                     error='no_access_toke',
+#                                     state='',
+#                                     error_description=u'Ваша учетная запись читателя не активна'
+#                                 )
+#                         else:
+#                             return _error_response(
+#                                 request=request,
+#                                 error='no_user',
+#                                 state='',
+#                                 error_description=u'Система не может сопоставить вашу учетную запись ЕСИА'
+#                             )
+#     else:
+#         ruslan_auth_form = forms.RuslanAuthForm()
+#
+#     return render(request, 'esia_sso/ask_for_exist_reader.html', {
+#         'ruslan_auth_form': ruslan_auth_form,
+#         'esia_id': id
+#     })
 
 
 def _get_person_info(access_token):

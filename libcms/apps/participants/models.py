@@ -79,6 +79,7 @@ class Library(MPTTModel):
         unique=True,
         validators=[RegexValidator(regex=r'^[/_\-0-9A-Za-z]+$', message=u'Допускаются цифры, _, -, латинские буквы')]
     )
+    school_id = models.CharField(max_length=32, unique=True, verbose_name=u'Идентификатор школы')
     sigla = models.TextField(
         verbose_name=u'Сигла из подполя 999b',
         max_length=1024, db_index=True, blank=True,
