@@ -664,7 +664,7 @@
                 $modalBody = $modal.find('.modal-body');
                 $.get('{% url 'ssearch:frontend:select_library' %}').done(function (data) {
                     $modalBody.html(data);
-                    $modalBody.find('a').one('click', function () {
+                    $modalBody.find('.org_tree__org_link').one('click', function () {
                         console.log("$(this).attr('code')", $(this).attr('code'));
                         changeLibrart($(this).attr('code'));
 
