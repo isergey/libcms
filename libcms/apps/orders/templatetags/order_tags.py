@@ -91,6 +91,7 @@ def drow_el_order_menu(owners_codes, record_id):
     empty_codes = []  # Сиглы, которые указаны в записе но не зарегистрированны в системе
     owners = list(Library.objects.filter(code__in=owners_codes, hidden=False).values('id', 'name', 'code', 'weight'))
     owners = sorted(owners, key=sorter)
+    print 'owners', owners
     for owner in owners:
         owners_dict[owner['code']] = {
             'owner': owner,
@@ -102,7 +103,7 @@ def drow_el_order_menu(owners_codes, record_id):
 
     for zcatalog in zcatalogs:
         # в latin_title хранится сигла держателя
-        if zcatalog['latin_title'] in owners_dict:
+        if zcatalog['latin_title'] in owners_dict.keys():
             owners_dict[zcatalog['latin_title']]['has_catalog'] = True
 
     for owner_code in owners_codes:

@@ -133,14 +133,24 @@ def lib_orders(request, id):
         return HttpResponse(
             u'Отсутвуют параметры связи с базой заказаов библиотеки. Если Вы видите это сообщение, пожалуйста, сообщите администратору портала.')
 
-    lib_reader = get_object_or_404(LibReader, library=library, user=request.user)
+    # lib_reader = get_object_or_404(LibReader, library=library, user=request.user)
+    #
+    # urls = [
+    #     RUSLAN_ORDER_URLS['orders'] % (
+    #         lib_reader.lib_login, lib_reader.lib_password, library.z_service, lib_reader.lib_login),
+    #     RUSLAN_ORDER_URLS['books'] % (
+    #         lib_reader.lib_login, lib_reader.lib_password, library.z_service, lib_reader.lib_login),
+    # ]
+
+    ruslan_user = get_object_or_404(sso_ruslan_models.RuslanUser, user=request.user)
 
     urls = [
         RUSLAN_ORDER_URLS['orders'] % (
-            lib_reader.lib_login, lib_reader.lib_password, library.z_service, lib_reader.lib_login),
+            ruslan_user.username, ruslan_user.password, library.z_service, ruslan_user.username),
         RUSLAN_ORDER_URLS['books'] % (
-            lib_reader.lib_login, lib_reader.lib_password, library.z_service, lib_reader.lib_login),
+            ruslan_user.username, ruslan_user.password, library.z_service, ruslan_user.username),
     ]
+
     results = ThreadWorker(_get_content, urls).do()
     for result in results:
         if isinstance(result, BaseException):
@@ -172,19 +182,23 @@ def zorder(request, library_id):
     # ищем связь пользователя с библиотекой, чтобы автоматически авторизовать для заказа
     # иначе перенаправляем для установления связи
 
+    # try:
+    #     lib_reader = LibReader.objects.get(user=request.user, library=library)
+    # except LibReader.DoesNotExist:
+    #     back = request.get_full_path()
+    #     return redirect(urlresolvers.reverse('urt:frontend:auth', args=[library_id]) + '?back=' + back)
     try:
-        lib_reader = LibReader.objects.get(user=request.user, library=library)
-    except LibReader.DoesNotExist:
-        back = request.get_full_path()
-        return redirect(urlresolvers.reverse('urt:frontend:auth', args=[library_id]) + '?back=' + back)
+        ruslan_user = sso_ruslan_models.RuslanUser.objects.get(user=request.user)
+    except sso_ruslan_models.RuslanUser.DoesNotExist:
+        return HttpResponse(u'Необходимо войти под учетной записью читателя')
 
     (zgate_form, cookies) = zworker.get_zgate_form(
         zgate_url=zcatalog.url,
         xml=zcatalog.xml,
         xsl=zcatalog.xsl,
         cookies=request.COOKIES,
-        username=lib_reader.lib_login,
-        password=lib_reader.lib_password,
+        username=ruslan_user.username,
+        password=ruslan_user.password,
     )
     session_id = zworker.get_zgate_session_id(zgate_form)
     form_params = zworker.get_form_dict(zgate_form)
