@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
-import base64
 import json
 import logging
 import os
-import uuid
 from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.db import transaction
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 
 import requests
 from ruslan import connection_pool, humanize
 from ruslan import grs
-from . import forms
+from participants.models import Library
 from . import models
 
 SITE_DOMAIN = getattr(settings, 'SITE_DOMAIN', 'esia.gosuslugi.ru')
@@ -47,7 +45,6 @@ TOKEN_URL = SSO_TATEDU.get('token_url', '')
 USER_INFO_URL = SSO_TATEDU.get('user_info_url', '')
 LOGOUT_URL = 'https://edu.tatar.ru/logoff'
 OID_FIELD = '507'
-
 
 logger = logging.getLogger('sso_tatedu')
 
@@ -274,6 +271,7 @@ def redirect_from_idp(request):
 
     try:
         person_info_resp = _get_person_info(access_token)
+        # print person_info_resp
         # person_contacts = _get_person_contacts(oid, access_token)
         # person_addresses = _get_person_addresses(oid, access_token)
         # person_docs = _get_person_docs(oid, access_token)
@@ -326,7 +324,8 @@ def redirect_from_idp(request):
 
 
     sru_response = portal_client.search(
-        query=u'@attrset bib-1 @attr 1=%s "%s"' % (OID_FIELD, unicode(user_id).replace('\\', '\\\\').replace('"', '\\"'),),
+        query=u'@attrset bib-1 @attr 1=%s "%s"' % (
+        OID_FIELD, unicode(user_id).replace('\\', '\\\\').replace('"', '\\"'),),
         database=RUSLAN_USERS_DATABASE,
         maximum_records=1
     )
@@ -349,6 +348,9 @@ def redirect_from_idp(request):
             if user:
                 if user.is_active:
                     login(request, user)
+                    library_id = _get_library_id(user_grs_record)
+                    if library_id:
+                        request.session['org_id'] = library_id
                     request.session['logout_idp_url'] = LOGOUT_URL
                     request.session['auth_source'] = AUTH_SOURCE
                     return redirect('index:frontend:index')
@@ -364,7 +366,7 @@ def redirect_from_idp(request):
                     request=request,
                     error='no_user',
                     state=state,
-                    error_description=u'Система не может сопоставить вашу учетную запись ЕСИА'
+                    error_description=u'Система не может сопоставить вашу учетную запись ЭО РТ'
                 )
                 # """
                 # return HttpResponse(json.dumps(person_info, ensure_ascii=False), content_type='application/json')
@@ -436,6 +438,7 @@ def register_new_user(request, id):
             error_description=u'Система не может сопоставить вашу учетную запись ОЭ РТ'
         )
 
+
 #
 # @transaction.atomic()
 # def ask_for_exist_reader(request, id):
@@ -480,7 +483,7 @@ def register_new_user(request, id):
 #                         if fields_403[0].content != esia_user.oid:
 #                             ruslan_auth_form.add_error(
 #                                 'reader_id',
-#                                 u'Идентификатор читателя уже связан с учетной записью ЕСИА'
+#                                 u'Идентификатор читателя уже связан с учетной записью ЭО РТ'
 #                             )
 #                     else:
 #                         user_grs_record.add_field(grs.Field('403', esia_user.oid))
@@ -510,7 +513,7 @@ def register_new_user(request, id):
 #                                 request=request,
 #                                 error='no_user',
 #                                 state='',
-#                                 error_description=u'Система не может сопоставить вашу учетную запись ЕСИА'
+#                                 error_description=u'Система не может сопоставить вашу учетную запись ЭО РТ'
 #                             )
 #     else:
 #         ruslan_auth_form = forms.RuslanAuthForm()
@@ -569,3 +572,16 @@ def _get_access_marker(code):
     }, verify=VERIFY_REQUESTS)
     response.raise_for_status()
     return response.json()
+
+
+def _get_library_id(user_grs_record):
+    fields_505 = user_grs_record.get_field('505')
+    if not fields_505:
+        return ''
+    for field in fields_505:
+        org_id = field.content
+        try:
+            return Library.objects.get(school_id=org_id).id
+        except Library.DoesNotExist:
+            pass
+    return ''

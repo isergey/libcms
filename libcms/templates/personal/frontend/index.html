@@ -45,9 +45,17 @@
                                 {% endif %}
                         )</span>
                     </h1>
-                    <div class="content-page__text">
-                        Ваше местоположение: {{ request.session.org_id }}
-                    </div>
+                    {% if current_library %}
+                        <div class="content-page__text">
+                            Поиск в библиотеке:
+                            <a href="{% url 'ssearch:frontend:ecatalog' %}?library={{ current_library.code|urlencode }}">
+                            {% for ancestor in current_library.get_ancestors %}
+                                {{ ancestor.name }} →
+                            {% endfor %}
+                            <b>{{ current_library.name }}</b>
+                            </a>
+                        </div>
+                    {% endif %}
                     <div class="big-block__margin">
                         <div class="row">
                             <div class="col-6">

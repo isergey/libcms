@@ -528,6 +528,18 @@ def participant_income(request):
     })
 
 
+# def select_library(request):
+#     # q = Q(parent=None)
+#     # org_type = 'library'
+#     # if request.user.is_authenticated():
+#     #     if request.session.get('auth_source', TATEDU_AUTH_SOURCE) == TATEDU_AUTH_SOURCE:
+#     #         org_type = 'school'
+#
+#     libraries = Library.objects.filter(parent=None, org_type='library').values('code', 'name', 'id')
+#     return render(request, 'ssearch/frontend/select_library.html', {
+#         'libraries': libraries,
+#     })
+
 def select_library(request):
     # q = Q(parent=None)
     # org_type = 'library'
@@ -535,7 +547,7 @@ def select_library(request):
     #     if request.session.get('auth_source', TATEDU_AUTH_SOURCE) == TATEDU_AUTH_SOURCE:
     #         org_type = 'school'
 
-    libraries = Library.objects.filter(parent=None, org_type='library').values('code', 'name', 'id')
+    libraries = Library.objects.filter(parent=None)
     return render(request, 'ssearch/frontend/select_library.html', {
         'libraries': libraries,
     })
