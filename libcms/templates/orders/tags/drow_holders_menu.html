@@ -1,5 +1,5 @@
 {% if holders %}
-    <div class="reserv-box__title">Бронирование <span>({{ holders|length }})</span></div>
+    <div class="reserv-box__title">Удаленное бронирование <span>({{ holders|length }})</span></div>
     {% for holder in holders %}
         <a class="reserv-box__geo" href="{% url 'participants:frontend:detail' holder.code %}" title="Посмотреть на карте">
             <img alt="Информация о библиотеке" src="/static/dist/images/geo_pin.svg">

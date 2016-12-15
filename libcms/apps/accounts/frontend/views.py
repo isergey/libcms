@@ -116,7 +116,8 @@ def login(request, template_name='registration/login.html',
                 if ap_mac:
                     request.session['ap_mac'] = ap_mac
                     library = participants_models.get_org_by_ap_mac(ap_mac)
-                    request.session['org_id'] = library.id
+                    if library:
+                        request.session['org_id'] = library.id
                 if wifi:
                     username = form.cleaned_data['username']
                     suffix = '@tatar.ru'
@@ -143,7 +144,8 @@ def login(request, template_name='registration/login.html',
     library = None
     if ap_mac:
         library = participants_models.get_org_by_ap_mac(ap_mac)
-        request.session['org_id'] = library.id
+        if library:
+            request.session['org_id'] = library.id
     context = {
         'form': form,
         'library': library,
