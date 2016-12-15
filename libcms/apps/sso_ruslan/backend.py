@@ -34,13 +34,14 @@ class RuslanAuthBackend(object):
 
         portal_client = connection_pool.get_client(API_ADDRESS, API_USERNAME, API_PASSWORD)
 
-        user_client = client.HttpClient(API_ADDRESS, username=username, password=password)
-        try:
-            user_principal = user_client.principal()
-            user_client.close_session()
-        except client.UnauthorizedError:
-            return None
         if need_check_password:
+            user_client = client.HttpClient(API_ADDRESS, username=username, password=password)
+            try:
+                user_principal = user_client.principal()
+                user_client.close_session()
+            except client.UnauthorizedError:
+                return None
+
             try:
                 reader_id = username.replace('\\', '\\\\').replace('"', '\\"')
                 password = password.replace('\\', '\\\\').replace('"', '\\"')
