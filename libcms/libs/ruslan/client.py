@@ -1,7 +1,9 @@
 import requests
 import json
 
+
 class RuslanError(Exception): pass
+
 
 class UnauthorizedError(RuslanError): pass
 
@@ -16,6 +18,7 @@ def dec(obj):
     elif isinstance(obj, str):
         obj = obj.decode('utf-8')
     return obj
+
 
 class DictUnicoder(object):
     @staticmethod
