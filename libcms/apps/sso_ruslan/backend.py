@@ -68,12 +68,8 @@ class RuslanAuthBackend(object):
         # 102 - имя
         # 103 - отчество
         grs_record = grs.Record.from_dict(humanize.get_record_content(records[0]))
-        user_password = password
 
-        if need_check_password and user_password != password:
-            return None
-
-        return self.get_or_create_user(username, password, grs_record)
+        return self.get_or_create_user(username, password, grs_record, need_check_password)
 
     def get_user(self, user_id):
         try:
@@ -82,7 +78,7 @@ class RuslanAuthBackend(object):
             return None
 
     @transaction.atomic()
-    def get_or_create_user(self, username, password, grs_record):
+    def get_or_create_user(self, username, password, grs_record, need_check_password=True):
 
         first_name = grs_record.get_field_value('102')[:30]
         last_name = grs_record.get_field_value('101')[:30]
@@ -105,7 +101,7 @@ class RuslanAuthBackend(object):
             if ruslan_user.username != username:
                 ruslan_user.username = username
                 need_update = True
-            if ruslan_user.password != password:
+            if need_check_password and ruslan_user.password != password:
                 ruslan_user.password = password
                 need_update = True
 
