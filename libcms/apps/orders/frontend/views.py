@@ -275,7 +275,7 @@ def mail_order(request, library_id, gen_id):
                 u'Заказ на бронирование',
                 u"\n".join(lines),
                 DEFAULT_FROM_EMAIL,
-                [form.cleaned_data['email']],
+                [library.ext_order_mail],
                 fail_silently=False,
             )
             return render(request, 'orders/frontend/mail_order_thanks.html', {
