@@ -1,5 +1,10 @@
 {% extends 'ruslan_cabinet/frontend/index.html' %}
 {% block cabinet_index %}
+    {% if errors %}
+        {% for error in errors %}
+            <div>{{ error }}</div>
+        {% endfor %}
+    {% endif %}
 <ul>
     {% for order in orders %}
         <li>

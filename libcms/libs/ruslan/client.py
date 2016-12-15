@@ -87,7 +87,7 @@ class HttpClient(object):
 
         if maximum_records:
             params['maximumRecords'] = maximum_records
-
+        print 'self._base_url + self._db_path + database', self._base_url + self._db_path + database
         response = self._make_request(
             method='get',
             url=self._base_url + self._db_path + database,
@@ -102,6 +102,7 @@ class HttpClient(object):
         except requests.HTTPError as e:
             if response.status_code == 401:
                 raise UnauthorizedError()
+            raise e
         return response.json()
 
     def get_user(self, username, database='allusers'):
@@ -120,6 +121,7 @@ class HttpClient(object):
         except requests.HTTPError as e:
             if response.status_code == 401:
                 raise UnauthorizedError()
+            raise e
 
         return response.json()
 
@@ -157,6 +159,7 @@ class HttpClient(object):
         except requests.HTTPError as e:
             if response.status_code == 401:
                 raise UnauthorizedError()
+            raise e
         if return_created_record:
             record_response = self._make_request(
                 method='get',
@@ -170,6 +173,7 @@ class HttpClient(object):
             except requests.HTTPError as e:
                 if response.status_code == 401:
                     raise UnauthorizedError()
+                raise e
             return record_response.json()
         else:
             return response
@@ -189,6 +193,7 @@ class HttpClient(object):
         except requests.HTTPError as e:
             if response.status_code == 401:
                 raise UnauthorizedError()
+            raise e
         return response
 
     def send_ncip_message(self, message_dict):
@@ -205,6 +210,7 @@ class HttpClient(object):
         except requests.HTTPError as e:
             if response.status_code == 401:
                 raise UnauthorizedError()
+            raise e
         return response
 
     def _make_request(self, method, url, params=None, data=None, headers=None, retrying=0):
@@ -239,6 +245,7 @@ class HttpClient(object):
         except requests.HTTPError as e:
             if response.status_code == 401:
                 raise UnauthorizedError()
+            raise e
         self._session = None
 
     def _auth(self):
@@ -250,4 +257,5 @@ class HttpClient(object):
         except requests.HTTPError as e:
             if response.status_code == 401:
                 raise UnauthorizedError()
+            raise e
         return session
