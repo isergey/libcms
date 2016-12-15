@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import transaction
 from django.contrib.auth.models import User
 
-from ruslan import connection_pool, humanize, grs
+from ruslan import connection_pool, humanize, grs, client
 from .models import RuslanUser
 from sso import models as sso_models
 
@@ -34,6 +34,12 @@ class RuslanAuthBackend(object):
 
         portal_client = connection_pool.get_client(API_ADDRESS, API_USERNAME, API_PASSWORD)
 
+        user_client = client.HttpClient(API_ADDRESS, username=username, password=password)
+        try:
+            user_principal = user_client.principal()
+            user_client.close_session()
+        except client.UnauthorizedError:
+            return None
         if need_check_password:
             try:
                 reader_id = username.replace('\\', '\\\\').replace('"', '\\"')

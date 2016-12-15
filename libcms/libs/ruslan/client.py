@@ -1,6 +1,10 @@
 import requests
 import json
 
+class RuslanError(Exception): pass
+
+class UnauthorizedError(RuslanError): pass
+
 
 def dec(obj):
     if isinstance(obj, dict):
@@ -90,7 +94,11 @@ class HttpClient(object):
             }
         )
 
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.HTTPError as e:
+            if response.status_code == 401:
+                raise UnauthorizedError()
         return response.json()
 
     def get_user(self, username, database='allusers'):
@@ -104,7 +112,12 @@ class HttpClient(object):
                 'Accept': 'application/json'
             }
         )
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.HTTPError as e:
+            if response.status_code == 401:
+                raise UnauthorizedError()
+
         return response.json()
 
     def get_records(self, id_list, database, opac=False):
@@ -136,7 +149,11 @@ class HttpClient(object):
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             })
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.HTTPError as e:
+            if response.status_code == 401:
+                raise UnauthorizedError()
         if return_created_record:
             record_response = self._make_request(
                 method='get',
@@ -145,7 +162,11 @@ class HttpClient(object):
                     'Accept': 'application/json'
                 }
             )
-            record_response.raise_for_status()
+            try:
+                response.raise_for_status()
+            except requests.HTTPError as e:
+                if response.status_code == 401:
+                    raise UnauthorizedError()
             return record_response.json()
         else:
             return response
@@ -160,7 +181,11 @@ class HttpClient(object):
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             })
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.HTTPError as e:
+            if response.status_code == 401:
+                raise UnauthorizedError()
         return response
 
     def send_ncip_message(self, message_dict):
@@ -172,7 +197,11 @@ class HttpClient(object):
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             })
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.HTTPError as e:
+            if response.status_code == 401:
+                raise UnauthorizedError()
         return response
 
     def _make_request(self, method, url, params=None, data=None, headers=None, retrying=0):
@@ -202,12 +231,20 @@ class HttpClient(object):
             return
 
         response = self._session.get(self._base_url + self._finish_path)
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.HTTPError as e:
+            if response.status_code == 401:
+                raise UnauthorizedError()
         self._session = None
 
     def _auth(self):
         session = requests.Session()
         session.auth = (self._username, self._password)
         response = session.get(self._base_url + self._auth_path, timeout=self._timeout, verify=self._verify_requests)
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.HTTPError as e:
+            if response.status_code == 401:
+                raise UnauthorizedError()
         return session
