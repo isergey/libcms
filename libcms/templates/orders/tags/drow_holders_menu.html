@@ -1,1 +1,19 @@
-<div class="reserv-box__title">Держатели</div>
+{% if holders %}
+    <div class="reserv-box__title">Бронирование <span>({{ holders|length }})</span></div>
+    {% for holder in holders %}
+        <a class="reserv-box__geo" href="{% url 'participants:frontend:detail' holder.code %}" title="Посмотреть на карте">
+            <img alt="Информация о библиотеке" src="/static/dist/images/geo_pin.svg">
+        <span>
+            {% for ancestor in holder.get_ancestors %}
+            {{ ancestor.name }} →
+            {% endfor %}
+            <b>{{ holder.name }}</b>
+        </span>
+        </a>
+        {% if holder.ext_order_mail %}
+            <a title="Забронировать в: {{ holder.name }}" class="reserv-box__btn" href="{% url 'orders:frontend:mail_order' holder.id gen_id %}">Забронировать</a>
+        {% else %}
+            <span style="margin-left: 50px">Заказ не доступен</span>
+        {% endif %}
+    {% endfor %}
+{% endif %}

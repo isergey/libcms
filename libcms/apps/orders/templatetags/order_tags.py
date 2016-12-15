@@ -117,11 +117,11 @@ def drow_el_order_menu(owners_codes, record_id):
     }
 
 @register.inclusion_tag('orders/tags/drow_holders_menu.html')
-def drow_holders_menu(record_id):
-    holders = get_holdres(record_id)
-    print holders
+def drow_holders_menu(gen_id):
+    holders = get_holdres(gen_id)
     return {
-
+        'holders': holders,
+        'gen_id': gen_id
     }
 
 

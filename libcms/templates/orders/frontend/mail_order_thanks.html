@@ -1,0 +1,16 @@
+{% extends 'container.html' %}
+{% block title %}Бронирование издания{% endblock %}
+{% block breadcrumbs %}
+    <li>
+        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+    </li>
+    <li>
+        Бронирование издания
+    </li>
+{% endblock %}
+{% block container_content %}
+       <div class="content-page__text">
+        Ваша заявка отправлена. В ближайшее время Вам сообщат результаты бронирования. Спасибо за пользование сервисом!
+    </div>
+
+{% endblock %}

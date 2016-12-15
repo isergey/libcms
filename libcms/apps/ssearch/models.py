@@ -7,6 +7,7 @@ import zipfile
 from django.db import connection
 from django.db import models
 from django.contrib.auth.models import User
+from participants.models import Library
 
 RECORDS_DB_CONFIG_KEY = 'records'
 
@@ -126,17 +127,61 @@ class Holdings(models.Model):
         return u'%s %s %s' % (self.record_id, self.department, self.source_id)
 
 
-def get_holdres(record_id):
-    print 'get_holdres', record_id
+def _clean_sigla(sigla):
+    return sigla.strip().lower()
+
+
+def _is_contains_sigla(sigla, library):
+    if not library.sigla:
+        return False
+    cleaned_sigla = _clean_sigla(sigla)
+    library_siglas = library.sigla.replace("\r", u'').strip().split("\n")
+    for library_sigla in library_siglas:
+        if _clean_sigla(library_sigla) == cleaned_sigla:
+            return True
+    return False
+
+
+def get_holdres(gen_id):
+    records = get_records([gen_id])
+    if not records:
+        return []
+    record_id = records[0].record_id
     sources = set()
     organization_codes = set()
     holdings = Holdings.objects.using(RECORDS_DB_CONFIG_KEY).filter(record_id=record_id).select_related('source')
     for holding in holdings:
         sources.add(holding.source)
         organization_codes.add(holding.source.organization_code)
-    print 'source_ids', sources
-    print 'organization_codes', organization_codes
-    return []
+
+    libraries = Library.objects.filter(code__in=organization_codes)
+    libraries_index = {}
+    for library in libraries:
+        libraries_index[library.code] = library
+
+    holders = []
+    for holding in holdings:
+        holding_library = libraries_index.get(holding.source.organization_code, None)
+        if not holding_library:
+            continue
+        descendant_holders = []
+        default_holder = None
+
+        for descendant in holding_library.get_descendants():
+            if _is_contains_sigla(holding.department, descendant):
+                descendant_holders.append(descendant)
+            elif descendant.default_holder:
+                default_holder = descendant
+
+        if not descendant_holders and default_holder:
+            descendant_holders.append(default_holder)
+
+        if descendant_holders:
+            holders += descendant_holders
+        if not descendant_holders:
+            holders.append(holding_library)
+
+    return set(holders)
 
 
 class Ebook(models.Model):

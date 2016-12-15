@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import time
 import socket
 import copy
 import datetime
@@ -8,20 +9,27 @@ import urllib2
 from django.conf import settings
 from django.shortcuts import HttpResponse, render, get_object_or_404, Http404, redirect, urlresolvers
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.utils.html import strip_tags
 
 from zgate.models import ZCatalog
 from zgate import zworker
 
 from urt.models import LibReader
-from ..models import UserOrderTimes
-from sso_ruslan import models as sso_ruslan_models
 
+from sso_ruslan import models as sso_ruslan_models
 from participants.models import Library
 from thread_worker import ThreadWorker
 from order_manager.manager import OrderManager
-from forms import DeliveryOrderForm, CopyOrderForm
+from forms import DeliveryOrderForm, CopyOrderForm, MailOrderForm
 from ssearch.models import Record, Ebook
+from ssearch.rusmarc_template import beautify
+from ssearch.models import get_records
+from order_manager.ill import ILLRequest
+from ..templatetags.order_tags import org_by_id
+from ..models import UserOrderTimes
 
+DEFAULT_FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL', '')
 RUSLAN_ORDER = getattr(settings, 'RUSLAN_ORDER', {})
 RUSLAN_ORDER_URLS = RUSLAN_ORDER.get('urls', {})
 RUSLAN_ORDER_SERVERS = RUSLAN_ORDER.get('checked_servers', [])
@@ -218,6 +226,73 @@ def zorder(request, library_id):
     return HttpResponse(u'Zgate order')
 
 
+@login_required
+def mail_order(request, library_id, gen_id):
+    reader_id = ''
+    try:
+        ruslan_user = sso_ruslan_models.RuslanUser.objects.get(user=request.user)
+        reader_id = ruslan_user.username
+    except sso_ruslan_models.RuslanUser.DoesNotExist:
+        pass
+    library = get_object_or_404(Library, id=library_id)
+    if not library.ext_order_mail:
+        return HttpResponse(u'Организация не может принимать заказы на бронирование')
+    records = get_bib_records([gen_id])
+    if not records:
+        raise Http404(u'Запись не найдена')
+    record = records[0]
+    if request.method == 'POST':
+        form = MailOrderForm(request.POST)
+        if form.is_valid():
+            lines = []
+            lines.append(
+                u' '.join([u'Запись:', strip_tags(record['card'].decode('utf-8'))])
+            )
+            lines.append("\n")
+            lines.append(
+                u' '.join([u'Фамилия:', form.cleaned_data.get('last_name', u'не указано')])
+            )
+            lines.append(
+                u' '.join([u'Имя:', form.cleaned_data.get('first_name', u'не указано')])
+            )
+            lines.append(
+                u' '.join([u'Отчество:', form.cleaned_data.get('patronymic_name', u'не указано')])
+            )
+            lines.append(
+                u' '.join([u'Номер чит. билета:', form.cleaned_data.get('reader_id', u'не указано')])
+            )
+            lines.append(
+                u' '.join([u'Email:', form.cleaned_data.get('email', u'не указано')])
+            )
+            lines.append(
+                u' '.join([u'Телефон:', form.cleaned_data.get('phone', u'не указано')])
+            )
+            lines.append(
+                u' '.join([u'Комментарии:', form.cleaned_data.get('comments', u'не указано')])
+            )
+
+            send_mail(
+                u'Заказ на бронирование',
+                u"\n".join(lines),
+                DEFAULT_FROM_EMAIL,
+                [form.cleaned_data['email']],
+                fail_silently=False,
+            )
+            return render(request, 'orders/frontend/mail_order_thanks.html', {
+            })
+    else:
+        form = MailOrderForm(initial={
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
+            'email': request.user.email,
+            'reader_id': reader_id
+        })
+    return render(request, 'orders/frontend/mail_order.html', {
+        'form': form,
+        'library': library,
+        'record': record
+    })
+
 def _get_content(args):
     # необходимо чтобы функция имела таймаут
     uh = urllib2.urlopen(args['url'], timeout=10)
@@ -373,11 +448,6 @@ def check_for_can_delete(transaction):
                             transaction.status in can_delete_statuses[apdu.delivery_status.ill_service_type]:
                 return True
     return False
-
-
-import time
-from order_manager.ill import ILLRequest
-from ..templatetags.order_tags import org_by_id
 
 
 @login_required
@@ -639,3 +709,19 @@ def delete_order(request, order_id=''):
     order_manager.delete_order(order_id=order_id.encode('utf-8'), user_id=unicode(request.user.id))
 
     return redirect(urlresolvers.reverse('orders:frontend:mba_orders'))
+
+
+def get_bib_records(bib_ids):
+    bib_records = []
+    if bib_ids:
+        records = get_records(bib_ids)
+        for record in records:
+            doc_tree = etree.XML(record.content)
+            bib_tree = xslt_bib_draw_transformer(doc_tree)
+            bib_dump = etree.tostring(bib_tree, encoding='utf-8')
+            bib_records.append({
+                'record': record,
+                'card': beautify(bib_dump.replace('<b/>', '')),
+            })
+
+    return bib_records

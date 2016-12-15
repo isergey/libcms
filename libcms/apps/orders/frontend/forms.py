@@ -23,3 +23,13 @@ class CopyOrderForm(OrderForm):
 
 class DeliveryOrderForm(OrderForm):
     pass
+
+
+class MailOrderForm(forms.Form):
+    last_name = forms.CharField(label=u'Фамииия', max_length=64)
+    first_name = forms.CharField(label=u'Имя', max_length=64)
+    patronymic_name = forms.CharField(label=u'Отчество', max_length=64, required=False)
+    reader_id = forms.CharField(label=u'Номер читатесскго билета', max_length=64, required=False)
+    email = forms.EmailField(label=u'Адрес электронной почты', max_length=128)
+    phone = forms.CharField(label=u'Номер телефона', max_length=20, required=False)
+    comments = forms.CharField(label=u'Коментарии к заказу', max_length=1024, widget=forms.Textarea, required=False)

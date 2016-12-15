@@ -8,7 +8,7 @@
         {% if owner.has_catalog %}
             <a title="Забронировать в: {{ owner.owner.name }}" class="reserv-box__btn" href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">Забронировать</a>
         {% else %}
-           Заказ отключен
+           <span style="margin-left: 50px">Заказ отключен</span>
         {% endif %}
     {% endfor %}
 {% endif %}
