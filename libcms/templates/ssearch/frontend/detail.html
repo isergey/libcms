@@ -96,9 +96,16 @@
                 <li>
                     <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
                 </li>
-                <li><a class="bread__crumbs_link bread__crumbs_link_active">{% if LANGUAGE_CODE == 'ru' %}Детальная
-                    информация{% elif LANGUAGE_CODE == 'tt' %}Детальная информация{% else %}Detail
-                    information{% endif %}</a></li>
+                <li>
+                    <a class="bread__crumbs_link bread__crumbs_link_active">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Детальная информация
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Детальная информация{% else %}
+                            Detail information
+                        {% endif %}
+                    </a>
+                </li>
 
             </ul>
         </div>
@@ -126,8 +133,9 @@
                             <li class="active">
                                 <div class="detail-page__info">
                                     {{ doc_dump|safe }}
-                                  <hr/>
+                                  <!--<hr/>
                                     {{ marc_dump|safe }}
+                                    -->
                                 </div>
                             </li>
                             <li>
