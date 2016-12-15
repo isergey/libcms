@@ -56,15 +56,7 @@
                                    href="{{ library.http_service }}">{{ library.http_service }}</a>
                             {% else %}
                                 {% url 'participant_site:frontend:index' library.code as library_site_address %}
-                                <a href="http://
-
-
-
-
-
-
-
-                                        {{ request.META.HTTP_HOST }}{{ library_site_address }}">http://{{ request.META.HTTP_HOST }}{{ library_site_address }}</a>
+                                <a href="http://{{ request.META.HTTP_HOST }}{{ library_site_address }}">http://{{ request.META.HTTP_HOST }}{{ library_site_address }}</a>
                             {% endif %}
                         </p>
 
