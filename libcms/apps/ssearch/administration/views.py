@@ -1,6 +1,7 @@
 # coding: utf-8
 import os
 import io
+import httplib2
 import hashlib
 import zipfile
 import sys
@@ -356,7 +357,7 @@ def _indexing(slug, reset=False):
     #     select_query = "SELECT * FROM records where update_date >= '%s' and deleted = 0" % (
     #         str(index_status.last_index_date))
 
-    solr = sunburnt.SolrInterface(solr_address)
+    solr = sunburnt.SolrInterface(solr_address, http_connection=httplib2.Http(disable_ssl_certificate_validation=True))
     docs = list()
 
     start_index_date = datetime.datetime.now()
@@ -409,7 +410,7 @@ def _indexing(slug, reset=False):
             holdings_index=holdings_index,
             sources_index=sources_index
         )
-        # print 'holder_codes', holder_codes
+
         # if holder_codes:
         #     print holder_codes
 
@@ -533,7 +534,7 @@ def local_records_indexing(request):
             str(index_status.last_index_date))
 
     print 'records finded',
-    solr = sunburnt.SolrInterface(solr_address)
+    solr = sunburnt.SolrInterface(solr_address, http_connection=httplib2.Http(disable_ssl_certificate_validation=True))
     docs = list()
 
     start_index_date = datetime.datetime.now()
@@ -778,6 +779,18 @@ def _get_holdings(source_id, record_id, holdings_index, orgs_index, sources_inde
             )
             if code:
                 holding_codes.add(code)
+
+    if not holding_codes:
+        source = sources_index.get(source_id, None)
+        if source:
+            org = orgs_index['code'].get(source.organization_code, None)
+            if org:
+                for descendant in _get_org_leafs(org, orgs_index):
+                    if descendant['default_holder']:
+                        holding_codes.add(descendant['code'])
+                        break
+                if not holding_codes:
+                    holding_codes.add(org['code'])
 
     return holding_codes
 

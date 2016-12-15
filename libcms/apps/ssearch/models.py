@@ -146,6 +146,7 @@ def get_holdres(gen_id):
     records = get_records([gen_id])
     if not records:
         return []
+    record = records[0]
     record_id = records[0].record_id
     sources = set()
     organization_codes = set()
@@ -180,7 +181,16 @@ def get_holdres(gen_id):
             holders += descendant_holders
         if not descendant_holders:
             holders.append(holding_library)
-
+    if not holders:
+        try:
+            library = Library.objects.get(code=record.source.organization_code)
+            for descendant in library.get_descendants():
+                if descendant.default_holder:
+                    holders.append(descendant)
+            if not holders:
+                holders.append(library)
+        except Library.DoesNotExist:
+            pass
     return set(holders)
 
 
