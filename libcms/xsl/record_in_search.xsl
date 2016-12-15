@@ -82,13 +82,76 @@
         </xsl:for-each>
     </xsl:template>
 
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
     <xsl:template name="Title">
         <field name="title">
-                    <xsl:for-each
-                            select="field[(@id &gt; '399' and @id &lt; '460') or (@id &gt; '469' and @id &lt; '500')]/subfield[@id=1]">
-                        <xsl:call-template name="Title"/>
+            <xsl:choose>
+                <xsl:when test="field[@id='463']/subfield[@id=1]/field[@id='200']/subfield[@id='a']">
+                    <xsl:call-template name="Title200"/>
+                    <xsl:text> // </xsl:text>
+                    <xsl:for-each select="field[@id='461']/subfield[@id=1]">
+                        <xsl:call-template name="Title200"/>
                     </xsl:for-each>
+                    <xsl:text>. – </xsl:text>
+                    <xsl:for-each select="field[@id='463']/subfield[@id=1]">
+                        <xsl:call-template name="Title200"/>
+                    </xsl:for-each>
+                </xsl:when>
+                <xsl:when test="field[@id='461']/subfield[@id=1]/field[@id='200']/subfield[@id='a']">
+                    <xsl:for-each select="field[@id='461']/subfield[@id=1]">
+                        <xsl:call-template name="Title200"/>
+                    </xsl:for-each>
+                    <xsl:text>. – </xsl:text>
+                    <xsl:call-template name="Title200"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:call-template name="Title200"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </field>
+    </xsl:template>
+    <xsl:template name="Title200">
+        <xsl:for-each select="field[@id='200']">
+            <xsl:value-of select="subfield[@id='a']"/>
+            <!--<xsl:if test="subfield[@id='b']">
+                <xsl:text> [</xsl:text>
+                <xsl:value-of select="subfield[@id='b']"/>
+                <xsl:text>]</xsl:text>
+            </xsl:if>-->
+            <xsl:if test="subfield[@id='e']">
+                <xsl:text>: </xsl:text>
+                <xsl:value-of select="subfield[@id='e']"/>
+            </xsl:if>
+            <!--<xsl:if test="subfield[@id='f']">
+                <xsl:text> / </xsl:text>
+                <xsl:value-of select="subfield[@id='f']"/>
+            </xsl:if>-->
+            <!--<xsl:if test="subfield[@id='g']">
+                <xsl:text>; </xsl:text>
+                <xsl:value-of select="subfield[@id='g']"/>
+
+            </xsl:if>-->
+            <xsl:if test="subfield[@id='h']">
+                <xsl:text>. </xsl:text>
+                <xsl:value-of select="subfield[@id='h']"/>
+            </xsl:if>
+            <xsl:if test="subfield[@id='i']">
+                <xsl:text>. </xsl:text>
+                <xsl:value-of select="subfield[@id='i']"/>
+            </xsl:if>
+            <xsl:if test="subfield[@id='v']">
+                <xsl:text>. </xsl:text>
+                <xsl:value-of select="subfield[@id='v']"/>
+            </xsl:if>
+        </xsl:for-each>
+    </xsl:template>
+
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="Title2">
+        <field name="title">
+            <xsl:for-each select="field[(@id &gt; '399' and @id &lt; '460') or (@id &gt; '469' and @id &lt; '500')]/subfield[@id=1]">
+                <xsl:call-template name="Title"/>
+            </xsl:for-each>
             <xsl:text> </xsl:text>
             <xsl:call-template name="Title-former"/>
             <xsl:text> </xsl:text>

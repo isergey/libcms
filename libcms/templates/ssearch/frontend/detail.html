@@ -9,6 +9,58 @@
 {% block title %}{% if LANGUAGE_CODE == 'ru' %}Детальная информация{% elif LANGUAGE_CODE == 'tt' %}Детальная информация
 {% else %}Detail information{% endif %}{% endblock %}
 {% block content %}
+    <style>
+        .results {
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px;
+            font-weight: 300;
+            color: #000;
+            line-height: 28px;
+        }
+
+        .results .header {
+            margin: 45px 10px 0 40px;
+            font-family: RobotoSlabBold;
+            color: #373737;
+            font-weight: 500;
+            font-size: 26px;
+            line-height: 36px;
+        }
+
+        .results ul {
+            margin: 0 40px;
+            line-height: 16px;
+            font-size: 18px;
+        }
+
+        .results a {
+          color: #3062a4;
+        }
+
+        .results a:hover {
+            color: #e8290c;
+          }
+        .record .header {
+            font-weight: bold;
+        }
+        .record .note {
+          background: #f9f9f9;
+          border-left: 10px solid #ccc;
+          margin: 1.5em 10px;
+          padding: 0.5em 10px;
+          quotes: "\201C""\201D""\2018""\2019";
+        }
+        .record .note:before {
+          color: #ccc;
+          font-size: 4em;
+          line-height: 0.1em;
+          margin-right: 0.25em;
+          vertical-align: -0.4em;
+        }
+        .record .note p {
+          display: inline;
+        }
+    </style>
     <nav class="bg bg_second">
         <div class="container">
             {% include 'main_menu.html' %}
@@ -74,9 +126,8 @@
                             <li class="active">
                                 <div class="detail-page__info">
                                     {{ doc_dump|safe }}
-<!--                                    <hr/>
+                                  <hr/>
                                     {{ marc_dump|safe }}
--->
                                 </div>
                             </li>
                             <li>
@@ -89,38 +140,6 @@
                         </ul>
 
                         {% if linked_docs %}
-                            <style>
-                                .results {
-                                    font-family: 'Roboto', sans-serif;
-                                    font-size: 18px;
-                                    font-weight: 300;
-                                    color: #000;
-                                    line-height: 28px;
-                                }
-
-                                .results .header {
-                                    margin: 45px 10px 0 40px;
-                                    font-family: RobotoSlabBold;
-                                    color: #373737;
-                                    font-weight: 500;
-                                    font-size: 26px;
-                                    line-height: 36px;
-                                }
-
-                                .results ul {
-                                    margin: 0 40px;
-                                    line-height: 16px;
-                                    font-size: 18px;
-                                }
-
-                                .results a {
-                                  color: #3062a4;
-                                }
-
-                                .results a:hover {
-                                    color: #e8290c;
-                                  }
-                            </style>
                             <div class="results">
                                 <p class="header">Это издание состоит из следующих томов/частей: </p>
                                 <ul class="list">
