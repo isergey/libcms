@@ -127,11 +127,13 @@ def login(request, template_name='registration/login.html',
 
                     ruslan_user = get_ruslan_user(request)
                     wifi_username = username
+                    wifi_password = form.cleaned_data['password']
                     if ruslan_user:
                         wifi_username = ruslan_user.username
+                        # wifi_password = ruslan_user.password
                     return render(request, 'accounts/frontend/to_wifi.html', {
                         'username': wifi_username,
-                        'password': form.cleaned_data['password']
+                        'password': wifi_password
                     })
 
                 orgs = participants_models.user_organizations(request.user)
