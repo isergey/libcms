@@ -28,8 +28,9 @@
             <div class="click-nav">
                 <ul class="no-js">
                     <li>
-                        <a href="#" class="clicker"><img src="{{ STATIC_URL }}dist/images/user_block_drop.svg"
-                                                         alt="Icon"></a>
+                        <a href="#" class="clicker">
+                            <img src="{{ STATIC_URL }}dist/images/user_block_drop.svg" alt="Icon">
+                        </a>
                         <ul>
                             <li><a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a></li>
                             <li><a href="{% url 'orders:frontend:reservations' %}">Заказы на бронирование</a></li>
