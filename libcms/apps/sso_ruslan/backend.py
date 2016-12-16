@@ -63,7 +63,6 @@ class RuslanAuthBackend(object):
 
             try:
                 # reader_id = username.replace('\\', '\\\\').replace('"', '\\"')
-                print 'search reader_id', reader_id
                 sru_response = portal_client.search(
                     query='@attrset bib-1 @attr 1=100 "%s"' % (reader_id,),
                     database=RUSLAN_USERS_DATABASE,
