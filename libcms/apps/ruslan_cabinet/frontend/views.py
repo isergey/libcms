@@ -71,7 +71,6 @@ def on_hand(request):
         response = make_request(start_record=1, maximum_records=per_request)
         #print json.dumps(response, ensure_ascii=False)
     except Exception as e:
-        print e
         errors.append(u'Сервер заказов недоступен. Пожалуйста, попробуйте позже.')
         logger.exception(e)
         pass
@@ -186,7 +185,6 @@ def remote_return(request):
         response = make_request(start_record=1, maximum_records=per_request)
         #print json.dumps(response, ensure_ascii=False)
     except Exception as e:
-        print e
         errors.append(u'Сервер заказов недоступен. Пожалуйста, попробуйте позже.')
         logger.exception(e)
         pass
