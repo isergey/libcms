@@ -27,7 +27,7 @@ from social_auth import __version__ as version
 from forms import RegistrationForm
 from accounts.models import RegConfirm
 from participants import models as participants_models
-
+from sso_ruslan.models import get_ruslan_user
 
 def index(request):
     return render(request, 'accounts/frontend/index.html')
@@ -124,6 +124,10 @@ def login(request, template_name='registration/login.html',
                     if username.endswith(suffix):
                         username = username.replace(suffix, '')
                     username = u'EDU\\' + username
+
+                    ruslan_user = get_ruslan_user(request)
+                    if ruslan_user:
+                        username = ruslan_user.username
                     return render(request, 'accounts/frontend/to_wifi.html', {
                         'username': username,
                         'password': form.cleaned_data['password']
