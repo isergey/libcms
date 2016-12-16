@@ -7,10 +7,10 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, HttpResponse
 import junimarc
-from ruslan import client, connection_pool, humanize, holdings
+from ruslan import client, connection_pool, humanize, holdings, grs
 from sso_ruslan.models import get_ruslan_user
 from transformers_pool.transformers import transformers
-
+from participants.models import Library
 RUSLAN = getattr(settings, 'RUSLAN', {})
 API_ADDRESS = RUSLAN.get('api_address', 'http://localhost/')
 API_USERNAME = RUSLAN.get('username')
@@ -53,7 +53,7 @@ def on_hand(request):
 
     def make_request(start_record=1, maximum_records=20):
         return ruslan_client.search(
-            database=RCIRC,
+            database=ON_HAND_DB,
             query='@attrset bib-1 @attr 1=100 "%s"' % ruslan_user.username,
             maximum_records=maximum_records,
             start_record=start_record,
@@ -69,7 +69,7 @@ def on_hand(request):
 
     try:
         response = make_request(start_record=1, maximum_records=per_request)
-        print json.dumps(response, ensure_ascii=False)
+        #print json.dumps(response, ensure_ascii=False)
     except Exception as e:
         print e
         errors.append(u'Сервер заказов недоступен. Пожалуйста, попробуйте позже.')
@@ -144,6 +144,106 @@ def on_hand(request):
                 })
     ruslan_client.close_session()
     return render(request, 'ruslan_cabinet/frontend/on_hand_items.html', {
+        'orders': orders,
+        'fine': fine,
+        'errors': errors
+    })
+
+REMOTE_STATES = {
+    '0': u'принят',
+    '1': u'отправлен',
+    '2': u'получен',
+    '3': u'отменен',
+}
+
+@login_required
+def remote_return(request):
+    now = datetime.datetime.now().date()
+    ruslan_user = get_ruslan_user(request)
+
+    if not ruslan_user:
+        return HttpResponse(u'Вы не являетесь читателем')
+
+    ruslan_client = client.HttpClient(API_ADDRESS, API_USERNAME, API_PASSWORD, auto_close=False)
+
+    def make_request(start_record=1, maximum_records=20):
+        return ruslan_client.search(
+            database=RCIRC,
+            query='@attrset bib-1 @attr 1=100 "%s"' % ruslan_user.username,
+            maximum_records=maximum_records,
+            start_record=start_record,
+            accept='application/json'
+        )
+
+    responses = []
+
+    per_request = 20
+    errors = []
+    orders = []
+    fine = 0
+
+    try:
+        response = make_request(start_record=1, maximum_records=per_request)
+        #print json.dumps(response, ensure_ascii=False)
+    except Exception as e:
+        print e
+        errors.append(u'Сервер заказов недоступен. Пожалуйста, попробуйте позже.')
+        logger.exception(e)
+        pass
+
+    if not errors:
+        responses.append(response)
+
+        while True:
+            next_position = int(response.get('nextRecordPosition', 0))
+            number_of_records = int(response.get('numberOfRecords', 0))
+
+            if next_position and next_position < number_of_records:
+                response = make_request(next_position, maximum_records=per_request)
+                responses.append(response)
+            else:
+                break
+
+        ruslan_client.close_session()
+
+        for response in responses:
+            for record in humanize.get_records(response):
+                opac_record = humanize.get_record_content(record)
+                # print json.dumps(opac_record, ensure_ascii=False)
+                grs_record = grs.Record.from_dict(opac_record)
+                order_id = grs_record.get_field_value('1', '')
+                receipt_date =  grs_record.get_field_value('142', '')
+                bib_card = grs_record.get_field_value('144', '')
+                record_id = grs_record.get_field_value('145', '')
+                owner_id = grs_record.get_field_value('146', '')
+                receipter_id = grs_record.get_field_value('410', '')
+                state = REMOTE_STATES.get(grs_record.get_field_value('148', ''), u'неизвестно')
+
+                owner_org = None
+                try:
+                    owner_org = Library.objects.get(code=owner_id)
+                except Library.DoesNotExist:
+                    pass
+
+                receipter_org = None
+                try:
+                    receipter_org = Library.objects.get(code=receipter_id)
+                except Library.DoesNotExist:
+                    pass
+
+                orders.append({
+                    'order_id': order_id,
+                    'receipt_date': receipt_date,
+                    'bib_card': bib_card,
+                    'record_id': record_id,
+                    'owner_id': owner_id,
+                    'receipter_id': receipter_id,
+                    'state': state,
+                    'owner_org': owner_org,
+                    'receipter_org': receipter_org,
+                })
+    ruslan_client.close_session()
+    return render(request, 'ruslan_cabinet/frontend/remote_items.html', {
         'orders': orders,
         'fine': fine,
         'errors': errors

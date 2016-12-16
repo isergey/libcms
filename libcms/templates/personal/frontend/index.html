@@ -92,8 +92,15 @@
                         <div class="row">
                             <div class="col-6">
                                 <a href="{% url 'ask_librarian:frontend:my_questions' %}"
-                                   class="big-block big-block_border" title="Заказы на бронирование">
+                                   class="big-block big-block_border" title="Мои вопросы">
                                     <h2 class="big-block__title">Мои вопросы</h2>
+                                    <img class="pr5" src="{{ STATIC_URL }}dist/images/pr5.png">
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="{% url 'ruslan_cabinet:frontend:remote_return' %}"
+                                   class="big-block big-block_border" title="Удаленный возврат">
+                                    <h2 class="big-block__title">Удаленный возврат</h2>
                                     <img class="pr5" src="{{ STATIC_URL }}dist/images/pr5.png">
                                 </a>
                             </div>
