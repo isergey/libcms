@@ -102,7 +102,7 @@ class Question(models.Model):
         verbose_name=u'Идентификаторы биб. записей',
         blank=True,
         max_length=10000,
-        help_text=u'Каждый идентифкатор на отдельной строке',
+        help_text=u'Каждый идентифкатор на отдельной строке. Идентификатор присутвует детальной информации о записи',
     )
     status = models.IntegerField(choices=QUESTION_STATUSES, verbose_name=u'Статус', db_index=True, default=0)
     create_date = models.DateTimeField(auto_now_add=True, verbose_name=u'Дата создания', db_index=True)

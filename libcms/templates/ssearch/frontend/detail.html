@@ -116,11 +116,16 @@
 
                     <div class="tab-container">
                         <h1 class="detail-page__title">Детальная информация</h1>
+
                         <ul class="tab-container__tabs">
                             <li class="active">{% if LANGUAGE_CODE == 'ru' %}Карточка{% elif LANGUAGE_CODE == 'tt' %}
                                 Карточка{% else %}Card{% endif %}</li>
 {#                            <li>Marc</li>#}
                         </ul>
+                        <div style="margin-left: 40px">
+                            Иденификатор записи: <b>{{ gen_id }}</b>
+{#                            {{ doc|hash:"local-number"|hash:0 }}#}
+                        </div>
                         <div class="detail-page__options detail-page__options_border-bottom">
                             {% drow_save_doc request.user gen_id %}
                             <a class="detail-page__options__btn" href="{% url 'ssearch:frontend:to_print' gen_id %}"
