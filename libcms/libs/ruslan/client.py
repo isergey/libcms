@@ -87,7 +87,7 @@ class HttpClient(object):
 
         if maximum_records:
             params['maximumRecords'] = maximum_records
-        print 'self._base_url + self._db_path + database', self._base_url + self._db_path + database
+
         response = self._make_request(
             method='get',
             url=self._base_url + self._db_path + database,
