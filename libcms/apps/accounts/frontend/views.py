@@ -126,10 +126,11 @@ def login(request, template_name='registration/login.html',
                     username = u'EDU\\' + username
 
                     ruslan_user = get_ruslan_user(request)
+                    wifi_username = username
                     if ruslan_user:
-                        username = ruslan_user.username
+                        wifi_username = ruslan_user.username
                     return render(request, 'accounts/frontend/to_wifi.html', {
-                        'username': username,
+                        'username': wifi_username,
                         'password': form.cleaned_data['password']
                     })
 
