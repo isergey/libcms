@@ -33,9 +33,28 @@ class RuslanAuthBackend(object):
             return None
 
         portal_client = connection_pool.get_client(API_ADDRESS, API_USERNAME, API_PASSWORD)
+        reader_id = username.replace('\\', '\\\\').replace('"', '\\"')
+        password = password.replace('\\', '\\\\').replace('"', '\\"')
+
+        sru_response = portal_client.search(
+            query='@attrset bib-1 @attr 1=132 "%s"' % (reader_id,),
+            database=RUSLAN_USERS_DATABASE,
+            maximum_records=1
+        )
+        sru_records = humanize.get_records(sru_response)
+        if sru_records:
+            try:
+                record_content = humanize.get_record_content(sru_records[0])
+                grs_record = grs.Record.from_dict(record_content)
+                f100 = grs_record.get_field_value('100', '')
+                if f100:
+                    reader_id = f100.replace('\\', '\\\\').replace('"', '\\"')
+            except Exception as e:
+                logger.exception(e)
+                return None
 
         if need_check_password:
-            user_client = client.HttpClient(API_ADDRESS, username=username, password=password)
+            user_client = client.HttpClient(API_ADDRESS, username=reader_id, password=password)
             try:
                 user_principal = user_client.principal()
                 user_client.close_session()
@@ -43,15 +62,14 @@ class RuslanAuthBackend(object):
                 return None
 
             try:
-                reader_id = username.replace('\\', '\\\\').replace('"', '\\"')
-                password = password.replace('\\', '\\\\').replace('"', '\\"')
+                # reader_id = username.replace('\\', '\\\\').replace('"', '\\"')
+                print 'search reader_id', reader_id
                 sru_response = portal_client.search(
                     query='@attrset bib-1 @attr 1=100 "%s"' % (reader_id,),
                     database=RUSLAN_USERS_DATABASE,
                     maximum_records=1
                 )
                 sru_records = humanize.get_records(sru_response)
-
                 if not sru_records:
                    return None
 
@@ -59,7 +77,7 @@ class RuslanAuthBackend(object):
                 logger.exception(e)
                 return None
 
-        sru_reps = portal_client.get_user(username, database=RUSLAN_USERS_DATABASE)
+        sru_reps = portal_client.get_user(reader_id, database=RUSLAN_USERS_DATABASE)
         records = humanize.get_records(sru_reps)
 
         if not records:
