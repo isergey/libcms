@@ -7,7 +7,7 @@ from django.contrib.auth.models import Group
 from django.core import serializers
 from django.core.mail import send_mail
 from django.db import transaction
-from django.db.models import Q, Count
+from django.db.models import Q
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse, resolve_url
 from guardian.decorators import permission_required_or_403
@@ -149,15 +149,27 @@ def list(request, parent=None):
     if not request.user.has_module_perms('participants'):
         return HttpResponseForbidden()
 
+    q = Q()
+
+
+
     if parent:
         parent = get_object_or_404(models.Library, id=parent)
-        libraries_page = get_page(request, models.Library.objects.filter(parent=parent))
+        q &= Q(parent=parent)
     else:
-        libraries_page = get_page(request, models.Library.objects.filter(parent=None))
+        q &= Q(parent=None)
+
+    filter_from = forms.LibraryFilterForm(request.GET, prefix='ftr')
+    if filter_from.is_valid():
+        if filter_from.cleaned_data['org_type']:
+            q &= Q(org_type=filter_from.cleaned_data['org_type'])
+
+    libraries_page = get_page(request, models.Library.objects.filter(q))
 
     return render(request, 'participants/administration/libraries_list.html', {
         'parent': parent,
         'libraries_page': libraries_page,
+        'filter_from': filter_from,
     })
 
 

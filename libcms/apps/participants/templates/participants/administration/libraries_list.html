@@ -27,9 +27,25 @@
         }
     </style>
     <div>
-    <div class="well well-small">
-        <a class="btn btn-success" href="{% url 'participants:administration:create' %}"><i class="icon-plus icon-white"></i> Создать ЦБС</a>
-    </div>
+{#    <div class="well well-small">#}
+        <div class="row">
+            <div class="span5">
+                <a class="btn btn-success" href="{% url 'participants:administration:create' %}"><i class="icon-plus icon-white"></i> Создать ЦБС</a>
+            </div>
+            <div class="span5">
+                <form method="get">
+                    <div>{{ filter_from }}</div>
+                    <input type="submit" class="btn btn-info btn-small" value="Фильтровать">
+                    {% if parent.parent_id %}
+                        {% url 'participants:administration:list' parent.id as participants_list_url %}
+                    {% else %}
+                        {% url 'participants:administration:list' as participants_list_url %}
+                    {% endif %}
+                    <a class="btn btn-default btn-small" href="{{ participants_list_url }}">Очистить фильтр</a>
+                </form>
+            </div>
+        </div>
+{#    </div>#}
     <table class="table">
         <tr>
             <th>Организация</th>

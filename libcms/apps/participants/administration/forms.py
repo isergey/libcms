@@ -10,6 +10,13 @@ from accounts.models import GroupTitle
 from .. import models
 
 
+class LibraryFilterForm(forms.Form):
+    org_type = forms.ChoiceField(
+        label=u'Тип организации',
+        choices=BLANK_CHOICE_DASH + list(models.ORG_TYPES),
+        required=False
+    )
+
 
 class LibraryForm(forms.ModelForm):
     class Meta:
