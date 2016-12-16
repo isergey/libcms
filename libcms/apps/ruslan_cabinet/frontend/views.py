@@ -17,6 +17,7 @@ API_USERNAME = RUSLAN.get('username')
 API_PASSWORD = RUSLAN.get('password')
 
 ON_HAND_DB = 'circ'
+RCIRC = 'RCIRC_RT'
 ORDERS_DB = 'extd'
 ARCHIVE_ORDERS_DB = 'aextd'
 HOLDINGS_BASE = 'spstu'
@@ -52,7 +53,7 @@ def on_hand(request):
 
     def make_request(start_record=1, maximum_records=20):
         return ruslan_client.search(
-            database=ON_HAND_DB,
+            database=RCIRC,
             query='@attrset bib-1 @attr 1=100 "%s"' % ruslan_user.username,
             maximum_records=maximum_records,
             start_record=start_record,
@@ -68,8 +69,9 @@ def on_hand(request):
 
     try:
         response = make_request(start_record=1, maximum_records=per_request)
-        #print json.dumps(response, ensure_ascii=False)
+        print json.dumps(response, ensure_ascii=False)
     except Exception as e:
+        print e
         errors.append(u'Сервер заказов недоступен. Пожалуйста, попробуйте позже.')
         logger.exception(e)
         pass
