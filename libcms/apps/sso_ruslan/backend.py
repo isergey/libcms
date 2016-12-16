@@ -86,7 +86,7 @@ class RuslanAuthBackend(object):
         # 103 - отчество
         grs_record = grs.Record.from_dict(humanize.get_record_content(records[0]))
 
-        return self.get_or_create_user(username, password, grs_record, need_check_password)
+        return self.get_or_create_user(reader_id, password, grs_record, need_check_password)
 
     def get_user(self, user_id):
         try:
