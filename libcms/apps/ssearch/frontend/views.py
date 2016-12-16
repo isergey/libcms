@@ -547,9 +547,18 @@ def select_library(request):
     #     if request.session.get('auth_source', TATEDU_AUTH_SOURCE) == TATEDU_AUTH_SOURCE:
     #         org_type = 'school'
 
+    org_id = request.session.get('org_id')
+    current_library = None
+    if org_id:
+        try:
+            current_library = Library.objects.get(id=org_id)
+        except Library.DoesNotExist:
+            pass
+
     libraries = Library.objects.filter(hidden=False)
     return render(request, 'ssearch/frontend/select_library.html', {
         'libraries': libraries,
+        'current_library': current_library
     })
 
 
@@ -768,6 +777,7 @@ def xml_doc_to_dict(xmlstring_doc):
     doc_tree = etree.XML(xmlstring_doc)
     doc_tree_t = xslt_transformer(doc_tree)
     return doc_tree_to_dict(doc_tree_t)
+
 
 def content_to_xml(xmlstring_doc):
     doc_tree = etree.XML(xmlstring_doc)

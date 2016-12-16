@@ -30,6 +30,15 @@
     }
 
 </style>
+{% if current_library %}
+    Вы находитесь здесь:
+    <a href="{% url 'ssearch:frontend:ecatalog' %}?library={{ current_library.code|urlencode }}">
+        {% for ancestor in current_library.get_ancestors %}
+            {{ ancestor.name }} →
+        {% endfor %}
+        <b>{{ current_library.name }}</b>
+    </a>
+{% endif %}
 <ul class="org_tree">
     {% recursetree libraries %}
         <li class="org_tree__node">
