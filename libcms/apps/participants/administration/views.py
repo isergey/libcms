@@ -7,7 +7,7 @@ from django.contrib.auth.models import Group
 from django.core import serializers
 from django.core.mail import send_mail
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse, resolve_url
 from guardian.decorators import permission_required_or_403
@@ -726,11 +726,18 @@ def library_wifi_list(request, managed_libraries=[]):
         20
     )
 
+    total_wifi = models.WiFiPoint.objects.all().count()
+    total_enabled_wifi = models.WiFiPoint.objects.filter(status='enabled').count()
+    total_disabled_wifi = models.WiFiPoint.objects.filter(status='disabled').count()
+
     return render(request, 'participants/administration/library_wifi_list.html', {
         'select_library_form': select_library_form,
         'districts_form': districts_form,
         'wifi_attr_form': wifi_attr_form,
-        'library_wifi_page': library_wifi_page
+        'library_wifi_page': library_wifi_page,
+        'total_wifi': total_wifi,
+        'total_enabled_wifi': total_enabled_wifi,
+        'total_disabled_wifi': total_disabled_wifi,
     })
 
 
