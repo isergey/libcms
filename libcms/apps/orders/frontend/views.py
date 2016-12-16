@@ -34,6 +34,9 @@ RUSLAN_ORDER = getattr(settings, 'RUSLAN_ORDER', {})
 RUSLAN_ORDER_URLS = RUSLAN_ORDER.get('urls', {})
 RUSLAN_ORDER_SERVERS = RUSLAN_ORDER.get('checked_servers', [])
 
+RUSLAN = getattr(settings, 'RUSLAN', {})
+RUSLAN_USERNAME = RUSLAN.get('username', '')
+RUSLAN_PASSWORD = RUSLAN.get('password', '')
 
 def set_cookies_to_response(cookies, response, domain=None):
     for key in cookies:
@@ -70,7 +73,7 @@ def books_on_hand(request):
         args = []
         for library in libraries:
             args.append({'id': library.id, 'url': RUSLAN_ORDER_URLS['books'] % (
-                ruslan_user.username, ruslan_user.password, library.z_service, ruslan_user.username)})
+                RUSLAN_USERNAME, RUSLAN_PASSWORD, library.z_service, ruslan_user.username)})
 
         results = ThreadWorker(_get_content, args).do()
         for result in results:
@@ -99,7 +102,7 @@ def reservations(request):
         args = []
         for library in libraries:
             args.append({'id': library.id, 'url': RUSLAN_ORDER_URLS['orders'] % (
-                ruslan_user.username, ruslan_user.password, library.z_service, ruslan_user.username)})
+                RUSLAN_USERNAME, RUSLAN_PASSWORD, library.z_service, ruslan_user.username)})
 
         results = ThreadWorker(_get_content, args).do()
         for result in results:
