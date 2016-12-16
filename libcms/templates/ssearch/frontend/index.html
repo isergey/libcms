@@ -14,6 +14,7 @@
         </div>
         <hr class="bg__hr">
         <div class="container">
+            {% if catalog != 'ebooks' %}
             <div class="select_lib">
                 {% if LANGUAGE_CODE == 'ru' %}
                     Поиск по библиотеке:
@@ -46,6 +47,7 @@
                     </a>
                 {% endif %}
             </div>
+            {% endif %}
             <div class="search-box search-box_second">
                 <form method="GET">
                     {% if library %}
