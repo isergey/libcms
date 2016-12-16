@@ -51,6 +51,7 @@
                         {% if libraries %}
                             <ul style="list-style: none; margin: 0;">
                                 {% for library in libraries %}
+                                    {% if library.reservations %}
                                     <li>
                                         <div class="thumbnail" style="margin-bottom: 10px;">
                                             <h3><a target="_blank"
@@ -83,6 +84,7 @@
                                             </div>
                                         </div>
                                     </li>
+                                    {% endif %}
                                 {% endfor %}
                             </ul>
                         {% else %}
