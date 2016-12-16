@@ -10,7 +10,7 @@ import junimarc
 from ruslan import client, connection_pool, humanize, holdings, grs
 from sso_ruslan.models import get_ruslan_user
 from transformers_pool.transformers import transformers
-from participants.models import Library
+from participants.models import Library, find_holders
 RUSLAN = getattr(settings, 'RUSLAN', {})
 API_ADDRESS = RUSLAN.get('api_address', 'http://localhost/')
 API_USERNAME = RUSLAN.get('username')
@@ -218,16 +218,22 @@ def remote_return(request):
                 owner_id = grs_record.get_field_value('146', '')
                 receipter_id = grs_record.get_field_value('410', '')
                 state = REMOTE_STATES.get(grs_record.get_field_value('148', ''), u'неизвестно')
+                owner_sigla = grs_record.get_field_value('147', '')
+                receipter_sigla = grs_record.get_field_value('411', '')
 
                 owner_org = None
                 try:
                     owner_org = Library.objects.get(code=owner_id)
+                    if owner_sigla:
+                        owner_org = find_holders(owner_org, owner_sigla)
                 except Library.DoesNotExist:
                     pass
 
                 receipter_org = None
                 try:
                     receipter_org = Library.objects.get(code=receipter_id)
+                    if receipter_sigla:
+                        receipter_org = find_holders(receipter_org, receipter_sigla)
                 except Library.DoesNotExist:
                     pass
 

@@ -432,3 +432,32 @@ def get_org_by_ap_mac(ap_mac):
 
 def _reverse(request, url, args=[]):
     return u'%s://%s%s' % (request.scheme, request.get_host(), reverse(url, args=args))
+
+
+def _clean_sigla(sigla):
+    return sigla.strip().lower()
+
+
+def _is_contains_sigla(sigla, library):
+    if not library.sigla:
+        return False
+    cleaned_sigla = _clean_sigla(sigla)
+    library_siglas = library.sigla.replace("\r", u'').strip().split("\n")
+    for library_sigla in library_siglas:
+        if _clean_sigla(library_sigla) == cleaned_sigla:
+            return True
+    return False
+
+
+def find_holders(library, sigla):
+    descendants = library.get_descendants()
+
+    for descendant in descendants:
+        if _is_contains_sigla(sigla, descendant):
+            return descendant
+
+    for descendant in descendants:
+        if descendant.default_holder:
+            return descendant
+
+    return descendant

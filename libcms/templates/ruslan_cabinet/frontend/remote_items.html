@@ -48,50 +48,50 @@
 
                     <div class="content-page__text">
                         {% for order in orders %}
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th>Идентификатор:</th>
-                                        <td>{{ order.order_id }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Дата возврата:</th>
-                                        <td>{{ order.receipt_date }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Состояние:</th>
-                                        <td>{{ order.state }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Место возврата:</th>
-                                        <td>
-                                            {% if not order.receipter_org %}
-                                                {{ order.receipter_id }}
-                                            {% else %}
-                                                {% for ancestor in order.receipter_org.get_ancestors %}
-                                                    {{ ancestor.name }} →
-                                                {% endfor %}
-                                                <b>{{ order.receipter_org.name }}</b>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Документ:</th>
-                                        <td>{{ order.bib_card }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Держатель:</th>
-                                        <td>
-                                            {% if not order.owner_org %}
-                                                {{ order.owner_id }}
-                                            {% else %}
-                                                {% for ancestor in order.owner_org.get_ancestors %}
-                                                    {{ ancestor.name }} →
-                                                {% endfor %}
-                                                <b>{{ order.owner_org.name }}</b>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                </table>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Идентификатор:</th>
+                                    <td>{{ order.order_id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Дата возврата:</th>
+                                    <td>{{ order.receipt_date }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Состояние:</th>
+                                    <td>{{ order.state }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Место возврата:</th>
+                                    <td>
+                                        {% if not order.receipter_org %}
+                                            {{ order.receipter_id }}
+                                        {% else %}
+                                            {% for ancestor in order.receipter_org.get_ancestors %}
+                                                {{ ancestor.name }} →
+                                            {% endfor %}
+                                            <b>{{ order.receipter_org.name }}</b>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Документ:</th>
+                                    <td>{{ order.bib_card }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Держатель:</th>
+                                    <td>
+                                        {% if not order.owner_org %}
+                                            {{ order.owner_id }}
+                                        {% else %}
+                                            {% for ancestor in order.owner_org.get_ancestors %}
+                                                {{ ancestor.name }} →
+                                            {% endfor %}
+                                            <b>{{ order.owner_org.name }}</b>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
                         {% endfor %}
                     </div>
                 </div>
