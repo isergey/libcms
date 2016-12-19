@@ -31,9 +31,7 @@
 
 </style>
 {% if current_library %}
-    {{ current_library.org_type }}
     <a href="{% url 'ssearch:frontend:ecatalog' %}?library={{ current_library.code|urlencode }}">
-
         {% if current_library.org_type == 'school' %}
             Искать в моей школьной библиотеке:
         {% else %}
