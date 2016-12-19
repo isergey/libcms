@@ -151,8 +151,6 @@ def list(request, parent=None):
 
     q = Q()
 
-
-
     if parent:
         parent = get_object_or_404(models.Library, id=parent)
         q &= Q(parent=parent)
@@ -433,7 +431,11 @@ def library_user_list(request, managed_libraries=[]):
             q = q & Q(library__district=district)
 
     if select_library_form.is_valid():
-        q = q & Q(library=select_library_form.cleaned_data['library'])
+        selected_library = select_library_form.cleaned_data['library']
+        libraries_ids = [selected_library.id]
+        for descendant in selected_library.get_descendants().values('id'):
+            libraries_ids.append(descendant['id'])
+        q &= Q(library__in=libraries_ids)
 
     if role_form.is_valid():
         role = role_form.cleaned_data['role']
@@ -718,7 +720,11 @@ def library_wifi_list(request, managed_libraries=[]):
             q &= Q(library__district=district)
 
     if select_library_form.is_valid():
-        q &= Q(library=select_library_form.cleaned_data['library'])
+        selected_library = select_library_form.cleaned_data['library']
+        libraries_ids = [selected_library.id]
+        for descendant in selected_library.get_descendants().values('id'):
+            libraries_ids.append(descendant['id'])
+        q &= Q(library__in=libraries_ids)
 
     if wifi_attr_form.is_valid():
         if wifi_attr_form.cleaned_data['mac']:
@@ -845,7 +851,11 @@ def library_int_conn_list(request, managed_libraries=[]):
             q &= Q(library__district=district)
 
     if select_library_form.is_valid():
-        q &= Q(library=select_library_form.cleaned_data['library'])
+        selected_library = select_library_form.cleaned_data['library']
+        libraries_ids = [selected_library.id]
+        for descendant in selected_library.get_descendants().values('id'):
+            libraries_ids.append(descendant['id'])
+        q &= Q(library__in=libraries_ids)
 
     if int_conn_attr_form.is_valid():
         if int_conn_attr_form.cleaned_data['is_exist']:
@@ -948,7 +958,6 @@ def delete_library_int_conn(request, library_id, id, managed_libraries=[]):
     int_conn_point = get_object_or_404(models.InternetConnection, id=id, library_id=library_id)
     int_conn_point.delete()
     return redirect('participants:administration:detail', id=library.id)
-
 
 
 @login_required
