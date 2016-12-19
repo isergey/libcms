@@ -31,8 +31,9 @@
 
 </style>
 {% if current_library %}
+    {{ current_library.org_type }}
     <a href="{% url 'ssearch:frontend:ecatalog' %}?library={{ current_library.code|urlencode }}">
-        Вы находитесь здесь: {% for ancestor in current_library.get_ancestors %}
+        Искать в: {% for ancestor in current_library.get_ancestors %}
             {{ ancestor.name }} →
         {% endfor %}
         <b>{{ current_library.name }}</b>
