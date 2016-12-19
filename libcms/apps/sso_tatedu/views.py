@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import requests
 import json
 import logging
 import os
@@ -9,10 +10,11 @@ from django.contrib.auth import authenticate, login
 from django.db import transaction
 from django.shortcuts import render, redirect
 
-import requests
+from sso.utils import normalize_fio
 from ruslan import connection_pool, humanize
 from ruslan import grs
 from participants.models import Library
+
 from . import models
 
 SITE_DOMAIN = getattr(settings, 'SITE_DOMAIN', 'esia.gosuslugi.ru')
@@ -142,9 +144,9 @@ def _create_grs_from_user(oid, email='', user_attrs=None):
             return
         record.add_field(grs.Field(tag, value))
 
-    add_field_to_record('101', person_info.get('lname', ''))
-    add_field_to_record('102', person_info.get('fname', ''))
-    add_field_to_record('103', person_info.get('pname', ''))
+    add_field_to_record('101', normalize_fio(person_info.get('lname', '')))
+    add_field_to_record('102', normalize_fio(person_info.get('fname', '')))
+    add_field_to_record('103', normalize_fio(person_info.get('pname', '')))
     add_field_to_record('105', datetime.now().strftime('%Y%m%d'))
     add_field_to_record('115', _generate_password())
     # add_field_to_record('120', phone_contact.get('value', ''))
