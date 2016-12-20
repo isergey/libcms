@@ -1,12 +1,17 @@
 # coding=utf-8
 from django.contrib import admin
-from django import forms
 from django.utils.html import format_html
-from models import Party
+from models import Party, NotificationTime
+
+
+class NotificationTimeInline(admin.StackedInline):
+    model = NotificationTime
+    extra = 3
 
 
 class PartyAdmin(admin.ModelAdmin):
     list_display = ('name', 'endpoint', 'status', 'notify', 'statistics_url', 'journal_url')
+    inlines = [NotificationTimeInline]
 
     def statistics_url(self, obj):
         return format_html(u'<a href="%s">%s</a>' % (u'/dashbuilder/workspace/en/overdue', u'Статистика'))

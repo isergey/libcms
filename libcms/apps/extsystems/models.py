@@ -63,3 +63,11 @@ class Party(models.Model):
     def __unicode__(self):
         return self.name or u"без названия"
 
+
+class NotificationTime(models.Model):
+    party = models.ForeignKey(Party)
+    time = models.TimeField(verbose_name=u'Время напоминания')
+
+    class Meta:
+        verbose_name = u'Время напоминания'
+        verbose_name_plural = u'Время напоминания'
