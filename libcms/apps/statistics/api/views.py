@@ -26,10 +26,12 @@ def index(request):
     param_form = forms.ParamForm(request.GET, prefix='pa')
     results = []
     if period_form.is_valid() and param_form.is_valid():
+        from_date, to_date = period_form.get_period_dates()
+        period = period_form.cleaned_data['period']
         results = models.get_view_count_stats(
-            from_date=period_form.cleaned_data['from_date'],
-            to_date=period_form.cleaned_data['to_date'],
-            period=period_form.cleaned_data['period'],
+            from_date=from_date,
+            to_date=to_date,
+            period=period,
             url_filter=param_form.cleaned_data['url_filter'],
             visit_type=param_form.cleaned_data['visit_type'],
             # url_filter='/site/[0-9]+/?$'
@@ -61,8 +63,7 @@ def org_stats(request):
         url_filter = u'/site/%s/' % org_code
 
     if period_form.is_valid():
-        from_date = period_form.cleaned_data['from_date']
-        to_date = period_form.cleaned_data['to_date']
+        from_date, to_date = period_form.get_period_dates()
         period = period_form.cleaned_data['period']
         url_filter = url_filter
 
@@ -104,8 +105,7 @@ def search_stats(request):
         'catalogs': {}
     }
     if period_form.is_valid():
-        from_date = period_form.cleaned_data['from_date']
-        to_date = period_form.cleaned_data['to_date']
+        from_date, to_date = period_form.get_period_dates()
         period = period_form.cleaned_data['period']
 
         results = request_group_by_date(
@@ -175,8 +175,7 @@ def users_at_mini_sites(request):
         format = 'txt'
     period_form = forms.PeriodForm(request.GET, prefix='pe')
     if period_form.is_valid():
-        from_date = period_form.cleaned_data['from_date']
-        to_date = period_form.cleaned_data['to_date']
+        from_date, to_date = period_form.get_period_dates()
         period = period_form.cleaned_data['period']
         results = models.get_users_at_mini_sites(from_date, to_date)
         if format == 'json':
@@ -249,13 +248,16 @@ def org_statistic(request):
 
     code = request.GET.get('code', '')
     library = get_object_or_404(Library, code=code)
+
     period_form = forms.PeriodForm(request.GET, prefix='pe')
+
     if not period_form.is_valid():
         return HttpResponse(json.dumps(period_form.errors, ensure_ascii=False))
 
-    from_date = period_form.cleaned_data['from_date']
-    to_date = period_form.cleaned_data['to_date']
+    from_date, to_date = period_form.get_period_dates()
     period = period_form.cleaned_data['period']
+
+
     dates = models._generate_dates(from_date=from_date, to_date=to_date, period=period)
 
     date_groups = collections.OrderedDict()
