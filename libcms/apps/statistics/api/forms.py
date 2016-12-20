@@ -19,7 +19,7 @@ class PeriodForm(forms.Form):
     def clean(self):
         to_date = self.cleaned_data['to_date']
         complete_to_month = self.cleaned_data['complete_to_month']
-        if not to_date and complete_to_month:
+        if not to_date and not complete_to_month:
             self.add_error('to_date', u'Необходимо указать конечную дату либо выставить параметр complete_to_month=true')
 
         return to_date
@@ -34,7 +34,6 @@ class PeriodForm(forms.Form):
                 month=from_date.month,
                 day=calendar.monthrange(from_date.year, from_date.month)[1]
             )
-        print 'from_date, to_date', from_date, to_date
         return from_date, to_date
 
 

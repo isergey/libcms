@@ -31,23 +31,6 @@ class Party(models.Model):
         verbose_name=u'Точка доступа',
         max_length=255, blank=True, null=True
     )
-    hours = models.IntegerField(
-        verbose_name=u'Часы',
-        default=0,
-        validators=[
-            validators.MinValueValidator(limit_value=0),
-            validators.MaxValueValidator(limit_value=23)
-        ]
-    )
-    minutes = models.IntegerField(
-        verbose_name=u'Минуты',
-        default=0,
-        validators=[
-            validators.MinValueValidator(limit_value=0),
-            validators.MaxValueValidator(limit_value=59)
-        ]
-    )
-
     notify = models.BooleanField(verbose_name=u'Уведомлять систему', default=False)
     status = models.BooleanField(verbose_name=u'Активно', default=False)
     token = models.CharField(
@@ -66,7 +49,22 @@ class Party(models.Model):
 
 class NotificationTime(models.Model):
     party = models.ForeignKey(Party)
-    time = models.TimeField(verbose_name=u'Время напоминания')
+    hours = models.IntegerField(
+        verbose_name=u'Часы',
+        default=0,
+        validators=[
+            validators.MinValueValidator(limit_value=0),
+            validators.MaxValueValidator(limit_value=23)
+        ]
+    )
+    minutes = models.IntegerField(
+        verbose_name=u'Минуты',
+        default=0,
+        validators=[
+            validators.MinValueValidator(limit_value=0),
+            validators.MaxValueValidator(limit_value=59)
+        ]
+    )
 
     class Meta:
         verbose_name = u'Время напоминания'
