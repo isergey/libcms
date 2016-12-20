@@ -260,7 +260,7 @@ def org_statistic(request):
 
     date_groups = collections.OrderedDict()
     for date in dates:
-        date_groups[date.strftime('%Y-%m-%d')] = collections.Counter({
+        date_groups[_get_date_str(date, period)] = collections.Counter({
             'news_count': 0,
             'events_count': 0,
             'event_subscribes_count': 0
@@ -286,7 +286,11 @@ def org_statistic(request):
         create_date = event['create_date']
         date_groups[_get_date_str(create_date, period)]['events_count'] += 1
 
-    event_subscribes_iterator = pemodels.EventSubscribe.objects.values('create_date').filter(library=library).iterator()
+    event_subscribes_iterator = pemodels.EventSubscribe.objects.values('create_date').filter(
+        library=library,
+        create_date__gte = from_date,
+        create_date__lt = to_date + datetime.timedelta(days=1)
+    ).iterator()
     for event_subscribe in event_subscribes_iterator:
         create_date = event_subscribe['create_date']
         date_groups[_get_date_str(create_date, period)]['event_subscribes_count'] += 1
