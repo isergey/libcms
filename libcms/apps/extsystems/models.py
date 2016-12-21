@@ -68,7 +68,7 @@ class NotificationTime(models.Model):
 
     def __unicode__(self):
         return u'%s:%s' % (self.hours, self.minutes)
-    
+
     class Meta:
         verbose_name = u'Время напоминания'
         verbose_name_plural = u'Время напоминания'

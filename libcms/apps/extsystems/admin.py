@@ -10,7 +10,7 @@ class NotificationTimeInline(admin.StackedInline):
 
 
 class PartyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'endpoint', 'status', 'notify', 'statistics_url', 'journal_url')
+    list_display = ('id', 'name', 'endpoint', 'status', 'notify', 'statistics_url', 'journal_url')
     inlines = [NotificationTimeInline]
 
     def statistics_url(self, obj):
