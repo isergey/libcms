@@ -60,6 +60,8 @@ class RuslanAuthBackend(object):
                 user_client.close_session()
             except client.UnauthorizedError:
                 return None
+            except UnicodeEncodeError:
+                return None
 
             try:
                 # reader_id = username.replace('\\', '\\\\').replace('"', '\\"')
