@@ -129,7 +129,7 @@ def get_users_at_mini_sites(from_date, to_date):
             for org_id, count in org_groups.items():
                 lines.append({
                     'date': date.strftime('%Y%m%d'),
-                    'reader_id': ruslan_users_index.get(user_id, {}).get('username') or '000000000',
+                    'reader_id': ruslan_users_index.get(user_id, {}).get('username') or '0',
                     'user_id': user_id or 0,
                     'org_id': org_id,
                     'count': count,

@@ -72,7 +72,7 @@ class RuslanAuthBackend(object):
                 )
                 sru_records = humanize.get_records(sru_response)
                 if not sru_records:
-                   return None
+                    return None
 
             except Exception as e:
                 logger.exception(e)
