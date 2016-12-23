@@ -18,7 +18,7 @@ TOKEN = '123'
 TATAR_STATISTICS = getattr(settings, 'TATAR_STATISTICS', {})
 REPORT_SERVER = TATAR_STATISTICS.get('report_server', 'http://10.14.0.52/reports/')
 
-template = etree.XSLT(etree.parse(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'modern.xsl')))
+# template = etree.XSLT(etree.parse(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'modern.xsl')))
 
 
 def _make_request(method, **kwargs):
@@ -49,7 +49,6 @@ def index(request, managed_libraries=[]):
     if not request.user.has_perm('statistics.view_org_statistic') and \
             not request.user.has_perm('statistics.view_all_statistic') and not managed_libraries:
         return HttpResponse(u'Доступ запрещен', status=403)
-
     response, error = _make_request('get', url=REPORT_SERVER + 'reports', params={
         'token': TOKEN,
         'format': 'json'
@@ -96,7 +95,7 @@ def report(request, managed_libraries=[]):
     if report_form.is_valid():
         params = {
             'token': TOKEN,
-            'view': 'modern2',
+            'view': 'modern',
             'code': report_form.cleaned_data['code'],
             'security': security,
             'parameters': parameters
