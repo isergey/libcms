@@ -95,7 +95,7 @@ def report(request, managed_libraries=[]):
     if report_form.is_valid():
         params = {
             'token': TOKEN,
-            'view': 'modern',
+            'view': 'modern2',
             'code': report_form.cleaned_data['code'],
             'security': security,
             'parameters': parameters
