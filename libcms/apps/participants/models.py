@@ -274,7 +274,7 @@ IS_CONNECTION_EXIST_CHOICES = (
 CONNECTION_TYPE_CHOICES = (
     ('adsl', u'ADSL'),
     ('vols', u'ВОЛС'),
-    ('3g5g', u'3G-4G'),
+    ('3g4g', u'3G-4G'),
 )
 
 
