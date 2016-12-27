@@ -4,6 +4,7 @@ from django.db import models, connection
 from django.contrib.auth.models import User
 from sso_ruslan.models import RuslanUser
 
+
 class Statistics(models.Model):
     class Meta:
         permissions = [
@@ -79,6 +80,8 @@ date_groups = {
   }
 }
 """
+
+
 def get_users_at_mini_sites(from_date, to_date):
     ruslan_users = list(RuslanUser.objects.values('user_id', 'username').all())
     ruslan_users_index = {}

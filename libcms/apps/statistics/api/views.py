@@ -288,8 +288,8 @@ def org_statistic(request):
         create_date = event['create_date']
         date_groups[_get_date_str(create_date, period)]['events_count'] += 1
 
-    event_subscribes_iterator = pemodels.EventSubscribe.objects.values('create_date').filter(
-        library=library,
+    event_subscribes_iterator = pemodels.EventNotification.objects.values('create_date').filter(
+        event__library=library,
         create_date__gte = from_date,
         create_date__lt = to_date + datetime.timedelta(days=1)
     ).iterator()
