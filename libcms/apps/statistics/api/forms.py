@@ -22,8 +22,6 @@ class PeriodForm(forms.Form):
         if not to_date and not complete_to_month:
             self.add_error('to_date', u'Необходимо указать конечную дату либо выставить параметр complete_to_month=true')
 
-        return to_date
-
     def get_period_dates(self):
         from_date = self.cleaned_data['from_date']
         to_date = self.cleaned_data['to_date']
