@@ -379,6 +379,7 @@ def portal_statistic(request):
         date_groups[_get_date_str(create_date, period)]['news_count'] += 1
 
     stats = {
+        'has_mini_site': True,
         'dates': date_groups
     }
 
