@@ -69,19 +69,10 @@ def org_stats(request):
 
     # if org_code and not Library.objects.filter(code=org_code).exists():
     #     return HttpResponse(u'Org with code %s not exist' % org_code, status=400)
-    has_mini_site = False
-    if org:
-        if ppmodels.Page.objects.filter(library=org).exists():
-            has_mini_site = True
-        elif pnmodels.News.objects.filter(library=org).exists():
-            has_mini_site = True
-        elif pemodels.Event.objects.filter(library=org).exists():
-            has_mini_site = True
 
     responce_dict = {
         'org_code': org_code,
         'org_name': org_name,
-        'has_mini_site': has_mini_site
     }
     period_form = forms.PeriodForm(request.GET, prefix='pe')
 
@@ -290,6 +281,15 @@ def org_statistic(request):
     if not period_form.is_valid():
         return HttpResponse(json.dumps(period_form.errors, ensure_ascii=False))
 
+    has_mini_site = False
+    if library:
+        if ppmodels.Page.objects.filter(library=library).exists():
+            has_mini_site = True
+        elif pnmodels.News.objects.filter(library=library).exists():
+            has_mini_site = True
+        elif pemodels.Event.objects.filter(library=library).exists():
+            has_mini_site = True
+
     from_date, to_date = period_form.get_period_dates()
     period = period_form.cleaned_data['period']
 
@@ -300,7 +300,8 @@ def org_statistic(request):
         date_groups[_get_date_str(date, period)] = collections.Counter({
             'news_count': 0,
             'events_count': 0,
-            'event_subscribes_count': 0
+            'event_subscribes_count': 0,
+            'has_mini_site': has_mini_site,
         })
 
     news_iterator = pnmodels.News.objects.values('create_date').filter(
