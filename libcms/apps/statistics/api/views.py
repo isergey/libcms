@@ -61,12 +61,30 @@ def org_stats(request):
     libs = Library.objects.filter(code=org_code)[:1]
     if libs:
         org_name = libs[0].name
-    if org_code and not Library.objects.filter(code=org_code).exists():
-        return HttpResponse(u'Org with code %s not exist' % org_code, status=400)
+
+    org=None
+    if org_code:
+        try:
+            org = Library.objects.get(code=org_code)
+        except Library.DoesNotExist:
+            return HttpResponse(u'Org with code %s not exist' % org_code, status=400)
+
+    # if org_code and not Library.objects.filter(code=org_code).exists():
+    #     return HttpResponse(u'Org with code %s not exist' % org_code, status=400)
+
+    has_mini_site = False
+    if org:
+        if ppmodels.Page.objects.filter(library=org).exists():
+            has_mini_site = True
+        elif pnmodels.News.objects.filter(library=org).exists():
+            has_mini_site = True
+        elif pemodels.Event.objects.filter(library=org).exists():
+            has_mini_site = True
 
     responce_dict = {
         'org_code': org_code,
-        'org_name': org_name
+        'org_name': org_name,
+        'has_mini_site': has_mini_site
     }
     period_form = forms.PeriodForm(request.GET, prefix='pe')
 
@@ -111,8 +129,10 @@ def org_stats(request):
         return HttpResponse(u'Wrong pe params %s' % period_form.errors, status=400)
 
     if scheme == 'xml':
-        return HttpResponse(dicttoxml.dicttoxml(responce_dict, custom_root='fields', attr_type=False),
-                            content_type='application/xml')
+        return HttpResponse(dicttoxml.dicttoxml(
+            responce_dict, custom_root='fields', attr_type=False),
+            content_type='application/xml'
+        )
 
     return HttpResponse(json.dumps(responce_dict, ensure_ascii=False), content_type='application/json')
 
