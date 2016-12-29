@@ -56,7 +56,7 @@ def org_stats(request):
     if scheme not in schemes:
         scheme = 'xml'
 
-    org_code = request.GET.get('org_code', None)
+    org_code = request.GET.get('code', None)
 
     org=None
     org_name = ''
@@ -69,7 +69,6 @@ def org_stats(request):
 
     # if org_code and not Library.objects.filter(code=org_code).exists():
     #     return HttpResponse(u'Org with code %s not exist' % org_code, status=400)
-
     has_mini_site = False
     if org:
         if ppmodels.Page.objects.filter(library=org).exists():
