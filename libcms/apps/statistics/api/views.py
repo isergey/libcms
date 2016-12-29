@@ -45,6 +45,12 @@ def index(request):
 
 
 def org_stats(request):
+    params = request.GET.get('params', '')
+    params_parts = []
+    for param in params.strip().split(','):
+        if param:
+            params_parts.append(param)
+
     scheme = request.GET.get('scheme', 'xml')
     schemes = ['xml', 'json']
     if scheme not in schemes:
@@ -72,31 +78,34 @@ def org_stats(request):
         from_date, to_date = period_form.get_period_dates()
         period = period_form.cleaned_data['period']
         url_filter = url_filter
+        if not params_parts or 'views' in params_parts:
+            results = models.get_view_count_stats(
+                from_date=from_date,
+                to_date=to_date,
+                period=period,
+                url_filter=url_filter
+            )
+            responce_dict['views'] = results
 
-        results = models.get_view_count_stats(
-            from_date=from_date,
-            to_date=to_date,
-            period=period,
-            url_filter=url_filter
-        )
-        responce_dict['views'] = results
-        results = models.get_view_count_stats(
-            from_date=from_date,
-            to_date=to_date,
-            period=period,
-            url_filter=url_filter,
-            visit_type='visit'
-        )
-        responce_dict['visits'] = results
+        if not params_parts or 'visits' in params_parts:
+            results = models.get_view_count_stats(
+                from_date=from_date,
+                to_date=to_date,
+                period=period,
+                url_filter=url_filter,
+                visit_type='visit'
+            )
+            responce_dict['visits'] = results
 
-        results = request_group_by_date(
-            from_date=from_date,
-            to_date=to_date,
-            period=period,
-            library_code=org_code
-        )
+        if not params_parts or 'search_requests' in params_parts:
+            results = request_group_by_date(
+                from_date=from_date,
+                to_date=to_date,
+                period=period,
+                library_code=org_code
+            )
 
-        responce_dict['search_requests'] = results
+            responce_dict['search_requests'] = results
 
     else:
         return HttpResponse(u'Wrong pe params %s' % period_form.errors, status=400)
