@@ -301,7 +301,6 @@ def org_statistic(request):
             'news_count': 0,
             'events_count': 0,
             'event_subscribes_count': 0,
-            'has_mini_site': has_mini_site,
         })
 
     news_iterator = pnmodels.News.objects.values('create_date').filter(
@@ -333,11 +332,15 @@ def org_statistic(request):
         create_date = event_subscribe['create_date']
         date_groups[_get_date_str(create_date, period)]['event_subscribes_count'] += 1
 
+    stats = {
+        'has_mini_site': has_mini_site,
+        'dates': date_groups
+    }
     response = ''
     if scheme == 'json':
-        response = json.dumps(date_groups, ensure_ascii=False)
+        response = json.dumps(stats, ensure_ascii=False)
     else:
-        response = dicttoxml.dicttoxml(date_groups, custom_root='fields', attr_type=False)
+        response = dicttoxml.dicttoxml(stats, custom_root='fields', attr_type=False)
     return HttpResponse(response, content_type='application/' + scheme)
 
 
