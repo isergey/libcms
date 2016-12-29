@@ -17,6 +17,7 @@ from participant_pages import models as ppmodels
 from participant_news import models as pnmodels
 from participant_events import models as pemodels
 from sso_ruslan import models as sso_ruslan_models
+from news import models as news_models
 
 URL_TIMEOUT = 1  # mins
 
@@ -101,7 +102,8 @@ def org_stats(request):
         return HttpResponse(u'Wrong pe params %s' % period_form.errors, status=400)
 
     if scheme == 'xml':
-        return HttpResponse(dicttoxml.dicttoxml(responce_dict, custom_root='fields', attr_type=False), content_type='application/xml')
+        return HttpResponse(dicttoxml.dicttoxml(responce_dict, custom_root='fields', attr_type=False),
+                            content_type='application/xml')
 
     return HttpResponse(json.dumps(responce_dict, ensure_ascii=False), content_type='application/json')
 
@@ -265,7 +267,6 @@ def org_statistic(request):
     from_date, to_date = period_form.get_period_dates()
     period = period_form.cleaned_data['period']
 
-
     dates = models._generate_dates(from_date=from_date, to_date=to_date, period=period)
 
     date_groups = collections.OrderedDict()
@@ -298,12 +299,54 @@ def org_statistic(request):
 
     event_subscribes_iterator = pemodels.EventNotification.objects.values('create_date').filter(
         event__library=library,
-        create_date__gte = from_date,
-        create_date__lt = to_date + datetime.timedelta(days=1)
+        create_date__gte=from_date,
+        create_date__lt=to_date + datetime.timedelta(days=1)
     ).iterator()
     for event_subscribe in event_subscribes_iterator:
         create_date = event_subscribe['create_date']
         date_groups[_get_date_str(create_date, period)]['event_subscribes_count'] += 1
+
+    response = ''
+    if scheme == 'json':
+        response = json.dumps(date_groups, ensure_ascii=False)
+    else:
+        response = dicttoxml.dicttoxml(date_groups, custom_root='fields', attr_type=False)
+    return HttpResponse(response, content_type='application/' + scheme)
+
+
+def portal_statistic(request):
+    scheme = request.GET.get('scheme', 'xml')
+    schemes = ['xml', 'json']
+
+    if scheme not in schemes:
+        scheme = 'xml'
+
+    code = request.GET.get('code', '')
+
+    period_form = forms.PeriodForm(request.GET, prefix='pe')
+
+    if not period_form.is_valid():
+        return HttpResponse(json.dumps(period_form.errors, ensure_ascii=False))
+
+    from_date, to_date = period_form.get_period_dates()
+    period = period_form.cleaned_data['period']
+
+    dates = models._generate_dates(from_date=from_date, to_date=to_date, period=period)
+
+    date_groups = collections.OrderedDict()
+    for date in dates:
+        date_groups[_get_date_str(date, period)] = collections.Counter({
+            'news_count': 0,
+        })
+
+    news_iterator = news_models.News.objects.values('create_date').filter(
+        create_date__gte=from_date,
+        create_date__lt=to_date + datetime.timedelta(days=1)
+    ).iterator()
+
+    for news in news_iterator:
+        create_date = news['create_date']
+        date_groups[_get_date_str(create_date, period)]['news_count'] += 1
 
     response = ''
     if scheme == 'json':

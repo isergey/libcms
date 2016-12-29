@@ -10,5 +10,6 @@ urlpatterns = patterns(
     url(r'^users_at_mini_sites/$', views.users_at_mini_sites, name='users_at_mini_sites'),
     url(r'^orgs_statistic/$', views.orgs_statistic, name='orgs_statistic'),
     url(r'^org_statistic/$', views.org_statistic, name='org_statistic'),
+    url(r'^portal_statistic/$', views.portal_statistic, name='portal_statistic'),
     url(r'^watch/$', views.watch, name='watch'),
 )

@@ -59,12 +59,13 @@ def get_view_count_stats(from_date, to_date, period, visit_type='view', url_filt
     row_hash = OrderedDict()
 
     for row in _dictfetchall(cursor):
-        row_hash[row['date']] = row['count']
+        row_hash[datetime.datetime.strptime(row['date'], '%Y-%m-%d').date()] = row['count']
 
     results = []
     for date in date_range:
+        str_date = date.strftime('%Y-%m-%d')
         results.append({
-            'date': date.strftime('%Y-%m-%d'),
+            'date': str_date,
             'count': row_hash.get(date, 0)
         })
 
