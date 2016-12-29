@@ -44,6 +44,11 @@ def index(request):
 
 
 def org_stats(request):
+    scheme = request.GET.get('scheme', 'xml')
+    schemes = ['xml', 'json']
+    if scheme not in schemes:
+        scheme = 'xml'
+
     org_code = request.GET.get('org_code', None)
     org_name = ''
     libs = Library.objects.filter(code=org_code)[:1]
@@ -94,6 +99,9 @@ def org_stats(request):
 
     else:
         return HttpResponse(u'Wrong pe params %s' % period_form.errors, status=400)
+
+    if scheme == 'xml':
+        return HttpResponse(dicttoxml.dicttoxml(responce_dict, custom_root='fields', attr_type=False), content_type='application/xml')
 
     return HttpResponse(json.dumps(responce_dict, ensure_ascii=False), content_type='application/json')
 
