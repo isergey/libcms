@@ -57,15 +57,12 @@ def org_stats(request):
         scheme = 'xml'
 
     org_code = request.GET.get('org_code', None)
-    org_name = ''
-    libs = Library.objects.filter(code=org_code)[:1]
-    if libs:
-        org_name = libs[0].name
 
     org=None
     if org_code:
         try:
             org = Library.objects.get(code=org_code)
+            org_name = org.name
         except Library.DoesNotExist:
             return HttpResponse(u'Org with code %s not exist' % org_code, status=400)
 
