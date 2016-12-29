@@ -378,11 +378,15 @@ def portal_statistic(request):
         create_date = news['create_date']
         date_groups[_get_date_str(create_date, period)]['news_count'] += 1
 
+    stats = {
+        'dates': date_groups
+    }
+
     response = ''
     if scheme == 'json':
-        response = json.dumps(date_groups, ensure_ascii=False)
+        response = json.dumps(stats, ensure_ascii=False)
     else:
-        response = dicttoxml.dicttoxml(date_groups, custom_root='fields', attr_type=False)
+        response = dicttoxml.dicttoxml(stats, custom_root='fields', attr_type=False)
     return HttpResponse(response, content_type='application/' + scheme)
 
 
