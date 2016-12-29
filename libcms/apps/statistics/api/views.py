@@ -59,6 +59,7 @@ def org_stats(request):
     org_code = request.GET.get('org_code', None)
 
     org=None
+    org_name = ''
     if org_code:
         try:
             org = Library.objects.get(code=org_code)
