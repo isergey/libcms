@@ -291,7 +291,7 @@ def redirect_from_idp(request):
             error='user_info_error',
             error_description=u'Ошибка при получении информации из ЭО РТ ' + person_info_resp.get('message')
         )
-    # return HttpResponse(json.dumps(person_info_resp, ensure_ascii=False), content_type='application/json')
+    # print json.dumps(person_info_resp, ensure_ascii=False)
     person_info = person_info_resp.get('data', {})
 
     if person_info.get('status', '') != 'active':
