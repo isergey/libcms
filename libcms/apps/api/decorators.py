@@ -120,10 +120,11 @@ def process_response(request, response):
                 expires = cookie_date(expires_time)
                 # Save the session data and refresh the client cookie.
             request.session.save()
-            response.set_cookie(settings.SESSION_COOKIE_NAME,
-                                request.session.session_key, max_age=max_age,
-                                expires=expires, domain=settings.SESSION_COOKIE_DOMAIN,
-                                path=settings.SESSION_COOKIE_PATH,
-                                secure=settings.SESSION_COOKIE_SECURE or None,
-                                httponly=settings.SESSION_COOKIE_HTTPONLY or None)
+            response.set_cookie(
+                settings.SESSION_COOKIE_NAME,
+                request.session.session_key, max_age=max_age,
+                expires=expires, domain=settings.SESSION_COOKIE_DOMAIN,
+                path=settings.SESSION_COOKIE_PATH,
+                secure=settings.SESSION_COOKIE_SECURE or None,
+                httponly=settings.SESSION_COOKIE_HTTPONLY or None)
     return response

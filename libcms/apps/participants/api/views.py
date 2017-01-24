@@ -416,14 +416,14 @@ def export_int_conns(request):
 
 
 @api
-@login_required
+#@login_required
 def user_organizations(request):
     orgs = models.user_organizations(request.user)
     return HttpResponse(json.dumps(orgs, ensure_ascii=False), content_type='application/json')
 
 
 @api
-@login_required
+#@login_required
 def personal_cabinet_links(request):
     return HttpResponse(json.dumps(models.personal_cabinet_links(request), ensure_ascii=False),
                         content_type='application/json')
