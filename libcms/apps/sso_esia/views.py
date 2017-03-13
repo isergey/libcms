@@ -782,7 +782,9 @@ def _get_client_secret(scope, timestamp, client_id, state):
     )
     sign_file = open(signed_file_path)
     sign = sign_file.read().decode('utf-8')
+    print 'sign', sign
     sign = sign.replace('+', '-').replace('/', '_').replace('=', ',')
+    print 'sign1', sign
     print 'data_file_path', data_file_path
     print 'signed_file_path', signed_file_path
     # os.unlink(data_file_path)
