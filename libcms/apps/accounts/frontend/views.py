@@ -123,7 +123,7 @@ def login(request, template_name='registration/login.html',
                     suffix = '@tatar.ru'
                     if username.endswith(suffix):
                         username = username.replace(suffix, '')
-                    username = u'EDU\\' + username
+                    # username = u'EDU\\' + username
 
                     ruslan_user = get_ruslan_user(request)
                     wifi_username = username
