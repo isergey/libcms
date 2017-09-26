@@ -234,7 +234,7 @@ def _update_ruslan_user(record):
 
     if not record_id:
         raise ValueError('record_id must be not empty')
-    print '_update_ruslan_user', RUSLAN_USERS_DATABASE, record_id
+
     portal_client.update_grs(grs_record=record, database=RUSLAN_USERS_DATABASE, id=record_id)
     return record
 
