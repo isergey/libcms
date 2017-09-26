@@ -104,6 +104,10 @@ class Record(object):
         if not exist_fields:
             del self.__fields[field.value]
 
+    def update(self, grs_record):
+        self.__fields.update(grs_record.get_fields())
+        self.recalculate_occurrence()
+
     def sort_fields(self):
         """
         Сортировать существющие поля по значению occurrence
