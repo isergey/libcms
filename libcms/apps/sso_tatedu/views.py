@@ -234,7 +234,7 @@ def _update_ruslan_user(record):
 
     if not record_id:
         raise ValueError('record_id must be not empty')
-
+    print '_update_ruslan_user', RUSLAN_USERS_DATABASE, record_id
     portal_client.update_grs(grs_record=record, database=RUSLAN_USERS_DATABASE, id=record_id)
     return record
 
@@ -355,13 +355,13 @@ def redirect_from_idp(request):
         return register_new_user(request, tatedu_user.id)
     else:
         user_grs_record = grs.Record.from_dict(humanize.get_record_content(sru_records[0]))
-        # new_user_grs_record = _create_grs_from_user(
-        #     oid=tatedu_user.oid,
-        #     email=person_info.get('email', ''),
-        #     user_attrs=user_attrs
-        # )
-        # user_grs_record.update(new_user_grs_record)
-        # _update_ruslan_user(user_grs_record)
+        new_user_grs_record = _create_grs_from_user(
+            oid=tatedu_user.oid,
+            email=person_info.get('email', ''),
+            user_attrs=user_attrs
+        )
+        user_grs_record.update(new_user_grs_record)
+        _update_ruslan_user(user_grs_record)
         fields_100 = user_grs_record.get_field('100')
         if not fields_100:
             return _error_response(
