@@ -87,6 +87,12 @@ class Record(object):
     def get_field(self, value):
         return self.__fields.get(value, [])
 
+    def set_field(self, value, field):
+        if (isinstance(field, list)):
+            self.__fields[value] = field
+        else:
+            self.__fields[value] = [field]
+
     def get_field_value(self, value, default=u''):
         fields = self.get_field(value)
         if not fields:

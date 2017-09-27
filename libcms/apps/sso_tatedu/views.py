@@ -360,7 +360,9 @@ def redirect_from_idp(request):
             email=person_info.get('email', ''),
             user_attrs=user_attrs
         )
-        user_grs_record.update(new_user_grs_record)
+        for field_value in ['505', '506', '508', '509', '510']:
+            fields = new_user_grs_record.get_field(field_value)
+            user_grs_record.set_field(field_value, fields)
         _update_ruslan_user(user_grs_record)
         fields_100 = user_grs_record.get_field('100')
         if not fields_100:
