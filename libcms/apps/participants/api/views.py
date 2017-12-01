@@ -11,8 +11,8 @@ from api.decorators import login_required, api
 from api.exceptions import WrongArguments, ApiException
 from .. import models
 
-
 API_KEY = getattr(settings, 'API_KEY', '')
+
 
 class ApiUser(object):
     def __init__(self, id=None, username=None, first_name=None, last_name=None, email=None, phone=None,
@@ -381,6 +381,7 @@ def export_orgs(request):
 
     return HttpResponse(data, content_type='application/' + scheme)
 
+
 @api
 def export_ora_conns(request):
     scheme = request.GET.get('scheme', 'xml')
@@ -397,6 +398,7 @@ def export_ora_conns(request):
 
     data = ser.serialize(connections)
     return HttpResponse(data, content_type='application/' + scheme)
+
 
 @api
 def export_int_conns(request):
@@ -416,11 +418,18 @@ def export_int_conns(request):
     return HttpResponse(data, content_type='application/' + scheme)
 
 
-def export_library_users(request):
+def _is_auth(request):
     auth_header_value_parts = request.META.get('HTTP_AUTHORIZATION', '').split(' ')
-    if len(auth_header_value_parts) < 2 or auth_header_value_parts[0] != 'Bearer' or auth_header_value_parts[1] != API_KEY:
-        return HttpResponse('Need auth', status=401)
+    if len(auth_header_value_parts) < 2 \
+            or auth_header_value_parts[0] != 'Bearer' \
+            or auth_header_value_parts[1] != API_KEY:
+        return False
+    return True
 
+
+def export_library_users(request):
+    if not _is_auth(request):
+        return HttpResponse('Need auth', status=401)
     scheme = request.GET.get('scheme', 'xml')
     schemes = ['xml', 'json']
     if scheme not in schemes:
@@ -437,17 +446,14 @@ def export_library_users(request):
 
 
 @api
-#@login_required
+# @login_required
 def user_organizations(request):
     orgs = models.user_organizations(request.user)
     return HttpResponse(json.dumps(orgs, ensure_ascii=False), content_type='application/json')
 
 
 @api
-#@login_required
+# @login_required
 def personal_cabinet_links(request):
     return HttpResponse(json.dumps(models.personal_cabinet_links(request), ensure_ascii=False),
                         content_type='application/json')
-
-
-
