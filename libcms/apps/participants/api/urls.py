@@ -14,7 +14,7 @@ urlpatterns = patterns(
     url(r'^export_orgs/$', views.export_orgs, name="export_orgs"),
     url(r'^export_ora_conns/$', views.export_ora_conns, name="export_ora_conns"),
     url(r'^export_int_conns/$', views.export_int_conns, name="export_int_conns"),
+    url(r'^export_library_users/$', views.export_library_users, name="export_library_users"),
     url(r'^user_organizations/$', views.user_organizations, name="user_organizations"),
     url(r'^personal_cabinet_links/$', views.personal_cabinet_links, name="personal_cabinet_links"),
-
 )
