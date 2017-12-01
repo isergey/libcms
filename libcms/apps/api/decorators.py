@@ -17,7 +17,7 @@ def login_required(message='Login required'):
         def _wrapped_view(request, *args, **kwargs):
             if request.user.is_authenticated():
                 return view_func(request, *args, **kwargs)
-            return responses.error_response(
+            return responses.errors_response(
                 message=message,
                 code='auth.not_authenticated',
                 status=401
@@ -43,7 +43,7 @@ def permission_required(perm, message='Access denied'):
         def _wrapped_view(request, *args, **kwargs):
             if _check_perms(request.user):
                 return view_func(request, *args, **kwargs)
-            return responses.error_response(
+            return responses.errors_response(
                 message=message,
                 code='auth.no_have_permission',
                 status=403,
