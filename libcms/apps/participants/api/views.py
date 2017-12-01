@@ -414,6 +414,23 @@ def export_int_conns(request):
     return HttpResponse(data, content_type='application/' + scheme)
 
 
+@api
+def export_library_users(request):
+    scheme = request.GET.get('scheme', 'xml')
+    schemes = ['xml', 'json']
+
+    if scheme not in schemes:
+        scheme = 'xml'
+
+    objects = models.UserLibrary.objects.all()
+
+    ser = xml_serializer.Serializer()
+    if scheme == 'json':
+        ser = json_serializer.Serializer()
+
+    data = ser.serialize(objects)
+    return HttpResponse(data, content_type='application/' + scheme)
+
 
 @api
 #@login_required

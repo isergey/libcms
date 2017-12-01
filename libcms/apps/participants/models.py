@@ -184,6 +184,14 @@ class UserLibraryPosition(models.Model):
         verbose_name_plural = u'Должности сотрудников'
 
 
+EDUCATION_CHOICES = (
+    ('vysshee', u'высшее'),
+    ('vysshee_bibl', u'высшее библиотечное'),
+    ('srednee_prof', u'начальное или среднее профессиональное'),
+    ('srednee_prof_bibl', u'начальное или среднее профессиональное библиотечное'),
+)
+
+
 class UserLibrary(models.Model):
     library = models.ForeignKey(Library)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -192,6 +200,12 @@ class UserLibrary(models.Model):
     department = TreeForeignKey(Department, verbose_name=u'Отдел')
     position = models.ForeignKey(UserLibraryPosition, verbose_name=u'Должность')
     phone = models.CharField(verbose_name=u'Телефон', max_length=32)
+    disabled_person = models.BooleanField(verbose_name=u'Наличие инвалидности', default=False)
+    has_instructions_for_disabled = models.BooleanField(
+        verbose_name=u'Прошел обучение по услугам инвалидности',
+        default=False
+    )
+    education = models.CharField(verbose_name=u'Образование', choices=EDUCATION_CHOICES, blank=True, max_length=64)
     descendants_rights = models.BooleanField(
         verbose_name=u'Может управлять дочерними организациями',
         default=False
