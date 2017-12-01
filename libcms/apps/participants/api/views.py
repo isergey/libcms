@@ -417,7 +417,7 @@ def export_int_conns(request):
 
 
 def export_library_users(request):
-    auth_header_value_parts = request.META.get('Authorization', '').split(' ')
+    auth_header_value_parts = request.META.get('HTTP_AUTHORIZATION', '').split(' ')
     if len(auth_header_value_parts) < 2 or auth_header_value_parts[0] != 'Bearer' or auth_header_value_parts[1] != API_KEY:
         return HttpResponse('Need auth', status=401)
 
