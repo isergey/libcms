@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import cStringIO as StringIO
 import json
-
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 from django.shortcuts import HttpResponse, resolve_url
@@ -11,6 +11,8 @@ from api.decorators import login_required, api
 from api.exceptions import WrongArguments, ApiException
 from .. import models
 
+
+API_KEY = getattr(settings, 'API_KEY', '')
 
 class ApiUser(object):
     def __init__(self, id=None, username=None, first_name=None, last_name=None, email=None, phone=None,
@@ -414,8 +416,11 @@ def export_int_conns(request):
     return HttpResponse(data, content_type='application/' + scheme)
 
 
-@login_required
 def export_library_users(request):
+    auth_header_value_parts = request.META.get('Authorization', '').split(' ')
+    if len(auth_header_value_parts) < 2 or auth_header_value_parts[0] != 'Bearer' or auth_header_value_parts[1] != API_KEY:
+        return HttpResponse('Need auth', status=401)
+
     scheme = request.GET.get('scheme', 'xml')
     schemes = ['xml', 'json']
     if scheme not in schemes:
