@@ -191,6 +191,12 @@ EDUCATION_CHOICES = (
     ('srednee_prof_bibl', u'начальное или среднее профессиональное библиотечное'),
 )
 
+WORK_EXPERIENCE_CHOICES = (
+    ('0_3', u'от 0 до 3 лет'),
+    ('3_10', u'от 3 до 10 лет'),
+    ('10', u'свыше 10'),
+)
+
 
 class UserLibrary(models.Model):
     library = models.ForeignKey(Library)
@@ -206,6 +212,7 @@ class UserLibrary(models.Model):
         default=False
     )
     education = models.CharField(verbose_name=u'Образование', choices=EDUCATION_CHOICES, blank=True, max_length=64)
+    work_experience = models.CharField(verbose_name=u'Стаж работы', choices=WORK_EXPERIENCE_CHOICES, blank=True, max_length=64)
     descendants_rights = models.BooleanField(
         verbose_name=u'Может управлять дочерними организациями',
         default=False
