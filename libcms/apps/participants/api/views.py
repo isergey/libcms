@@ -414,7 +414,6 @@ def export_int_conns(request):
     return HttpResponse(data, content_type='application/' + scheme)
 
 
-@api
 @login_required
 def export_library_users(request):
     scheme = request.GET.get('scheme', 'xml')
