@@ -62,6 +62,7 @@ def api(func):
     декоратор для обработки вызовов api
     """
 
+    @wraps(func)
     def wrapper(*args, **kwargs):
         args = list(args)
         args[0] = process_request(args[0])
