@@ -415,10 +415,10 @@ def export_int_conns(request):
 
 
 @api
+@login_required
 def export_library_users(request):
     scheme = request.GET.get('scheme', 'xml')
     schemes = ['xml', 'json']
-
     if scheme not in schemes:
         scheme = 'xml'
 
