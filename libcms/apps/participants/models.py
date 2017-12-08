@@ -85,6 +85,7 @@ class Library(MPTTModel):
         max_length=1024, db_index=True, blank=True,
         help_text=u'Каждая сигла на отдельной строке'
     )
+    staff_amount = models.IntegerField(verbose_name=u'Количество сотрудников', )
     default_holder = models.BooleanField(
         verbose_name=u'Держатель по умолчанию',
         default=False,
@@ -205,6 +206,7 @@ class UserLibrary(models.Model):
     birth_date = models.DateField(verbose_name=u'Дата рождения', null=True, help_text='Формат дд.мм.гггг', blank=True)
     department = TreeForeignKey(Department, verbose_name=u'Отдел')
     position = models.ForeignKey(UserLibraryPosition, verbose_name=u'Должность')
+    is_staff = models.BooleanField(verbose_name=u'Основной персонал', default=False)
     phone = models.CharField(verbose_name=u'Телефон', max_length=32)
     disabled_person = models.BooleanField(verbose_name=u'Наличие инвалидности', default=False)
     has_instructions_for_disabled = models.BooleanField(
