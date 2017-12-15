@@ -72,6 +72,7 @@ def index(request, managed_libraries=[]):
 @login_required
 @must_be_org_user
 def report(request, managed_libraries=[]):
+    view = request.GET.get('view', 'modern2')
     security = u'Организация=Total,00000000'
     access = False
     if request.user.has_perm('statistics.view_all_statistic'):
@@ -95,7 +96,7 @@ def report(request, managed_libraries=[]):
     if report_form.is_valid():
         params = {
             'token': TOKEN,
-            'view': 'modern2',
+            'view': view,
             'code': report_form.cleaned_data['code'],
             'security': security,
             'parameters': parameters
@@ -103,6 +104,14 @@ def report(request, managed_libraries=[]):
 
         response, error = _make_request('get', url=REPORT_SERVER + 'report', params=params)
         if not error:
+            print response.headers
+            content_type = response.headers.get('content-type', 'text/html')
+            if content_type != 'text/html':
+                dj_response = HttpResponse(response.content, content_type=content_type)
+                content_disposition = response.headers.get('content-disposition')
+                if content_disposition:
+                    dj_response['content-disposition'] = content_disposition
+                return dj_response
             report_body = response.content  # unicode(template(etree.fromstring(response.content)))
     else:
         error = unicode(report_form.errors)
