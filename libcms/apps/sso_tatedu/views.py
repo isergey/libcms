@@ -369,6 +369,7 @@ def redirect_from_idp(request):
             return _error_response(
                 request=request,
                 error='no_user',
+                state=state,
                 error_description=u'Система в данный момент не может произвести авторизацию'
             )
         else:

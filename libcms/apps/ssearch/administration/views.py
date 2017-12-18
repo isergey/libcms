@@ -23,7 +23,7 @@ from guardian.decorators import permission_required_or_403
 from django.shortcuts import render, redirect, HttpResponse, Http404
 from pymarc2 import reader, record, field, marcxml
 from django.db import transaction  # , connection, connections
-
+from libcms.libs.common.xslt_transformers import xslt_indexing_transformer
 from ..common import resolve_date
 from forms import AttributesForm, GroupForm, PeriodForm, CatalogForm
 from participants.models import Library
@@ -31,6 +31,7 @@ from ..models import requests_count, requests_by_attributes, requests_by_term, S
 
 SIGLA_DELIMITER = "\n"
 
+BASE_PATH = getattr(settings, 'PROJECT_PATH')
 
 @login_required
 @permission_required_or_403('ssearch.view_statistics')
@@ -263,10 +264,6 @@ def convert(request):
     pass
 
 
-xslt_root = etree.parse('libcms/xsl/record_indexing.xsl')
-xslt_transformer = etree.XSLT(xslt_root)
-
-
 def indexing(request):
     reset = request.GET.get('reset', u'0')
     if reset == u'1':
@@ -374,7 +371,7 @@ def _indexing(slug, reset=False):
         zf = zipfile.ZipFile(io.BytesIO((res[0]['content'])))
         content = zf.read('1.xml').decode('utf-8')
         doc_tree = etree.XML(content)
-        doc_tree = xslt_transformer(doc_tree)
+        doc_tree = xslt_indexing_transformer(doc_tree)
         doc = doc_tree_to_dict(doc_tree)
         doc = add_sort_fields(doc)
 
@@ -547,7 +544,7 @@ def local_records_indexing(request):
     while res:
         content = zlib.decompress(res[0]['content'], -15).decode('utf-8')
         doc_tree = etree.XML(content)
-        doc_tree = xslt_transformer(doc_tree)
+        doc_tree = xslt_indexing_transformer(doc_tree)
         doc = doc_tree_to_dict(doc_tree)
         doc = add_sort_fields(doc)
 

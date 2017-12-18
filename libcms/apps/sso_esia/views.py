@@ -368,7 +368,6 @@ def redirect_from_idp(request):
     # person_info = user_attrs.get('person_info', {})
     # person_contacts = user_attrs.get('person_contacts', [])
 
-
     sru_response = portal_client.search(
         query='@attrset bib-1 @attr 1=403 "%s"' % (oid.replace('\\', '\\\\').replace('"', '\\"'),),
         database=RUSLAN_USERS_DATABASE,

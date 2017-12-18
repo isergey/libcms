@@ -17,8 +17,14 @@
     }
     </style>
 
-    <form class="form-horizontal" method="POST">{% csrf_token %}
+    <form class="form-horizontal" method="POST" enctype="multipart/form-data">{% csrf_token %}
         <legend>Редактирование варианта ответа</legend>
+        <div class="control-group ">
+                <label class="control-label" for="id_avatar">Обложка</label>
+                <div class="controls">
+                    <img src="{{ MEDIA_URL }}/{{ form.instance.avatar }}" alt="">
+                </div>
+            </div>
         <fieldset>
             {% include 'administration/base_form_fields.html' %}
             <div class="form-actions">

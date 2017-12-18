@@ -2,8 +2,8 @@
 {% block title %}{{ poll.question }}{% endblock %}
 {% block content %}
     <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url polls:frontend:index %}">Голосования</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'polls:frontend:index' %}">Голосования</a> <span class="divider">/</span></li>
         <li class="active">{{ poll.question }}</li>
     </ul>
     <style type="text/css">

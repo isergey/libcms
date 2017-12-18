@@ -1,0 +1,84 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% for item in items_list %}
+
+    {% if item.item.id_in_catalog %}
+        {% url 'ssearch:frontend:detail'  item.item.id_in_catalog  as item_url %}
+    {% else %}
+        {% url 'newinlib:frontend:show' item.item_id as item_url %}
+    {% endif %}
+
+
+    <div class="item-book" style="width:386px">
+        <div class="bookmark-box {% if item.in_favorite %}bookmark-box_yellow{% endif %}"></div>
+        <h3>{{ item.title }}</h3>
+
+        <p>{{ item.content|striptags }}</p>
+
+
+{#        <div class="tag-crumbs tag-crumbs_main-page">#}
+{#            <ul class="tag-crumbs__list">#}
+{#                <li>#}
+{#                    <span href="#" class="tag-crumbs__list_link">#}
+{#                        Пункт#}
+{#                    </span>#}
+{#                </li>#}
+{#                <li>#}
+{#                    <span href="#" class="tag-crumbs__list_link">#}
+{#                        Пункт#}
+{#                    </span>#}
+{#                </li>#}
+{#                <li>#}
+{#                    <span href="#" class="tag-crumbs__list_link">#}
+{#                        Пункт#}
+{#                    </span>#}
+{#                </li>#}
+{#                <li>#}
+{#                    <span href="#" class="tag-crumbs__list_link">#}
+{#                        Пункт#}
+{#                    </span>#}
+{#                </li>#}
+{#            </ul>#}
+{#        </div>#}
+        <div class="item-book__hover-box animated fadeIn">
+{#            <a href="#" class="item-book__hover-box__add-bookmark">Добавить в закладки</a>#}
+        {% if item.attrs.url %}
+            <a href="{{ item.attrs.url.0 }}" class="item-book__hover-box__add-reservation">Читать</a>
+        {% endif %}
+            <a href="{{ item_url }}" class="item-book__hover-box__info">
+                {% if LANGUAGE_CODE == 'ru' %}Информация о книге
+                {% elif LANGUAGE_CODE == 'tt' %}Информация о книге
+                {% else %}Details{% endif %}</a>
+            <hr>
+            <span>Рекомендовать друзьям</span>
+
+            <div class="item-book__hover-box__share-box">
+                <script>
+                    document.write('<a target="_blank" href="http://vk.com/share.php?url='+ window.location.protocol + '//' + window.location.host +'{{ item_url }}" class="item-book__hover-box__share-box__link" title="Вконтакте"><img alt="Вконтакте" src="/static/dist/images/vkontakte.svg"></a>');
+                </script>
+                <script>
+                    document.write('<a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u='+ window.location.protocol + '//' + window.location.host +'{{ item_url }}" class="item-book__hover-box__share-box__link" title="Вконтакте"><img alt="Вконтакте" src="/static/dist/images/facebook.svg"></a>');
+                </script>
+                <script>
+                    document.write('<a target="_blank" href="https://twitter.com/share?url='+ window.location.protocol + '//' + window.location.host +'{{ item_url }}" class="item-book__hover-box__share-box__link" title="Твиттер"><img alt="Вконтакте" src="/static/dist/images/twitter.svg"></a>');
+                </script>
+            </div>
+        </div>
+    </div>
+
+    {#    {% if item.id_in_catalog %}#}
+    {#        {% url 'ssearch:frontend:detail'  item.id_in_catalog  as item_url %}#}
+    {#    {% else %}#}
+    {#        {%  url 'newinlib:frontend:show' item.id as item_url %}#}
+    {#    {% endif %}#}
+    {#    <div class="thumbnail ">#}
+    {#        {% if item.avatar_img_name %}<div class="image"><a href="{{ item_url }}"><img src="{{ MEDIA_URL }}uploads/newinlib/itemavatars/{{ item.avatar_img_name }}" alt="{{ item.item_content.title }}"></a></div>{% endif %}#}
+    {#        <div class="info">#}
+    {#            <h4 style="margin-bottom: 10px;;">{{ item.item_content.title }}</h4>#}
+    {#            {{ item.item_content.content|safe }}#}
+    {#            <p><a href="{{ item_url }}">{% if LANGUAGE_CODE == 'ru' %}подробнее{% elif LANGUAGE_CODE == 'tt' %}подробнее{% else %}details{% endif %}</a></p>#}
+    {#        </div>#}
+    {#        <div style="clear: both;"> </div>#}
+    {#    </div>#}
+{% endfor %}

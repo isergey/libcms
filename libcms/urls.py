@@ -24,7 +24,7 @@ urlpatterns = patterns(
     (r'^professionals/pages/', include('professionals_pages.urls', namespace='professionals_pages')),
     (r'^professionals/news/', include('professionals_news.urls', namespace='professionals_news')),
     (r'^professionals/', include('professionals.urls', namespace='professionals')),
-
+    (r'^polls/', include('polls.urls', namespace='polls')),
     (r'^personal/', include('personal.urls', namespace='personal')),
     (r'^ask_librarian/', include('ask_librarian.urls', namespace='ask_librarian')),
     (r'^ssearch/', include('ssearch.urls', namespace='ssearch')),

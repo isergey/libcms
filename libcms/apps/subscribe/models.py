@@ -54,6 +54,13 @@ CONTENT_FORMAT_CHOICES = (
 )
 
 
+SEX_CHOICES = (
+    ('', 'не важно'),
+    ('m', 'муж'),
+    ('f', 'жен'),
+)
+
+
 class Letter(models.Model):
     subscribe = models.ForeignKey(Subscribe, verbose_name=u'Подписка')
     subject = models.CharField(verbose_name=u'Тема', max_length=255)
@@ -61,6 +68,9 @@ class Letter(models.Model):
     content = models.TextField(verbose_name=u'Содержимое')
     send_complated = models.BooleanField(verbose_name=u'Доставлено всем подписчикам', db_index=True, default=False)
     must_send_at = models.DateTimeField(verbose_name=u'Время отправки', db_index=True)
+    age_from = models.PositiveIntegerField(verbose_name=u'Возраст от (включительно)', null=True)
+    age_to = models.PositiveIntegerField(verbose_name=u'Возраст до (включительно)', null=True)
+    sex = models.BooleanField(verbose_name=u'Пол', choices=SEX_CHOICES, max_length=1, blank=True, default=SEX_CHOICES[0][0])
     create_date = models.DateTimeField(verbose_name=u'Дата создания', db_index=True, auto_now_add=True)
 
     def __unicode__(self):

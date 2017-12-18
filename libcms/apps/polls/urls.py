@@ -2,8 +2,8 @@
 from django.conf.urls import *
 
 urlpatterns = patterns('',
-    (r'^admin/', include('apps.polls.administration.urls', namespace='administration')),
-    (r'^', include('apps.polls.frontend.urls', namespace='frontend')),
+    (r'^admin/', include('polls.administration.urls', namespace='administration')),
+    (r'^', include('polls.frontend.urls', namespace='frontend')),
 
 )
 

@@ -1,4 +1,4 @@
-{% extends 'index/frontend/index.html' %}
+{% extends 'theme_frontend_base.html' %}
 {% load pagination_tag %}
 {% block title %}Голосования{% endblock %}
 {% block breadcrumb %}
@@ -11,7 +11,7 @@
     </div>
 <section>
 {% endblock %}
-{% block index_content %}
+{% block content %}
     {% for poll in polls_page.object_list %}
         <div class="item">
             {% if poll.is_active %}

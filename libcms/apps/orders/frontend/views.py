@@ -11,12 +11,11 @@ from django.shortcuts import HttpResponse, render, get_object_or_404, Http404, r
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
-
+from libcms.libs.common.xslt_transformers import xslt_bib_draw_transformer
 from zgate.models import ZCatalog
 from zgate import zworker
 
 from urt.models import LibReader
-
 from sso_ruslan import models as sso_ruslan_models
 from participants.models import Library
 from thread_worker import ThreadWorker
@@ -38,6 +37,8 @@ RUSLAN = getattr(settings, 'RUSLAN', {})
 RUSLAN_USERNAME = RUSLAN.get('username', '')
 RUSLAN_PASSWORD = RUSLAN.get('password', '')
 
+
+
 def set_cookies_to_response(cookies, response, domain=None):
     for key in cookies:
         response.set_cookie(key, cookies[key], domain=domain)
@@ -46,10 +47,6 @@ def set_cookies_to_response(cookies, response, domain=None):
 
 class MBAOrderException(Exception):
     pass
-
-
-xslt_bib_draw = etree.parse('libcms/xsl/full_document.xsl')
-xslt_bib_draw_transformer = etree.XSLT(xslt_bib_draw)
 
 
 @login_required

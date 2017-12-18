@@ -6,7 +6,7 @@ from django.shortcuts import render, HttpResponse, Http404, redirect, get_object
 from ssearch.models import  Record, Ebook
 from ..models import SavedDocument
 from forms import SavedDocumentForm
-from common.xslt_transformers import xslt_bib_draw_transformer
+from libcms.libs.common.xslt_transformers import xslt_bib_draw_transformer
 
 @login_required
 def index(request):

@@ -6,7 +6,7 @@ from django.utils.translation import get_language
 from ..models import Item, ItemContent
 from ssearch.models import get_records
 from mydocs import models as mydocs_models
-from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
+from libcms.libs.common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
 
 register = template.Library()
 

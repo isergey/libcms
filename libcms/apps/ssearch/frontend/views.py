@@ -14,7 +14,7 @@ from django.shortcuts import render, HttpResponse, get_object_or_404, Http404, u
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import QueryDict
 from django.db.models import Q
-from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
+from libcms.libs.common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
 from sso_tatedu.views import AUTH_SOURCE as TATEDU_AUTH_SOURCE
 from participants.models import Library
 from ..models import Record, SavedRequest, DetailAccessLog, Collection, get_records

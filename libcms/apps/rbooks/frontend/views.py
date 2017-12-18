@@ -15,7 +15,7 @@ from django.views.decorators.cache import never_cache
 from ssearch.models import  Record, Ebook
 from ..models import Bookmarc, in_internal_ip
 from forms import BookmarcForm
-from common.xslt_transformers import xslt_bib_draw_transformer
+from libcms.libs.common.xslt_transformers import xslt_bib_draw_transformer
 
 
 class AccessDenied(Exception): pass

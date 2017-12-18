@@ -22,20 +22,16 @@ from participants.models import Library
 from models import ZCatalog, SavedRequest, SavedDocument
 import zworker
 from common import humanquery
+from libcms.libs.common.xslt_transformers import xslt_bib_draw_transformer, xslt_transformer, short_transform
+
 
 def json_error(error):
-    return json.dumps({'status': 'error',
-                             'error': error},
-        ensure_ascii=False)
+    return json.dumps({
+        'status': 'error',
+        'error': error
+    },
+    ensure_ascii=False)
 
-full_xslt_root = etree.parse('libcms/xsl/full_document.xsl')
-full_transform = etree.XSLT(full_xslt_root)
-
-short_xslt_root = etree.parse('libcms/xsl/short_document.xsl')
-short_transform = etree.XSLT(short_xslt_root)
-
-xslt_root = etree.parse('libcms/xsl/record_in_search.xsl')
-xslt_transformer = etree.XSLT(xslt_root)
 
 def set_cookies_to_response(cookies, response):
     for key in cookies:
@@ -208,7 +204,7 @@ def save_document(request):
 
     try:
         doc = etree.XML(xml_record)
-        result_tree = full_transform(doc)
+        result_tree = xslt_bib_draw_transformer(doc)
         full_document = unicode(result_tree)
 
         result_tree = short_transform(doc)

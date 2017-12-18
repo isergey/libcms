@@ -8,7 +8,7 @@ import datetime
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import Library
 from django.utils.translation import get_language
-from common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
+from libcms.libs.common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
 from ..models import Collection, Record
 from ..frontend.views import get_collections, replace_doc_attrs, xml_doc_to_dict
 from .. import rusmarc_template

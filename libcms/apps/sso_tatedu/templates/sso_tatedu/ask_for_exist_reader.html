@@ -10,17 +10,16 @@
             <div class="span12">
                 <ul class="breadcrumb">
                     <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-                    <li class="active">Вход на портал через ЕСИА</li>
+                    <li class="active">Вход на портал через ЭО РТ</li>
                 </ul>
             </div>
         </div>
         <div class="row">
             <div class="span8">
-
-                <p>Уважаемый пользователь, Вы зашли на портал с помощью ЕСИА в первый раз.</p>
+                <p>Уважаемый пользователь, Вы зашли на портал с помощью ЭО РТ в первый раз.</p>
 
                 <p>Если у Вас уже есть Единый Читательский Билет (ЕЧБ), Вы можете привязвать его к учетной записи
-                    ЕСИА.</p>
+                    ЭО РТ.</p>
 
                 <form method="POST" class="form-horizontal">{% csrf_token %}
                     <fieldset>
@@ -31,23 +30,6 @@
                         </div>
                     </fieldset>
                 </form>
-
-
-                {#                <div>#}
-                {#                    <span>Войти через ЕСИА</span>#}
-                {#                    <a href="{{ access_token_url|safe }}?access_type={{ access_type|urlencode }}&state={{ state|urlencode }}&timestamp={{ timestamp|urlencode }}&response_type=code&redirect_uri=https://{{ request.META.HTTP_HOST }}{{ redirect_url }}&client_id={{ client_id|urlencode }}&scope={{ scope|urlencode }}&client_secret={{ client_secret|urlencode }}"><img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>#}
-                {#                </div>#}
-
-
-                {#                <form method="post">#}
-                {#                    {% csrf_token %}#}
-                {#                    <input name="cs" placeholder="client_secret" value="{{ client_secret }}"/><br/>#}
-                {#                    <input name="state" placeholder="state" value="{{ client_id }}" /><br/>#}
-                {#                    <input name="state" placeholder="state" value="{{ state }}" /><br/>#}
-                {#                    <input name="timestamp" placeholder="timestamp" value="{{ timestamp }}" /><br/>#}
-                {#                    <input name="scope" placeholder="scope" value="{{ scope }}" /><br/>#}
-                {#                    <input type="submit" />#}
-                {#                </form>#}
             </div>
         </div>
     </div>

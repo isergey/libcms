@@ -5,16 +5,14 @@ import datetime
 
 
 class PollForm(forms.ModelForm):
-    start_poll_date = forms.DateTimeField \
-        (('%d.%m.%Y %H:%M:%S',), label=u"Дата начала голосования",
-         widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M:%S'),
-         initial=datetime.datetime.now()
-         )
-    end_poll_date = forms.DateTimeField(
-        ('%d.%m.%Y %H:%M:%S',), label=u"Дата окончания голосования",
-        widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M:%S'),
-        initial=datetime.datetime.now()
-    )
+    start_poll_date = forms.DateTimeField(('%d.%m.%Y %H:%M:%S',), label=u"Дата начала голосования",
+                                          widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M:%S'),
+                                          initial=datetime.datetime.now()
+                                          )
+    end_poll_date = forms.DateTimeField(('%d.%m.%Y %H:%M:%S',), label=u"Дата окончания голосования",
+                                        widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M:%S'),
+                                        initial=datetime.datetime.now()
+                                        )
 
     class Meta:
         model = Poll
@@ -40,9 +38,13 @@ class ChoiceForm(forms.ModelForm):
 
 
 class ChoiceForm(forms.ModelForm):
+    #    choice = forms.CharField(label=u"Вариант ответа",
+    #                              max_length=255, required=True)
+    #    votes = forms.IntegerField(label=u"Количество голосов", initial=0)
+    #    sort = forms.IntegerField(label=u"Сортировка", initial=0)
     class Meta:
         model = Choice
-        exclude = ('poll',)
+        exclude = ('poll', )
 
     def clean_votes(self):
         votes = self.cleaned_data['votes']

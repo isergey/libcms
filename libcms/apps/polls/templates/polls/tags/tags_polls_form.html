@@ -1,7 +1,7 @@
 <div id="form_results" class="content">
     {% if poll %}
         <div style="padding:5px 0 5px 0;"><b>{{ poll.question }}</b></div>
-        <form id='vote_form' action="{% url polls:frontend:vote poll.id %}" method="POST">
+        <form id='vote_form' action="{% url 'polls:frontend:vote' poll.id %}" method="POST">
             {% csrf_token %}
             {#                    <ul style="list-style:none; padding:0;">#}
             <table>
@@ -35,9 +35,9 @@
     {% else %}
         Нет активных опросов.
     {% endif %}
-    <div style="text-align:center;padding:5px 0 5px 0;"><a href="{% url polls:frontend:index %}">Архив опросов</a></div>
+    <div style="text-align:center;padding:5px 0 5px 0;"><a href="{% url 'polls:frontend:index' %}">Архив опросов</a></div>
 </div>
-<script type="text/javascript" src="http://ksob.spb.ru/media/js/jquery.form.js"></script>
+<script type="text/javascript" src="http://yandex.st/jquery/form/3.14/jquery.form.min.js"></script>
 <script type="text/javascript">
     $(function () {
         $('#vote_form').bind('submit', function (e) {

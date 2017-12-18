@@ -5,16 +5,16 @@
 
     <ul class="breadcrumb">
 
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
         <li class="active">Голосования</li>
 
     </ul>
     {% for poll in polls_page.object_list %}
         <div class="item">
             {% if poll.is_active %}
-                {% url polls:frontend:vote poll.id as detail_url %}
+                {% url 'polls:frontend:vote' poll.id as detail_url %}
             {% else %}
-                {% url polls:frontend:results  poll.id as detail_url %}
+                {% url 'polls:frontend:results'  poll.id as detail_url %}
             {% endif %}
             <div class="title">
                 <h4><span class="date">{{ poll.start_poll_date|date:"d M Y"}}.</span><a href="{{ detail_url }}">{{ poll.question }}</a>

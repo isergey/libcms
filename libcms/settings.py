@@ -153,6 +153,7 @@ INSTALLED_APPS = (
     'forum',
     # 'urt',
     'orders',
+    'polls',
     'ruslan_cabinet',
     'external_orders',
     'zgate',
@@ -165,6 +166,7 @@ INSTALLED_APPS = (
     'sso_ruslan',
     'sso_esia',
     'sso_tatedu',
+    'subscribe',
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

@@ -16,7 +16,7 @@
         width: 99%;
     }
     </style>
-    <form class="form-horizontal" method="POST">{% csrf_token %}
+    <form class="form-horizontal" method="POST" enctype="multipart/form-data">{% csrf_token %}
         <legend>Создание варианта ответа</legend>
         <fieldset>
             {% include 'administration/base_form_fields.html' %}

@@ -1,0 +1,35 @@
+{% extends 'theme_frontend_base.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <div class="span12">
+    <style>
+        .content img.cover {
+            border: 5px solid #E0DCD0;
+            float: left;
+            margin-right: 15px;
+            margin-bottom: 15px;
+            width: 240px;
+        }
+    </style>
+    <div class="breadcrumb">
+
+        <a href="{% url 'index:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Начало{% else %}Home{% endif %}</a> <span class="divider">/</span>
+        {% if request.GET.back %}
+            <a href="{{ request.GET.back }}">{% if LANGUAGE_CODE == 'ru' %}Новые поступления{% else %}From new arrivals{% endif %}</a> <span class="divider">/</span>
+        {% else %}
+            <a href="{% url 'newinlib:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Новые поступления{% else %}From new arrivals{% endif %}</a> <span class="divider">/</span>
+        {% endif %}
+        {% if LANGUAGE_CODE == 'ru' %}Просмотр{% else %}View{% endif %}
+    </div>
+
+    <div class="content">
+        {% if item.avatar_img_name %}
+            <img class="cover" src="{{ MEDIA_URL }}uploads/newinlib/itemavatars/big/{{ item.avatar_img_name }}" alt="">
+        {% endif %}
+        <h2 id="item_title"><span class="active">{{ content.title }}</span></h2>
+        {{ content.content|safe }}
+    </div>
+    </div>
+{% endblock %}
