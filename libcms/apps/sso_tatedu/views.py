@@ -245,7 +245,7 @@ def _error_response(request, error, state, error_description, exception=None):
     else:
         logger.error(u'%s: %s' % (error, error_description))
 
-    return render(request, 'esia_sso/error.html', {
+    return render(request, 'sso_tatedu/error.html', {
         'error': error,
         'state': state,
         'error_description': error_description
