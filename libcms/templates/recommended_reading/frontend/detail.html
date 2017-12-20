@@ -1,0 +1,64 @@
+{% extends 'theme_frontend_base.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block title %}{% if LANGUAGE_CODE == 'ru' %}Детальная информация{% elif LANGUAGE_CODE == 'tt' %}Детальная информация
+{% else %}Detail information{% endif %}{% endblock %}
+{% block content %}
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li><a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
+                </a></li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a class="bread__crumbs_link" href="{% url 'recommended_reading:frontend:index' item.section %}">
+                        {{ item.get_section_display }}
+                    </a>
+                </li>
+                <li>
+                    <a title="{{ item.title }}" class="bread__crumbs_link bread__crumbs_link_active">
+                        {{ item.title }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <hr class="footer-hr">
+        <div class="container content-page">
+            <div class="row">
+                <div class="col-2">
+                    <img style="max-width: 200px" src="{{ MEDIA_URL }}{{ item.cover }}" />
+                </div>
+                <div class="col-10">
+                    <h1 class="content-page__title">{{ item.title }}</h1>
+                    {% if attachments %}
+                        <div class="result__download-list">
+                        Электронные версии:
+                            {% for attachment in attachments %}
+                                <a href="{{ MEDIA_URL }}{{ attachment.file }}">{{ attachment.get_type_display }}</a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div>
+                        {% include 'recommended_reading/frontend/item_attrs.html' with item=item %}
+                    </div>
+                    <div class="content-page__text">
+                        {{ item.annotation|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+{% endblock %}

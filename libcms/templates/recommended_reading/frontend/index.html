@@ -1,0 +1,70 @@
+{% extends 'theme_frontend_base.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% load pagination_tag %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            <ul class="bread__crumbs">
+                <li>
+                    <a class="bread__crumbs_link" href="{% url 'index:frontend:index' %}">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Главная
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Төп бит
+                        {% else %}
+                            Home
+                        {% endif %}
+                        </a>
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                </li>
+                <li>
+                    <a class="bread__crumbs_link bread__crumbs_link_active">
+                       {{ current_section.1 }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <hr class="footer-hr">
+        <div class="container">
+        {% admin_pagination items_page %}
+        <div class="result-container">
+
+            {% for item in items_page.object_list %}
+                <div class="result">
+                    <div class="result__info">
+                        <h3>
+                            <a href="{% url 'recommended_reading:frontend:detail' item.id %}">{{ item.title }}</a>
+                        </h3>
+
+
+
+                        <div class="result__detail">
+                            <div class="result__detail_box">
+                                {% if item.cover %}
+                                    <a href="{{ item_url }}"><img class="result__detail_img"
+                                         src="{{ MEDIA_URL }}{{ item.cover }}"/>
+                                    </a>
+                                {% endif %}
+                            </div>
+                            <div class="result__detail_box">
+                                {% include 'recommended_reading/frontend/item_attrs.html' with item=item %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% admin_pagination items_page %}
+        </div>
+    </main>
+{% endblock %}

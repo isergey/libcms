@@ -42,6 +42,7 @@ urlpatterns = patterns(
     (r'^esia_sso/', include('sso_esia.urls', namespace='sso_esia')),
     (r'^tatedu_sso/', include('sso_tatedu.urls', namespace='sso_tatedu')),
     (r'^participants/news/', include('participant_news.all_frontend.urls', namespace='participant_all_news')),
+    (r'^rr/', include('recommended_reading.urls', namespace='recommended_reading')),
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/news/', include('participant_news.urls', namespace='participant_news')),
     (r'^site/(?P<library_code>[_\-0-9A-Za-z]+)/pages/',
      include('participant_pages.urls', namespace='participant_pages')),

@@ -1,0 +1,94 @@
+{% extends 'recommended_reading/administration/index.html' %}
+{% load breadcrumbs %}
+{% block breadcrumb %}
+    {% breadcrumb "Рекомендуемая литература" recommended_reading:administration:items %}
+    {% breadcrumb item.title %}
+{% endblock %}
+
+{% block action_content %}
+    <div class="row">
+        <div class="span12">
+            <div class="well well-small">
+                <a class="btn btn-default" href="{% url 'recommended_reading:administration:change_item' item.id %}">
+                    Редактировать
+                </a>
+                <a class="btn btn-danger delete"
+                   href="{% url 'recommended_reading:administration:delete_item' item.id %}">
+                    Удалить
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span3">
+            <div class="well well-small">
+                <img src="{{ MEDIA_URL }}{{ item.cover }}"/>
+            </div>
+        </div>
+        <div class="span7">
+            <table class="table">
+                <tr>
+                    <th style="width: 150px">Раздел</th>
+                    <td>{{ item.get_section_display }}</td>
+                </tr>
+                <tr>
+                    <th>Заглавие</th>
+                    <td>{{ item.title }}</td>
+                </tr>
+                <tr>
+                    <th>Автор</th>
+                    <td>{{ item.author }}</td>
+                </tr>
+                <tr>
+                    <th>Год публикации</th>
+                    <td>{{ item.date_of_publication }}</td>
+                </tr>
+                <tr>
+                    <th>Аннотация</th>
+                    <td>{{ item.annotation|safe }}</td>
+                </tr>
+                {% if item.record_id %}
+                    <tr>
+                        <th>Запись в каталоге</th>
+                        <td><a href="{% url 'ssearch:frontend:detail' item.record_id %}">{{ item.record_id }}</a> </td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span12">
+            <div class="well well-small">
+                <a class="btn btn-success" href="{% url 'recommended_reading:administration:upload_attachment' item.id %}">
+                    + Добавить электронную версию
+                </a>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>Адрес</th>
+                    <th class="span2">Формат</th>
+                    <th class="span2">Действие</th>
+                </tr>
+                {% for attachment in attachments %}
+                    <tr>
+                        <th>
+                            <a href="{{ MEDIA_URL }}{{ attachment.file }}">{{ attachment.title|default:attachment.file  }}</a>
+                        </th>
+                        <th>{{ attachment.type }}</th>
+                        <th>
+                            <a class="btn btn-danger delete"
+                               href="{% url 'recommended_reading:administration:delete_attachment' item.id attachment.id %}">
+                                Удалить
+                            </a>
+                        </th>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $("a.delete").click(function () {
+            if (!confirm('Вы уверены, что хотите удалить?')) return false;
+        });
+    </script>
+{% endblock %}

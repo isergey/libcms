@@ -1,0 +1,31 @@
+{% extends 'recommended_reading/administration/index.html' %}
+{% load breadcrumbs %}
+{% block breadcrumb %}
+    {% breadcrumb "Рекомендуемая литература" recommended_reading:administration:items %}
+    <li>
+        <a href="{% url 'recommended_reading:administration:detail' item.id %}">{{ item.title }}</a>
+        <span class="divider">/</span>
+    </li>
+    {% breadcrumb 'Загрузка электронной версии' %}
+
+{% endblock %}
+
+{% block action_content %}
+    <style>
+    form input[type=text], textarea{
+        width: 99%;
+    }
+    </style>
+    <form class="form-horizontal" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=attachment_form %}
+{#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <button type="reset" class="btn">Отмена</button>
+            </div>
+        </fieldset>
+    </form>
+    {% include 'recommended_reading/administration/editor.html' %}
+
+{% endblock %}

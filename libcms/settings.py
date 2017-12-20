@@ -167,6 +167,7 @@ INSTALLED_APPS = (
     'sso_esia',
     'sso_tatedu',
     'subscribe',
+    'recommended_reading',
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

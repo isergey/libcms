@@ -3,6 +3,15 @@
         font-weight: bold;
     }
 </style>
+{% if form.errors %}
+    <div class="alert alert-danger">
+    {% for attr, value in form.errors.items %}
+        <div>
+            {{ value }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
 {% for hidden in form.hidden_fields %}
     {{ hidden }}
 {% endfor %}
