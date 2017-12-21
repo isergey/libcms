@@ -101,7 +101,9 @@
                                     </p>
                                 </div>
                                 <div class="result__img">
-                                    <img src="{{ MEDIA_URL }}{{ item.cover }}"/>
+                                    {% if item.cover %}
+                                        <img src="{{ MEDIA_URL }}{{ item.cover }}"/>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
