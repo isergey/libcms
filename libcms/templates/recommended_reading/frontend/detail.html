@@ -5,6 +5,11 @@
 {% block title %}{% if LANGUAGE_CODE == 'ru' %}Детальная информация{% elif LANGUAGE_CODE == 'tt' %}Детальная информация
 {% else %}Detail information{% endif %}{% endblock %}
 {% block content %}
+    <nav class="bg bg_second">
+        <div class="container">
+            {% include 'main_menu.html' %}
+        </div>
+    </nav>
     <main>
         <div class="container">
             <ul class="bread__crumbs">
@@ -21,9 +26,19 @@
                     <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
                 </li>
                 <li>
-                    <a class="bread__crumbs_link" href="{% url 'recommended_reading:frontend:index' item.section %}">
-                        {{ item.get_section_display }}
-                    </a>
+                    {% if request.GET.back %}
+                        <a class="bread__crumbs_link" href="{{ request.GET.back|safe }}">
+                            {{ item.get_section_display }}
+                        </a>
+                    {% else %}
+                        <a class="bread__crumbs_link"
+                           href="{% url 'recommended_reading:frontend:index' item.section %}">
+                            {{ item.get_section_display }}
+                        </a>
+                    {% endif %}
+                </li>
+                <li>
+                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
                 </li>
                 <li>
                     <a title="{{ item.title }}" class="bread__crumbs_link bread__crumbs_link_active">
@@ -35,27 +50,65 @@
         <hr class="footer-hr">
         <div class="container content-page">
             <div class="row">
-                <div class="col-2">
-                    <img style="max-width: 200px" src="{{ MEDIA_URL }}{{ item.cover }}" />
-                </div>
-                <div class="col-10">
-                    <h1 class="content-page__title">{{ item.title }}</h1>
-                    {% if attachments %}
-                        <div class="result__download-list">
-                        Электронные версии:
-                            {% for attachment in attachments %}
-                                <a href="{{ MEDIA_URL }}{{ attachment.file }}">{{ attachment.get_type_display }}</a>
-                            {% endfor %}
+                <div class="col-12">
+{#                    <h1 class="content-page__title">{{ item.title }}</h1>#}
+                    <div class="school">
+
+                        <div class="result-container" style="border-top: none">
+
+                            <div class="result" >
+                                <!--<div class="result__index">-->
+                                <!--1-->
+                                <!--</div>-->
+                                <div class="result__info result__info_pl-0">
+                                <h3>{{ item.title }}</h3>
+                                    <div class="result__detail">
+
+                                        <div class="result__detail_box">
+                                            {% for key, val in item.get_attrs.items %}
+                                                {% if val.value %}
+                                                    <div class="result__detail_row">
+                                                        <div class="result__detail_box">
+                                                            <div class="result__detail_title">{{ val.title }}:</div>
+                                                        </div>
+                                                        <div class="result__detail_box">
+                                                            <div class="result__detail_description">
+                                                                {{ val.value }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if item.annotation %}
+                                                <div class="result__detail_row">
+                                                    <div class="result__detail_box">
+                                                        <div class="result__detail_title">Описание:</div>
+                                                    </div>
+                                                    <div class="result__detail_box">
+                                                        <div class="result__detail_description">
+                                                            {{ item.annotation|safe }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <p class="result__download-list">
+                                        Электронные версии:
+                                        {% for attachment in attachments %}
+                                            <a href="{{ MEDIA_URL }}{{ attachment.file }}">{{ attachment.get_type_display }}</a>
+                                        {% endfor %}
+                                    </p>
+                                </div>
+                                <div class="result__img">
+                                    <img src="{{ MEDIA_URL }}{{ item.cover }}"/>
+                                </div>
+                            </div>
                         </div>
-                    {% endif %}
-                    <div>
-                        {% include 'recommended_reading/frontend/item_attrs.html' with item=item %}
-                    </div>
-                    <div class="content-page__text">
-                        {{ item.annotation|safe }}
                     </div>
                 </div>
             </div>
+
         </div>
     </main>
 

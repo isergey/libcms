@@ -1,21 +1,7 @@
-{% if item.author %}
-<div>
-    Автор: {{ item.author }}
-</div>
-{% endif %}
-
-{% if item.publisher %}
-<div>
-    Издатель: {{ item.publisher }}
-</div>
-{% endif %}
-
-{% if item.date_of_publication %}
-<div>
-    Год публикации: {{ item.date_of_publication }}
-</div>
-{% endif %}
-
-{% if item.school_class %}
-    Рекомендовано для класса: {{ item.get_school_class_display }}
-{% endif %}
+{% for key, val in item.get_attrs.items %}
+    {% if val.value %}
+        <div>
+        {{ val.title }}: {{ val.value }}
+        </div>
+    {% endif %}
+{% endfor %}

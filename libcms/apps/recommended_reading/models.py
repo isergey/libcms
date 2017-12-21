@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+from collections import OrderedDict
 from PIL import Image
 from datetime import datetime
 from django.conf import settings
@@ -48,6 +49,14 @@ class Item(models.Model):
         max_length=2048,
     )
 
+    school_class = models.IntegerField(
+        verbose_name=u'Класс',
+        null=True,
+        blank=True,
+        choices=ITEM_SCHOOL_CLASSES,
+        help_text=u'Если издание рекомендуется школьникам - указать класс'
+    )
+
     author = models.CharField(
         verbose_name=u'Автор',
         max_length=2048,
@@ -71,14 +80,6 @@ class Item(models.Model):
         verbose_name=u'Аннотация',
         max_length=10 * 1024,
         blank=True
-    )
-
-    school_class = models.IntegerField(
-        verbose_name=u'Класс',
-        null=True,
-        blank=True,
-        choices=ITEM_SCHOOL_CLASSES,
-        help_text=u'Если издание рекомендуется школьникам - указать класс'
     )
 
     record_id = models.CharField(
@@ -117,6 +118,31 @@ class Item(models.Model):
 
         self.record_id = self.record_id.strip()
 
+    def get_attrs(self):
+
+        attrs = OrderedDict()
+
+        attrs['school_class'] = {
+            'title': u'Класс',
+            'value': self.school_class
+        }
+
+        attrs['author'] = {
+            'title': u'Автор',
+            'value': self.author
+        }
+
+        attrs['date_of_publication'] = {
+            'title': u'Год публикации',
+            'value': self.date_of_publication
+        }
+
+        attrs['publisher'] = {
+            'title': u'Издатель',
+            'value': self.publisher
+        }
+
+        return attrs
 
 ITEM_ATTACHMENT_TYPE_CHOICES = (
     ('pdf', 'pdf'),
