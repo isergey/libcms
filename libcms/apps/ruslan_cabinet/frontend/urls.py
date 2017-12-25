@@ -8,5 +8,6 @@ urlpatterns = (
     url(r'^current/$', views.current_orders, name="current_orders"),
     url(r'^holding_info/$', views.holding_info, name="holding_info"),
     url(r'^make_order/$', views.make_order, name="make_order"),
+    url(r'^load_users/$', views.load_users, name="load_users"),
     # url(r'^make_order/$', views.make_order, name="make_order"),
 )

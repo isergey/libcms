@@ -11,6 +11,7 @@ from ruslan import client, connection_pool, humanize, holdings, grs
 from sso_ruslan.models import get_ruslan_user
 from transformers_pool.transformers import transformers
 from participants.models import Library, find_holders
+
 RUSLAN = getattr(settings, 'RUSLAN', {})
 API_ADDRESS = RUSLAN.get('api_address', 'http://localhost/')
 API_USERNAME = RUSLAN.get('username')
@@ -34,7 +35,6 @@ PLACES = {
 }
 
 PLACES_WITHOUT_FINE = ['0', '1']
-
 
 # ruslan_client = connection_pool.get_client(API_ADDRESS, API_USERNAME, API_PASSWORD)
 
@@ -69,7 +69,7 @@ def on_hand(request):
 
     try:
         response = make_request(start_record=1, maximum_records=per_request)
-        #print json.dumps(response, ensure_ascii=False)
+        # print json.dumps(response, ensure_ascii=False)
     except Exception as e:
         errors.append(u'Сервер заказов недоступен. Пожалуйста, попробуйте позже.')
         logger.exception(e)
@@ -148,12 +148,14 @@ def on_hand(request):
         'errors': errors
     })
 
+
 REMOTE_STATES = {
     '0': u'принят',
     '1': u'отправлен',
     '2': u'получен',
     '3': u'отменен',
 }
+
 
 @login_required
 def remote_return(request):
@@ -183,7 +185,7 @@ def remote_return(request):
 
     try:
         response = make_request(start_record=1, maximum_records=per_request)
-        #print json.dumps(response, ensure_ascii=False)
+        # print json.dumps(response, ensure_ascii=False)
     except Exception as e:
         errors.append(u'Сервер заказов недоступен. Пожалуйста, попробуйте позже.')
         logger.exception(e)
@@ -210,7 +212,7 @@ def remote_return(request):
                 # print json.dumps(opac_record, ensure_ascii=False)
                 grs_record = grs.Record.from_dict(opac_record)
                 order_id = grs_record.get_field_value('1', '')
-                receipt_date =  grs_record.get_field_value('142', '')
+                receipt_date = grs_record.get_field_value('142', '')
                 bib_card = grs_record.get_field_value('144', '')
                 record_id = grs_record.get_field_value('145', '')
                 owner_id = grs_record.get_field_value('146', '')
@@ -265,6 +267,7 @@ def _get_orders(ruslan_client, ruslan_user, database):
             start_record=start_record,
             accept='application/opac+json'
         )
+
     responses = []
 
     per_request = 20
@@ -278,7 +281,7 @@ def _get_orders(ruslan_client, ruslan_user, database):
             json_diagnostics = json.dumps(diagnostics)
         except json.JSONEncoder:
             pass
-        logger.error(u'Ошибка при получении списка заказов: %s' % (json_diagnostics, ))
+        logger.error(u'Ошибка при получении списка заказов: %s' % (json_diagnostics,))
         errors.append(u'Ошибка при получении списка заказов.')
 
     responses.append(response)
@@ -426,3 +429,47 @@ def _get_subfield(*args):
                     if subfield.get('id', '') == args[2]:
                         data = subfield.get('d', '')
     return data
+
+
+def load_users(request):
+    print API_ADDRESS, API_USERNAME, API_PASSWORD,
+    ruslan_client = client.HttpClient(API_ADDRESS, API_USERNAME, API_PASSWORD, auto_close=False)
+
+    maximum_records = 20
+    res = ruslan_client.search(
+        database='lusr_rt',
+        query='@attrset bib-1 @attr 1=100 @attr 2=4 0',
+        maximum_records=maximum_records,
+        start_record=1,
+        accept='application/json',
+        result_set_ttl=60
+    )
+
+    nr = res.get('numberOfRecords', 0)
+    np = res.get('nextRecordPosition', 0)
+    result_set = res.get('resultSetId', '')
+    records = humanize.get_records(res)
+
+    while nr > np:
+        for record in records:
+            print record
+            grs_record = grs.Record.from_dict(record)
+            print grs_record.get_field('100')
+            print grs_record.get_field('424')
+
+        res = ruslan_client.search(
+            database='lusr_rt',
+            query='@attrset bib-1 @attr 1=100 @attr 2=4 0',
+            maximum_records=maximum_records,
+            start_record=np,
+            accept='application/json',
+            result_set_ttl=60,
+            result_set=result_set
+        )
+        nr = res.get('numberOfRecords', 0)
+        np = res.get('nextRecordPosition', 0)
+        result_set = res.get('resultSetId', '')
+        records = humanize.get_records(res)
+        print np
+    ruslan_client.close_session()
+    return HttpResponse('123')

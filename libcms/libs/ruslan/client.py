@@ -76,7 +76,7 @@ class HttpClient(object):
         self._session = None
         self._verify_requests = verify_requests
 
-    def search(self, database, query, start_record='', maximum_records='', query_type='pqf', accept='application/json'):
+    def search(self, database, query, start_record='', maximum_records='', query_type='pqf', accept='application/json', result_set=None, result_set_ttl=None):
         params = {
             'query': query,
             'queryType': query_type,
@@ -87,6 +87,11 @@ class HttpClient(object):
 
         if maximum_records:
             params['maximumRecords'] = maximum_records
+
+        if result_set:
+            params['resultSetId'] = result_set
+        elif result_set_ttl is not None:
+            params['resultSetTTL'] = result_set_ttl
 
         response = self._make_request(
             method='get',
