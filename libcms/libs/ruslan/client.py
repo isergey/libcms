@@ -1,5 +1,6 @@
 import requests
 import json
+import humanize
 
 
 class RuslanError(Exception): pass
@@ -76,12 +77,16 @@ class HttpClient(object):
         self._session = None
         self._verify_requests = verify_requests
 
-    def search(self, database, query, start_record='', maximum_records='', query_type='pqf', accept='application/json', result_set=None, result_set_ttl=None):
-        params = {
-            'query': query,
-            'queryType': query_type,
-        }
+    def search(self, database, query='', start_record=None, maximum_records=None, query_type='pqf',
+               accept='application/json', result_set=None, result_set_ttl=None):
+        params = {}
 
+        if not result_set:
+            params['query'] = query,
+            params['queryType'] = query_type,
+        else:
+            params['query'] = u'cql.resultSetId=%s' % (result_set,),
+            params['queryType'] = 'cql',
         if start_record:
             params['startRecord'] = start_record
 
@@ -109,6 +114,46 @@ class HttpClient(object):
                 raise UnauthorizedError()
             raise e
         return response.json()
+
+    def extract_records(self, database, query, start_record=1, maximum_records=200, query_type='pqf',
+                        accept='application/json', result_set_ttl=60, limit=None):
+
+        if limit and maximum_records > limit:
+            maximum_records = limit
+
+        res = self.search(
+            database=database,
+            query=query,
+            query_type=query_type,
+            maximum_records=maximum_records,
+            start_record=start_record,
+            accept=accept,
+            result_set_ttl=result_set_ttl
+        )
+
+        nr = res.get('numberOfRecords', 0)
+        np = res.get('nextRecordPosition', 0)
+        result_set = res.get('resultSetId', '')
+        records = humanize.get_records(res)
+        for record in records:
+            yield record
+            if limit and np >= limit:
+                return
+
+        while nr > np:
+            res = self.search(
+                database=database,
+                maximum_records=maximum_records,
+                start_record=np,
+                accept=accept,
+                result_set=result_set
+            )
+            np = res.get('nextRecordPosition', 0)
+            records = humanize.get_records(res)
+            for record in records:
+                yield record
+                if limit and np >= limit:
+                    return
 
     def get_user(self, username, database='allusers'):
         return self.search(database, query='@attrset bib-1 @attr 1=100 "%s"' % '\\\\'.join(username.split('\\')))

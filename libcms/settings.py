@@ -146,6 +146,7 @@ INSTALLED_APPS = (
     'professionals_news',
     'professionals',
     'personal',
+    'ruslan_users',
     'ask_librarian',
     'ssearch',
     'statistics',

@@ -431,45 +431,4 @@ def _get_subfield(*args):
     return data
 
 
-def load_users(request):
-    print API_ADDRESS, API_USERNAME, API_PASSWORD,
-    ruslan_client = client.HttpClient(API_ADDRESS, API_USERNAME, API_PASSWORD, auto_close=False)
 
-    maximum_records = 20
-    res = ruslan_client.search(
-        database='lusr_rt',
-        query='@attrset bib-1 @attr 1=100 @attr 2=4 0',
-        maximum_records=maximum_records,
-        start_record=1,
-        accept='application/json',
-        result_set_ttl=60
-    )
-
-    nr = res.get('numberOfRecords', 0)
-    np = res.get('nextRecordPosition', 0)
-    result_set = res.get('resultSetId', '')
-    records = humanize.get_records(res)
-
-    while nr > np:
-        for record in records:
-            print record
-            grs_record = grs.Record.from_dict(record)
-            print grs_record.get_field('100')
-            print grs_record.get_field('424')
-
-        res = ruslan_client.search(
-            database='lusr_rt',
-            query='@attrset bib-1 @attr 1=100 @attr 2=4 0',
-            maximum_records=maximum_records,
-            start_record=np,
-            accept='application/json',
-            result_set_ttl=60,
-            result_set=result_set
-        )
-        nr = res.get('numberOfRecords', 0)
-        np = res.get('nextRecordPosition', 0)
-        result_set = res.get('resultSetId', '')
-        records = humanize.get_records(res)
-        print np
-    ruslan_client.close_session()
-    return HttpResponse('123')
