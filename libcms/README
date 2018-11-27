@@ -1,1 +1,2 @@
-libcms
+ssh -R 15432:localhost:5432 -N superuser@kitap.tatar.ru
+ssh -R 13306:localhost:3306 -N superuser@kitap.tatar.ru

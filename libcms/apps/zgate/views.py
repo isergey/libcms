@@ -230,7 +230,7 @@ def save_document(request):
 
 import uuid
 from models import SearchRequestLog
-morph = pymorphy.get_morph(settings.PROJECT_PATH + 'data/pymorphy/ru/cdb', 'cdb')
+# morph = pymorphy.get_morph(settings.PROJECT_PATH + 'data/pymorphy/ru/cdb', 'cdb')
 def log_search_request(request, catalog):
 
     def clean_term(term):
@@ -240,17 +240,17 @@ def log_search_request(request, catalog):
         terms = term.strip().lower().split()
         nn_term = u' '.join(terms)
 
-        n_terms = []
-        #нормализация
-        for t in terms:
-            n_term = morph.normalize(t.upper())
-            if isinstance(n_term, set):
-                n_terms.append(n_term.pop().lower())
-            elif isinstance(n_term, unicode):
-                n_terms.append(n_term.lower())
+        # n_terms = []
+        # #нормализация
+        # for t in terms:
+        #     n_term = morph.normalize(t.upper())
+        #     if isinstance(n_term, set):
+        #         n_terms.append(n_term.pop().lower())
+        #     elif isinstance(n_term, unicode):
+        #         n_terms.append(n_term.lower())
 
-        n_term = u' '.join(n_terms)
-        return (nn_term, n_term)
+        n_term = u' '.join(nn_term)
+        return (nn_term, terms)
 
 
     search_request_id =  uuid.uuid4().hex

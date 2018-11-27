@@ -3,7 +3,7 @@
 import os
 import sys
 
-PROJECT_PATH = os.path.abspath(os.path.dirname(__file__)) + '/'
+PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
 sys.path.insert(0, os.path.join(PROJECT_PATH, "apps"))
 sys.path.insert(0, os.path.join(PROJECT_PATH, "vendors"))
