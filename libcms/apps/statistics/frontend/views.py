@@ -49,9 +49,11 @@ def index(request, managed_libraries=[]):
     if not request.user.has_perm('statistics.view_org_statistic') and \
             not request.user.has_perm('statistics.view_all_statistic') and not managed_libraries:
         return HttpResponse(u'Доступ запрещен', status=403)
+    category = request.GET.get('category', 'All')
     response, error = _make_request('get', url=REPORT_SERVER + 'reports', params={
         'token': TOKEN,
-        'format': 'json'
+        'format': 'json',
+        'category': category,
     })
     response_dict = {}
     if not error:
@@ -61,7 +63,9 @@ def index(request, managed_libraries=[]):
             error = _check_for_error(response_dict)
         except ValueError:
             error = u'Неожиданный ответ от сервера статистики'
-
+    print('category', category)
+    print('response_dict', response_dict)
+    print('error', error)
     return render(request, 'statistics/frontend/index.html', {
         'response_dict': response_dict,
         'error': error,
@@ -73,6 +77,7 @@ def index(request, managed_libraries=[]):
 @must_be_org_user
 def report(request, managed_libraries=[]):
     view = request.GET.get('view', 'modern2')
+    category = request.GET.get('category', '')
     security = u'Организация=Total,00000000'
     access = False
     if request.user.has_perm('statistics.view_all_statistic'):
@@ -99,7 +104,8 @@ def report(request, managed_libraries=[]):
             'view': view,
             'code': report_form.cleaned_data['code'],
             'security': security,
-            'parameters': parameters
+            'parameters': parameters,
+            'category': category
         }
 
         response, error = _make_request('get', url=REPORT_SERVER + 'report', params=params)

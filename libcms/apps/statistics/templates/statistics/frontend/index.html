@@ -7,6 +7,7 @@
     <script src="{{ STATIC_URL }}statistics/report.js"></script>
 {% endblock %}
 {% block content %}
+    <link rel="stylesheet" href="https://kitap.tatar.ru/reports/css/bootstrap.min.css" type="text/css" />
     <div class="span12">
         {% block breadcrumb %}
             <ul class="breadcrumb">
@@ -47,9 +48,15 @@
                     Вам доступна статистика всех организаций
                 {% endif %}
             </p>
+            <ul class="nav nav-tabs">
+                {% for category in response_dict.categories %}
+                <li {% if category.isSelected %}class="active"{% endif %}><a href="?category={{ category.code|urlencode }}">{{ category.name }}</a></li>
+            {% endfor %}
+            </ul>
             <ul>
                 {% for report in response_dict.reports %}
-                    <li><a href="{% url 'statistics:frontend:report' %}?code={{ report.Code }}">{{ report.Name }}</a>
+                    <li>
+                        <a href="{% url 'statistics:frontend:report' %}?code={{ report.code }}&category={{ request.GET.category|urlencode }}">{{ report.name }}</a>
                     </li>
                 {% endfor %}
             </ul>
