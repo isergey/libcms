@@ -69,7 +69,8 @@ def index(request, managed_libraries=[]):
     return render(request, 'statistics/frontend/index.html', {
         'response_dict': response_dict,
         'error': error,
-        'managed_libraries': managed_libraries
+        'managed_libraries': managed_libraries,
+        'category': category,
     })
 
 
