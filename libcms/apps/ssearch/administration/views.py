@@ -1,37 +1,37 @@
 # coding: utf-8
-import os
-import io
-import httplib2
-import hashlib
-import zipfile
-import sys
-import json
-import MySQLdb
-import zlib
-import re
 import datetime
-import binascii
 import hashlib
+import io
+import json
+import os
+import re
+import sys
+import zlib
+
+import MySQLdb
+import httplib2
 import sunburnt
-from lxml import etree
 from django.conf import settings
-from django.core.files.storage import default_storage
-from forms import UploadForm
-from ssearch.models import Upload, Record, IndexStatus
 from django.contrib.auth.decorators import login_required
-from guardian.decorators import permission_required_or_403
-from django.shortcuts import render, redirect, HttpResponse, Http404
-from pymarc2 import reader, record, field, marcxml
+from django.core.files.storage import default_storage
 from django.db import transaction  # , connection, connections
+from django.shortcuts import render, redirect, HttpResponse, Http404
+from guardian.decorators import permission_required_or_403
+from lxml import etree
+from participants.models import Library
+from pymarc2 import reader, record, field, marcxml
+from ssearch.models import Upload, Record, IndexStatus
+
+from forms import AttributesForm, GroupForm, PeriodForm, CatalogForm
+from forms import UploadForm
 from libcms.libs.common.xslt_transformers import xslt_indexing_transformer
 from ..common import resolve_date
-from forms import AttributesForm, GroupForm, PeriodForm, CatalogForm
-from participants.models import Library
 from ..models import requests_count, requests_by_attributes, requests_by_term, Source
 
 SIGLA_DELIMITER = "\n"
 
 BASE_PATH = getattr(settings, 'PROJECT_PATH')
+
 
 @login_required
 @permission_required_or_403('ssearch.view_statistics')
@@ -414,6 +414,14 @@ def _indexing(slug, reset=False):
         if holder_codes:
             doc['system-holder_s'] = holder_codes
 
+            org_types = set()
+            for holder_code in holder_codes:
+                org_type = orgs_index.get('code', {}).get(holder_code, {}).get('org_type', '')
+                if org_type:
+                    org_types.add(org_type)
+
+            if org_types:
+                doc['org_type_s'] = list(org_types)
 
         doc['system-add-date_dt'] = res[0]['add_date']
         doc['system-add-date_dts'] = res[0]['add_date']
@@ -478,7 +486,6 @@ def _indexing(slug, reset=False):
     index_status.save()
     conn.query('DELETE FROM records WHERE deleted = 1')
     return True
-
 
 
 @transaction.atomic
@@ -860,7 +867,7 @@ def _get_org_leafs(org, org_index):
 
 
 def _load_orgs():
-    orgs = Library.objects.values('id', 'parent_id', 'code', 'sigla', 'default_holder', 'name').all()
+    orgs = Library.objects.values('id', 'parent_id', 'code', 'sigla', 'default_holder', 'name', 'org_type').all()
     orgs_index = {
         'id': {},
         'parent_id': {},
