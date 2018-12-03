@@ -1,17 +1,19 @@
 # -*- encoding: utf-8 -*-
-import httplib2
-from lxml import etree
-import socket
-from django.conf import settings
-import sunburnt
 import datetime
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import socket
+
+import httplib2
+from django.conf import settings
+from django.core.paginator import Paginator
 from django.template import Library
 from django.utils.translation import get_language
-from libcms.libs.common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
-from ..models import Collection, Record
-from ..frontend.views import get_collections, replace_doc_attrs, xml_doc_to_dict
+from lxml import etree
+
+import sunburnt
+from libcms.libs.common.xslt_transformers import xslt_bib_draw_transformer
 from .. import rusmarc_template
+from ..frontend.views import get_collections, replace_doc_attrs
+from ..models import Record
 
 register = Library()
 

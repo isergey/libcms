@@ -9,7 +9,7 @@ from zgate.models import ZCatalog
 from django.core.cache import cache
 from ..frontend.forms import DeliveryOrderForm, CopyOrderForm
 from ssearch.models import get_holdres
-
+from participants.settings import PARTICIPANTS_SHOW_ORG_TYPES
 # def get_holders(record):
 #     holders = []
 #     f999 = record['999']
@@ -89,7 +89,7 @@ def drow_el_order_menu(owners_codes, record_id):
 
     owners_dict = collections.OrderedDict()
     empty_codes = []  # Сиглы, которые указаны в записе но не зарегистрированны в системе
-    owners = list(Library.objects.filter(code__in=owners_codes, hidden=False).values('id', 'name', 'code', 'weight'))
+    owners = list(Library.objects.filter(code__in=owners_codes, hidden=False, org_type__in=PARTICIPANTS_SHOW_ORG_TYPES).values('id', 'name', 'code', 'weight'))
     owners = sorted(owners, key=sorter)
     for owner in owners:
         owners_dict[owner['code']] = {
@@ -115,6 +115,7 @@ def drow_el_order_menu(owners_codes, record_id):
         'record_id': record_id,
         'empty_codes': empty_codes,
     }
+
 
 @register.inclusion_tag('orders/tags/drow_holders_menu.html')
 def drow_holders_menu(gen_id):

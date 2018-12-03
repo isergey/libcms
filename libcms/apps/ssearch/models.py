@@ -8,6 +8,8 @@ from django.db import connection
 from django.db import models
 from django.contrib.auth.models import User
 from participants.models import Library
+from participants.settings import PARTICIPANTS_SHOW_ORG_TYPES
+
 
 RECORDS_DB_CONFIG_KEY = 'records'
 
@@ -155,7 +157,7 @@ def get_holdres(gen_id):
         sources.add(holding.source)
         organization_codes.add(holding.source.organization_code)
 
-    libraries = Library.objects.filter(code__in=organization_codes)
+    libraries = Library.objects.filter(code__in=organization_codes, org_type__in=PARTICIPANTS_SHOW_ORG_TYPES)
     libraries_index = {}
     for library in libraries:
         libraries_index[library.code] = library

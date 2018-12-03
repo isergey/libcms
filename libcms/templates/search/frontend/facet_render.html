@@ -1,9 +1,0 @@
-{% load add_get_tag %}
-<h4>{{ title }}</h4>
-<ul>
-    {% for value in values %}
-     <li><a href="{{ request.META.QUERY_STRING|safe }}&q={{ value.0 }}&attr={{ facet }}">{% if value.2 %}{{ value.2 }}{% else %}{{ value.0 }}{% endif %} <b>{{ value.1 }}</b></a></li>
-    {% empty %}
-        <li>У найденных записей атрибут отсутвует</li>
-    {% endfor %}
-</ul>

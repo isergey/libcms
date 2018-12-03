@@ -1,25 +1,24 @@
 # coding=utf-8
-from collections import OrderedDict
-import httplib2
-import hashlib
 import datetime
-from lxml import etree
-import sunburnt
+import hashlib
 import json
+
+import httplib2
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.utils.translation import get_language
 from django.core.cache import cache
-from django.shortcuts import render, HttpResponse, get_object_or_404, Http404, urlresolvers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import QueryDict
-from django.db.models import Q
-from libcms.libs.common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
-from sso_tatedu.views import AUTH_SOURCE as TATEDU_AUTH_SOURCE
+from django.shortcuts import render, HttpResponse, get_object_or_404, Http404, urlresolvers
+from django.utils.translation import get_language
+from lxml import etree
 from participants.models import Library
-from ..models import Record, SavedRequest, DetailAccessLog, Collection, get_records
+from participants.settings import PARTICIPANTS_SHOW_ORG_TYPES
+import sunburnt
+from libcms.libs.common.xslt_transformers import xslt_transformer, xslt_marc_dump_transformer, xslt_bib_draw_transformer
 from .. import rusmarc_template
 from ..common import resolve_date
+from ..models import Record, SavedRequest, DetailAccessLog, get_records
 
 
 # # на эти трансформаторы ссылаются из других модулей
@@ -556,7 +555,7 @@ def select_library(request):
         except Library.DoesNotExist:
             pass
 
-    libraries = Library.objects.filter(hidden=False)
+    libraries = Library.objects.filter(hidden=False, org_type__in=PARTICIPANTS_SHOW_ORG_TYPES)
     return render(request, 'ssearch/frontend/select_library.html', {
         'libraries': libraries,
         'current_library': current_library
