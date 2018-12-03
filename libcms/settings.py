@@ -204,4 +204,6 @@ LOCALE_INDEPENDENT_PATHS = (
     r'^/robots.txt/',
 )
 
+PARTICIPANTS_SHOW_ORG_TYPES = ['library']
+
 from local_settings import *

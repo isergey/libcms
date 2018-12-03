@@ -365,12 +365,13 @@ def search(request, catalog=None, library=None):
 
     if catalog == u'sc2':
         exclude_kwargs = {'system-catalog_s': u"2"}
-        solr_searcher = solr_searcher.exclude(**exclude_kwargs)
     elif catalog == u'ebooks':
         exclude_kwargs = {'system-catalog_s': u"4"}
-        solr_searcher = solr_searcher.exclude(**exclude_kwargs)
     else:
         pass
+
+    solr_searcher = solr_searcher.exclude(**exclude_kwargs)
+    # solr_searcher = solr_searcher.filter(**{'date-of-publication_s': '2001'})
 
     for sort_attr in sort_attrs:
         if sort_attr['order'] == 'desc':
