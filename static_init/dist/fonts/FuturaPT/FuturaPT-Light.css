@@ -1,0 +1,12 @@
+@font-face {
+    font-family: "Futura PT Light";
+    src: url("FuturaPT-Light.eot"); /* IE9 */
+    src: url("FuturaPT-Light.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("FuturaPT-Light.woff") format("woff"), /* chrome, firefox */
+    url("FuturaPT-Light.ttf") format("truetype"), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+    url("FuturaPT-Light.svg#Futura PT Light") format("svg"); /* iOS 4.1- */
+    font-style: normal;
+    font-weight: normal;
+}
+
+

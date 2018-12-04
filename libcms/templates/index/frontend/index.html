@@ -10,169 +10,192 @@
 {% load cache %}
 {% get_current_language as LANGUAGE_CODE %}
 {% block content %}
-    <nav class="bg bg_first">
-    <div class="bg__black">
+    <main>
         <div class="container">
-            {% include 'main_menu.html' %}
-              {% if LANGUAGE_CODE == 'ru' %}
-                  <h1>В электронном <a href="{% url 'ssearch:frontend:index' %}" title="Электронный каталог">каталоге</a> вы сможете<br>
-                    <a href="{% url 'ssearch:frontend:index' %}" title="Поиск в электронный каталоге">найти</a> и забронировать книги<br>
-                    в <a href="{% url 'participants:frontend:index' %}" title="библиотеки Республики Татарстан">библиотеках</a> Республики
-                    Татарстан
-                  </h1>
-
-                    {% elif LANGUAGE_CODE == 'tt' %}
-                        <h1>Электрон каталог һәм коллекцияләр буенча эзләү</h1>
-                    {% else %}
-                        <h1>Search in e-catalog and e-collections</h1>
-                    {% endif %}
-
-            <div class="search-box search-box_first">
-                <form action="{% url 'ssearch:frontend:index' %}" method="get">
-                    <div class="search-form">
-                        <input type="hidden" name="attr" value="text_t">
-                        <input class="search-form__input" name="q" id="appendedInputButton" type="text" placeholder="{% if LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}...">
-                          <span class="input-form-group">
-                              <button class="search-form__submit" type="submit" title="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}"><img
-                                      src="{{ STATIC_URL }}dist/images/search.svg"></button>
-                          </span>
-                    </div>
-                </form>
+            <div class="row">
+                <div class="col-lg-8 col-md-12">
+                    <section class="search">
+                        <h1 class="search__title">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                В электронном каталоге вы сможете найти и забронировать книги в библиотеках Республики
+                                Татарстан
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Электрон каталог һәм коллекцияләр буенча эзләү
+                            {% else %}
+                                Search in e-catalog and e-collections
+                            {% endif %}
+                        </h1>
+                        <form action="{% url 'ssearch:frontend:index' %}" method="get" role="search">
+                            <div class="search-input search-input_mw">
+                                <select name="attr" class="search-input__select">
+                                    <option value="all_t">
+                                        Везде
+                                    </option>
+                                    <option value="author_t">
+                                        Автор
+                                    </option>
+                                </select>
+                                <input type="hidden" name="attr" value="text_t">
+                                <input class="search-input__input" name="q" id="appendedInputButton" type="text"
+                                       placeholder="{% if LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}...">
+                                <button class="search-input__btn">
+                                    <i class="icon-search"
+                                       title="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}"></i>
+                                </button>
+                            </div>
+                        </form>
+                        <a class="search-sub-link" href="#">Поиск по школьным библиотекам<i
+                                class="icon-right-arrow"></i></a>
+                    </section>
+                </div>
+                <div class="col-lg-4 col-md-12 col_as-fe">
+                    <section class="card card_md-mt">
+                        <div class="card__header">
+                            <h2 class="card__title">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Задать вопрос библиотекарю
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Китапханәчегә сорау бирү
+                                {% else %}
+                                    Ask question
+                                {% endif %}
+                            </h2>
+                        </div>
+                        <div class="card__body">
+                            <p class="card__ask-lib-text">Ищете информацию? Подбираете литературу? Есть вопросы о работе
+                                библиотеки? Виртуальная справочная служба поможет!</p>
+                        </div>
+                        <div class="card__footer">
+                            <ul class="card-nav">
+                                <li class="card-nav__item">
+                                    <a class="card-nav__link" href="{% url 'ask_librarian:frontend:ask' %}">
+                                        {% if LANGUAGE_CODE == 'ru' %}
+                                            Задать вопрос
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Китапханәчегә сорау
+                                        {% else %}
+                                            Ask question
+                                        {% endif %}
+                                    </a>
+                                </li>
+                                <li class="card-nav__item">
+                                    <a class="card-nav__link" href="{% url 'ask_librarian:frontend:index' %}">
+                                        {% if LANGUAGE_CODE == 'ru' %}
+                                            Все вопросы
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Барлык сораулар
+                                        {% else %}
+                                            All questions
+                                        {% endif %}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
             </div>
-        </div>
-    </div>
-</nav>
-<main>
-<div class="tab-container">
-<ul class="tab-container__tabs">
-{#    <li class="active">#}
-{#        {% if LANGUAGE_CODE == 'ru' %}Последние поступления#}
-{#        {% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар#}
-{#        {% else %}From new arrivals{% endif %}#}
-{#    </li>#}
-    <li class="active">
-        {% if LANGUAGE_CODE == 'ru' %}Новые оцифрованные издания
-        {% elif LANGUAGE_CODE == 'tt' %}Яңа цифрлаштырылган басмалар
-        {% else %}New e-resources{% endif %}
-    </li>
-</ul>
-<ul class="tab-container__tab">
-    <li class="active">
-        <div id="owl-1" class="owl-carousel">
-{#            {% cache 60 newinlib.html %}#}
-                {% last_items_feed %}
-{#            {% endcache %}#}
-        </div>
-        <span class="btn-box">
-            <a href="{% url 'newinlib:frontend:index' %}" class="btn-show-all-owl" title="">
-                {% if LANGUAGE_CODE == 'ru' %}Все оцифрованные издания
-                {% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар
-                {% else %}More new arrivals
-                {% endif %}
-            </a>
-        </span>
-    </li>
-{#    <li>#}
-{#        <div id="owl-2" class="owl-carousel">#}
-{#            {% cache 60 newinlib.html %}#}
-{#                {% last_items_feed %}#}
-{#            {% endcache %}#}
-{#        </div>#}
-{#        <span class="btn-box">#}
-{#            <a href="#" class="btn-show-all-owl" title="">Показать все новинки</a>#}
-{#        </span>#}
-{#    </li>#}
-</ul>
-</div>
-<div class="container">
-    <div class="row">
-    <div class="col-7">
-        <div class="news-box news-box_border-right">
-            <div class="news-box__title">
-                {% if LANGUAGE_CODE == 'ru' %}
-                    Новости
-                {% elif LANGUAGE_CODE == 'tt' %}
-                    Яңалыклар
-                {% else %}
-                    News
-                {% endif %}
-            </div>
-            <a href="{% url 'news:frontend:index' %}" class="news-box__all" title="Посмотреть архив новостей">
-                {% if LANGUAGE_CODE == 'ru' %}
-                    Архив новостей
-                {% elif LANGUAGE_CODE == 'tt' %}
-                    Яңалыклар архивы
-                {% else %}
-                    News archive
-                {% endif %}
-            </a>
-            {% news_feed %}
-            <div class="news-box__title news-box__title_bib">
-                {% if LANGUAGE_CODE == 'ru' %}
-                            Карта библиотек
+{#            <section class="card news-main">#}
+{#                <h2 class="news-main__title">Объявляется приём изданий на национальный конкурс «Книга года» - 2018</h2>#}
+{#                <p class="news-main__description">На конкурс принимаются книги, вышедшие в свет в период с 1 августа#}
+{#                    2017 года по 1 июля 2018 года.</p>#}
+{#                <a class="news-main__link" href="#">Подробнее о конкурсе</a>#}
+{#            </section>#}
+            <section class="card-transparent new-arrival-card">
+                <header class="card-transparent__header">
+                    <h2 class="card-transparent__title">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Новые оцифрованные издания
                         {% elif LANGUAGE_CODE == 'tt' %}
-                            Китапханәләр картасы
-                        {% else %}Map of libraries{% endif %}
-            </div>
-            <a href="{% url 'participants:frontend:index' %}" class="news-box__all">
-                {% if LANGUAGE_CODE == 'ru' %}
-                    Все библиотеки
-                {% elif LANGUAGE_CODE == 'tt' %}
-                    Барлык китапханәләр
-                {% else %}
-                    All libraries
-                {% endif %}
-            </a>
-        </div>
-    </div>
-    <div class="col-5">
-        <div class="poster-box">
-            <div class="poster-box__title">Афиша</div>
-            <a href="{% url 'events:frontend:index' %}" class="poster-box__all" title="Посмотреть все мероприятия">Все мероприятия</a>
-            <div id="owl-poster" class="owl-carousel">
-                {% cache 600 'participant_events_nearest' %}
-                    {% participant_events_nearest 0 10 %}
+                            Яңа цифрлаштырылган басмалар
+                        {% else %}
+                            New e-resources
+                        {% endif %}
+                    </h2>
+                    <a href="{% url 'newinlib:frontend:index' %}" class="card-transparent__link">
+                        {% if LANGUAGE_CODE == 'ru' %}Все оцифрованные издания
+                        {% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар
+                        {% else %}More new arrivals
+                        {% endif %}
+                    </a>
+                </header>
+                {% cache 60 newinlib.html %}
+                    {% last_items_feed %}
                 {% endcache %}
+            </section>
+            <div class="row">
+                <div class="col-lg-6 col-md-12">
+                    <section class="card-transparent">
+                        <header class="card-transparent__header">
+                            <h2 class="card-transparent__title">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Новости
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Яңалыклар
+                                {% else %}
+                                    News
+                                {% endif %}
+                            </h2>
+                            <a class="card-transparent__link" href="{% url 'news:frontend:index' %}">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Архив новостей
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Яңалыклар архивы
+                                {% else %}
+                                    News archive
+                                {% endif %}
+                            </a>
+                        </header>
+                        {% news_feed %}
+                    </section>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <section class="card-transparent">
+                        <header class="card-transparent__header">
+                            <h2 class="card-transparent__title">Афиша</h2>
+                            <a class="card-transparent__link" href="{% url 'events:frontend:index' %}">Все
+                                мероприятия</a>
+                        </header>
+                        {% cache 600 'participant_events_nearest' %}
+                            {% participant_events_nearest 0 10 %}
+                        {% endcache %}
+                    </section>
+                </div>
             </div>
+            <section class="card-transparent">
+                <header class="card-transparent__header">
+                    <h2 class="card-transparent__title">Карта библиотек</h2>
+                    <a class="card-transparent__link" href="#">Все библиотеки</a>
+                </header>
+
+            </section>
         </div>
-    </div>
-    </div>
-</div>
-<div id="lib-finder"></div>
-</main>
-
-
-<ul style="display: none" class="bg-img">
-    <img src="{{ STATIC_URL }}dist/images/bg.jpg"/>
-{#    <img src="{{ STATIC_URL }}dist/images/bg2.jpg"/>#}
-{#    <img src="{{ STATIC_URL }}dist/images/bg3.jpg"/>#}
-</ul>
+    </main>
 {% endblock %}
 {% block scripts %}
-    <script>
-{#        function getRandomArbitrary(min, max) {#}
-{#          return Math.random() * (max - min) + min;#}
-{#        }#}
-{##}
-{#        $(function () {#}
-{#          const imgHead = [];#}
-{##}
-{#          $('.bg-img img').each(function () {#}
-{#            imgHead.push($(this).attr('src'));#}
-{#          });#}
-{##}
-{#          function csaHead() {#}
-{#            const $csaHead = $('.bg_first');#}
-{#            const index = Math.floor(getRandomArbitrary(0, imgHead.length));#}
-{#            $csaHead.css({ 'background': 'url(' + imgHead[index] + ') no-repeat #4ea8e8' });#}
-{#            $csaHead.css({ 'background-position': 'center top' });#}
-{#            //$csaHead.css({ 'background-size': '100% auto' });#}
-{#          }#}
-{##}
-{#          csaHead();#}
-{#          setInterval(csaHead, 5000);#}
-{#        });#}
-
-        System.import('index/index.js');
-    </script>
+    {#    <script>#}
+    {#        function getRandomArbitrary(min, max) {#}
+    {#          return Math.random() * (max - min) + min;#}
+    {#        }#}
+    {##}
+    {#        $(function () {#}
+    {#          const imgHead = [];#}
+    {##}
+    {#          $('.bg-img img').each(function () {#}
+    {#            imgHead.push($(this).attr('src'));#}
+    {#          });#}
+    {##}
+    {#          function csaHead() {#}
+    {#            const $csaHead = $('.bg_first');#}
+    {#            const index = Math.floor(getRandomArbitrary(0, imgHead.length));#}
+    {#            $csaHead.css({ 'background': 'url(' + imgHead[index] + ') no-repeat #4ea8e8' });#}
+    {#            $csaHead.css({ 'background-position': 'center top' });#}
+    {#            //$csaHead.css({ 'background-size': '100% auto' });#}
+    {#          }#}
+    {##}
+    {#          csaHead();#}
+    {#          setInterval(csaHead, 5000);#}
+    {#        });#}
+    {##}
+    {#        System.import('index/index.js');#}
+    {#    </script>#}
 {% endblock %}

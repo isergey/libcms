@@ -1,34 +1,10 @@
-
+<div class="news-list">
     {% for news in news_list %}
-        <div class="news-box__item">
-            <div class="news-box__item__date">{{ news.create_date|date:"j N" }}</div>
-            <h2 class="news-box__item__title">
-                <a href="{% url 'news:frontend:show' news.id %}">
-                    {{ news.news_content.title }}
-                </a>
-            </h2>
-
-            <div class="news-box__item__attr-box">
-{#                <a href="#" title="Камско-Устьинская ЦБС" class="news-box__item__attr-box__bib-tag">#}
-{#                    Камско-Устьинская ЦБС#}
-{#                </a>#}
-{#                <a href="#" title="Фото" class="news-box__item__attr-box__has-content">#}
-{#                    <img alt="Фото" src="static/dist/images/camera.svg">#}
-{#                </a>#}
-{#                <a href="#" title="Видео" class="news-box__item__attr-box__has-content">#}
-{#                    <img alt="Видео" src="static/dist/images/movie.svg">#}
-{#                </a>#}
-            </div>
-        </div>
-{##}
-{#        <li>#}
-{#            <div class="title"><a href="{% url news:frontend:show news.id %}">{{ news.news_content.title }}</a></div>#}
-{#            <div class="teaser">{{ news.news_content.teaser }}</div>#}
-{#            <div class="create_date">{{ news.create_date }}</div>#}
-{#        </li>#}
-{#        <p>#}
-{#            <span>{{ news.create_date|date:"d.m.Y" }}</span> <a href="{% url 'news:frontend:show' news.id %}">{{ news.news_content.teaser }}</a>#}
-{#        </p>#}
+        <article class="news-list__item">
+            <time class="news-list__date">{{ news.create_date|date:"j E" }}</time>
+            <h3 class="news-list__title"><a class="news-list__link"
+                                            href="{% url 'news:frontend:show' news.id %}">{{ news.news_content.title }}</a>
+            </h3>
+        </article>
     {% endfor %}
-
-
+</div>

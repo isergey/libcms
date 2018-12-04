@@ -4,101 +4,175 @@
 {% load news_tags %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
-    </nav>
     <main>
         <div class="container">
-            <ul class="bread__crumbs">
-                <li>
-                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                        {% if LANGUAGE_CODE == 'ru' %}
-                            Главная
-                        {% elif LANGUAGE_CODE == 'tt' %}
-                            Төп бит
-                        {% else %}
-                            Home
-                        {% endif %}
-                    </a>
-                </li>
-                {% if request.GET.back %}
+            <nav class="crumb">
+                <ol class="crumb__list">
                     <li>
-                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+                        <a href="{% url 'index:frontend:index' %}">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
+                        </a>
                     </li>
-                    <a href="{{ request.GET.back }}" class="bread__crumbs_link">
-                        {% if LANGUAGE_CODE == 'ru' %}
-                            Новости
-                        {% elif LANGUAGE_CODE == 'tt' %}
-                            Яңалыклар
-                        {% else %}
-                            News
-                        {% endif %}
-                    </a>
-                {% else %}
                     <li>
-                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                    </li>
-                    <a href="{% url 'news:frontend:index' %}" class="bread__crumbs_link">
-                        {% if LANGUAGE_CODE == 'ru' %}
-                            Новости
-                        {% elif LANGUAGE_CODE == 'tt' %}
-                            Яңалыклар
+                        {% if request.GET.back %}
+                            <a href="{{ request.GET.back }}">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Новости
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Яңалыклар
+                                {% else %}
+                                    News
+                                {% endif %}
+                            </a>
                         {% else %}
-                            News
+                            <a href="{% url 'news:frontend:index' %}">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Новости
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Яңалыклар
+                                {% else %}
+                                    News
+                                {% endif %}
+                            </a>
                         {% endif %}
-                    </a>
-                {% endif %}
-                {#                <li>#}
-                {#                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">#}
-                {#                </li>#}
-                {#                <li>#}
-                {#                    <a class="bread__crumbs_link bread__crumbs_link_active">#}
-                {#                        {{ content.title }}#}
-                {#                    </a>#}
-                {#                </li>#}
-            </ul>
-        </div>
-        <hr class="footer-hr">
-        <div class="container content-page">
+                    </li>
+                </ol>
+            </nav>
             <div class="row">
-                <div class="col-7">
-                    <h1 class="content-page__title">{{ content.title }}</h1>
-
-                    <div class="content-page__text">
+                <div class="col-lg-7 col-md-12">
+                    <div class="content">
+                        <h1 class="content__title">{{ content.title }}</h1>
+                        <div class="content__info">
+                            <time class="content__date"><span
+                                    class="icon-wall-clock"></span>&nbsp;&nbsp;{{ news.create_date }}</time>
+                        </div>
                         {{ content.content|safe }}
                     </div>
+                    <div class="ya-share2"
+                         data-services="vkontakte,facebook,odnoklassniki,gplus,twitter,viber,whatsapp,telegram"></div>
                 </div>
-                <div class="col-5">
-
-                    <div class="facets-container">
-                        <div class="facets-container__item">
-                            <div class="facet">
-                                <div class="facet__header">
-                                    <h4 class="facet__title">Другие новости</h4>
-                                </div>
-                                <div class="facet__body">
-                                    {% other_news news.id %}
-                                </div>
-                            </div>
+                <div class="col-lg-5 col-md-12">
+                    <section class="card card_md-mt">
+                        <header class="card__header">
+                            <h2 class="card__title">Другие новости</h2>
+                        </header>
+                        <div class="card__body">
+                            {% other_news news.id %}
                         </div>
-                        <div class="facets-container__item">
-                            <div class="facet">
-                                <div class="facet__header facet__header_closed">
-                                    <h4 class="facet__title">Календарь</h4>
-                                </div>
-                                <div class="facet__body facet__body_closed">
-                                    {% news_calendar %}
-                                </div>
-                            </div>
+                        <div class="card__footer">
+                            <ul class="card-nav">
+                                <li class="card-nav__item">
+                                    <a class="card-nav__link" href="{% url 'news:frontend:index' %}">Все новости</a>
+                                </li>
+                            </ul>
                         </div>
-                    </div>
+                    </section>
                 </div>
             </div>
-
         </div>
     </main>
+
+    {% block scripts %}
+        <script src="//yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
+        <script src="//yastatic.net/share2/share.js"></script>
+    {% endblock %}
+
+    {#    <main>#}
+    {#        <div class="container">#}
+    {#            <ul class="bread__crumbs">#}
+    {#                <li>#}
+    {#                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">#}
+    {#                        {% if LANGUAGE_CODE == 'ru' %}#}
+    {#                            Главная#}
+    {#                        {% elif LANGUAGE_CODE == 'tt' %}#}
+    {#                            Төп бит#}
+    {#                        {% else %}#}
+    {#                            Home#}
+    {#                        {% endif %}#}
+    {#                    </a>#}
+    {#                </li>#}
+    {#                {% if request.GET.back %}#}
+    {#                    <li>#}
+    {#                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">#}
+    {#                    </li>#}
+    {#                    <a href="{{ request.GET.back }}" class="bread__crumbs_link">#}
+    {#                        {% if LANGUAGE_CODE == 'ru' %}#}
+    {#                            Новости#}
+    {#                        {% elif LANGUAGE_CODE == 'tt' %}#}
+    {#                            Яңалыклар#}
+    {#                        {% else %}#}
+    {#                            News#}
+    {#                        {% endif %}#}
+    {#                    </a>#}
+    {#                {% else %}#}
+    {#                    <li>#}
+    {#                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">#}
+    {#                    </li>#}
+    {#                    <a href="{% url 'news:frontend:index' %}" class="bread__crumbs_link">#}
+    {#                        {% if LANGUAGE_CODE == 'ru' %}#}
+    {#                            Новости#}
+    {#                        {% elif LANGUAGE_CODE == 'tt' %}#}
+    {#                            Яңалыклар#}
+    {#                        {% else %}#}
+    {#                            News#}
+    {#                        {% endif %}#}
+    {#                    </a>#}
+    {#                {% endif %}#}
+    {#                <li>#}
+    {#                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">#}
+    {#                </li>#}
+    {#                <li>#}
+    {#                    <a class="bread__crumbs_link bread__crumbs_link_active">#}
+    {#                        {{ content.title }}#}
+    {#                    </a>#}
+    {#                </li>#}
+    {#            </ul>#}
+    {#        </div>#}
+    {#        <hr class="footer-hr">#}
+    {#        <div class="container content-page">#}
+    {#            <div class="row">#}
+    {#                <div class="col-7">#}
+    {#                    <h1 class="content-page__title">{{ content.title }}</h1>#}
+    {##}
+    {#                    <div class="content-page__text">#}
+    {#                        {{ content.content|safe }}#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#                <div class="col-5">#}
+    {##}
+    {#                    <div class="facets-container">#}
+    {#                        <div class="facets-container__item">#}
+    {#                            <div class="facet">#}
+    {#                                <div class="facet__header">#}
+    {#                                    <h4 class="facet__title">Другие новости</h4>#}
+    {#                                </div>#}
+    {#                                <div class="facet__body">#}
+    {#                                    {% other_news news.id %}#}
+    {#                                </div>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                        <div class="facets-container__item">#}
+    {#                            <div class="facet">#}
+    {#                                <div class="facet__header facet__header_closed">#}
+    {#                                    <h4 class="facet__title">Календарь</h4>#}
+    {#                                </div>#}
+    {#                                <div class="facet__body facet__body_closed">#}
+    {#                                    {% news_calendar %}#}
+    {#                                </div>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {##}
+    {#        </div>#}
+    {#    </main>#}
 
     {#    <div class="span12">#}
     {#        <div class="breadcrumb">#}

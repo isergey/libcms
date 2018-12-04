@@ -1,0 +1,12 @@
+@font-face {
+    font-family: "Futura PT Cond Extra Bold Ital";
+    src: url("FuturaPTCond-ExtraBoldObl.eot"); /* IE9 */
+    src: url("FuturaPTCond-ExtraBoldObl.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("FuturaPTCond-ExtraBoldObl.woff") format("woff"), /* chrome, firefox */
+    url("FuturaPTCond-ExtraBoldObl.ttf") format("truetype"), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+    url("FuturaPTCond-ExtraBoldObl.svg#Futura PT Cond Extra Bold Ital") format("svg"); /* iOS 4.1- */
+    font-style: normal;
+    font-weight: normal;
+}
+
+
