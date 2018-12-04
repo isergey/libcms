@@ -1,0 +1,12 @@
+@font-face {
+    font-family: "Futura PT Book";
+    src: url("FuturaPT-Book.eot"); /* IE9 */
+    src: url("FuturaPT-Book.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("FuturaPT-Book.woff") format("woff"), /* chrome, firefox */
+    url("FuturaPT-Book.ttf") format("truetype"), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+    url("FuturaPT-Book.svg#Futura PT Book") format("svg"); /* iOS 4.1- */
+    font-style: normal;
+    font-weight: normal;
+}
+
+

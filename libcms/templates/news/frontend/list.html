@@ -5,11 +5,270 @@
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <nav class="bg bg_second">
+    <main>
         <div class="container">
-            {% include 'main_menu.html' %}
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
+                        </a>
+                    </li>
+                    {#                    <li>#}
+                    {#                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">#}
+                    {#                    </li>#}
+                    {#                    <li>#}
+                    {#                        <a class="bread__crumbs_link bread__crumbs_link_active">#}
+                    {#                            {% if LANGUAGE_CODE == 'ru' %}#}
+                    {#                                Новости#}
+                    {#                            {% elif LANGUAGE_CODE == 'tt' %}#}
+                    {#                                Яңалыклар#}
+                    {#                            {% else %}#}
+                    {#                                News#}
+                    {#                            {% endif %}#}
+                    {#                        </a>#}
+                    {#                    </li>#}
+                </ol>
+            </nav>
+            <div class="row">
+                <div class="col-lg-7 col-md-12">
+                    <div class="news-list">
+                        {% for news in news_list %}
+                            <article class="news-list__item news-list__item_mb-big">
+                                <time class="news-list__date">{{ news.create_date }}</time>
+                                <h3 class="news-list__title">
+                                    <a class="news-list__link" href="{% url 'news:frontend:show' news.id %}">
+                                        {{ news.news_content.title }}
+                                    </a>
+                                </h3>
+                                <p class="news-list__description">{{ news.news_content.teaser }}</p>
+                            </article>
+                        {% endfor %}
+                    </div>
+                    {% admin_pagination news_page %}
+                </div>
+                <div class="col-lg-5 col-md-12">
+                    <section class="card card_mt">
+                        <header class="card__header">
+                            <h2 class="card__title">Календарь</h2>
+                        </header>
+                        <div class="card__body">
+                            <form name="event_calendar_filter" action="" method="POST"><input type='hidden'
+                                                                                              name='csrfmiddlewaretoken'
+                                                                                              value='sYVCzUBBmvmDz8HsvjRoM3ei30XJLEbQ'/>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <select class="form-control" id="id_month" name="month"
+                                                    onchange="this.form.submit();">
+                                                <option value="1">Январь</option>
+                                                <option value="2">Февраль</option>
+                                                <option value="3">Март</option>
+                                                <option value="4">Апрель</option>
+                                                <option value="5">Май</option>
+                                                <option value="6">Июнь</option>
+                                                <option value="7">Июль</option>
+                                                <option value="8">Август</option>
+                                                <option value="9">Сентябрь</option>
+                                                <option value="10">Октябрь</option>
+                                                <option value="11" selected="selected">Ноябрь</option>
+                                                <option value="12">Декабрь</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <select class="form-control" id="id_year" name="year"
+                                                    onchange="this.form.submit();">
+                                                <option value="2017">2017</option>
+                                                <option value="2018" selected="selected">2018</option>
+                                                <option value="2019">2019</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <table class="calendar">
+                                <thead class="days-week">
+                                <tr>
+                                    <th>Пн</th>
+                                    <th>Вт</th>
+                                    <th>Ср</th>
+                                    <th>Чт</th>
+                                    <th>Пт</th>
+                                    <th>Сб</th>
+                                    <th>Вс</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="padding">
+                                    </td>
+                                    <td class="padding">
+                                    </td>
+                                    <td class="padding">
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/1/"
+                                           title="Показать события дня"> 1</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/2/"
+                                           title="Показать события дня"> 2</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/3/"
+                                           title="Показать события дня"> 3</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/4/"
+                                           title="Показать события дня"> 4</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/5/"
+                                           title="Показать события дня"> 5</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/6/"
+                                           title="Показать события дня"> 6</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/7/"
+                                           title="Показать события дня"> 7</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/8/"
+                                           title="Показать события дня"> 8</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/9/"
+                                           title="Показать события дня"> 9</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/10/"
+                                           title="Показать события дня"> 10</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/11/"
+                                           title="Показать события дня"> 11</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/12/"
+                                           title="Показать события дня"> 12</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/13/"
+                                           title="Показать события дня"> 13</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/14/"
+                                           title="Показать события дня"> 14</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/15/"
+                                           title="Показать события дня"> 15</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/16/"
+                                           title="Показать события дня"> 16</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/17/"
+                                           title="Показать события дня"> 17</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/18/"
+                                           title="Показать события дня"> 18</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/19/"
+                                           title="Показать события дня"> 19</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/20/"
+                                           title="Показать события дня"> 20</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/21/"
+                                           title="Показать события дня"> 21</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/22/"
+                                           title="Показать события дня"> 22</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/23/"
+                                           title="Показать события дня"> 23</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/24/"
+                                           title="Показать события дня"> 24</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/25/"
+                                           title="Показать события дня"> 25</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/26/"
+                                           title="Показать события дня"> 26</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/27/"
+                                           title="Показать события дня"> 27</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/28/"
+                                           title="Показать события дня"> 28</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/29/"
+                                           title="Показать события дня"> 29</a>
+                                    </td>
+                                    <td class="act">
+                                        <a class='evnt' href="/ru/events/date/2018/11/30/"
+                                           title="Показать события дня"> 30</a>
+                                    </td>
+                                    <td class="padding">
+                                    </td>
+                                    <td class="padding">
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card__footer">
+                            <ul class="card-nav">
+                                <li class="card-nav__item">
+                                    <a class="card-nav__link" href="#">Все новости</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+            </div>
         </div>
-    </nav>
+    </main>
+
+
+
+
+
+
+
     <main>
         <div class="container">
             <ul class="bread__crumbs">
@@ -56,7 +315,8 @@
                     {% for news in news_list %}
                         <div class="news-page-box">
                             <div class="news-page-box__date">{{ news.create_date }}</div>
-                            <h1 class="news-page-box__title"><a href="{% url 'news:frontend:show' news.id %}">{{ news.news_content.title }}</a></h1>
+                            <h1 class="news-page-box__title"><a
+                                    href="{% url 'news:frontend:show' news.id %}">{{ news.news_content.title }}</a></h1>
 
                             <p class="news-page-box__teaser">{{ news.news_content.teaser }}</p>
                         </div>

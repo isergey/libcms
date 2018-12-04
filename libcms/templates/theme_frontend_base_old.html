@@ -1,0 +1,473 @@
+﻿{% load i18n %}
+{% load localeurl_tags %}
+{% load menu_tags %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>{% block title %}12Национальная электронная библиотека Республики Татарстан{% endblock %}</title>
+    <meta name="description" content>
+    <meta name="keywords" content>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <link rel="icon" type="image/ico" href="{{ STATIC_URL }}theme/favicon.ico"/>
+    <!--[if lte IE 10]>
+        <script src="{{ STATIC_URL }}js/html5shiv-printshiv.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="{{ STATIC_URL }}dist/styles/index.css">
+    <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
+{#    <script src="{{ STATIC_URL }}dist/vendors/bootstrap/bootstrap.min.js"></script>#}
+    <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.js"></script>
+
+    {#    <script src="{{ STATIC_URL }}dist/vendors/owl-carousel/owl.carousel.min.js"></script>#}
+    <script src="{{ STATIC_URL }}js/lodash.compat.min.js"></script>
+    <script src="{{ STATIC_URL }}js/browser-polyfill.min.js"></script>
+    <script src="{{ STATIC_URL }}js/browser.min.js"></script>
+    <script src="{{ STATIC_URL }}js/system.js"></script>
+    <script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <script>
+        System.config({
+            map: {
+                eventemitter3: '{{ STATIC_URL }}js/eventemitter3.js',
+                jquery: '{{ STATIC_URL }}js/jquery.min.js',
+                lodash: '{{ STATIC_URL }}js/lodash.compat.min.js',
+                'owl-carousel': '{{ STATIC_URL }}dist/vendors/owl-carousel/owl.carousel.min.js',
+                react: '{{ STATIC_URL }}js/react-with-addons.min.js',
+                typehead: '{{ STATIC_URL }}js/typeahead.jquery.min.js',
+            },
+            baseURL: '{{ STATIC_URL }}apps',
+            transpiler: 'babel'
+        });
+        System.import('base.js');
+        // loads /app/main.js
+
+    </script>
+    {% block scripts %}{% endblock %}
+<style>
+        .table {
+            border-collapse: collapse !important;
+        }
+
+        .table td,
+        .table th {
+            background-color: #fff !important;
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #ddd !important;
+        }
+
+        table {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #eceeef;
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #eceeef;
+        }
+
+        .table tbody + tbody {
+            border-top: 2px solid #eceeef;
+        }
+
+        .table .table {
+            background-color: #fff;
+        }
+
+        .table-sm th,
+        .table-sm td {
+            padding: 0.3rem;
+        }
+
+        .table-bordered {
+            border: 1px solid #eceeef;
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #eceeef;
+        }
+
+        .table-bordered thead th,
+        .table-bordered thead td {
+            border-bottom-width: 2px;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+
+        .table-active,
+        .table-active > th,
+        .table-active > td {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+
+        .table-hover .table-active:hover {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+
+        .table-hover .table-active:hover > td,
+        .table-hover .table-active:hover > th {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+
+        .table-success,
+        .table-success > th,
+        .table-success > td {
+            background-color: #dff0d8;
+        }
+
+        .table-hover .table-success:hover {
+            background-color: #d0e9c6;
+        }
+
+        .table-hover .table-success:hover > td,
+        .table-hover .table-success:hover > th {
+            background-color: #d0e9c6;
+        }
+
+        .table-info,
+        .table-info > th,
+        .table-info > td {
+            background-color: #d9edf7;
+        }
+
+        .table-hover .table-info:hover {
+            background-color: #c4e3f3;
+        }
+
+        .table-hover .table-info:hover > td,
+        .table-hover .table-info:hover > th {
+            background-color: #c4e3f3;
+        }
+
+        .table-warning,
+        .table-warning > th,
+        .table-warning > td {
+            background-color: #fcf8e3;
+        }
+
+        .table-hover .table-warning:hover {
+            background-color: #faf2cc;
+        }
+
+        .table-hover .table-warning:hover > td,
+        .table-hover .table-warning:hover > th {
+            background-color: #faf2cc;
+        }
+
+        .table-danger,
+        .table-danger > th,
+        .table-danger > td {
+            background-color: #f2dede;
+        }
+
+        .table-hover .table-danger:hover {
+            background-color: #ebcccc;
+        }
+
+        .table-hover .table-danger:hover > td,
+        .table-hover .table-danger:hover > th {
+            background-color: #ebcccc;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="row">
+
+            <div class="col-8">
+                <a href="{% url 'index:frontend:index' %}" title="На главную!">
+                    <div class="logo">
+                        <div class="logo__img">
+                            <img src="{{ STATIC_URL }}dist/images/logo.png">
+                        </div>
+                        <div class="logo__text">
+                            {% if LANGUAGE_CODE == 'ru' %}<span>Национальная электронная библиотека</span><br>Республики
+                                Татарстан{% elif LANGUAGE_CODE == 'tt' %}
+                                <span>Татарстан Республикасының Милли<br> электрон китапханәсе</span>{% else %}
+                                <span>National Electronic Library of the</span><br>Republic of Tatarstan{% endif %}
+                        </div>
+                    </div>
+                </a>
+
+                <div class="language">
+                    <a href="/ru{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                       class="language__btn {% if "/ru" in request.path %}language__btn_active{% endif %}"
+                       title="Русский">Рус</a>
+                    <a href="/tt{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                       class="language__btn {% if "/tt" in request.path %}language__btn_active{% endif %}"
+                       title="Татарский">Тат</a>
+                    <a href="/en{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                       class="language__btn {% if "/en" in request.path %}language__btn_active{% endif %}"
+                       title="English">Eng</a>
+                </div>
+            </div>
+            {% include 'cabinet.html' %}
+        </div>
+    </div>
+</header>
+{% block content %}{% endblock %}
+
+<footer>
+    <hr class="footer-hr">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                {% include 'main_menu_footer.html' %}
+            </div>
+        </div>
+    </div>
+    <hr class="footer-hr">
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <a class="footer-logo__bib" href="{% url 'index:frontend:index' %}" title="На главную!"><img
+                        src="{{ STATIC_URL }}dist/images/logo_bib.png"
+                        alt="тайтл"></a>
+                <a class="footer-logo__min" href="http://mic.tatarstan.ru/" target="_blank"><img src="{{ STATIC_URL }}dist/images/logo_min.png" alt="Министерство информатизации и связи Республики Татарстан"></a>
+
+                <!-- Yandex.Metrika informer -->
+                <a href="https://metrika.yandex.ru/stat/?id=28345621&amp;from=informer"
+                   target="_blank" rel="nofollow">
+                    <img src="//bs.yandex.ru/informer/28345621/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
+                         style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика"
+                         title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)"
+                         onclick="try{Ya.Metrika.informer({i:this,id:28345621,lang:'ru'});return false}catch(e){}"/>
+                </a>
+                <!-- /Yandex.Metrika informer -->
+            </div>
+            <div class="col-6">
+                <a class="footer-logo__ask-lib" href="{% url 'ask_librarian:frontend:ask' %}"
+                   title="Спроси библиотекаря">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Задать вопрос библиотекарю
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Китапханәчегә сорау бирү
+                    {% else %}
+                        Ask question
+                    {% endif %}
+                </a>
+                <a class="footer-logo__ask-all" href="{% url 'ask_librarian:frontend:index' %}"
+                   title="Спроси библиотекаря все вопросы">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Все вопросы
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Барлык сораулар
+                    {% else %}
+                        All questions
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+<a href="#0" class="cd-top">Наверх</a>
+
+
+
+<script type="text/javascript">
+    jQuery(document).ajaxSend(function (event, xhr, settings) {
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function sameOrigin(url) {
+            // url could be relative or scheme relative or absolute
+            var host = document.location.host; // host + port
+            var protocol = document.location.protocol;
+            var sr_origin = '//' + host;
+            var origin = protocol + sr_origin;
+            // Allow absolute or scheme relative URLs to same origin
+            return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                    (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                        // or any other URL that isn't scheme relative or absolute i.e relative.
+                    !(/^(\/\/|http:|https:).*/.test(url));
+        }
+
+        function safeMethod(method) {
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    });
+
+    (function () {
+        var cache = {};
+
+        this.tmpl = function tmpl(str, data) {
+            // Figure out if we're getting a template, or if we need to
+            // load the template - and be sure to cache the result.
+            var fn = !/\W/.test(str) ?
+                    cache[str] = cache[str] ||
+                    tmpl(document.getElementById(str).innerHTML) :
+
+                // Generate a reusable function that will serve as a template
+                // generator (and which will be cached).
+                    new Function("obj",
+                            "var p=[],print=function(){p.push.apply(p,arguments);};" +
+
+                                // Introduce the data as local variables using with(){}
+                            "with(obj){p.push('" +
+
+                                // Convert the template into pure JavaScript
+                            str
+                                    .replace(/[\r\t\n]/g, " ")
+                                    .split("<%").join("\t")
+                                    .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+                                    .replace(/\t=(.*?)%>/g, "',$1,'")
+                                    .split("\t").join("');")
+                                    .split("%>").join("p.push('")
+                                    .split("\r").join("\\'")
+                            + "');}return p.join('');");
+
+            // Provide some basic currying to the user
+            return data ? fn(data) : fn;
+        };
+    })();
+
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">(function (d, w, c) {
+    (w[c] = w[c] || []).push(function () {
+        try {
+            w.yaCounter17301607 = new Ya.Metrika({id: 17301607, enableAll: true, webvisor: true});
+        } catch (e) {
+        }
+    });
+    var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () {
+        n.parentNode.insertBefore(s, n);
+    };
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+    if (w.opera == "[object Opera]") {
+        d.addEventListener("DOMContentLoaded", f);
+    } else {
+        f();
+    }
+})(document, window, "yandex_metrika_callbacks");</script>
+<noscript>
+    <div><img src="//mc.yandex.ru/watch/17301607" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
+<!-- /Yandex.Metrika counter -->
+
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function (d, w, c) {
+        (w[c] = w[c] || []).push(function () {
+            try {
+                w.yaCounter28345621 = new Ya.Metrika({
+                    id: 28345621,
+                    clickmap: true,
+                    trackLinks: true,
+                    accurateTrackBounce: true
+                });
+            } catch (e) {
+            }
+        });
+
+        var n = d.getElementsByTagName("script")[0],
+                s = d.createElement("script"),
+                f = function () {
+                    n.parentNode.insertBefore(s, n);
+                };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        } else {
+            f();
+        }
+    })(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript>
+    <div><img src="//mc.yandex.ru/watch/28345621" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
+<!-- /Yandex.Metrika counter -->
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36488484-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+
+<script>
+    $(function () {
+        $.get('{% url 'statistics:api:watch' %}');
+    });
+</script>
+<!-- Piwik -->
+<!-- Piwik -->
+<script type="text/javascript">
+    var _paq = _paq || [];
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function () {
+        var u = "//ua.tatar.ru/";
+        _paq.push(['setTrackerUrl', u + 'piwik.php']);
+        _paq.push(['setSiteId', 22]);
+
+        <!-- "a0a0a0a0a0a0a0a0" should be replaced by a hash user id from your system -->
+        _paq.push(['setUserId', "{{ request.user.pk }}"]);
+
+        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+        g.type = 'text/javascript';
+        g.async = true;
+        g.defer = true;
+        g.src = u + 'piwik.js';
+        s.parentNode.insertBefore(g, s);
+    })();
+</script>
+<noscript><p><img src="//ua.tatar.ru/piwik.php?idsite=22" style="border:0;" alt=""/></p></noscript>
+<!-- End Piwik Code -->
+
+</body>
+</html>
+<!-- app mac1 {{ request.session.ap_mac }} -->
+<!--  {{ request.user.id }} -->
+<!-- dev -->

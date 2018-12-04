@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#4270ba">
+    <title>KITAP TATAR</title>
+    <meta name="description" content="краткое описание страницы">
+    <link rel="stylesheet" href="../styles/index.css?2341">
+</head>
+<body>
+<div class="content-wrap">
+    <div class="header-wrap-bg">
+        <div class="container">
+            <header class="header">
+                <button class="header__nav-btn">
+                    <i class="icon-menu"></i>
+                </button>
+                <a class="logo header__logo" href="#">
+                    <div class="logo__img-wrap">
+                        <img class="logo__img" src="../images/logo/logo.png"
+                             alt="Национальная электронная библиотека Республики Татарстан">
+                    </div>
+                    <div class="logo__text">
+                        <span>Национальная электронная библиотека</span>
+                        <span>Республики Татарстан</span>
+                    </div>
+                    <div class="logo__text-sm">
+                        НЭБ РТ
+                    </div>
+                </a>
+                <ul class="nav nav_tool header__tool">
+                    <li class="nav__item nav__item_active">
+                        <a class="nav__link" href="#">Рус</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Тат</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Eng</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="#"><i class="icon-eye" title="Версия для слабовидящих"></i></a>
+                    </li>
+                </ul>
+                <ul class="nav header__user">
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Вход&nbsp;&nbsp;<i class="icon-man-user"></i></a>
+                    </li>
+                </ul>
+            </header>
+            <nav class="nav-wrap">
+                <ul class="nav nav_tool">
+                    <li class="nav__item nav__item_active">
+                        <a class="nav__link" href="#">Рус</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Тат</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Eng</a>
+                    </li>
+                </ul>
+                <ul class="nav nav_user">
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Регистрация</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Вход&nbsp;&nbsp;<i class="icon-man-user"></i></a>
+                    </li>
+                </ul>
+                <ul class="nav nav_main">
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Проект турында</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Китапханәләр</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Каталог</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Коллекцияләр</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Фикерләр</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Яңалыклар</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Китапханәчедән сора</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="#">Профессионалларга</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <main>
+        <div class="container">
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="/ru/">Главная</a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">Спроси библиотекаря</span>
+                    </li>
+                </ol>
+            </nav>
+            <div class="content">
+                <h1 class="content__title">Спроси библиотекаря</h1>
+            </div>
+            <ul class="ask-nav">
+                <li class="ask-nav__item">
+                    <a class="ask-nav__link" href="#">Задать вопрос</a>
+                </li>
+                <li class="ask-nav__item">
+                    <button id="askNavBtn" class="ask-nav__link">Категории вопросов</button>
+                </li>
+            </ul>
+            <div class="ask-container">
+                <div class="row">
+                    <div class="col-lg-9 col-md-12">
+                        <div class="form-grid">
+                            <div class="form-grid__col">
+                                <form action="" method="GET">
+                                    <div class="form-group">
+                                        <label class="control-label">Перейти к вопросу №:</label>
+                                        <input class="form-control" name="id" type="text">
+                                        <div class="help-block">Разрешены буквы латинского алфавита и цифры</div>
+                                    </div>
+
+                                </form>
+                            </div>
+                            <div class="form-grid__col">
+                                <form action="" method="POST">
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="sYVCzUBBmvmDz8HsvjRoM3ei30XJLEbQ">
+
+                                    <div class="form-group ">
+                                        <label class="control-label">Найти вопросы по дате:</label>
+
+                                        <div class="controls">
+
+                                            <input id="id_date" class="form-control" name="date" type="text">
+
+                                            <p class="help-block">формат даты: дд.мм.гггг</p>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="list ask-list-question">
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Здравствуйте, в одной из августовских
+                                            номеров газеты «Красная Татария» в 1943 г. было напечатано: «Сложные
+                                            поисково-разведочные работы, осуществленные коллективом Шугуровской
+                                            нефтеразведки, принесли замечательные результаты. На днях роторная скважина
+                                            1 (глубина 617 – 648 м) дала нефть, средний дебит которой, по
+                                            предварительным данным, составляет 20 т в сутки. Эта нефть обладает хорошим
+                                            качеством и успешно может употребляться промышленными предприятиями
+                                            Советского Союза. Новое месторождение является весьма перспективным». Мне
+                                            нужна информация о том, в каком номере и на какой странице это было
+                                            напечатано. Необходимо для написания реферата. Спасибо.
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Здравствуйте!!!!!Я Тукаевед очень очень
+                                            увлекатекаюсь Габдуллой Тукаем!!!!! Габдулла Тукай мой самый любимый
+                                            поэт!!!!!!
+                                            Очень нужно издание для личного пользования Тукай ядкэрлэрдэ:2 томда/
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Добрый день! Получается, что отцифрованные
+                                            книги мы можем только распечатать, нельзя открыть их в планшете или телефоне
+                                            и
+                                            читать?
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Здравствуйте!!!!!Я Тукаевед очень очень
+                                            увлекатекаюсь Габдуллой Тукаем!!!!! Габдулла Тукай мой самый любимый
+                                            поэт!!!!!!
+                                            Очень нужно издание для личного пользования Тукай ядкэрлэрдэ:2 томда/
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Добрый день! Получается, что отцифрованные
+                                            книги мы можем только распечатать, нельзя открыть их в планшете или телефоне
+                                            и
+                                            читать?
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Здравствуйте!!!!!Я Тукаевед очень очень
+                                            увлекатекаюсь Габдуллой Тукаем!!!!! Габдулла Тукай мой самый любимый
+                                            поэт!!!!!!
+                                            Очень нужно издание для личного пользования Тукай ядкэрлэрдэ:2 томда/
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Добрый день! Получается, что отцифрованные
+                                            книги мы можем только распечатать, нельзя открыть их в планшете или телефоне
+                                            и
+                                            читать?
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Здравствуйте!!!!!Я Тукаевед очень очень
+                                            увлекатекаюсь Габдуллой Тукаем!!!!! Габдулла Тукай мой самый любимый
+                                            поэт!!!!!!
+                                            Очень нужно издание для личного пользования Тукай ядкэрлэрдэ:2 томда/
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Добрый день! Получается, что отцифрованные
+                                            книги мы можем только распечатать, нельзя открыть их в планшете или телефоне
+                                            и
+                                            читать?
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Здравствуйте!!!!!Я Тукаевед очень очень
+                                            увлекатекаюсь Габдуллой Тукаем!!!!! Габдулла Тукай мой самый любимый
+                                            поэт!!!!!!
+                                            Очень нужно издание для личного пользования Тукай ядкэрлэрдэ:2 томда/
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Добрый день! Получается, что отцифрованные
+                                            книги мы можем только распечатать, нельзя открыть их в планшете или телефоне
+                                            и
+                                            читать?
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Здравствуйте!!!!!Я Тукаевед очень очень
+                                            увлекатекаюсь Габдуллой Тукаем!!!!! Габдулла Тукай мой самый любимый
+                                            поэт!!!!!!
+                                            Очень нужно издание для личного пользования Тукай ядкэрлэрдэ:2 томда/
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Добрый день! Получается, что отцифрованные
+                                            книги мы можем только распечатать, нельзя открыть их в планшете или телефоне
+                                            и
+                                            читать?
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Здравствуйте!!!!!Я Тукаевед очень очень
+                                            увлекатекаюсь Габдуллой Тукаем!!!!! Габдулла Тукай мой самый любимый
+                                            поэт!!!!!!
+                                            Очень нужно издание для личного пользования Тукай ядкэрлэрдэ:2 томда/
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Добрый день! Получается, что отцифрованные
+                                            книги мы можем только распечатать, нельзя открыть их в планшете или телефоне
+                                            и
+                                            читать?
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Здравствуйте!!!!!Я Тукаевед очень очень
+                                            увлекатекаюсь Габдуллой Тукаем!!!!! Габдулла Тукай мой самый любимый
+                                            поэт!!!!!!
+                                            Очень нужно издание для личного пользования Тукай ядкэрлэрдэ:2 томда/
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Добрый день! Получается, что отцифрованные
+                                            книги мы можем только распечатать, нельзя открыть их в планшете или телефоне
+                                            и
+                                            читать?
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <span class="list__num">Вопрос № 4746</span>
+                                    <h3 class="list__title list__title_sm">
+                                        <a class="list__title-link" href="#">Здравствуйте!!!!!Я Тукаевед очень очень
+                                            увлекатекаюсь Габдуллой Тукаем!!!!! Габдулла Тукай мой самый любимый
+                                            поэт!!!!!!
+                                            Очень нужно издание для личного пользования Тукай ядкэрлэрдэ:2 томда/
+                                        </a>
+                                    </h3>
+                                    <ul class="tag list__tag">
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Экономика</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">История</a>
+                                        </li>
+                                        <li class="tag__item">
+                                            <a class="tag__link" href="#">Археология</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="pagination">
+                            <li class="disabled"><a href="#">←</a></li>
+                            <li class="active">
+                                <a href="?q=%D0%A3%D1%80%D0%B0%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F+%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%BD%D0%B0%D1%8F+%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0&amp;attr=collection2_s&amp;page=1">1</a>
+                            </li>
+                            <li>
+                                <a href="?q=%D0%A3%D1%80%D0%B0%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F+%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%BD%D0%B0%D1%8F+%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0&amp;attr=collection2_s&amp;page=2">2</a>
+                            </li>
+                            <li>
+                                <a href="?q=%D0%A3%D1%80%D0%B0%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F+%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%BD%D0%B0%D1%8F+%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0&amp;attr=collection2_s&amp;page=3">3</a>
+                            </li>
+                            <li>
+                                <a href="?q=%D0%A3%D1%80%D0%B0%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F+%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%BD%D0%B0%D1%8F+%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0&amp;attr=collection2_s&amp;page=4">4</a>
+                            </li>
+                            <li>
+                                <a href="?q=%D0%A3%D1%80%D0%B0%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F+%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%BD%D0%B0%D1%8F+%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0&amp;attr=collection2_s&amp;page=5">5</a>
+                            </li>
+                            <li>
+                                <a href="?q=%D0%A3%D1%80%D0%B0%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F+%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%BD%D0%B0%D1%8F+%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0&amp;attr=collection2_s&amp;page=6">6</a>
+                            </li>
+                            <li class="disabled"><a href="#">…</a></li>
+                            <li>
+                                <a href="?q=%D0%A3%D1%80%D0%B0%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F+%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%BD%D0%B0%D1%8F+%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0&amp;attr=collection2_s&amp;page=167">167</a>
+                            </li>
+                            <li>
+                                <a href="?q=%D0%A3%D1%80%D0%B0%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F+%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%BD%D0%B0%D1%8F+%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0&amp;attr=collection2_s&amp;page=168">168</a>
+                            </li>
+                            <li>
+                                <a href="?q=%D0%A3%D1%80%D0%B0%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F+%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%BD%D0%B0%D1%8F+%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0&amp;attr=collection2_s&amp;page=2">→</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 col-md-12">
+                        <div class="ask-facet">
+                            <section class="card card_bs-2 card_facet">
+                                <div class="card__header">
+                                    <h2 class="card__title card__title_sm">Задать вопрос</h2>
+                                </div>
+                                <div class="card__body">
+                                    <p class="card__text">Ищете информацию? Подбираете литературу? Есть вопросы о работе
+                                        библиотеки? Виртуальная справочная служба поможет.</p>
+                                </div>
+                                <div class="card__footer">
+                                    <ul class="card-nav">
+                                        <li class="card-nav__item">
+                                            <a class="card-nav__link" href="#">Задать вопрос</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </section>
+                            <section class="card card_bs-2 card_mt card_facet">
+                                <div class="card__header">
+                                    <h2 class="card__title card__title_sm">Категории вопросов</h2>
+                                </div>
+                                <div class="card__body">
+                                    <ul class="card-list">
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                        <li class="card-list__item">
+                                            <a class="card-list__link" href="#">
+                                                <span class="card-list__title">Сельское и лесное хозяйство</span>
+                                                <span class="card-list__count">55</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <ul class="footer-nav">
+                <li class="footer-nav__item">
+                    <a class="footer-nav__link" href="#">О проекте</a>
+                </li>
+                <li class="footer-nav__item">
+                    <a class="footer-nav__link" href="#">Библиотеки</a>
+                </li>
+                <li class="footer-nav__item">
+                    <a class="footer-nav__link" href="#">Каталог</a>
+                </li>
+                <li class="footer-nav__item">
+                    <a class="footer-nav__link" href="#">Коллекции</a>
+                </li>
+                <li class="footer-nav__item">
+                    <a class="footer-nav__link" href="#">Отзывы</a>
+                </li>
+                <li class="footer-nav__item">
+                    <a class="footer-nav__link" href="#">Новости</a>
+                </li>
+                <li class="footer-nav__item">
+                    <a class="footer-nav__link" href="#">Спроси библиотекаря</a>
+                </li>
+                <li class="footer-nav__item">
+                    <a class="footer-nav__link" href="#">Профессионалам</a>
+                </li>
+            </ul>
+            <ul class="footer-nav">
+                <li class="footer-nav__item">
+                    <a class="footer-nav__link" href="#">Национальная электронная библиотека Республики Татарстан</a>
+                </li>
+                <li class="footer-nav__item">
+                    <a class="footer-nav__link" href="#">Министерство информатизации и связи Республики Татарстан</a>
+                </li>
+            </ul>
+        </div>
+    </footer>
+</div>
+
+<div class="nav-mask"></div>
+<div class="search-mask"></div>
+<div class="ask-mask"></div>
+
+<script src="../vendors/jquery-2.2.4.min.js"></script>
+<script src="../vendors/swiper/js/swiper.min.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>

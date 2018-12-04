@@ -1,13 +1,13 @@
 {% load active_link %}
 {% url 'pages:frontend:show' 'index'  as  about_url %}
-<ul class="menu-box menu-box_first">
-    <li><a href="{{ about_url }}" class="footer-link">{% if LANGUAGE_CODE == 'ru' %}О проекте{% elif LANGUAGE_CODE == 'tt' %}Проект турында{% else %}About{% endif %}</a></li>
-    <li><a href="{% url 'participants:frontend:index' %}" class="footer-link">{% if LANGUAGE_CODE == 'ru' %}Библиотеки{% elif LANGUAGE_CODE == 'tt' %}Китапханәләр{% else %}Libraries{% endif %}</a></li>
-    <li><a href="{% url 'ssearch:frontend:ecatalog' %}" class="footer-link">{% if LANGUAGE_CODE == 'ru' %}Каталог{% elif LANGUAGE_CODE == 'tt' %}Каталог{% else %}Electronic catalogue{% endif %}</a></li>
-    <li><a href="{% url 'ssearch:frontend:ecollection' %}" class="footer-link">{% if LANGUAGE_CODE == 'ru' %}Коллекции{% elif LANGUAGE_CODE == 'tt' %}Коллекцияләр{% else %}Electronic collections{% endif %}</a></li>
-    <li><a href="{% url 'guestbook:frontend:index' %}" class="footer-link">{% if LANGUAGE_CODE == 'ru' %}Отзывы{% elif LANGUAGE_CODE == 'tt' %}Фикерләр{% else %}Feedbacks{% endif %}</a></li>
-    <li><a href="{% url 'news:frontend:index' %}" class="footer-link">{% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}Яңалыклар{% else %}News{% endif %}</a></li>
-    <li><a href="{% url 'ask_librarian:frontend:index' %}" class="footer-link">{% if LANGUAGE_CODE == 'ru' %}Спроси библиотекаря {% elif LANGUAGE_CODE == 'tt' %}Китапханәчедән сора{% else %}Ask librarian{% endif %}</a></li>
+<ul class="footer-nav">
+    <li class="footer-nav__item"><a class="footer-nav__link" href="{{ about_url }}">{% if LANGUAGE_CODE == 'ru' %}О проекте{% elif LANGUAGE_CODE == 'tt' %}Проект турында{% else %}About{% endif %}</a></li>
+    <li class="footer-nav__item"><a class="footer-nav__link" href="{% url 'participants:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Библиотеки{% elif LANGUAGE_CODE == 'tt' %}Китапханәләр{% else %}Libraries{% endif %}</a></li>
+    <li class="footer-nav__item"><a class="footer-nav__link" href="{% url 'ssearch:frontend:ecatalog' %}">{% if LANGUAGE_CODE == 'ru' %}Каталог{% elif LANGUAGE_CODE == 'tt' %}Каталог{% else %}Electronic catalogue{% endif %}</a></li>
+    <li class="footer-nav__item"><a class="footer-nav__link" href="{% url 'ssearch:frontend:ecollection' %}">{% if LANGUAGE_CODE == 'ru' %}Коллекции{% elif LANGUAGE_CODE == 'tt' %}Коллекцияләр{% else %}Electronic collections{% endif %}</a></li>
+    <li class="footer-nav__item"><a class="footer-nav__link" href="{% url 'guestbook:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Отзывы{% elif LANGUAGE_CODE == 'tt' %}Фикерләр{% else %}Feedbacks{% endif %}</a></li>
+    <li class="footer-nav__item"><a class="footer-nav__link" href="{% url 'news:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}Яңалыклар{% else %}News{% endif %}</a></li>
+    <li class="footer-nav__item"><a class="footer-nav__link" href="{% url 'ask_librarian:frontend:index' %}">{% if LANGUAGE_CODE == 'ru' %}Спроси библиотекаря {% elif LANGUAGE_CODE == 'tt' %}Китапханәчедән сора{% else %}Ask librarian{% endif %}</a></li>
     {% url 'pages:frontend:show' 'for_professional'  as  for_professional_url %}
-    <li><a href="{{ for_professional_url }}" class="footer-link">{% if LANGUAGE_CODE == 'ru' %}Профессионалам {% elif LANGUAGE_CODE == 'tt' %}Профессионалларга{% else %} Professionals {% endif %}</a></li>
+    <li class="footer-nav__item"><a class="footer-nav__link" href="{{ for_professional_url }}">{% if LANGUAGE_CODE == 'ru' %}Профессионалам {% elif LANGUAGE_CODE == 'tt' %}Профессионалларга{% else %} Professionals {% endif %}</a></li>
 </ul>

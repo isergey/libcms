@@ -1,27 +1,44 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-{% for group in groups %}
-    <div class="item-poster">
-    {% for event in group %}
-            <div class="poster-box__item__date">
-                <img title="Календарь" title="Календарь" src="/static/dist/images/calendar.svg">
-                {{ event.start_date|date:'j E Y H:i' }}
-            </div>
-            <a class="poster-box__item__geo" href="#" title="Посмотреть на карте">
-                <img alt="Расположение на карте" src="/static/dist/images/geo_pin.svg">{{ event.library.district.name }}</a>
-            <br>
-            <a href="#" title="Камско-Устьинская ЦБС"
-               class="poster-box__item__bib-tag">{{ event.library.name }}</a>
-            <h2 class="poster-box__item__title">
-                <a href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}"
-                   title="Впервые пройдет слет молодых работников">
-                    {{ event.event_content.title }}
-                </a>
-            </h2>
-            <p class="poster-box__item__teaser">{{ event.event_content.teaser }}</p>
-            <a href="{% url 'participant_events:frontend:create_notification' event.library.code event.id %}" class="poster-box__item__btn-call" title="Напомнить">
-                {% if LANGUAGE_CODE == 'ru' %}Установить напоминание{% elif LANGUAGE_CODE == 'tt' %}Искә төшерү кую{% else %}Set reminder{% endif %}
-            </a>
-    {% endfor %}
+<div class="event-list">
+    <div class="swiper-container swiper-container-event">
+        <div class="swiper-wrapper">
+            {% for group in groups %}
+                <div class="swiper-slide">
+                    {% for event in group %}
+                        <article class="event-list__item">
+                            <div class="event-list__date-wrap">
+                                <time class="event-list__date">
+                                    <span>{{ event.start_date|date:'j' }}</span>
+                                    <span>{{ event.start_date|date:'E' }}</span>
+                                    <span>{{ event.start_date|date:'H:i' }}</span>
+                                </time>
+                            </div>
+                            <div class="event-list__detail">
+                                <h3 class="event-list__detail-title">
+                                    <a class="event-list__detail-link"
+                                       href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}">
+                                        {{ event.event_content.title }}
+                                    </a>
+                                </h3>
+                                <p class="event-list__detail-description">{{ event.event_content.teaser }}</p>
+                                <p class="event-list__detail-description">Место
+                                    проведения: {{ event.library.district.name }}, {{ event.library.name }}</p>
+                                <p class="event-list__detail-description">
+                                    <a class="event-list__detail-link" href="{% url 'participant_events:frontend:create_notification' event.library.code event.id %}">
+                                        {% if LANGUAGE_CODE == 'ru' %}Установить
+                                            напоминание{% elif LANGUAGE_CODE == 'tt' %}Искә төшерү
+                                            кую{% else %}Set reminder{% endif %}
+                                    </a>
+                                </p>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="swiper-pagination swiper-pagination-event"></div>
     </div>
-{% endfor %}
+    <div class="swiper-button-next swiper-button-next-event"></div>
+    <div class="swiper-button-prev swiper-button-prev-event"></div>
+</div>
