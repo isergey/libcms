@@ -356,6 +356,7 @@ def search(request, catalog=None, library=None):
         query = query & holders_query
 
     solr_searcher = solr.query(query)
+    solr_searcher = solr_searcher.filter(**{'org_type_s': ' AND '.join(PARTICIPANTS_SHOW_ORG_TYPES)})
 
     if 'full-text' in request.GET.getlist('attr'):
         solr_searcher = solr_searcher.highlight(fields=['full-text'])
