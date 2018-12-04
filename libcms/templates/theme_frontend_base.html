@@ -168,6 +168,26 @@
 <script src="{{ STATIC_URL }}dist/js/bvi-init-panel.js"></script>
 <script src="{{ STATIC_URL }}dist/js/bvi.js"></script>
 <script src="{{ STATIC_URL }}dist/vendors/visually/button-visually-impaired/js/js.cookie.js"></script>
+<script src="{{ STATIC_URL }}js/lodash.compat.min.js"></script>
+<script src="{{ STATIC_URL }}js/browser-polyfill.min.js"></script>
+<script src="{{ STATIC_URL }}js/browser.min.js"></script>
+<script src="{{ STATIC_URL }}js/system.js"></script>
+<script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<script>
+    System.config({
+        map: {
+            eventemitter3: '/static/js/eventemitter3.js',
+            jquery: '/static/js/jquery.min.js',
+            lodash: '/static/js/lodash.compat.min.js',
+            //'owl-carousel': '/static/dist/vendors/owl-carousel/owl.carousel.min.js',
+            react: '/static/js/react-with-addons.min.js',
+            typehead: '/static/js/typeahead.jquery.min.js',
+        },
+        baseURL: '/static/apps',
+        transpiler: 'babel'
+    });
+    System.import('base.js');
+</script>
 {% block scripts %}{% endblock %}
 
 {#<header>#}
