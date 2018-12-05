@@ -24,13 +24,14 @@
                                 <p class="event-list__detail-description">{{ event.event_content.teaser }}</p>
                                 <p class="event-list__detail-description">Место
                                     проведения: {{ event.library.district.name }}, {{ event.library.name }}</p>
-                                <p class="event-list__detail-description">
-                                    <a class="event-list__detail-link" href="{% url 'participant_events:frontend:create_notification' event.library.code event.id %}">
-                                        {% if LANGUAGE_CODE == 'ru' %}Установить
-                                            напоминание{% elif LANGUAGE_CODE == 'tt' %}Искә төшерү
-                                            кую{% else %}Set reminder{% endif %}
-                                    </a>
-                                </p>
+
+                                <a class="event-list__detail-description-link"
+                                   href="{% url 'participant_events:frontend:create_notification' event.library.code event.id %}">
+                                    {% if LANGUAGE_CODE == 'ru' %}Установить
+                                        напоминание{% elif LANGUAGE_CODE == 'tt' %}Искә төшерү
+                                        кую{% else %}Set reminder{% endif %}
+                                </a>
+
                             </div>
                         </article>
                     {% endfor %}

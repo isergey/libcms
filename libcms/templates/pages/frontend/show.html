@@ -55,63 +55,6 @@
                 </div>
             </div>
         </div>
-
-{#        <div class="container">#}
-{#            <ul class="bread__crumbs">#}
-{#                <li><a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">#}
-{#                    {% if LANGUAGE_CODE == 'ru' %}#}
-{#                        Главная#}
-{#                    {% elif LANGUAGE_CODE == 'tt' %}#}
-{#                        Төп бит#}
-{#                    {% else %}#}
-{#                        Home#}
-{#                    {% endif %}#}
-{#                </a></li>#}
-{#                {% for ancestor in content.page.get_ancestors_titles %}#}
-{#                    <li>#}
-{#                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">#}
-{#                    </li>#}
-{#                    <li>#}
-{#                        <a href="{% url 'pages:frontend:show' ancestor.url_path %}" class="bread__crumbs_link">#}
-{#                            {% if not ancestor.title %}#}
-{#                                {{ ancestor }}#}
-{#                            {% else %}#}
-{#                                {{ ancestor.title }}#}
-{#                            {% endif %}#}
-{#                        </a>#}
-{#                    </li>#}
-{#                {% endfor %}#}
-{#                <li>#}
-{#                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">#}
-{#                </li>#}
-{#                <li>#}
-{#                    <a title="{{ content.title }}" class="bread__crumbs_link bread__crumbs_link_active">#}
-{#                        {% if not content.title %}#}
-{#                            заглавие страницы для этого языка не указано.#}
-{#                        {% else %}#}
-{#                            {{ content.title }}#}
-{#                        {% endif %}#}
-{#                    </a>#}
-{#                </li>#}
-{#            </ul>#}
-{#        </div>#}
-{#        <hr class="footer-hr">#}
-{#        <div class="container content-page">#}
-{#            <div class="row">#}
-{#                <div class="col-12">#}
-{#                    <h1 class="content-page__title">#}
-{#                        {% if not content.title %}#}
-{#                            заглавие страницы для этого языка не указано.#}
-{#                        {% else %}#}
-{#                            1{{ content.title }}#}
-{#                        {% endif %}#}
-{#                    </h1>#}
-{#                    <div class="content-page__text">#}
-{#                        {{ content.content|safe }}#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
     </main>
 {% endblock %}
 

@@ -1,19 +1,20 @@
 {% load mptt_tags %}
 {% if nodes %}
-    <ul class="lib-info__list">
-
+    <nav class="lib-nav-wrap">
+        <ul class="lib-nav">
             {% recursetree nodes %}
-                <li {% if path == node.url  %} class="active" {% endif %}>
-                    <a href="{{ node.url }}" {% if node.open_in_new %} target="_blank" {% endif %}>{{ node.title }}</a>
-                </li>
-                {% if not node.is_leaf_node %}
+                <li {% if node.level == 1 %}class="lib-nav__item"{% endif %}>
+                    <a class="{% if node.level == 1 %}lib-nav__link {% if path == node.url %}lib-nav__link_active{% endif %}{% elif node.level == 2 %}{% if path == node.url %}active{% endif %}{% endif %}"
+                       href="{{ node.url }}" {% if node.open_in_new %} target="_blank"
+                       rel="nofollow, noopener" {% endif %}>{{ node.title }}</a>
+                    {% if not node.is_leaf_node %}
                         <ul>
-                        {{ children }}
+                            {{ children }}
                         </ul>
-                {% endif %}
+                    {% endif %}
+                </li>
             {% endrecursetree %}
-
-    </ul>
+        </ul>
+    </nav>
 {% else %}<p>Информация отсутствует</p>
 {% endif %}
-

@@ -6,14 +6,16 @@
 <html>
 <head>
     <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#4270ba">
+
     <title>{% block title %}Национальная электронная библиотека Республики Татарстан{% endblock %}</title>
+
     <meta name="description" content>
     <meta name="keywords" content>
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     <link rel="icon" type="image/ico" href="{{ STATIC_URL }}theme/favicon.ico"/>
-    <!--[if lte IE 10]>
-        <script src="{{ STATIC_URL }}js/html5shiv-printshiv.min.js"></script>
-    <![endif]-->
     <link rel="stylesheet" href="{{ STATIC_URL }}dist/styles/index.css">
 {#    <script src="{{ STATIC_URL }}js/jquery.min.js"></script>#}
     {#    <script src="{{ STATIC_URL }}dist/vendors/bootstrap/bootstrap.min.js"></script>#}
@@ -168,6 +170,8 @@
 <script src="{{ STATIC_URL }}dist/js/bvi-init-panel.js"></script>
 <script src="{{ STATIC_URL }}dist/js/bvi.js"></script>
 <script src="{{ STATIC_URL }}dist/vendors/visually/button-visually-impaired/js/js.cookie.js"></script>
+<script src="//yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
+        <script src="//yastatic.net/share2/share.js"></script>
 <script src="{{ STATIC_URL }}js/lodash.compat.min.js"></script>
 <script src="{{ STATIC_URL }}js/browser-polyfill.min.js"></script>
 <script src="{{ STATIC_URL }}js/browser.min.js"></script>
@@ -189,105 +193,6 @@
     System.import('base.js');
 </script>
 {% block scripts %}{% endblock %}
-
-{#<header>#}
-{#    <div class="container">#}
-{#        <div class="row">#}
-{##}
-{#            <div class="col-8">#}
-{#                <a href="{% url 'index:frontend:index' %}" title="На главную!">#}
-{#                    <div class="logo">#}
-{#                        <div class="logo__img">#}
-{#                            <img src="{{ STATIC_URL }}dist/images/logo.png">#}
-{#                        </div>#}
-{#                        <div class="logo__text">#}
-{#                            {% if LANGUAGE_CODE == 'ru' %}<span>Национальная электронная библиотека</span><br>Республики#}
-{#                                Татарстан{% elif LANGUAGE_CODE == 'tt' %}#}
-{#                                <span>Татарстан Республикасының Милли<br> электрон китапханәсе</span>{% else %}#}
-{#                                <span>National Electronic Library of the</span><br>Republic of Tatarstan{% endif %}#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </a>#}
-{##}
-{#                <div class="language">#}
-{#                    <a href="/ru#}
-{#                            {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"#}
-{#                       class="language__btn {% if "/ru" in request.path %}language__btn_active{% endif %}"#}
-{#                       title="Русский">Рус</a>#}
-{#                    <a href="/tt#}
-{#                            {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"#}
-{#                       class="language__btn {% if "/tt" in request.path %}language__btn_active{% endif %}"#}
-{#                       title="Татарский">Тат</a>#}
-{#                    <a href="/en#}
-{#                            {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"#}
-{#                       class="language__btn {% if "/en" in request.path %}language__btn_active{% endif %}"#}
-{#                       title="English">Eng</a>#}
-{#                </div>#}
-{#            </div>#}
-{#            {% include 'cabinet.html' %}#}
-{#        </div>#}
-{#    </div>#}
-{#</header>#}
-{##}
-{##}
-{#<footer>#}
-{#    <hr class="footer-hr">#}
-{#    <div class="container">#}
-{#        <div class="row">#}
-{#            <div class="col-12">#}
-{#                {% include 'main_menu_footer.html' %}#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#    <hr class="footer-hr">#}
-{#    <div class="container">#}
-{#        <div class="row">#}
-{#            <div class="col-6">#}
-{#                <a class="footer-logo__bib" href="{% url 'index:frontend:index' %}" title="На главную!"><img#}
-{#                        src="{{ STATIC_URL }}dist/images/logo_bib.png"#}
-{#                        alt="тайтл"></a>#}
-{#                <a class="footer-logo__min" href="http://mic.tatarstan.ru/" target="_blank"><img#}
-{#                        src="{{ STATIC_URL }}dist/images/logo_min.png"#}
-{#                        alt="Министерство информатизации и связи Республики Татарстан"></a>#}
-{##}
-{#                <!-- Yandex.Metrika informer -->#}
-{#                <a href="https://metrika.yandex.ru/stat/?id=28345621&amp;from=informer"#}
-{#                   target="_blank" rel="nofollow">#}
-{#                    <img src="//bs.yandex.ru/informer/28345621/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"#}
-{#                         style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика"#}
-{#                         title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)"#}
-{#                         onclick="try{Ya.Metrika.informer({i:this,id:28345621,lang:'ru'});return false}catch(e){}"/>#}
-{#                </a>#}
-{#                <!-- /Yandex.Metrika informer -->#}
-{#            </div>#}
-{#            <div class="col-6">#}
-{#                <a class="footer-logo__ask-lib" href="{% url 'ask_librarian:frontend:ask' %}"#}
-{#                   title="Спроси библиотекаря">#}
-{#                    {% if LANGUAGE_CODE == 'ru' %}#}
-{#                        Задать вопрос библиотекарю#}
-{#                    {% elif LANGUAGE_CODE == 'tt' %}#}
-{#                        Китапханәчегә сорау бирү#}
-{#                    {% else %}#}
-{#                        Ask question#}
-{#                    {% endif %}#}
-{#                </a>#}
-{#                <a class="footer-logo__ask-all" href="{% url 'ask_librarian:frontend:index' %}"#}
-{#                   title="Спроси библиотекаря все вопросы">#}
-{#                    {% if LANGUAGE_CODE == 'ru' %}#}
-{#                        Все вопросы#}
-{#                    {% elif LANGUAGE_CODE == 'tt' %}#}
-{#                        Барлык сораулар#}
-{#                    {% else %}#}
-{#                        All questions#}
-{#                    {% endif %}#}
-{#                </a>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{##}
-{#</footer>#}
-
-
 </body>
 </html>
 <!-- app mac1 {{ request.session.ap_mac }} -->

@@ -6,145 +6,315 @@
 {#{% load news_tags %}#}
 {#{% load events_tags %}#}
 {#{% load ssearch_tags %}#}
-{#{% load participiants_tags %}#}
+{% load participiants_tags %}
 {#{% load cache %}#}
 {% get_current_language as LANGUAGE_CODE %}
+{#{% get_library_avatar_src library.id  as avatar_src %}#}
 {% block title %}{{ library.name }}{% endblock %}
 {% block content %}
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
-    </nav>
     <main>
         <div class="container">
-            <ul class="bread__crumbs">
-                <li>
-                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                        Главная
-                    </a>
-                </li>
-                {% for ancestor in ancestors %}
-                    <li>
-                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                    </li>
-                    <li><a href="{% url 'participant_site:frontend:index' ancestor.code %}"
-                           class="bread__crumbs_link">{{ ancestor.name }}</a></li>
-                {% endfor %}
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a class="bread__crumbs_link bread__crumbs_link_active">
-                        {{ library.name }}
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <hr class="footer-hr">
-        <div class="container content-page">
-            <div class="row">
-                <div class="col-8">
-                    <h1 class="content-page__title">{{ library.name }}</h1>
-
-                    <div id="map-lib-item" class="map">
+            {% block content_library-crumb %}
+                <nav class="crumb">
+                    <ol class="crumb__list">
+                        <li>
+                            <a href="{% url 'index:frontend:index' %}">
+                                Главная
+                            </a>
+                        </li>
+                        {% for ancestor in ancestors %}
+                            <li>
+                                <a href="{% url 'participant_site:frontend:index' ancestor.code %}">
+                                    {{ ancestor.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                        <li>
+                         <span class="crumb__current">
+                            {{ library.name }}
+                        </span>
+                        </li>
+                    </ol>
+                </nav>
+            {% endblock %}
+            <div class="row lib-detail">
+                <div class="col-lg-3 col-md-4 col-sm-12">
+                    <div class="lib-detail__img-wrap">
+                        <span class="lib-detail__img-wrap-icon icon-double-arrow"></span>
+                        <img class="lib-detail__img"
+                             src="{{ MEDIA_URL }}{{ avatar_src }}"
+                             alt="{{ library.name }}">
                     </div>
-                    <div class="content-page__text">
-                        <p><strong>Сайт:</strong>
-                            {% if library.http_service %}
-                                <a target="_blank"
-                                   href="{{ library.http_service }}">{{ library.http_service }}</a>
-                            {% else %}
-                                {% url 'participant_site:frontend:index' library.code as library_site_address %}
-                                <a href="http://{{ request.META.HTTP_HOST }}{{ library_site_address }}">http://{{ request.META.HTTP_HOST }}{{ library_site_address }}</a>
-                            {% endif %}
-                        </p>
-
-                        <p><strong>E-mail:</strong> <a
-                                href="mailto:{{ library.mail|lower }}">{{ library.mail|lower }}</a></p>
-
-                        <p><strong>Адрес:</strong> {{ library.postal_address|default:'не указан' }}</p>
-
-                        <p><strong>Телефон:</strong> {{ library.phone|default:'не указан' }}</p>
-                    </div>
-
-                    <h1 class="content-page__title">Новости библиотеки <a
-                            href="{% url 'participant_news:frontend:index' library.code %}" class="news-box__all"
-                            title="Посмотреть архив новостей">Архив новостей</a></h1>
-
-                    {% participant_news_feed library.id '4' %}
-
-{#                    <h1 class="content-page__title">Последние поступления в библиотеку</h1>#}
-{##}
-{#                    {% participant_income library.code %}#}
-
                 </div>
-                <div class="col-4">
-                    <div class="facets-container">
-                        <div class="facets-container__item">
-                            <div class="facet">
-                                <div class="facet__header">
-                                    <h4 class="facet__title">Информация</h4>
-                                </div>
-                                <div class="facet__body">
-                                    {% include 'participant_site/frontend/site_menu.html' %}
-                                </div>
-                            </div>
+                <div class="col-lg-4 col-md-8 col-sm-12">
+                    <div class="lib-detail__info">
+                        <h1 class="lib-detail__title">
+                            <a class="lib-detail__title-link"
+                               href="{% url 'participant_site:frontend:index' library.code %}"
+                               title="На главную страницу библиотеки">
+                                {{ library.name }}
+                            </a>
+                        </h1>
+                        {% for ancestor in ancestors %}
+                            <p class="lib-detail__title-sub"> {{ ancestor.name }}</p>
+                        {% endfor %}
+                        <a class="lib-detail__link" href="{% url 'ssearch:frontend:index' %}?library={{ library.code }}"
+                           target="_blank">Поиск в каталоге</a>
+                    </div>
+                </div>
+                <ul class="lib-hot-nav">
+                    <li class="lib-hot-nav__item">
+                        <button id="libraryMenuBtn" class="lib-hot-nav__link">Меню</button>
+                    </li>
+                    <li class="lib-hot-nav__item">
+                        <button id="libraryContactBtn" class="lib-hot-nav__link">Контакты</button>
+                    </li>
+                </ul>
+                <div class="col-lg-5 col-md-12">
+                    <div class="lib-contact">
+                        <div class="lib-contact__col">
+                            <ul class="lib-contact-nav">
+                                <li class="lib-contact-nav__item">
+                                    <span class="lib-contact-nav__title">Сайт:</span>
+                                    {% if library.http_service %}
+                                        <a class="lib-contact-nav__link" target="_blank" rel="nofollow, noopener"
+                                           href="{{ library.http_service }}">{{ library.http_service }}</a>
+                                    {% else %}
+                                        {% url 'participant_site:frontend:index' library.code as library_site_address %}
+                                        <a href="http://{{ request.META.HTTP_HOST }}{{ library_site_address }}"
+                                           class="lib-contact-nav__link" target="_blank" rel="nofollow, noopener">http://{{ request.META.HTTP_HOST }}{{ library_site_address }}</a>
+                                    {% endif %}
+                                </li>
+                                <li class="lib-contact-nav__item">
+                                    <span class="lib-contact-nav__title">Телефон:</span>
+                                    <span class="lib-contact-nav__text">{{ library.phone|default:'не указан' }}</span>
+                                    {#                                    <a class="lib-contact-nav__link"#}
+                                    {#                                       href="tel:{{ library.phone|default:'' }}">{{ library.phone|default:'не указан' }}</a>#}
+                                </li>
+                                <li class="lib-contact-nav__item">
+                                    <span class="lib-contact-nav__title">E-mail:</span>
+                                    <a class="lib-contact-nav__link"
+                                       href="mailto:{{ library.mail|lower }}">{{ library.mail|lower }}</a>
+                                </li>
+                                <li class="lib-contact-nav__item">
+                                    <span class="lib-contact-nav__title">Адрес:</span>
+                                    <span class="lib-contact-nav__text">{{ library.postal_address|default:'не указан' }}</span>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="facets-container__item">
-                            <div class="facet">
-                                <div class="facet__header">
-                                    <h4 class="facet__title">Афиша</h4>
-                                </div>
-                                <div class="">
-                                    <div class="poster-box">
-                                        <a href="{% url 'participant_events:frontend:subscribe' library.code %}"
-                                           class="poster-box__all poster-box__all_margin">
-                                            Подписаться на события библиотеки</a>
-                                        <br><br>
-                                        <a href="{% url 'participant_events:frontend:index' library.code %}"
-                                           class="poster-box__all poster-box__all_margin"
-                                           title="Посмотреть все мероприятия">Все мероприятия</a>
-                                        {% participant_events_nearest library.id '5' %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="facets-container__item">
-                            <div class="facet">
-                                <div class="facet__header">
-                                    <h4 class="facet__title">Календарь событий</h4>
-                                </div>
-                                <div class="facet__body">
-                                    <a href="{% url 'participant_events:frontend:index' library.code %}"
-                                       class="poster-box__all">
-                                        Другие события</a>
-                                    {% participant_events_calendar library %}
-
-                                </div>
-                            </div>
+                        <div class="lib-contact__col">
+                            {#                            <div id="map-ymaps"></div>#}
+                            <div id="map-lib-item"></div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-12">
+                    {% include 'participant_site/frontend/site_menu.html' %}
+                </div>
+                {% block content_library %}
+                    <div class="col-lg-4 col-md-12">
+                        <section class="card-transparent">
+                            <header class="card-transparent__header">
+                                <h2 class="card-transparent__title">Новости</h2>
+                                <a class="card-transparent__link"
+                                   href="{% url 'participant_news:frontend:index' library.code %}">Архив новостей</a>
+                            </header>
+                            {% participant_news_feed library.id '6' %}
+                        </section>
+                    </div>
+                    <div class="col-lg-5 col-md-12">
+                        <section class="card-transparent">
+                            <header class="card-transparent__header">
+                                <h2 class="card-transparent__title">Афиша</h2>
+                                <a class="card-transparent__link"
+                                   href="{% url 'participant_events:frontend:index' library.code %}">Все мероприятия</a>
+                                <a class="card-transparent__link"
+                                   href="{% url 'participant_events:frontend:subscribe' library.code %}">Подписаться</a>
+                            </header>
+                            {% participant_events_nearest library.id '5' %}
+                        </section>
+                    </div>
+                {% endblock %}
+            </div>
+            <div class="lib-banner">
+                <div class="lib-banner__item">
+                    <a class="lib-banner__link" href="#" target="_blank" rel="nofollow, noopener">
+                        <img class="lib-banner__img" src="http://www.pravda-tv.ru/wp-content/uploads/2018/09/3u-12.jpg"
+                             alt="Баннер">
+                    </a>
+                </div>
+                <div class="lib-banner__item">
+                    <a class="lib-banner__link" href="#" target="_blank" rel="nofollow, noopener">
+                        <img class="lib-banner__img" src="http://www.pravda-tv.ru/wp-content/uploads/2018/09/3u-12.jpg"
+                             alt="Баннер">
+                    </a>
+                </div>
+                <div class="lib-banner__item">
+                    <a class="lib-banner__link" href="#" target="_blank" rel="nofollow, noopener">
+                        <img class="lib-banner__img" src="http://www.pravda-tv.ru/wp-content/uploads/2018/09/3u-12.jpg"
+                             alt="Баннер">
+                    </a>
+                </div>
+                <div class="lib-banner__item">
+                    <a class="lib-banner__link" href="#" target="_blank" rel="nofollow, noopener">
+                        <img class="lib-banner__img" src="http://www.pravda-tv.ru/wp-content/uploads/2018/09/3u-12.jpg"
+                             alt="Баннер">
+                    </a>
+                </div>
+            </div>
         </div>
-
     </main>
+
+
+
+
+
+
+
+
+
+
+
+    {#    <main>#}
+    {#        <div class="container">#}
+    {#            <ul class="bread__crumbs">#}
+    {#                <li>#}
+    {#                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">#}
+    {#                        Главная#}
+    {#                    </a>#}
+    {#                </li>#}
+    {#                {% for ancestor in ancestors %}#}
+    {#                    <li>#}
+    {#                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">#}
+    {#                    </li>#}
+    {#                    <li><a href="{% url 'participant_site:frontend:index' ancestor.code %}"#}
+    {#                           class="bread__crumbs_link">{{ ancestor.name }}</a></li>#}
+    {#                {% endfor %}#}
+    {#                <li>#}
+    {#                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">#}
+    {#                </li>#}
+    {#                <li>#}
+    {#                    <a class="bread__crumbs_link bread__crumbs_link_active">#}
+    {#                        {{ library.name }}#}
+    {#                    </a>#}
+    {#                </li>#}
+    {#            </ul>#}
+    {#        </div>#}
+    {#        <hr class="footer-hr">#}
+    {#        <div class="container content-page">#}
+    {#            <div class="row">#}
+    {#                <div class="col-8">#}
+    {#                    <h1 class="content-page__title">{{ library.name }}</h1>#}
+    {##}
+    {#                    <div id="map-lib-item" class="map">#}
+    {#                    </div>#}
+    {#                    <div class="content-page__text">#}
+    {#                        <p><strong>Сайт:</strong>#}
+    {#                            {% if library.http_service %}#}
+    {#                                <a target="_blank"#}
+    {#                                   href="{{ library.http_service }}">{{ library.http_service }}</a>#}
+    {#                            {% else %}#}
+    {#                                {% url 'participant_site:frontend:index' library.code as library_site_address %}#}
+    {#                                <a href="http://#}
+    {##}
+    {##}
+    {#                                        #}
+    {#                                        {{ request.META.HTTP_HOST }}{{ library_site_address }}">http://{{ request.META.HTTP_HOST }}{{ library_site_address }}</a>#}
+    {#                            {% endif %}#}
+    {#                        </p>#}
+    {##}
+    {#                        <p><strong>E-mail:</strong> <a#}
+    {#                                href="mailto:{{ library.mail|lower }}">{{ library.mail|lower }}</a></p>#}
+    {##}
+    {#                        <p><strong>Адрес:</strong> {{ library.postal_address|default:'не указан' }}</p>#}
+    {##}
+    {#                        <p><strong>Телефон:</strong> {{ library.phone|default:'не указан' }}</p>#}
+    {#                    </div>#}
+    {##}
+    {#                    <h1 class="content-page__title">Новости библиотеки <a#}
+    {#                            href="{% url 'participant_news:frontend:index' library.code %}" class="news-box__all"#}
+    {#                            title="Посмотреть архив новостей">Архив новостей</a></h1>#}
+    {##}
+    {#                    {% participant_news_feed library.id '4' %}#}
+    {##}
+    {#                    <h1 class="content-page__title">Последние поступления в библиотеку</h1>#}
+    {##}
+    {#                    {% participant_income library.code %}#}
+    {##}
+    {#                </div>#}
+    {#                <div class="col-4">#}
+    {#                    <div class="facets-container">#}
+    {#                        <div class="facets-container__item">#}
+    {#                            <div class="facet">#}
+    {#                                <div class="facet__header">#}
+    {#                                    <h4 class="facet__title">Информация</h4>#}
+    {#                                </div>#}
+    {#                                <div class="facet__body">#}
+    {#                                    {% include 'participant_site/frontend/site_menu.html' %}#}
+    {#                                </div>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                        <div class="facets-container__item">#}
+    {#                            <div class="facet">#}
+    {#                                <div class="facet__header">#}
+    {#                                    <h4 class="facet__title">Афиша</h4>#}
+    {#                                </div>#}
+    {#                                <div class="">#}
+    {#                                    <div class="poster-box">#}
+    {#                                        <a href="{% url 'participant_events:frontend:subscribe' library.code %}"#}
+    {#                                           class="poster-box__all poster-box__all_margin">#}
+    {#                                            Подписаться на события библиотеки</a>#}
+    {#                                        <br><br>#}
+    {#                                        <a href="{% url 'participant_events:frontend:index' library.code %}"#}
+    {#                                           class="poster-box__all poster-box__all_margin"#}
+    {#                                           title="Посмотреть все мероприятия">Все мероприятия</a>#}
+    {#                                        {% participant_events_nearest library.id '5' %}#}
+    {#                                    </div>#}
+    {#                                </div>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                        <div class="facets-container__item">#}
+    {#                            <div class="facet">#}
+    {#                                <div class="facet__header">#}
+    {#                                    <h4 class="facet__title">Календарь событий</h4>#}
+    {#                                </div>#}
+    {#                                <div class="facet__body">#}
+    {#                                    <a href="{% url 'participant_events:frontend:index' library.code %}"#}
+    {#                                       class="poster-box__all">#}
+    {#                                        Другие события</a>#}
+    {#                                    {% participant_events_calendar library %}#}
+    {##}
+    {#                                </div>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {##}
+    {#    </main>#}
+
+{% endblock %}
+
+{% block scripts %}
     <script type="text/javascript">
         ymaps.ready(init);
         var myMap;
         var coords = [{{ library.latitude|safe|default:'0.0' }}, {{ library.longitude|safe|default:'0.0' }}];
+
         function init() {
             orgMap = new ymaps.Map($('.map')[0], {
                 center: coords,
                 zoom: 12
             });
             orgPlacemark = new ymaps.Placemark(
-                    coords,
-                    {
-                        content: '{{ library.name }}',
-                        balloonContent: '<p>Адрес: {{ library.postal_address|linebreaks|default:'не указан' }}</p>'
-                    }
+                coords,
+                {
+                    content: '{{ library.name }}',
+                    balloonContent: '<p>Адрес: {{ library.postal_address|linebreaks|default:'не указан' }}</p>'
+                }
             );
             orgMap.geoObjects.add(orgPlacemark);
         }
@@ -171,10 +341,10 @@
             });
 
             var n = d.getElementsByTagName("script")[0],
-                    s = d.createElement("script"),
-                    f = function () {
-                        n.parentNode.insertBefore(s, n);
-                    };
+                s = d.createElement("script"),
+                f = function () {
+                    n.parentNode.insertBefore(s, n);
+                };
             s.type = "text/javascript";
             s.async = true;
             s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";

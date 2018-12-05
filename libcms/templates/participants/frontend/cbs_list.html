@@ -2,115 +2,150 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 {% block title %}
-{% if LANGUAGE_CODE == 'ru' %}
-    Библиотеки
-{% elif LANGUAGE_CODE == 'tt' %}
-    Китапханәләре
-{% else %}
-    Libraries
-{% endif %}
+    {% if LANGUAGE_CODE == 'ru' %}
+        Библиотеки
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Китапханәләре
+    {% else %}
+        Libraries
+    {% endif %}
 {% endblock %}
 {% block content %}
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
-    </nav>
     <main>
         <div class="container">
-            <ul class="bread__crumbs">
-                <li><a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                    {% if LANGUAGE_CODE == 'ru' %}
-                        Главная
-                    {% elif LANGUAGE_CODE == 'tt' %}
-                        Төп бит
-                    {% else %}
-                        Home
-                    {% endif %}
-                </a></li>
-
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a class="bread__crumbs_link bread__crumbs_link_active">
-                        {% if LANGUAGE_CODE == 'ru' %}
-                            Библиотеки
-                        {% elif LANGUAGE_CODE == 'tt' %}
-                            Китапханәләре
-                        {% else %}
-                            Libraries
-                        {% endif %}
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <hr class="footer-hr">
-        <div class="container content-page">
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li>
+                         <span class="crumb__current">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Библиотеки
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Китапханәләре
+                            {% else %}
+                                Libraries
+                            {% endif %}
+                        </span>
+                    </li>
+                </ol>
+            </nav>
             <div class="row">
-                <div class="col-12">
-                    <h1 class="content-page__title">
-                        {% if LANGUAGE_CODE == 'ru' %}
-                            Библиотеки Республики Татарстан
-                        {% elif LANGUAGE_CODE == 'tt' %}
-                            Татарстан Республикасының китапханәләре
-                        {% else %}
-                            Libraries of the Republic of Tatarstan
-                        {% endif %}
-                    </h1>
-
-                    <div class="content-page__text">
-                        <p>
-                            <a href="#list">
-                                {% if LANGUAGE_CODE == 'ru' %}
-                                    Список
-                                {% elif LANGUAGE_CODE == 'tt' %}
-                                    Исемлек
-                                {% else %}
-                                    List
-                                {% endif %}
-                            </a>
-                        </p>
+                <div class="col-lg-12">
+                    <div class="content">
+                        <h1 class="content__title">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Библиотеки Республики Татарстан
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Татарстан Республикасының китапханәләре
+                            {% else %}
+                                Libraries of the Republic of Tatarstan
+                            {% endif %}
+                        </h1>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div id="lib-finder">
-            <div class="loader-box" style="text-align: center; padding: 40px;">
-                <img src="{{ STATIC_URL }}dist/images/logo.png">
-            </div>
-        </div>
-        <div class="container content-page">
-            <div class="row">
-                <div class="col-12">
-                    <a name="list"></a>
+                    <div data-tab-component>
+                        <ul class="tab-list">
+                            <li class="tab-item">
+                                <a class="tab-link" href="#library-map">
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        Карта
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Карта
+                                    {% else %}
+                                        Map
+                                    {% endif %}
+                                </a>
+                            </li>
+                            <li class="tab-item">
+                                <a class="tab-link" href="#library-list">
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        Список
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Исемлек
+                                    {% else %}
+                                        List
+                                    {% endif %}
+                                </a>
+                            </li>
+                        </ul>
+                        <section id="library-map" class="tab-panel">
+                            <style>
+                                .abc-crumbs__list__hover-box {
+                                    display: none;
+                                    position: fixed;
+                                    height: auto;
+                                    width: 300px;
+                                    border-radius: 5px;
+                                    font-weight: 400;
+                                    line-height: 26px;
+                                    text-align: left;
+                                }
 
-                    <div class="result-container">
-                        {% for cbs in  cbs_list %}
-                            <div class="result">
-                                <div class="result__info">
-                                    <h3>
-                                        {% if cbs.republican %}
-                                            <a href="{% url 'participant_site:frontend:index' cbs.code %}">{{ cbs.name }}</a>
-                                        {% else %}
-                                            <a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}</a>
-                                        {% endif %}
-                                    </h3>
+                                .abc-crumbs__list__hover-box_show {
+                                    display: block;
+                                }
 
-                                    <a class="result__detail__print"
-                                       href="{% url 'ssearch:frontend:index' %}?library={{ cbs.code }}" target="_blank">
-                                        Поиск в каталоге
-                                    </a>
+                                .abc-crumbs__list__hover-box, .tt-dropdown-menu {
+                                    z-index: 2;
+                                    background-color: #fff;
+                                    box-shadow: 0 19px 38px rgba(0, 0, 0, .3), 0 15px 12px rgba(0, 0, 0, .22);
+                                }
+                            </style>
+                            <div id="lib-finder">
+                                <div class="lds-roller-wrap-center">
+                                    <div class="lds-roller">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
                                 </div>
                             </div>
-                        {% empty %}
-                            Список еще не сформирован
-                        {% endfor %}
+                        </section>
+                        <section id="library-list" class="tab-panel" hidden>
+                            <div class="card">
+                                <div class="card__body">
+                                    <div class="list">
+                                        {% for cbs in  cbs_list %}
+                                            <div class="list__item">
+                                                <div class="list__col-text">
+                                                    <h3 class="list__title">
+                                                        {% if cbs.republican %}
+                                                            <a class="list__title-link"
+                                                               href="{% url 'participant_site:frontend:index' cbs.code %}">{{ cbs.name }}</a>
+                                                        {% else %}
+                                                            <a class="list__title-link"
+                                                               href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}</a>
+                                                        {% endif %}
+                                                    </h3>
+                                                    <a class="list__link"
+                                                       href="{% url 'ssearch:frontend:index' %}?library={{ cbs.code }}"
+                                                       target="_blank">Поиск в каталоге</a>
+                                                </div>
+                                            </div>
+                                        {% empty %}
+                                            Список еще не сформирован
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </div>
             </div>
-
-
         </div>
     </main>
 {% endblock %}

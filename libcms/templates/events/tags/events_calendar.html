@@ -1,12 +1,15 @@
-
-<table class="cal-table cal-table__margin-news">
-<caption class="cal-caption">
-    <form class="event_calendar_filter" name="event_calendar_filter" action="" method="POST">{% csrf_token %}
-    {{ form.month }}
-    {{ form.year }}
+<form class="event_calendar_filter" name="event_calendar_filter" action="" method="POST">{% csrf_token %}
+    <div class="row">
+        <div class="col-lg-6">
+            {{ form.month }}
+        </div>
+        <div class="col-lg-6">
+            {{ form.year }}
+        </div>
+    </div>
 </form>
-</caption>
-    <thead>
+<table class="calendar">
+    <thead class="days-week">
     <tr>
         <th>Пн</th>
         <th>Вт</th>
@@ -14,26 +17,25 @@
         <th>Чт</th>
         <th>Пт</th>
         <th>Сб</th>
-        <th>ВС</th>
+        <th>Вс</th>
     </tr>
     </thead>
-    <tbody class="cal-body">
-
+    <tbody>
     {% for week in calendar %}
         <tr>{% for day in week %}
             {% if day.day != 0 %}
                 {% if day.today and not day.events %}
-                    <td class="cal-today">
+                    <td class="act">
                 {% endif %}
             {% if day.events %}
-                <td class="">
+                <td class="act">
             {% endif %}
             {% if not day.today and not day.events %}
-                <td>
+                <td  class="act">
             {% endif %}
 
             {% if  day.events %}
-                <a class="cal-check"
+                <a class="evnt"
                    href="{% url 'events:frontend:events_by_date'  year month day.day %}"
                    title="Показать события дня"> {{ day.day }}</a>
 
@@ -50,58 +52,5 @@
         {% endfor %}
         </tr>
     {% endfor %}
-
     </tbody>
 </table>
-
-{#<form class="event_calendar_filter" name="event_calendar_filter" action="" method="POST">{% csrf_token %}#}
-{#    {{ form.month }}#}
-{#    {{ form.year }}#}
-{#</form>#}
-{#<table class="event_calendar" cellspacing="0">#}
-{#    <thead>#}
-{#    <tr>#}
-{#        <th>Пн</th>#}
-{#        <th>Вт</th>#}
-{#        <th>Ср</th>#}
-{#        <th>Чт</th>#}
-{#        <th>Пт</th>#}
-{#        <th>Сб</th>#}
-{#        <th>ВС</th>#}
-{#    </tr>#}
-{#    </thead>#}
-{#    <tbody>#}
-{##}
-{#    {% for week in calendar %}#}
-{#        <tr>{% for day in week %}#}
-{#            {% if day.day != 0 %}#}
-{#                {% if day.today and not day.events %}#}
-{#                    <td class="today">#}
-{#                {% endif %}#}
-{#            {% if day.events %}#}
-{#                <td class="">#}
-{#            {% endif %}#}
-{#            {% if not day.today and not day.events %}#}
-{#                <td>#}
-{#            {% endif %}#}
-{##}
-{#            {% if  day.events %}#}
-{#                <a class='awesome blue' href="{% url 'events:frontend:events_by_date'  year month day.day %}"#}
-{#                   title="Показать события дня"> {{ day.day }}</a>#}
-{##}
-{#            {% else %}#}
-{#                {{ day.day }}#}
-{#            {% endif %}#}
-{#            {% else %}#}
-{##}
-{#                <td class="padding">#}
-{#            {% endif %}#}
-{#        </td>#}
-{#            {% if day.today %}#}
-{#            {% endif %}#}
-{#        {% endfor %}#}
-{#        </tr>#}
-{#    {% endfor %}#}
-{##}
-{#    </tbody>#}
-{#</table>#}

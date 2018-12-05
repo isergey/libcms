@@ -1,102 +1,52 @@
-{% extends 'index/frontend/index.html' %}
+{% extends 'participant_site/frontend/index.html' %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-{% block content %}
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
-    </nav>
-    <main>
-        <div class="container">
-            <ul class="bread__crumbs">
-                <li>
-                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                        Главная
-                    </a>
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <a href="{% url 'participant_site:frontend:index' news.library.code %}" class="bread__crumbs_link">
+
+{% block content_library-crumb %}
+    <nav class="crumb">
+        <ol class="crumb__list">
+            <li>
+                <a href="{% url 'index:frontend:index' %}">
+                    Главная
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'participant_site:frontend:index' news.library.code %}">
                     {{ news.library.name }}
                 </a>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <a href="{% url 'participant_news:frontend:index' news.library.code %}" class="bread__crumbs_link">
+            </li>
+            <li>
+                <a href="{% url 'participant_news:frontend:index' news.library.code %}">
                     Новости
                 </a>
-            </ul>
-        </div>
-        <hr class="footer-hr">
-        <div class="container content-page">
-            <div class="row">
-                <div class="col-12">
-{#                    {% include 'participant_site/frontend/inline_org_info.html' %}#}
-                    <h1 class="content-page__title">{{ news.title }}</h1>
+            </li>
+        </ol>
+    </nav>
+{% endblock %}
 
-                    <div class="content-page__text">
-                        {{ news.content|safe }}
-                        {% if news_images %}
-                            <h3>Фотоматериалы</h3>
-                            <div class="fotorama" data-nav="thumbs">
-                                {% for news_image in news_images %}
-                                    <a data-caption='{{ news_image.title }}' title="1111"
-                                       href="{{ MEDIA_URL }}{{ news_image.image }}"><img title="2222" src="
-                                            {{ MEDIA_URL }}{{ news_image.get_tmb_path }}"></a>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-
+{% block content_library %}
+    <div class="col-lg-7 col-md-12">
+        <div class="card-transparent">
+            <div class="content">
+                <h1 class="content__title">{{ news.title }}</h1>
+                <div class="content__info">
+                    <time class="content__date"><span class="icon-wall-clock"></span>&nbsp;&nbsp;{{ news.create_date }}
+                    </time>
                 </div>
+                {{ news.content|safe }}
+                {% if news_images %}
+                    <h3>Фотоматериалы</h3>
+                    <div class="fotorama" data-nav="thumbs">
+                        {% for news_image in news_images %}
+                            <a data-caption='{{ news_image.title }}' title="1111"
+                               href="{{ MEDIA_URL }}{{ news_image.image }}"><img title="2222" src="
+                                            {{ MEDIA_URL }}{{ news_image.get_tmb_path }}"></a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
-
+            <div class="ya-share2"
+                 data-services="vkontakte,facebook,odnoklassniki,gplus,twitter,viber,whatsapp,telegram"></div>
         </div>
-    </main>
-
-
-
-
-
-
-    <link href="http://cdnjs.cloudflare.com/ajax/libs/fotorama/4.6.2/fotorama.css" rel="stylesheet"> <!-- 3 KB -->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/fotorama/4.6.2/fotorama.js"></script> <!-- 16 KB -->
-
-    {#    <div class="span12">#}
-    {#        <div class="breadcrumb">#}
-    {#            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>#}
-    {#            <span>#}
-    {#                <a href="{% url 'participant_site:frontend:index' news.library.code %}">{{ news.library.name }}</a>#}
-    {#                <span class="divider">/</span></span>#}
-    {#            <span><a href="{% url 'participant_news:frontend:index' news.library.code %}">Новости</a></span>#}
-    {#        </div>#}
-    {#    </div>#}
-
-{#    <div class="span3">#}
-{#        {% include 'participant_site/frontend/site_menu.html' %}#}
-{#    </div>#}
-{##}
-{#    <div class="span9">#}
-{#        {% include 'participant_site/frontend/inline_org_info.html' %}#}
-{#        <h3>{{ news.title }}</h3>#}
-{##}
-{#        <div>#}
-{#            {{ news.content|safe }}#}
-{#        </div>#}
-{#        {% if news_images %}#}
-{#            <h3>Фотоматериалы</h3>#}
-{#            <div class="fotorama" data-nav="thumbs">#}
-{#                {% for news_image in news_images %}#}
-{#                    <a data-caption='{{ news_image.title }}' title="1111"#}
-{#                       href="{{ MEDIA_URL }}{{ news_image.image }}"><img title="2222" src="#}
-{#                            {{ MEDIA_URL }}{{ news_image.get_tmb_path }}"></a>#}
-{#                {% endfor %}#}
-{#            </div>#}
-{#        {% endif %}#}
-{##}
-{#    </div>#}
-
-
+    </div>
 {% endblock %}

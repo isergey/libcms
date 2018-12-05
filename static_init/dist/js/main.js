@@ -2,6 +2,7 @@ $(document).ready(function () {
 
     // Remove style attr content manager
     $(".content *").removeAttr("style");
+    $(".content *").removeAttr("border cellspacing cellpadding bgcolor width align colspan");
 
     $(".search-input__select, .search-input__input").focus(function () {
         $(this).parent().addClass("search-input_focus");
