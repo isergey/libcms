@@ -1,5 +1,6 @@
 {% extends 'ask_librarian/frontend/index.html' %}
 {% load i18n %}
+{% load bootstrap3 %}
 {% get_current_language as LANGUAGE_CODE %}
 {% block title %}
     {% if LANGUAGE_CODE == 'ru' %}
@@ -44,7 +45,8 @@
 {% block index_content %}
     <div class="side-box">
         <form class="side-box__form" method="POST">{% csrf_token %}
-            {% include 'frontend/base_form_fields.html' with form=form %}
+{#            {% include 'frontend/base_form_fields.html' with form=form %}#}
+            {% bootstrap_form form %}
             <button class="side-box__form__btn" type="submit" class="btn">Спросить</button>
         </form>
     </div>

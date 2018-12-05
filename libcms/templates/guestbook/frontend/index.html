@@ -1,5 +1,6 @@
 {% extends 'index/frontend/index.html' %}
 {% load i18n %}
+{% load bootstrap3 %}
 {% get_current_language as LANGUAGE_CODE %}
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
@@ -69,7 +70,8 @@
                         <h2 class="side-box__title">Ваш отзыв</h2>
 
                         <form class="side-box__form" method="POST">{% csrf_token %}
-                            {% include 'frontend/base_form_fields.html' %}
+{#                            {% include 'frontend/base_form_fields.html' %}#}
+                            {% bootstrap_form form %}
                             <button class="side-box__form__btn" type="submit">
                                 {% if LANGUAGE_CODE == 'ru' %}
                                     Добавить отзыв

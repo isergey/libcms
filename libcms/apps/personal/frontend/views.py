@@ -3,6 +3,8 @@ from django.shortcuts import render, HttpResponse
 from django.contrib.auth.decorators import login_required
 from sso_ruslan import models as ruslan_models
 from participants.models import Library
+
+
 @login_required
 def index(request):
     # try:
