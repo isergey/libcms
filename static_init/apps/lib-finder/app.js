@@ -528,16 +528,13 @@ const AddrSearch = React.createClass({
                     </button>
                 </div>
                 <div className="map-nav-search__search-col">
-                    <form role="search">
-                        <div className="map-nav-search-input">
-                            <input ref="input" className="map-nav-search-input__input"
-                                   placeholder="Введите адрес для поиска ближайшей библиотеки"/>
-                            <button className="map-nav-search-input__btn">
-                                <i className="icon-search" title="Поиск"></i>
-                            </button>
-                        </div>
-
-                    </form>
+                    <div className="map-nav-search-input">
+                        <input ref="input" className="map-nav-search-input__input"
+                               placeholder="Введите адрес для поиска ближайшей библиотеки"/>
+                        <button className="map-nav-search-input__btn">
+                            <i className="icon-search" title="Поиск"></i>
+                        </button>
+                    </div>
                 </div>
 
             </div>

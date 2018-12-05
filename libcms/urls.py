@@ -40,6 +40,7 @@ urlpatterns = patterns(
     (r'^newinlib/', include('newinlib.urls', namespace='newinlib')),
     (r'^attacher/', include('attacher.urls', namespace='attacher')),
     (r'^esia_sso/', include('sso_esia.urls', namespace='sso_esia')),
+    (r'^sso_ruslan/', include('sso_ruslan.urls', namespace='sso_ruslan')),
     (r'^tatedu_sso/', include('sso_tatedu.urls', namespace='sso_tatedu')),
     (r'^participants/news/', include('participant_news.all_frontend.urls', namespace='participant_all_news')),
     (r'^rr/', include('recommended_reading.urls', namespace='recommended_reading')),
