@@ -6,6 +6,7 @@
     <title>Title</title>
 </head>
 <body>
+<p>Текущий email: {{ current_email }}</p>
 <form method="post">
     {% csrf_token %}
     {% bootstrap_form form %}
