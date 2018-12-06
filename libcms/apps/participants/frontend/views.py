@@ -3,7 +3,7 @@ import json
 
 from django.core import serializers
 from django.core.cache import cache
-from django.shortcuts import resolve_url
+from django.shortcuts import resolve_url, redirect
 
 json_serializer = serializers.get_serializer("json")()
 from django.shortcuts import render, get_object_or_404, HttpResponse
@@ -65,6 +65,7 @@ def branches(request, code=None):
 
 def detail(request, code):
     library = get_object_or_404(Library, code=code)
+    return redirect('participant_site:frontend:index', library_code=library.code)
     js_orgs = []
     js_orgs.append(make_library_dict(library))
 

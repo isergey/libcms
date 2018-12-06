@@ -1,14 +1,2 @@
-{#{% load participant_site_tags %}#}
 {% load participant_menu_tags %}
-{#{% load participant_banners_tags %}#}
-{#{% get_library_avatar_src library.id as avatar_src %}#}
-
-{#{% if  avatar_src %}#}
-{#    <a href="{% url 'participant_site:frontend:index' library.code %}">#}
-{#        <img class="lib-info__avatar" src="{{ MEDIA_URL }}{{ avatar_src }}"/>#}
-{#    </a>#}
-{#{% endif %}#}
-
 {% drow_library_menu_default library.id 'main_menu' %}
-
-{#{% show_banners library.id %}#}

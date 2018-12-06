@@ -4,12 +4,7 @@
 {% load participant_news_tags %}
 {% load participant_events_tags %}
 {% load participant_banners_tags %}
-{#{% load ssearch_tags %}#}
-{#{% load news_tags %}#}
-{#{% load events_tags %}#}
-{#{% load ssearch_tags %}#}
 {% load participiants_tags %}
-{#{% load cache %}#}
 
 {% block title %}{{ library.name }}{% endblock %}
 {% block content %}
@@ -44,9 +39,11 @@
                 <div class="col-lg-3 col-md-4 col-sm-12">
                     <div class="lib-detail__img-wrap">
                         <span class="lib-detail__img-wrap-icon icon-double-arrow"></span>
-                        <img class="lib-detail__img"
-                             src="{{ MEDIA_URL }}{{ avatar_src }}"
-                             alt="{{ library.name }}">
+                        {% if avatar_src %}
+                            <img class="lib-detail__img"
+                                 src="{{ MEDIA_URL }}{{ avatar_src }}"
+                                 alt="{{ library.name }}">
+                        {% endif %}
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-8 col-sm-12">
@@ -92,14 +89,21 @@
                                 </li>
                                 <li class="lib-contact-nav__item">
                                     <span class="lib-contact-nav__title">Телефон:</span>
-                                    <span class="lib-contact-nav__text">{{ library.phone|default:'не указан' }}</span>
-                                    {#                                    <a class="lib-contact-nav__link"#}
-                                    {#                                       href="tel:{{ library.phone|default:'' }}">{{ library.phone|default:'не указан' }}</a>#}
+                                    {% if library.phone %}
+                                        <a class="lib-contact-nav__link"
+                                           href="tel:{{ library.phone }}">{{ library.phone }}</a>
+                                    {% else %}
+                                        <span class="lib-contact-nav__text">не указан</span>
+                                    {% endif %}
                                 </li>
                                 <li class="lib-contact-nav__item">
                                     <span class="lib-contact-nav__title">E-mail:</span>
-                                    <a class="lib-contact-nav__link"
-                                       href="mailto:{{ library.mail|lower }}">{{ library.mail|lower }}</a>
+                                    {% if library.mail %}
+                                        <a class="lib-contact-nav__link"
+                                           href="mailto:{{ library.mail|lower }}">{{ library.mail|lower }}</a>
+                                    {% else %}
+                                        <span class="lib-contact-nav__text">не указан</span>
+                                    {% endif %}
                                 </li>
                                 <li class="lib-contact-nav__item">
                                     <span class="lib-contact-nav__title">Адрес:</span>
@@ -109,7 +113,7 @@
                         </div>
                         <div class="lib-contact__col" id="map-lib-item">
                             {#                            <div id="map-ymaps"></div>#}
-{#                            <div id="map-lib-item"></div>#}
+                            {#                            <div id="map-lib-item"></div>#}
                         </div>
                     </div>
                 </div>
