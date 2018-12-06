@@ -417,6 +417,12 @@ def personal_cabinet_links(request):
             'href': _reverse(request, 'statistics:frontend:index')
         })
 
+    if user_orgs:
+        links.append({
+            'title': u'Раздел для сотрудников',
+            'href': 'http://help.kitap.tatar.ru'
+        })
+
     return links
 
 
