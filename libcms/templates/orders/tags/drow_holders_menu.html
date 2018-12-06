@@ -1,19 +1,31 @@
 {% if holders %}
-    <div class="reserv-box__title">Удаленное бронирование <span>({{ holders|length }})</span></div>
-    {% for holder in holders %}
-        <a class="reserv-box__geo" href="{% url 'participants:frontend:detail' holder.code %}" title="Посмотреть на карте">
-            <img alt="Информация о библиотеке" src="/static/dist/images/geo_pin.svg">
-        <span>
-            {% for ancestor in holder.get_ancestors %}
-            {{ ancestor.name }} →
-            {% endfor %}
-            <b>{{ holder.name }}</b>
-        </span>
-        </a>
-        {% if holder.ext_order_mail %}
-            <a title="Забронировать в: {{ holder.name }}" class="reserv-box__btn" href="{% url 'orders:frontend:mail_order' holder.id gen_id %}">Забронировать</a>
-        {% else %}
-            <span style="margin-left: 50px">Заказ не доступен</span>
-        {% endif %}
-    {% endfor %}
+    <section class="card card_bs-2 card_mt card_booking">
+        <div class="card__header">
+            <h2 class="card__title card__title_sm">Удаленное бронирование ({{ holders|length }})</h2>
+        </div>
+        <div class="card__body">
+            <ul class="card-booking">
+                {% for holder in holders %}
+                    <li class="card-booking__item">
+                        <p class="card-booking__name">
+                            {% for ancestor in holder.get_ancestors %}
+                                {{ ancestor.name }} →
+                            {% endfor %}
+                            <span>{{ holder.name }}</span>
+                        </p>
+                        <a class="card-booking__geo" href="{% url 'participants:frontend:detail' holder.code %}"
+                           target="_blank">
+                            <i class="icon-locating" title="Контакты"></i>
+                        </a>
+                        {% if holder.ext_order_mail %}
+                            <a class="card-booking__btn"
+                               href="{% url 'orders:frontend:mail_order' holder.id gen_id %}">Забронировать</a>
+                        {% else %}
+                            <span class="card-booking__btn card-booking__btn_dsb">Заказ не доступен</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
 {% endif %}

@@ -10,5 +10,5 @@
     <li class="nav__item"> <a href="{% url 'news:frontend:index' %}" class="nav__link {% active_path 'news:frontend:index'  %}">{% if LANGUAGE_CODE == 'ru' %}Новости{% elif LANGUAGE_CODE == 'tt' %}Яңалыклар{% else %}News{% endif %}</a></li>
     <li class="nav__item"> <a href="{% url 'ask_librarian:frontend:index' %}" class="nav__link {% active_path 'ask_librarian:frontend:index'  %}">{% if LANGUAGE_CODE == 'ru' %}Спроси библиотекаря {% elif LANGUAGE_CODE == 'tt' %}Китапханәчедән сора{% else %}Ask librarian{% endif %}</a></li>
     {% url 'pages:frontend:show' 'for_professional'  as  for_professional_url %}
-    <li class="nav__item"> <a class="nav__link" href="{{ for_professional_url }}" class="header-link {% if request.path == for_professional_url %}nav__link_active{% endif %}">{% if LANGUAGE_CODE == 'ru' %}Профессионалам {% elif LANGUAGE_CODE == 'tt' %}Профессионалларга{% else %} Professionals {% endif %}</a></li>
+    <li class="nav__item"> <a  href="{{ for_professional_url }}" class="nav__link {% if request.path == for_professional_url %}nav__link_active{% endif %}">{% if LANGUAGE_CODE == 'ru' %}Профессионалам {% elif LANGUAGE_CODE == 'tt' %}Профессионалларга{% else %} Professionals {% endif %}</a></li>
 </ul>

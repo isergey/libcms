@@ -1,19 +1,26 @@
 {% if owners %}
-    <div class="reserv-box__title">Бронирование <span>({{ owners|length }})</span></div>
-    {% for owner in owners %}
-        <a class="reserv-box__geo" href="{% url 'participants:frontend:detail' owner.owner.code %}" title="Посмотреть на карте">
-            <img alt="Информация о библиотеке" src="/static/dist/images/geo_pin.svg">
-        <span>{{ owner.owner.name }}</span>
-        </a>
-        {% if owner.has_catalog %}
-            <a title="Забронировать в: {{ owner.owner.name }}" class="reserv-box__btn" href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">Забронировать</a>
-        {% else %}
-           <span style="margin-left: 50px">Заказ отключен</span>
-        {% endif %}
-    {% endfor %}
+    <section class="card card_bs-2 card_booking">
+        <div class="card__header">
+            <h2 class="card__title card__title_sm">Бронирование ({{ owners|length }})</h2>
+        </div>
+        <div class="card__body">
+            <ul class="card-booking">
+                {% for owner in owners %}
+                    <li class="card-booking__item">
+                        <p class="card-booking__name">{{ owner.owner.name }}</p>
+                        <a class="card-booking__geo" href="{% url 'participants:frontend:detail' owner.owner.code %}"
+                           target="_blank">
+                            <i class="icon-locating" title="Контакты"></i>
+                        </a>
+                        {% if owner.has_catalog %}
+                            <a class="card-booking__btn"
+                               href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">Забронировать</a>
+                        {% else %}
+                            <span class="card-booking__btn card-booking__btn_dsb">Заказ отключен</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
 {% endif %}
-{#{% if empty_codes %}#}
-{#    {% for empty_code in empty_codes %}#}
-{#        <li>{{ empty_code }}</li>#}
-{#    {% endfor %}#}
-{#{% endif %}#}

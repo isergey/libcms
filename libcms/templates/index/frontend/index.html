@@ -25,56 +25,6 @@
                                 Search in e-catalog and e-collections
                             {% endif %}
                         </h1>
-
-{#                        <input id="q1" name="attr" type="radio" value="text_t"#}
-{#                               {% if request.GET.attr == 'text_t' or not request.GET.attr %}checked{% endif %}>#}
-{#                        <label class="search-btn__radio" for="q1">#}
-{#                            {% if LANGUAGE_CODE == 'ru' %}Везде{% elif LANGUAGE_CODE == 'tt' %}Һәр урында{% else %}#}
-{#                                Anywhere{% endif %}#}
-{#                        </label>#}
-{##}
-{#                        <input id="q2" name="attr" type="radio" value="author_t"#}
-{#                               {% if request.GET.attr == 'author_t' %}checked{% endif %}>#}
-{#                        <label class="search-btn__radio" for="q2">#}
-{#                            {% if LANGUAGE_CODE == 'ru' %}Автор{% elif LANGUAGE_CODE == 'tt' %}Автор{% else %}#}
-{#                                Author{% endif %}#}
-{#                        </label>#}
-{##}
-{#                        <input id="q3" name="attr" type="radio" value="title_t"#}
-{#                               {% if request.GET.attr == 'title_t' %}checked{% endif %}>#}
-{#                        <label class="search-btn__radio" for="q3">#}
-{#                            {% if LANGUAGE_CODE == 'ru' %}Заглавие{% elif LANGUAGE_CODE == 'tt' %}Исем{% else %}#}
-{#                                Title{% endif %}#}
-{#                        </label>#}
-{##}
-{#                        {% if catalog == 'ebooks' %}#}
-{#                            <input id="q4" name="attr" type="radio" value="full-text"#}
-{#                                   {% if request.GET.attr == 'full-text' %}checked{% endif %}>#}
-{#                            <label class="search-btn__radio" for="q4">Полный текст</label>#}
-{#                        {% endif %}#}
-{##}
-{#                        <input id="q5" name="attr" type="radio" value="subject-heading_t"#}
-{#                               {% if request.GET.attr == 'subject-heading_t' %}checked{% endif %}>#}
-{#                        <label class="search-btn__radio" for="q5">#}
-{#                            {% if LANGUAGE_CODE == 'ru' %}Тематика{% elif LANGUAGE_CODE == 'tt' %}Темасы{% else %}#}
-{#                                Subject{% endif %}#}
-{#                        </label>#}
-{##}
-{#                        <input id="q6" name="attr" type="radio" value="date-of-publication_s"#}
-{#                               {% if request.GET.attr == 'date-of-publication_dt' %}checked{% endif %}>#}
-{#                        <label class="search-btn__radio" for="q6">{% if LANGUAGE_CODE == 'ru' %}Год#}
-{#                            публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып чыгару#}
-{#                            елы{% else %}Publication year{% endif %}</label>#}
-{##}
-{#                        <input id="q7" name="attr" type="radio" value="isbn_t"#}
-{#                               {% if request.GET.attr == 'isbn_t' %}checked{% endif %}>#}
-{#                        <label class="search-btn__radio" for="q7">ISBN</label>#}
-{##}
-{#                        <input id="q8" name="attr" type="radio" value="issn_t"#}
-{#                               {% if request.GET.attr == 'issn_t' %}checked{% endif %}>#}
-{#                        <label class="search-btn__radio" for="q8">ISSN</label>#}
-
-
                         <form action="{% url 'ssearch:frontend:index' %}" method="get" role="search">
                             <div class="search-input search-input_mw">
                                 <select name="attr" class="search-input__select">
@@ -118,7 +68,6 @@
                                         ISSN
                                     </option>
                                 </select>
-                                <input type="hidden" name="attr" value="text_t">
                                 <input class="search-input__input" name="q" id="appendedInputButton" type="text"
                                        placeholder="{% if LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}...">
                                 <button class="search-input__btn">

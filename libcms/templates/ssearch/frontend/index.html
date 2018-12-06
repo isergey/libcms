@@ -5,311 +5,345 @@
 {% load ssearch_tags %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-
 {% block title %}Поиск по каталогу{% endblock %}
 {% block content %}
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
-        <hr class="bg__hr">
-        <div class="container">
-            {% if catalog != 'ebooks' %}
-            <div class="select_lib">
-                {% if LANGUAGE_CODE == 'ru' %}
-                    Поиск по библиотеке:
-                {% elif LANGUAGE_CODE == 'tt' %}
-                    Китапханә буенча эзләү:
-                {% else %}
-                    Search in library:
-                {% endif %}
-                {% if library %}
-                    <a class="label label-warning" title="Убрать ограничение по библиотеке"
-                       onclick="removeLibraryParam();" href="#remove_library">[ x ]</a>
-                    <span>
-                    {% for ancestor in library.get_ancestors %}
-                                {{ ancestor.name }} →
-                            {% endfor %}
-                            <b>{{ library.name }}</b>
-                    </span>
-                    <a title="Выбрать другую библиотеку" class="js_select_library label label-info"
-                       href="#select_library">[ Выбрать другую ]</a>
-                {% else %}
-                    <a title="Ограничить результаты только по выбранной библиотеке"
-                       class="js_select_library label label-info" href="#select_library">
-                    {% if LANGUAGE_CODE == 'ru' %}
-                        выбрать библиотеку
-                    {% elif LANGUAGE_CODE == 'tt' %}
-                        китапханәне сайлау
-                    {% else %}
-                        select a library:
-                    {% endif %}
-                    </a>
-                {% endif %}
-            </div>
-            {% endif %}
-            <div class="search-box search-box_second">
-                <form method="GET">
-                    {% if library %}
-                        <input type="hidden" name="library" value="{{ library.code }}">
-                    {% endif %}
-                    {% for search_breadcumb in search_breadcumbs %}
-                        <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">
-                        <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
-                    {% endfor %}
-                    <div class="search-form">
-                        <input id="appendedInputButton" type="text_t" name="q" class="search-form__input"
-                               placeholder="Введите автора, заглавие, тему...">
-                    <span class="input-form-group">
-                      <button class="search-form__submit" type="submit" title="Поиск"><img
-                              src="{{ STATIC_URL }}dist/images/search.svg"></button>
-                    </span>
-                    </div>
-                    <div class="search-btn">Поиск по:
-
-                        <input id="q1" name="attr" type="radio" value="text_t"
-                               {% if request.GET.attr == 'text_t' or not request.GET.attr %}checked{% endif %}>
-                        <label class="search-btn__radio" for="q1">
-                            {% if LANGUAGE_CODE == 'ru' %}Везде{% elif LANGUAGE_CODE == 'tt' %}Һәр урында{% else %}
-                                Anywhere{% endif %}
-                        </label>
-                        <input id="q2" name="attr" type="radio" value="author_t"
-                               {% if request.GET.attr == 'author_t' %}checked{% endif %}>
-                        <label class="search-btn__radio" for="q2">
-                            {% if LANGUAGE_CODE == 'ru' %}Автор{% elif LANGUAGE_CODE == 'tt' %}Автор{% else %}
-                                Author{% endif %}
-                        </label>
-                        <input id="q3" name="attr" type="radio" value="title_t"
-                               {% if request.GET.attr == 'title_t' %}checked{% endif %}>
-                        <label class="search-btn__radio" for="q3">
-                            {% if LANGUAGE_CODE == 'ru' %}Заглавие{% elif LANGUAGE_CODE == 'tt' %}Исем{% else %}
-                                Title{% endif %}
-                        </label>
-                        {% if catalog == 'ebooks' %}
-                            <input id="q4" name="attr" type="radio" value="full-text"
-                                   {% if request.GET.attr == 'full-text' %}checked{% endif %}>
-                            <label class="search-btn__radio" for="q4">Полный текст</label>
-                        {% endif %}
-                        <input id="q5" name="attr" type="radio" value="subject-heading_t"
-                               {% if request.GET.attr == 'subject-heading_t' %}checked{% endif %}>
-                        <label class="search-btn__radio" for="q5">
-                            {% if LANGUAGE_CODE == 'ru' %}Тематика{% elif LANGUAGE_CODE == 'tt' %}Темасы{% else %}
-                                Subject{% endif %}
-                        </label>
-                        <input id="q6" name="attr" type="radio" value="date-of-publication_s"
-                               {% if request.GET.attr == 'date-of-publication_dt' %}checked{% endif %}>
-                        <label class="search-btn__radio" for="q6">{% if LANGUAGE_CODE == 'ru' %}Год
-                            публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып чыгару
-                            елы{% else %}Publication year{% endif %}</label>
-                        <input id="q7" name="attr" type="radio" value="isbn_t"
-                               {% if request.GET.attr == 'isbn_t' %}checked{% endif %}>
-                        <label class="search-btn__radio" for="q7">ISBN</label>
-                        <input id="q8" name="attr" type="radio" value="issn_t"
-                               {% if request.GET.attr == 'issn_t' %}checked{% endif %}>
-                        <label class="search-btn__radio" for="q8">ISSN</label>
-                    </div>
-                    <div class="search-in-result">
-                        <label>
-                            <input type="checkbox" name="in_founded"
-                                   {% if request.GET.in_founded %}checked="checked"{% endif %}>
-                            {% if LANGUAGE_CODE == 'ru' %}Искать в найденном{% elif LANGUAGE_CODE == 'tt' %}Табылганнан
-                                эзләү{% else %}search in results{% endif %}
-                        </label>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </nav>
     <main>
         <div class="container">
-            <ul class="bread__crumbs">
-                <li><a class="bread__crumbs_link" href="{% url 'index:frontend:index' %}">
-                    {% if LANGUAGE_CODE == 'ru' %}
-                        Главная
-                    {% elif LANGUAGE_CODE == 'tt' %}
-                        Төп бит
-                    {% else %}
-                        Home
-                    {% endif %}
-                </a></li>
-                {% if request.GET.q %}
+            <nav class="crumb">
+                <ol class="crumb__list">
                     <li>
-                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                    </li>
-                    <li><a class="bread__crumbs_link" href="{% url 'ssearch:frontend:index' %}">
-                        {% if LANGUAGE_CODE == 'ru' %}
-                            Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}</a>
-                    </li>
-                    <li>
-                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                    </li>
-                    <li>
-                        <a class="bread__crumbs_link bread__crumbs_link_active">
+                        <a href="{% url 'index:frontend:index' %}">
                             {% if LANGUAGE_CODE == 'ru' %}
-                                Результаты поиска:  найдено документов
+                                Главная
                             {% elif LANGUAGE_CODE == 'tt' %}
-                                Эзләү нәтиҗәләре: документлар табылды
+                                Төп бит
                             {% else %}
-                                Search results: finded records
-                            {% endif %}:
-                            {{ search_statisics.num_found }},
-                            {% if LANGUAGE_CODE == 'ru' %}
-                                время выполнения запроса
-                            {% elif LANGUAGE_CODE == 'tt' %}
-                                сорауүтәлү вакыты
-                            {% else %}
-                                request time
-                            {% endif %}: {{ search_statisics.search_time }} с.
+                                Home
+                            {% endif %}
                         </a>
                     </li>
-                {% else %}
-                    <li>
-                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                    </li>
-                    <li><a class="bread__crumbs_link bread__crumbs_link_active">{% if LANGUAGE_CODE == 'ru' %}
-                        Поиск{% elif LANGUAGE_CODE == 'tt' %}
-                        Эзләү{% else %}Search{% endif %}
-                    </a>
-                    </li>
-                {% endif %}
-
-            </ul>
-        </div>
-
-        <hr class="footer-hr">
-
-        {% if not docs and stats %}
-            {% include 'ssearch/frontend/catalogs.html' %}
-        {% endif %}
-
-        <div class="container">
-            <div class="row">
-                <div class="col-8">
-                    {% if search_breadcumbs %}
-                        <ul class="bread__crumbs">
-                            {% if request.user.is_authenticated %}
-                                <li>
-                                    <a href="{% url 'ssearch:frontend:save_search_request' %}?srequest={{ search_request|urlencode }}&catalog={{ catalog|urlencode }}"
-                                       class="bread__crumbs_link" id="save_request_button">Сохранить запрос</a></li>
-                            {% endif %}
-                            <li><a class="bread__crumbs_link bread__crumbs_link_active">Поиск</a></li>
-                            {% for search_breadcumb in search_breadcumbs %}
-                                {% if not forloop.last %}
-                                    <li>
-                                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                                    </li>
-                                    <li><a class="bread__crumbs_link"
-                                           href="?{{ search_breadcumb.href }}">{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</a>
-                                    </li>
-
+                    {% if request.GET.q %}
+                        <li>
+                            <a href="{% url 'ssearch:frontend:index' %}">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}
+                            </a>
+                        </li>
+                        <li>
+                            <span class="crumb__current">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Результаты поиска:  найдено документов
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Эзләү нәтиҗәләре: документлар табылды
                                 {% else %}
-                                    {#                <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>#}
-                                    {% if search_breadcumb.attr == 'content-type_sf' %}
-                                        <li>
-                                            <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                                        </li>
-                                        <li>
-                                            <a class="bread__crumbs_link bread__crumbs_link_active">{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|content_type_title }}</a>
-                                        </li>
-                                    {% elif search_breadcumb.attr == 'code-language_t' %}
-                                        <li>
-                                            <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                                        </li>
-                                        <li>
-                                            <a class="bread__crumbs_link bread__crumbs_link_active">{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|language_title }}</a>
-                                        </li>
-                                    {% else %}
-                                        <li>
-                                            <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                                        </li>
-                                        <li>
-                                            <a class="bread__crumbs_link bread__crumbs_link_active">{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</a>
-                                        </li>
+                                    Search results: finded records
+                                {% endif %}:
+                                {{ search_statisics.num_found }},
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    время выполнения запроса
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    сорауүтәлү вакыты
+                                {% else %}
+                                    request time
+                                {% endif %}: {{ search_statisics.search_time }} с.
+                            </span>
+                        </li>
+                    {% else %}
+                        <li>
+                             <span class="crumb__current">
+                                 {% if LANGUAGE_CODE == 'ru' %}
+                                     Поиск{% elif LANGUAGE_CODE == 'tt' %}
+                                     Эзләү{% else %}Search{% endif %}
+                             </span>
+                        </li>
+                    {% endif %}
+                </ol>
+            </nav>
+            <div class="row">
+                <div class="col-lg-9 col-md-12">
+                    <div class="search search_sm-mt">
+                        <form role="search" method="get">
+                            <div class="search-input search-input_border">
+                                <select name="attr" class="search-input__select">
+                                    <option value="text_t"
+                                            {% if request.GET.attr == 'text_t' or not request.GET.attr %}selected{% endif %}>
+                                        {% if LANGUAGE_CODE == 'ru' %}Везде{% elif LANGUAGE_CODE == 'tt' %}Һәр
+                                            урында{% else %}Anywhere{% endif %}
+                                    </option>
+                                    <option value="author_t" {% if request.GET.attr == 'author_t' %}selected{% endif %}>
+                                        {% if LANGUAGE_CODE == 'ru' %}Автор{% elif LANGUAGE_CODE == 'tt' %}
+                                            Автор{% else %}
+                                            Author{% endif %}
+                                    </option>
+                                    <option value="title_t" {% if request.GET.attr == 'title_t' %}selected{% endif %}>
+                                        {% if LANGUAGE_CODE == 'ru' %}Заглавие{% elif LANGUAGE_CODE == 'tt' %}
+                                            Исем{% else %}
+                                            Title{% endif %}
+                                    </option>
+                                    {% if catalog == 'ebooks' %}
+                                        <option value="full-text"
+                                                {% if request.GET.attr == 'full-text' %}selected{% endif %}>
+                                            Полный текст
+                                        </option>
                                     {% endif %}
+                                    <option value="subject-heading_t"
+                                            {% if request.GET.attr == 'subject-heading_t' %}selected{% endif %}>
+                                        {% if LANGUAGE_CODE == 'ru' %}Тематика{% elif LANGUAGE_CODE == 'tt' %}
+                                            Темасы{% else %}
+                                            Subject{% endif %}
+                                    </option>
+                                    <option value="date-of-publication_s"
+                                            {% if request.GET.attr == 'date-of-publication_dt' %}selected{% endif %}>
+                                        {% if LANGUAGE_CODE == 'ru' %}Год
+                                            публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып чыгару
+                                            елы{% else %}Publication year{% endif %}
+                                    </option>
+                                    <option value="isbn_t" {% if request.GET.attr == 'isbn_t' %}selected{% endif %}>
+                                        ISBN
+                                    </option>
+                                    <option value="issn_t" {% if request.GET.attr == 'issn_t' %}selected{% endif %}>
+                                        ISSN
+                                    </option>
+                                </select>
+                                <input class="search-input__input" type="text" name="q"
+                                       placeholder="{% if LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}...">
+                                <button class="search-input__btn">
+                                    <i class="icon-search"
+                                       title="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}"></i>
+                                </button>
+                            </div>
+                            <div class="search-nav search-nav_bb">
+                                <div class="search-nav__item search-nav__item_sm-ta-c">
+                                    <div class="checkbox checkbox_mb-0">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" name="in_founded"
+                                                   {% if request.GET.in_founded %}checked{% endif %}>
+                                            <span class="label-text">
+                                                {% if LANGUAGE_CODE == 'ru' %}Искать в
+                                                    найденном{% elif LANGUAGE_CODE == 'tt' %}Табылганнан
+                                                    эзләү{% else %}Search in results{% endif %}
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                                {% if request.GET.q %}
+                                    <div class="search-nav__item search-nav__item_sm-ta-c">
+                                        <span class="search-nav__text">
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Найдено документов
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Документлар табылды
+                                            {% else %}
+                                                Records Found
+                                            {% endif %}:
+                                            {{ search_statisics.num_found }}
+                                        </span>
+                                    </div>
                                 {% endif %}
-                            {% endfor %}
+                            </div>
+                        </form>
+                    </div>
+                    {% if search_breadcumbs %}
+                        <div class="search-nav-wrap">
+                            <button id="facetBtn" class="search-facet-btn">Уточнить поиск</button>
 
-                        </ul>
-                        <form action="{{ request.path }}?{{ request.GET.urlencode }}" method="GET">
-                            {% if library %}
-                                <input type="hidden" name="library" value="{{ library.code }}">
-                            {% endif %}
-                            <div class="sort_select">{% if LANGUAGE_CODE == 'ru' %}Сортировать
-                                по{% elif LANGUAGE_CODE == 'tt' %}
-                                Аеру{% else %}Sort by{% endif %}:
-                                {% for sort_attr in sort %}
-                                    <select name="sort" onchange="this.form.submit()">
-                                        <option value="0">{% if LANGUAGE_CODE == 'ru' %}
-                                            релевантности{% elif LANGUAGE_CODE == 'tt' %}релевантность буенча
-                                            аеру{% else %}
-                                            relevance{% endif %}</option>
-                                        <option value="author"
-                                                {% if sort_attr == 'author' %}selected="selected"{% endif %}>
-                                            {% if LANGUAGE_CODE == 'ru' %}автору{% elif LANGUAGE_CODE == 'tt' %}
-                                                автор{% else %}author{% endif %}</option>
-                                        <option value="title"
-                                                {% if sort_attr == 'title' %}selected="selected"{% endif %}>
-                                            {% if LANGUAGE_CODE == 'ru' %}
-                                                заглавию{% elif LANGUAGE_CODE == 'tt' %}
-                                                исем{% else %}title{% endif %}</option>
-                                        <option value="date-of-publication"
-                                                {% if sort_attr == 'date-of-publication' %}selected="selected"{% endif %}>
-                                            {% if LANGUAGE_CODE == 'ru' %}году
-                                                публикации{% elif LANGUAGE_CODE == 'tt' %}
-                                                бастырып чыгару елы{% else %}publication
-                                                year{% endif %}</option>
-                                        <option value="record-create-date"
-                                                {% if sort_attr == 'record-create-date' %}selected="selected"{% endif %}>
-                                            {% if LANGUAGE_CODE == 'ru' %}дате
-                                                поступления{% elif LANGUAGE_CODE == 'tt' %}
-                                                дате поступления{% else %}incoming date{% endif %}</option>
-                                        <option value="tom"
-                                                {% if sort_attr == 'tom' %}selected="selected"{% endif %}>
-                                            Тому/части
-                                        </option>
-                                    </select>
-                                {% empty %}
-                                    <select name="sort" onchange="this.form.submit()">
-                                        <option value="0">{% if LANGUAGE_CODE == 'ru' %}
-                                            релевантности{% elif LANGUAGE_CODE == 'tt' %}релевантность буенча
-                                            аеру{% else %}
-                                            relevance{% endif %}</option>
-                                        <option value="author"
-                                                {% if sort_attr == 'author' %}selected="selected"{% endif %}>
-                                            {% if LANGUAGE_CODE == 'ru' %}автору{% elif LANGUAGE_CODE == 'tt' %}
-                                                автор{% else %}author{% endif %}</option>
-                                        <option value="title"
-                                                {% if sort_attr == 'title' %}selected="selected"{% endif %}>
-                                            {% if LANGUAGE_CODE == 'ru' %}
-                                                заглавию{% elif LANGUAGE_CODE == 'tt' %}
-                                                исем{% else %}title{% endif %}</option>
-                                        <option value="date-of-publication"
-                                                {% if sort_attr == 'date-of-publication' %}selected="selected"{% endif %}>
-                                            {% if LANGUAGE_CODE == 'ru' %}году
-                                                публикации{% elif LANGUAGE_CODE == 'tt' %}
-                                                бастырып чыгару елы{% else %}publication
-                                                year{% endif %}</option>
-                                        <option value="record-create-date"
-                                                {% if sort_attr == 'record-create-date' %}selected="selected"{% endif %}>
-                                            {% if LANGUAGE_CODE == 'ru' %}дате
-                                                поступления{% elif LANGUAGE_CODE == 'tt' %}
-                                                дате поступления{% else %}incoming date{% endif %}</option>
-                                        <option value="tom"
-                                                {% if sort_attr == 'tom' %}selected="selected"{% endif %}>
-                                            Тому/части
-                                        </option>
-                                    </select>
-                                {% endfor %}
-                                {#                                <a href="#1" id="add_sort_button"#}
-                                {#                                   title="{% if LANGUAGE_CODE == 'ru' %}Добавить условие сортировки{% elif LANGUAGE_CODE == 'tt' %}Добавить условие сортировки{% else %}add more sort condition{% endif %}">#}
-                                {#                                    {% if LANGUAGE_CODE == 'ru' %}добавить{% elif LANGUAGE_CODE == 'tt' %}#}
-                                {#                                        добавить{% else %}#}
-                                {#                                        add more{% endif %}</a>#}
-                                {#                                <button>{% if LANGUAGE_CODE == 'ru' %}#}
-                                {#                                    Сортировать{% elif LANGUAGE_CODE == 'tt' %}Аеру{% else %}#}
-                                {#                                    Sort{% endif %}</button>#}
+                            <div class="search-nav">
+                                {% if request.user.is_authenticated %}
+                                    <div class="search-nav__item">
+                                        <a id="save_request_button" class="search-nav__link"
+                                           href="{% url 'ssearch:frontend:save_search_request' %}?srequest={{ search_request|urlencode }}&catalog={{ catalog|urlencode }}">Сохранить
+                                            запрос</a>
+                                    </div>
+                                {% endif %}
+                                <div class="search-nav__item">
+                                    <a class="search-nav__link" href="{% url 'ssearch:frontend:index' %}">
+                                        {% if LANGUAGE_CODE == 'ru' %}
+                                            Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}
+                                    </a>
+                                </div>
                                 {% for search_breadcumb in search_breadcumbs %}
-
+                                    {% if not forloop.last %}
+                                        <div class="search-nav__item">
+                                            <a class="search-nav__link"
+                                               href="?{{ search_breadcumb.href }}">→ {{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</a>
+                                        </div>
+                                    {% else %}
+                                        {#                <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>#}
+                                        {% if search_breadcumb.attr == 'content-type_sf' %}
+                                            <div class="search-nav__item">
+                                                <span class="search-nav__text">→ {{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|content_type_title }}</span>
+                                            </div>
+                                        {% elif search_breadcumb.attr == 'code-language_t' %}
+                                            <div class="search-nav__item">
+                                                <span class="search-nav__text">→ {{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|language_title }}</span>
+                                            </div>
+                                        {% else %}
+                                            <div class="search-nav__item">
+                                                <span class="search-nav__text">→ {{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</span>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <form action="{{ request.path }}?{{ request.GET.urlencode }}" method="GET">
+                                {% if library %}
+                                    <input type="hidden" name="library" value="{{ library.code }}">
+                                {% endif %}
+                                <div class="search-nav search-nav_p-0 sort_select">
+                                    <div class="search-nav__item">
+                                    <span class="search-nav__title">
+                                        {% if LANGUAGE_CODE == 'ru' %}Сортировать
+                                            по{% elif LANGUAGE_CODE == 'tt' %}
+                                            Аеру{% else %}Sort by{% endif %}:
+                                     </span>
+                                    </div>
+                                    {% for sort_attr in sort %}
+                                        <div class="search-nav__item">
+                                    <span class="search-nav__radio">
+                                        <input id="sort-1" name="sort" type="radio" value="0"
+                                               {% if sort_attr == '0' or not sort_attr %}checked{% endif %}
+                                               onchange="this.form.submit()">
+                                        <label class="search-btn__radio" for="sort-1">
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                релевантности{% elif LANGUAGE_CODE == 'tt' %}релевантность буенча
+                                                аеру{% else %}
+                                                relevance{% endif %}
+                                        </label>
+                                    </span>
+                                        </div>
+                                        <div class="search-nav__item">
+                                    <span class="search-nav__radio">
+                                        <input id="sort-2" name="sort" type="radio" value="author"
+                                               {% if sort_attr == 'author' %}checked{% endif %}
+                                               onchange="this.form.submit()">
+                                        <label class="search-btn__radio" for="sort-2">
+                                            {% if LANGUAGE_CODE == 'ru' %}автору{% elif LANGUAGE_CODE == 'tt' %}
+                                                автор{% else %}author{% endif %}
+                                        </label>
+                                    </span>
+                                        </div>
+                                        <div class="search-nav__item">
+                                    <span class="search-nav__radio">
+                                        <input id="sort-3" name="sort" type="radio" value="title"
+                                               {% if sort_attr == 'title' %}checked{% endif %}
+                                               onchange="this.form.submit()">
+                                        <label class="search-btn__radio" for="sort-3">
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                заглавию{% elif LANGUAGE_CODE == 'tt' %}
+                                                исем{% else %}title{% endif %}
+                                        </label>
+                                    </span>
+                                        </div>
+                                        <div class="search-nav__item">
+                                    <span class="search-nav__radio">
+                                        <input id="sort-4" name="sort" type="radio" value="date-of-publication"
+                                               {% if sort_attr == 'date-of-publication' %}checked{% endif %}
+                                               onchange="this.form.submit()">
+                                        <label class="search-btn__radio" for="sort-4">
+                                            {% if LANGUAGE_CODE == 'ru' %}году
+                                                публикации{% elif LANGUAGE_CODE == 'tt' %}
+                                                бастырып чыгару елы{% else %}publication
+                                                year{% endif %}
+                                        </label>
+                                    </span>
+                                        </div>
+                                        <div class="search-nav__item">
+                                    <span class="search-nav__radio">
+                                        <input id="sort-5" name="sort" type="radio" value="record-create-date"
+                                               {% if sort_attr == 'record-create-date' %}checked{% endif %}
+                                               onchange="this.form.submit()">
+                                        <label class="search-btn__radio" for="sort-5">
+                                            {% if LANGUAGE_CODE == 'ru' %}дате
+                                                поступления{% elif LANGUAGE_CODE == 'tt' %}
+                                                дате поступления{% else %}incoming date{% endif %}
+                                        </label>
+                                    </span>
+                                        </div>
+                                        <div class="search-nav__item">
+                                    <span class="search-nav__radio">
+                                        <input id="sort-6" name="sort" type="radio" value="tom"
+                                               {% if sort_attr == 'tom' %}checked{% endif %}
+                                               onchange="this.form.submit()">
+                                        <label class="search-btn__radio" for="sort-6">
+                                            тому/части
+                                        </label>
+                                    </span>
+                                        </div>
+                                    {% empty %}
+                                        <div class="search-nav__item">
+                                    <span class="search-nav__radio">
+                                        <input id="sort-1" name="sort" type="radio" value="0"
+                                               {% if sort_attr == '0' or not sort_attr %}checked{% endif %}
+                                               onchange="this.form.submit()">
+                                        <label class="search-btn__radio" for="sort-1">
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                релевантности{% elif LANGUAGE_CODE == 'tt' %}релевантность буенча
+                                                аеру{% else %}
+                                                relevance{% endif %}
+                                        </label>
+                                    </span>
+                                        </div>
+                                        <div class="search-nav__item">
+                                    <span class="search-nav__radio">
+                                        <input id="sort-2" name="sort" type="radio" value="author"
+                                               {% if sort_attr == 'author' %}checked{% endif %}
+                                               onchange="this.form.submit()">
+                                        <label class="search-btn__radio" for="sort-2">
+                                            {% if LANGUAGE_CODE == 'ru' %}автору{% elif LANGUAGE_CODE == 'tt' %}
+                                                автор{% else %}author{% endif %}
+                                        </label>
+                                    </span>
+                                        </div>
+                                        <div class="search-nav__item">
+                                    <span class="search-nav__radio">
+                                        <input id="sort-3" name="sort" type="radio" value="title"
+                                               {% if sort_attr == 'title' %}checked{% endif %}
+                                               onchange="this.form.submit()">
+                                        <label class="search-btn__radio" for="sort-3">
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                заглавию{% elif LANGUAGE_CODE == 'tt' %}
+                                                исем{% else %}title{% endif %}
+                                        </label>
+                                    </span>
+                                        </div>
+                                        <div class="search-nav__item">
+                                    <span class="search-nav__radio">
+                                        <input id="sort-4" name="sort" type="radio" value="date-of-publication"
+                                               {% if sort_attr == 'date-of-publication' %}checked{% endif %}
+                                               onchange="this.form.submit()">
+                                        <label class="search-btn__radio" for="sort-4">
+                                            {% if LANGUAGE_CODE == 'ru' %}году
+                                                публикации{% elif LANGUAGE_CODE == 'tt' %}
+                                                бастырып чыгару елы{% else %}publication
+                                                year{% endif %}
+                                        </label>
+                                    </span>
+                                        </div>
+                                        <div class="search-nav__item">
+                                    <span class="search-nav__radio">
+                                        <input id="sort-5" name="sort" type="radio" value="record-create-date"
+                                               {% if sort_attr == 'record-create-date' %}checked{% endif %}
+                                               onchange="this.form.submit()">
+                                        <label class="search-btn__radio" for="sort-5">
+                                            {% if LANGUAGE_CODE == 'ru' %}дате
+                                                поступления{% elif LANGUAGE_CODE == 'tt' %}
+                                                дате поступления{% else %}incoming date{% endif %}
+                                        </label>
+                                    </span>
+                                        </div>
+                                        <div class="search-nav__item">
+                                    <span class="search-nav__radio">
+                                        <input id="sort-6" name="sort" type="radio" value="tom"
+                                               {% if sort_attr == 'tom' %}checked{% endif %}
+                                               onchange="this.form.submit()">
+                                        <label class="search-btn__radio" for="sort-6">
+                                            тому/части
+                                        </label>
+                                    </span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {% for search_breadcumb in search_breadcumbs %}
                                     {% if forloop.last %}
                                         <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">
                                         <input type="hidden" name="q" value="{{ search_breadcumb.value }}">
@@ -318,268 +352,317 @@
                                         <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
                                     {% endif %}
                                 {% endfor %}
-                                <script type="text/javascript">
-                                    $('#add_sort_button').click(function () {
-                                        if ($('.sort_select').length >= 3) {
-                                            return false;
-                                        }
-                                        $('.sort_select').last().clone().insertAfter($('.sort_select').last());
-//                                $('.sort_select').last().insertAfter($('.sort_select').clone());
-                                    });
-                                </script>
-                        </form>
+                            </form>
                         </div>
-
                     {% endif %}
-                <div class="result-container">
+                    {% if not docs and stats %}
+                        {% include 'ssearch/frontend/catalogs.html' %}
+                    {% endif %}
                     {% if docs %}
-                        {% for doc in docs %}
-                            <div class="result">
-                                <div class="result__index">
-                                    {{ forloop.counter0|add:results_page.start_index }}
-                                </div>
-                                <div class="result__info">
-                                    <h3>
-                                        <a href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a>
-                                    </h3>
-
-                                    <div class="result__author">
-                                        {% for author in doc.record.author %}
-                                            {{ author }}{% if not forloop.last %}; {% endif %}
-                                        {% endfor %}
-                                    </div>
-
-
-                                    <ul class="result__crumbs__list">
-                                        {% for subject in doc.record|hash:'subject-heading' %}
-                                            <li>
-                                                <a href="?q={{ subject|urlencode }}&attr=subject-heading_t"
-                                                   class="result__crumbs__list_link">
-                                                    {{ subject }}
-                                                </a>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                    <div class="result__detail">
-                                        {#                                            <div class="result__detail_box">#}
-                                        {#                                                <img class="result__detail_img"#}
-                                        {#                                                     src="http://elib.spbstu.ru/main/picture?url=http://dl.unilib.neva.ru/dl/002082.pdf&amp;size=1"/>#}
-                                        {#                                            </div>#}
-                                        <div class="result__detail_box">
+                        <div class="list list_mt">
+                            {% for doc in docs %}
+                                <div class="list__item">
+                                    <div class="list__col-text">
+                                        <h3 class="list__title">
+                                            {#                                            {{ forloop.counter0|add:results_page.start_index }}#}
+                                            <a class="list__title-link"
+                                               href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a>
+                                        </h3>
+                                        <ul class="tag list__tag">
+                                            {% for subject in doc.record|hash:'subject-heading' %}
+                                                <li class="tag__item">
+                                                    <a class="tag__link"
+                                                       href="?q={{ subject|urlencode }}&attr=subject-heading_t">{{ subject }}</a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                        <p class="list__description">
+                                            {% for author in doc.record.author %}
+                                                {{ author }}{% if not forloop.last %}; {% endif %}
+                                            {% endfor %}
+                                        </p>
+                                        <dl class="list__dl">
                                             {% if doc.record|hash:'code-language' %}
-                                                <div class="result__detail_row">
-                                                    <div class="result__detail_box">
-                                                        <div class="result__detail_title">
-                                                            {% if LANGUAGE_CODE == 'ru' %}
-                                                                Язык{% elif LANGUAGE_CODE == 'tt' %}
-                                                                Тел{% else %}Language{% endif %}:
-                                                        </div>
-                                                    </div>
-                                                    <div class="result__detail_box">
-                                                        <div class="result__detail_description">
-                                                            {% for lang in doc.record|hash:'code-language' %}
-                                                                {% if not forloop.last %}
-                                                                    {{ lang|language_title }},
-                                                                {% else %}
-                                                                    {{ lang|language_title }}
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <dt>
+                                                    {% if LANGUAGE_CODE == 'ru' %}
+                                                        Язык{% elif LANGUAGE_CODE == 'tt' %}
+                                                        Тел{% else %}Language{% endif %}:
+                                                </dt>
+                                                <dd>
+                                                    {% for lang in doc.record|hash:'code-language' %}
+                                                        {% if not forloop.last %}
+                                                            {{ lang|language_title }},
+                                                        {% else %}
+                                                            {{ lang|language_title }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </dd>
                                             {% endif %}
-
                                             {% if doc.record|hash:'date-of-publication' %}
-                                                <div class="result__detail_row">
-                                                    <div class="result__detail_box">
-                                                        <div class="result__detail_title">
-                                                            {% if LANGUAGE_CODE == 'ru' %}Год
-                                                                публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып
-                                                                чыгару
-                                                                елы{% else %}
-                                                                Publication
-                                                                year{% endif %}:
-                                                        </div>
-                                                    </div>
-                                                    <div class="result__detail_box">
-                                                        <div class="result__detail_description">
-                                                            {% for dop in doc.record|hash:'date-of-publication' %}
-                                                                {% if not forloop.last %}
-                                                                    {{ dop }},
-                                                                {% else %}
-                                                                    {{ dop }}
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <dt>
+                                                    {% if LANGUAGE_CODE == 'ru' %}Год
+                                                        публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып
+                                                        чыгару
+                                                        елы{% else %}
+                                                        Publication
+                                                        year{% endif %}:
+                                                </dt>
+                                                <dd>
+                                                    {% for dop in doc.record|hash:'date-of-publication' %}
+                                                        {% if not forloop.last %}
+                                                            {{ dop }},
+                                                        {% else %}
+                                                            {{ dop }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </dd>
                                             {% endif %}
                                             {% if doc.record|hash:'publisher' %}
-                                                <div class="result__detail_row">
-                                                    <div class="result__detail_box">
-                                                        <div class="result__detail_title">Издательство:</div>
-                                                    </div>
-                                                    <div class="result__detail_box">
-                                                        <div class="result__detail_description">
-                                                            {% for publisher in doc.record|hash:'publisher' %}
-                                                                {% if not forloop.last %}
-                                                                    {{ publisher }},
-                                                                {% else %}
-                                                                    {{ publisher }}
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <dt>
+                                                    Издательство:
+                                                </dt>
+                                                <dd>
+                                                    {% for publisher in doc.record|hash:'publisher' %}
+                                                        {% if not forloop.last %}
+                                                            {{ publisher }},
+                                                        {% else %}
+                                                            {{ publisher }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </dd>
                                             {% endif %}
                                             {% if doc.record|hash:'fond' %}
-                                                <div class="result__detail_row">
-                                                    <div class="result__detail_box">
-                                                        <div class="result__detail_title">Коллекция:</div>
-                                                    </div>
-                                                    <div class="result__detail_box">
-                                                        <div class="result__detail_description">
-                                                            {% for fond in doc.record|hash:'fond' %}
-                                                                {% if not forloop.last %}
-                                                                    {{ fond|fond_title }},
-                                                                {% else %}
-                                                                    {{ fond|fond_title }}
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <dt>
+                                                    Коллекция:
+                                                </dt>
+                                                <dd>
+                                                    {% for fond in doc.record|hash:'fond' %}
+                                                        {% if not forloop.last %}
+                                                            {{ fond|fond_title }},
+                                                        {% else %}
+                                                            {{ fond|fond_title }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </dd>
                                             {% endif %}
                                             {% if doc.record|hash:'content-type' %}
-                                                <div class="result__detail_row">
-                                                    <div class="result__detail_box">
-                                                        <div class="result__detail_title">
-                                                            {% if LANGUAGE_CODE == 'ru' %}Тип
-                                                                содержания{% elif LANGUAGE_CODE == 'tt' %}Эчтәлек
-                                                                тибы{% else %}
-                                                                Content
-                                                                tipe{% endif %}:
-                                                        </div>
-                                                    </div>
-                                                    <div class="result__detail_box">
-                                                        <div class="result__detail_description">
-                                                            {% for content_type in doc.record|hash:'content-type' %}
-                                                                {% if not forloop.last %}
-                                                                    {{ content_type|content_type_title }},
-                                                                {% else %}
-                                                                    {{ content_type|content_type_title }}
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <dt>
+                                                    {% if LANGUAGE_CODE == 'ru' %}Тип
+                                                        содержания{% elif LANGUAGE_CODE == 'tt' %}Эчтәлек
+                                                        тибы{% else %}
+                                                        Content
+                                                        tipe{% endif %}:
+                                                </dt>
+                                                <dd>
+                                                    {% for content_type in doc.record|hash:'content-type' %}
+                                                        {% if not forloop.last %}
+                                                            {{ content_type|content_type_title }},
+                                                        {% else %}
+                                                            {{ content_type|content_type_title }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </dd>
                                             {% endif %}
+                                        </dl>
+                                        {% if doc.solr_highlights %}
+                                            <p class="list__description">{{ doc.solr_highlights|hash:"full-text"|hash:0|safe }}</p>
+                                        {% endif %}
+                                        <a class="list__link"
+                                           href="{% url 'ssearch:frontend:to_print' doc.id %}" target="_blank">
+                                            Версия для печати
+                                        </a>
+                                    </div>
+                                    <div class="list__col-img">
+                                        <div class="list__img-wrap">
+                                            <img class="list__img"
+                                                 src="{{ STATIC_URL }}dist/images/list/file.svg"
+                                                 alt="{{ doc.record.title.0 }}">
                                         </div>
                                     </div>
-                                    {% if doc.solr_highlights %}
-                                        <div>
-                                            <a href="#1" class="context">Показать контекст</a>
-
-                                            <div class="highlights" style="display: none;">
-                                                {{ doc.solr_highlights|hash:"full-text"|hash:0|safe }}
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                    <a class="result__detail__print"
-                                       href="{% url 'ssearch:frontend:to_print' doc.id %}" target="_blank">Версия
-                                        для
-                                        печати</a>
                                 </div>
-                            </div>
-
-                        {% endfor %}
+                            {% endfor %}
                         </div>
-
                         {% admin_pagination results_page %}
-
                     {% endif %}
-            </div>
-            <div class="col-4">
-                {% if docs %}
-                    <div class="facets-container">
-                        {% for facet in facets %}
-                            {% if facet.values %}
-                                <div class="facets-container__item">
-                                    <div class="facet">
-                                        <div class="facet__header facet__header_closed">
-                                            <h4 class="facet__title">{{ facet.title|facet_title }}</h4>
+                </div>
+                <div class="col-lg-3 col-md-12">
+                    <div class="search-facet">
+                        {% if catalog != 'ebooks' %}
+                            <section class="card card_bs-2 card_facet">
+                                <div class="card__header">
+                                    <h2 class="card__title card__title_sm">
+                                        {% if LANGUAGE_CODE == 'ru' %}
+                                            Поиск по библиотеке
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Китапханә буенча эзләү:
+                                        {% else %}
+                                            Search in library:
+                                        {% endif %}
+                                    </h2>
+                                </div>
+                                <div class="card__body">
+                                    {% if library %}
+                                        <p class="card__text">
+                                            {% for ancestor in library.get_ancestors %}
+                                                {{ ancestor.name }} →
+                                            {% endfor %}
+                                            <span>{{ library.name }}</span>
+                                        </p>
+                                    {% else %}
+                                        <p class="card__text">Выберите библиотеку</p>
+                                    {% endif %}
+                                </div>
+                                <div class="card__footer">
+                                    {% if library %}
+                                        <ul class="card-nav">
+                                            <li class="card-nav__item">
+                                                <button class="card-nav__link js_select_library"
+                                                        data-custom-open="select_library">
+                                                    Выбрать другую
+                                                </button>
+                                            </li>
+                                            <li class="card-nav__item">
+                                                <a class="card-nav__link" href="#remove_library"
+                                                   onclick="removeLibraryParam();">Очистить</a>
+                                            </li>
+                                        </ul>
+                                    {% else %}
+                                        <ul class="card-nav">
+                                            <li class="card-nav__item">
+                                                <button class="card-nav__link js_select_library"
+                                                        data-custom-open="select_library">
+                                                    {% if LANGUAGE_CODE == 'ru' %}
+                                                        Выбрать библиотеку
+                                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                                        Китапханәне сайлау
+                                                    {% else %}
+                                                        Select a library:
+                                                    {% endif %}
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            </section>
+                        {% endif %}
+                        {% if docs %}
+                            {% for facet in facets %}
+                                {% if facet.values %}
+                                    <section class="card card_bs-2 card_mt card_facet">
+                                        <div class="card__header">
+                                            <h2 class="card__title card__title_sm">{{ facet.title|facet_title }}</h2>
                                         </div>
-                                        <div class="facet__body facet__body_closed">
+                                        <div class="card__body">
                                             {% for value in facet.values %}
-                                                {% if facet.title == 'date-of-publication_dtf' %}
-                                                    <div class="facet__link">
-                                                        <a href="{% add_get_append q=value.0|date_from_isostring|date:"Y" attr=facet %}">{{ value.0|date_from_isostring|date:"Y" }}</a>
-                                                        <span>({{ value.1 }})</span>
-                                                    </div>
-                                                {% elif facet.title == 'content-type_t' %}
-                                                    <div class="facet__link">
-                                                        <a href="{% add_get_append q=value.0 attr=facet.title %}">{{ value.0|content_type_title }}</a>
-                                                        <span>({{ value.1 }})</span>
-                                                    </div>
-                                                {% elif facet.title == 'subject-heading_sf' %}
-                                                    <div class="facet__link">
-                                                        <a href="{% add_get_append q=value.0 attr=facet.title %}">{{ value.0 }}</a>
-                                                        <span>({{ value.1 }})</span>
-                                                    </div>
-                                                {% elif facet.title == 'code-language_t' %}
-                                                    <div class="facet__link">
-                                                        <a href="{% add_get_append q=value.0 attr=facet.title %}">{{ value.0|language_title }}</a>
-                                                        <span>({{ value.1 }})</span>
-                                                    </div>
-                                                {% elif facet.title == 'fond_sf' %}
-                                                    <div class="facet__link">
-                                                        <a href="{% add_get_append q=value.0 attr=facet.title %}">{{ value.0|fond_title }}</a>
-                                                        <span>({{ value.1 }})</span>
-                                                    </div>
-                                                {% else %}
-                                                    <div class="facet__link">
-                                                        <a href="{% add_get_append q=value.0 attr=facet.title %}">{{ value.0 }}</a>
-                                                        <span>({{ value.1 }})</span>
-                                                    </div>
-                                                {% endif %}
+                                                <ul class="card-list">
+                                                    {% if facet.title == 'date-of-publication_dtf' %}
+
+                                                        <li class="card-list__item">
+                                                            <a class="card-list__link"
+                                                               href="{% add_get_append q=value.0|date_from_isostring|date:"Y" attr=facet %}">
+                                                                <span class="card-list__title">{{ value.0|date_from_isostring|date:"Y" }}</span>
+                                                                <span class="card-list__count">{{ value.1 }}</span>
+                                                            </a>
+                                                        </li>
+
+                                                    {% elif facet.title == 'content-type_t' %}
+
+                                                        <li class="card-list__item">
+                                                            <a class="card-list__link"
+                                                               href="{% add_get_append q=value.0 attr=facet.title %}">
+                                                                <span class="card-list__title">{{ value.0|content_type_title }}</span>
+                                                                <span class="card-list__count">{{ value.1 }}</span>
+                                                            </a>
+                                                        </li>
+
+                                                    {% elif facet.title == 'subject-heading_sf' %}
+
+                                                        <li class="card-list__item">
+                                                            <a class="card-list__link"
+                                                               href="{% add_get_append q=value.0 attr=facet.title %}">
+                                                                <span class="card-list__title">{{ value.0 }}</span>
+                                                                <span class="card-list__count">{{ value.1 }}</span>
+                                                            </a>
+                                                        </li>
+
+                                                    {% elif facet.title == 'code-language_t' %}
+
+                                                        <li class="card-list__item">
+                                                            <a class="card-list__link"
+                                                               href="{% add_get_append q=value.0 attr=facet.title %}">
+                                                                <span class="card-list__title">{{ value.0|language_title }}</span>
+                                                                <span class="card-list__count">{{ value.1 }}</span>
+                                                            </a>
+                                                        </li>
+
+                                                    {% elif facet.title == 'fond_sf' %}
+
+                                                        <li class="card-list__item">
+                                                            <a class="card-list__link"
+                                                               href="{% add_get_append q=value.0 attr=facet.title %}">
+                                                                <span class="card-list__title">{{ value.0|fond_title }}</span>
+                                                                <span class="card-list__count">{{ value.1 }}</span>
+                                                            </a>
+                                                        </li>
+
+                                                    {% else %}
+
+                                                        <li class="card-list__item">
+                                                            <a class="card-list__link"
+                                                               href="{% add_get_append q=value.0 attr=facet.title %}">
+                                                                <span class="card-list__title">{{ value.0 }}</span>
+                                                                <span class="card-list__count">{{ value.1 }}</span>
+                                                            </a>
+                                                        </li>
+
+                                                    {% endif %}
+                                                </ul>
 
                                             {% empty %}
-                                                <li style="color: #808080;">сведений нет</li>
+                                                <p class="card__text">сведений нет</p>
                                             {% endfor %}
                                         </div>
-                                    </div>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
+                                    </section>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                     </div>
-                {% endif %}
+                </div>
             </div>
         </div>
-        </div>
     </main>
-
-
-
-    <div id="select_library" class="modal" tabindex="-1" role="dialog" aria-labelledby="select_library"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg" style="width: 80%">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="detail-page__options__btn" data-dismiss="modal" aria-hidden="true">×
+    <div class="modal micromodal-slide" id="select_library" aria-hidden="true" role="dialog">
+        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="select_library-title">
+                <header class="modal__header">
+                    <h2 class="modal__title" id="select_library-title">
+                        Выбрать библиотеку
+                    </h2>
+                    <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+                </header>
+                <main class="modal__content">
+                    <div class="lds-roller-wrap-center">
+                        <div class="lds-roller">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+                </main>
+                <footer class="modal__footer">
+                    <button class="btn btn_ol" data-micromodal-close aria-label="Закрыть">Закрыть
                     </button>
-                    <h1 class="content-page__title">Выберите библиотеку, по записям которой необходимо ограничить
-                        поиск</h1>
-                </div>
-                <div class="modal-body content-page__text">
-                    Загрузка списка библиотек...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="detail-page__options__btn" data-dismiss="modal">Закрыть</button>
-                </div>
+                </footer>
             </div>
         </div>
     </div>
-
+{% endblock %}
+{% block scripts %}
     <script type="text/javascript">
         $('#save_request_button').click(function () {
             $.ajax({
@@ -616,9 +699,9 @@
 
         function removeParam(key, sourceURL) {
             var rtn = sourceURL.split("?")[0],
-                    param,
-                    params_arr = [],
-                    queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
+                param,
+                params_arr = [],
+                queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
             if (queryString !== "") {
                 params_arr = queryString.split("&");
                 for (var i = params_arr.length - 1; i >= 0; i -= 1) {
@@ -662,8 +745,8 @@
         $(function () {
             $('.js_select_library').on('click', function () {
                 var $modal = $('#select_library');
-                $modal.modal();
-                $modalBody = $modal.find('.modal-body');
+                {#$modal.modal();#}
+                $modalBody = $modal.find('.modal__content');
                 $.get('{% url 'ssearch:frontend:select_library' %}').done(function (data) {
                     $modalBody.html(data);
                     $modalBody.find('.org_tree__org_link').one('click', function () {
@@ -678,5 +761,4 @@
         });
         //alert(alteredURL);
     </script>
-
 {% endblock %}

@@ -5,30 +5,23 @@
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
-    </nav>
     <main>
         <div class="container">
-            <ul class="bread__crumbs">
-                <li>
-                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                        {% if LANGUAGE_CODE == 'ru' %}
-                            Главная
-                        {% elif LANGUAGE_CODE == 'tt' %}
-                            Төп бит
-                        {% else %}
-                            Home
-                        {% endif %}
-                    </a>
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a class="bread__crumbs_link bread__crumbs_link_active">
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li>
+                    <span class="crumb__current">
                         {% if LANGUAGE_CODE == 'ru' %}
                             Гостевая книга
                         {% elif LANGUAGE_CODE == 'tt' %}
@@ -36,54 +29,53 @@
                         {% else %}
                             Guest book
                         {% endif %}
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <hr class="footer-hr">
-        <div class="container content-page">
+                    </span>
+                    </li>
+                </ol>
+            </nav>
             <div class="row">
-                <div class="col-7">
-                    <h1 class="content-page__title">
-                        {% if LANGUAGE_CODE == 'ru' %}Отзывы{% elif LANGUAGE_CODE == 'tt' %}Бәяләмәләр{% else %}Feedbacks{% endif %}
-                        <span>({{ count_feedback }})</span></h1>
-                     {% for feedback in feedbacks_page.object_list %}
-                        <div class="answer-box">
-{#                            <div class="answer-box__index">#}
-{#                               {{ feedback.id }}#}
-{#                            </div>#}
-                            <div class="answer-box__content_padding">
-                                <div class="answer-box__content">
-                                    <div class="answer-box__content__question">{{ feedback.content|safe }}</div>
+                <div class="col-lg-7 col-md-12">
+                    <div class="content">
+                        <h1 class="content__title">
+                            {% if LANGUAGE_CODE == 'ru' %}Отзывы{% elif LANGUAGE_CODE == 'tt' %}Бәяләмәләр{% else %}
+                                Feedbacks{% endif %}
+                            ({{ count_feedback }})
+                        </h1>
+                        {% for feedback in feedbacks_page.object_list %}
+                            <div class="card card_bs-2 card_mt">
+                                <div class="card__body">
+                                    {{ feedback.content|safe }}
                                     {% if feedback.comment %}
-                                        <hr class="answer-box__content__hr">
-                                        <div class="answer-box__content__answ">{{ feedback.comment|safe }}</div>
+                                        <h4>Ответ</h4>
+                                        {{ feedback.comment|safe }}
                                     {% endif %}
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                     {% admin_pagination feedbacks_page %}
                 </div>
-                <div class="col-5">
-                    <div class="side-box">
-                        <h2 class="side-box__title">Ваш отзыв</h2>
-
-                        <form class="side-box__form" method="POST">{% csrf_token %}
-{#                            {% include 'frontend/base_form_fields.html' %}#}
-                            {% bootstrap_form form %}
-                            <button class="side-box__form__btn" type="submit">
-                                {% if LANGUAGE_CODE == 'ru' %}
-                                    Добавить отзыв
-                                {% elif LANGUAGE_CODE == 'tt' %}
-                                    Бәяләмә өстәү
-                                {% else %}
-                                    Add feedback
-                                {% endif %}
-                            </button>
-                        </form>
-                    </div>
-
+                <div class="col-lg-5 col-md-12">
+                    <section class="card card_mt">
+                        <header class="card__header">
+                            <h2 class="card__title">Ваш отзыв</h2>
+                        </header>
+                        <div class="card__body">
+                            <form class="side-box__form" method="POST">{% csrf_token %}
+                                {#                            {% include 'frontend/base_form_fields.html' %}#}
+                                {% bootstrap_form form %}
+                                <button class="btn">
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        Добавить отзыв
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Бәяләмә өстәү
+                                    {% else %}
+                                        Add feedback
+                                    {% endif %}
+                                </button>
+                            </form>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>

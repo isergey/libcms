@@ -26,11 +26,11 @@ def active_path(context, urls):
     """
     if type(urls) == unicode:
         if context['request'].path.startswith(urls):
-            return "header-link_active"
+            return "nav__link_active"
         else:
             return ""
 
     for url in urls.split():
         if context['request'].path.startswith(reverse(url)):
-            return "header-link_active"
+            return "nav__link_active"
     return ""
