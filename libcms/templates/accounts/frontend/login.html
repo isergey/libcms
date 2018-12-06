@@ -1,5 +1,6 @@
 {% extends 'theme_frontend_base.html' %}
 {% load i18n %}
+{% load bootstrap3 %}
 {% get_current_language as LANGUAGE_CODE %}
 {% block title %}
     {% trans 'Login' %}
@@ -77,14 +78,7 @@
 
                                 <form method="POST">
                                     {% csrf_token %}
-                                    <label>
-                                        <img src="{{ STATIC_URL }}dist/images/login.png">
-                                        <input name="username" type="text" placeholder="Логин">
-                                    </label>
-                                    <label>
-                                        <img src="{{ STATIC_URL }}dist/images/pass.png">
-                                        <input name="password" type="password" placeholder="Пароль">
-                                    </label>
+                                    {% bootstrap_form form %}
                                     <button type="submit">Войти</button>
                                     <a href="{% url 'accounts:frontend:password_reset' %}">Забыли пароль?</a>
                                 </form>
