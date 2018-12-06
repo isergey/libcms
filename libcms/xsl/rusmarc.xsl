@@ -245,9 +245,9 @@ RUSMARC
         </xsl:when>
         <xsl:otherwise>
           <!-- Bibliographic record -->
-          <xsl:if test="field[@id='856']/subfield[@id='x'] = $cover">
+          <!--<xsl:if test="field[@id='856']/subfield[@id='x'] = $cover">
             <img src="{field[@id='856' and subfield[@id='x'] = $cover]/subfield[@id='u']}" align="left" hspace="5"/>
-          </xsl:if>
+          </xsl:if>-->
           <xsl:choose>
             <xsl:when test="$bl='a'">
               <xsl:call-template name="analytics"/>

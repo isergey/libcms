@@ -86,8 +86,11 @@
                                         {% for doc in linked_docs %}
 
                                             <li class="textBook">
-                                                <p class="item1"><a target="_blank"
-                                                                    href="{% url 'ssearch:frontend:detail' doc.id %}">{{ doc.record.title.0 }}</a>
+                                                <p class="item1">
+                                                    <a target="_blank"
+                                                       href="{% url 'ssearch:frontend:detail' doc.id %}">
+                                                        {{ doc.record.title.0 }}
+                                                    </a>
                                                 </p>
 
                                                 <p class="item2">
@@ -165,8 +168,14 @@
                             </div>
                         </div>
                         <div class="record-detail__col-img">
+{#                            {% get_record_cover  %}#}
+                            {% if doc.cover %}
+                                <img class="record-detail__img"
+                                 src="{{ doc.cover.0 }}" alt="">
+                            {% else %}
                             <img class="record-detail__img"
                                  src="{{ STATIC_URL }}dist/images/list/file.svg" alt="">
+                            {% endif %}
                         </div>
                     </div>
                 </div>

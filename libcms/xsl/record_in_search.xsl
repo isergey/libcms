@@ -552,7 +552,7 @@
         <xsl:for-each select="field[@id='856']">
             <xsl:if test="subfield[@id='x']='Обложка'">
                 <field name="cover">
-                    <xsl:value-of select="subfield[@id='x']"/>
+                    <xsl:value-of select="subfield[@id='u']"/>
                 </field>
             </xsl:if>
         </xsl:for-each>
