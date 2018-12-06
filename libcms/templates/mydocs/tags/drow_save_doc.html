@@ -73,6 +73,7 @@
                     <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
                 </header>
                 <form action="{% url 'mydocs:frontend:save' %}" method="POST" id="save_doc_form">
+                    {% csrf_token %}
                     <main class="modal__content">
                         {% include 'frontend/base_form_fields.html' %}
                     </main>

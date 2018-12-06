@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from ..models import SavedDocument
+from ..models import SavedDocument, List
+
+
+class ListForm(forms.ModelForm):
+    class Meta:
+        model = List
+        exclude = []
 
 
 class SavedDocumentForm(forms.ModelForm):

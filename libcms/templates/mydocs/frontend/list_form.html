@@ -1,0 +1,19 @@
+{% load bootstrap3 %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button type="submit">
+        {% if not list %}Создать{% else %}Сохранить{% endif %}
+    </button>
+</form>
+
+</body>
+</html>
