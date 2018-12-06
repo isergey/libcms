@@ -1,9 +1,10 @@
-{% for banner in banners %}
-    <br><br>
-    {% if banner.url %}
-        <a href="{{ banner.url|safe }}" target="_blank"><img class="lib-info__avatar" src="{{ MEDIA_URL }}{{ banner.image }}"></a>
-    {% else %}
-        <img class="lib-info__avatar"  src="{{ MEDIA_URL }}{{ banner.image }}">
-    {% endif %}
-
-{% endfor %}
+<div class="lib-banner">
+    {% for banner in banners %}
+        <div class="lib-banner__item">
+            <a class="lib-banner__link" href="{{ banner.url|safe|default:"#" }}" target="_blank" rel="nofollow, noopener">
+                <img class="lib-banner__img" src="{{ MEDIA_URL }}{{ banner.image }}"
+                     alt="Баннер">
+            </a>
+        </div>
+    {% endfor %}
+</div>

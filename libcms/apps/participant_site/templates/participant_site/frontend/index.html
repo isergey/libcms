@@ -3,6 +3,7 @@
 {% load participant_site_tags %}
 {% load participant_news_tags %}
 {% load participant_events_tags %}
+{% load participant_banners_tags %}
 {#{% load ssearch_tags %}#}
 {#{% load news_tags %}#}
 {#{% load events_tags %}#}
@@ -84,7 +85,9 @@
                                     {% else %}
                                         {% url 'participant_site:frontend:index' library.code as library_site_address %}
                                         <a href="http://{{ request.META.HTTP_HOST }}{{ library_site_address }}"
-                                           class="lib-contact-nav__link" target="_blank" rel="nofollow, noopener">http://{{ request.META.HTTP_HOST }}{{ library_site_address }}</a>
+                                           class="lib-contact-nav__link" target="_blank" rel="nofollow, noopener">
+                                            http://{{ request.META.HTTP_HOST }}{{ library_site_address }}
+                                        </a>
                                     {% endif %}
                                 </li>
                                 <li class="lib-contact-nav__item">
@@ -104,9 +107,9 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="lib-contact__col">
+                        <div class="lib-contact__col" id="map-lib-item">
                             {#                            <div id="map-ymaps"></div>#}
-                            <div id="map-lib-item"></div>
+{#                            <div id="map-lib-item"></div>#}
                         </div>
                     </div>
                 </div>
@@ -140,32 +143,33 @@
                     </div>
                 {% endblock %}
             </div>
-            <div class="lib-banner">
-                <div class="lib-banner__item">
-                    <a class="lib-banner__link" href="#" target="_blank" rel="nofollow, noopener">
-                        <img class="lib-banner__img" src="http://www.pravda-tv.ru/wp-content/uploads/2018/09/3u-12.jpg"
-                             alt="Баннер">
-                    </a>
-                </div>
-                <div class="lib-banner__item">
-                    <a class="lib-banner__link" href="#" target="_blank" rel="nofollow, noopener">
-                        <img class="lib-banner__img" src="http://www.pravda-tv.ru/wp-content/uploads/2018/09/3u-12.jpg"
-                             alt="Баннер">
-                    </a>
-                </div>
-                <div class="lib-banner__item">
-                    <a class="lib-banner__link" href="#" target="_blank" rel="nofollow, noopener">
-                        <img class="lib-banner__img" src="http://www.pravda-tv.ru/wp-content/uploads/2018/09/3u-12.jpg"
-                             alt="Баннер">
-                    </a>
-                </div>
-                <div class="lib-banner__item">
-                    <a class="lib-banner__link" href="#" target="_blank" rel="nofollow, noopener">
-                        <img class="lib-banner__img" src="http://www.pravda-tv.ru/wp-content/uploads/2018/09/3u-12.jpg"
-                             alt="Баннер">
-                    </a>
-                </div>
-            </div>
+            {% show_banners library.id %}
+            {#            <div class="lib-banner">#}
+            {#                <div class="lib-banner__item">#}
+            {#                    <a class="lib-banner__link" href="#" target="_blank" rel="nofollow, noopener">#}
+            {#                        <img class="lib-banner__img" src="http://www.pravda-tv.ru/wp-content/uploads/2018/09/3u-12.jpg"#}
+            {#                             alt="Баннер">#}
+            {#                    </a>#}
+            {#                </div>#}
+            {#                <div class="lib-banner__item">#}
+            {#                    <a class="lib-banner__link" href="#" target="_blank" rel="nofollow, noopener">#}
+            {#                        <img class="lib-banner__img" src="http://www.pravda-tv.ru/wp-content/uploads/2018/09/3u-12.jpg"#}
+            {#                             alt="Баннер">#}
+            {#                    </a>#}
+            {#                </div>#}
+            {#                <div class="lib-banner__item">#}
+            {#                    <a class="lib-banner__link" href="#" target="_blank" rel="nofollow, noopener">#}
+            {#                        <img class="lib-banner__img" src="http://www.pravda-tv.ru/wp-content/uploads/2018/09/3u-12.jpg"#}
+            {#                             alt="Баннер">#}
+            {#                    </a>#}
+            {#                </div>#}
+            {#                <div class="lib-banner__item">#}
+            {#                    <a class="lib-banner__link" href="#" target="_blank" rel="nofollow, noopener">#}
+            {#                        <img class="lib-banner__img" src="http://www.pravda-tv.ru/wp-content/uploads/2018/09/3u-12.jpg"#}
+            {#                             alt="Баннер">#}
+            {#                    </a>#}
+            {#                </div>#}
+            {#            </div>#}
         </div>
     </main>
 
@@ -301,61 +305,28 @@
 {% endblock %}
 
 {% block scripts %}
+    {{ block.super }}
     <script type="text/javascript">
-        ymaps.ready(init);
-        var myMap;
-        var coords = [{{ library.latitude|safe|default:'0.0' }}, {{ library.longitude|safe|default:'0.0' }}];
+        (function () {
+            'use strict';
+            ymaps.ready(init);
+            var coords = [{{ library.latitude|safe|default:'0.0' }}, {{ library.longitude|safe|default:'0.0' }}];
 
-        function init() {
-            orgMap = new ymaps.Map($('.map')[0], {
-                center: coords,
-                zoom: 12
-            });
-            orgPlacemark = new ymaps.Placemark(
-                coords,
-                {
-                    content: '{{ library.name }}',
-                    balloonContent: '<p>Адрес: {{ library.postal_address|linebreaks|default:'не указан' }}</p>'
-                }
-            );
-            orgMap.geoObjects.add(orgPlacemark);
-        }
-    </script>
-
-    <script type="text/javascript">
-        var yaParams = {
-            orgsSite: '{{ library.code }}'
-        };
-    </script>
-
-    <script type="text/javascript">
-        (function (d, w, c) {
-            (w[c] = w[c] || []).push(function () {
-                try {
-                    w.yaCounter28398531 = new Ya.Metrika({
-                        id: 28398531,
-                        clickmap: true,
-                        trackLinks: true,
-                        accurateTrackBounce: true, params: window.yaParams || {}
-                    });
-                } catch (e) {
-                }
-            });
-
-            var n = d.getElementsByTagName("script")[0],
-                s = d.createElement("script"),
-                f = function () {
-                    n.parentNode.insertBefore(s, n);
-                };
-            s.type = "text/javascript";
-            s.async = true;
-            s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
-
-            if (w.opera == "[object Opera]") {
-                d.addEventListener("DOMContentLoaded", f, false);
-            } else {
-                f();
+            function init() {
+                var orgMap = new ymaps.Map(document.getElementById('map-lib-item'), {
+                    center: coords,
+                    zoom: 12
+                });
+                var orgPlacemark = new ymaps.Placemark(
+                    coords,
+                    {
+                        content: '{{ library.name }}',
+                        balloonContent: '<p>Адрес: {{ library.postal_address|linebreaks|default:'не указан' }}</p>'
+                    }
+                );
+                orgMap.geoObjects.add(orgPlacemark);
             }
-        })(document, window, "yandex_metrika_callbacks");
+        })();
+
     </script>
 {% endblock %}
