@@ -1,119 +1,80 @@
 {% extends 'theme_frontend_base.html' %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-
 {% block title %}{% if LANGUAGE_CODE == 'ru' %}Детальная информация{% elif LANGUAGE_CODE == 'tt' %}Детальная информация
 {% else %}Detail information{% endif %}{% endblock %}
 {% block content %}
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
-    </nav>
     <main>
         <div class="container">
-            <ul class="bread__crumbs">
-                <li><a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                    {% if LANGUAGE_CODE == 'ru' %}
-                        Главная
-                    {% elif LANGUAGE_CODE == 'tt' %}
-                        Төп бит
-                    {% else %}
-                        Home
-                    {% endif %}
-                </a></li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    {% if request.GET.back %}
-                        <a class="bread__crumbs_link" href="{{ request.GET.back|safe }}">
-                            {{ item.get_section_display }}
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
                         </a>
-                    {% else %}
-                        <a class="bread__crumbs_link"
-                           href="{% url 'recommended_reading:frontend:index' item.section %}">
-                            {{ item.get_section_display }}
-                        </a>
-                    {% endif %}
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a title="{{ item.title }}" class="bread__crumbs_link bread__crumbs_link_active">
-                        {{ item.title }}
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <hr class="footer-hr">
-        <div class="container content-page">
+                    </li>
+                    <li>
+                        {% if request.GET.back %}
+                            <a href="{{ request.GET.back|safe }}">
+                                {{ item.get_section_display }}
+                            </a>
+                        {% else %}
+                            <a href="{% url 'recommended_reading:frontend:index' item.section %}">
+                                {{ item.get_section_display }}
+                            </a>
+                        {% endif %}
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                            {{ item.title }}
+                        </span>
+                    </li>
+                </ol>
+            </nav>
             <div class="row">
-                <div class="col-12">
-{#                    <h1 class="content-page__title">{{ item.title }}</h1>#}
-                    <div class="school">
-
-                        <div class="result-container" style="border-top: none">
-
-                            <div class="result" >
-                                <!--<div class="result__index">-->
-                                <!--1-->
-                                <!--</div>-->
-                                <div class="result__info result__info_pl-0">
-                                <h3>{{ item.title }}</h3>
-                                    <div class="result__detail">
-
-                                        <div class="result__detail_box">
-                                            {% for key, val in item.get_attrs.items %}
-                                                {% if val.value %}
-                                                    <div class="result__detail_row">
-                                                        <div class="result__detail_box">
-                                                            <div class="result__detail_title">{{ val.title }}:</div>
-                                                        </div>
-                                                        <div class="result__detail_box">
-                                                            <div class="result__detail_description">
-                                                                {{ val.value }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                {% endif %}
-                                            {% endfor %}
-                                            {% if item.annotation %}
-                                                <div class="result__detail_row">
-                                                    <div class="result__detail_box">
-                                                        <div class="result__detail_title">Описание:</div>
-                                                    </div>
-                                                    <div class="result__detail_box">
-                                                        <div class="result__detail_description">
-                                                            {{ item.annotation|safe }}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    <p class="result__download-list">
-                                        Электронные версии:
-                                        {% for attachment in attachments %}
-                                            <a href="{{ MEDIA_URL }}{{ attachment.file }}">{{ attachment.get_type_display }}</a>
-                                        {% endfor %}
-                                    </p>
-                                </div>
-                                <div class="result__img">
-                                    {% if item.cover %}
-                                        <img src="{{ MEDIA_URL }}{{ item.cover }}"/>
+                <div class="col-lg-8 col-md-12">
+                    <div class="record-detail">
+                        <div class="record-detail__col-text">
+                            <div class="content">
+                                <h1 class="content__title">{{ item.title }}</h1>
+                                {% for key, val in item.get_attrs.items %}
+                                    {% if val.value %}
+                                        <p>{{ val.title }}: {{ val.value }}</p>
                                     {% endif %}
-                                </div>
+                                {% endfor %}
+                                <p>
+                                    Электронные версии:
+                                    {% for attachment in attachments %}
+                                        <a href="
+                                                {{ MEDIA_URL }}{{ attachment.file }}">{{ attachment.get_type_display }}</a>
+                                    {% endfor %}
+                                </p>
+                                {% if item.annotation %}
+                                    <h2>Описание:</h2>
+                                    <p>{{ item.annotation|safe }}</p>
+                                {% endif %}
                             </div>
+                        </div>
+                        <div class="record-detail__col-img">
+                            {% if item.cover %}
+                                <img class="record-detail__img"
+                                     src="{{ MEDIA_URL }}{{ item.cover }}"
+                                     alt="{{ item.title }}">
+                            {% else %}
+                                <img class="record-detail__img"
+                                     src="{{ STATIC_URL }}dist/images/list/file.svg"
+                                     alt="{{ item.title }}">
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </main>
-
-
-
 {% endblock %}

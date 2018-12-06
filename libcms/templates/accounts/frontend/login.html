@@ -6,103 +6,85 @@
     {% trans 'Login' %}
 {% endblock %}
 {% block content %}
-    <style>
-        .org_button {
-            color: #1d609b;
-            padding: 10px 20px;
-            border: 1px solid #77a0c3;
-            border-radius: 5px;
-            margin: 20px 0 40px 40px;
-        }
-    </style>
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
-    </nav>
     <main>
         <div class="container">
-            <ul class="bread__crumbs">
-                <li>
-                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                        {% if LANGUAGE_CODE == 'ru' %}
-                            Главная
-                        {% elif LANGUAGE_CODE == 'tt' %}
-                            Төп бит
-                        {% else %}
-                            Home
-                        {% endif %}
-                    </a>
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a class="bread__crumbs_link bread__crumbs_link_active">
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li>
+                     <span class="crumb__current">
                         Личный кабинет
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <hr class="footer-hr">
-        <div class="container">
-
+                    </span>
+                    </li>
+                </ol>
+            </nav>
+            <div class="content">
+                <h1 class="content__title">Авторизация</h1>
+                {% if library %}
+                    <h3>Выполнить поиск по каталогу:</h3>
+                    <div>
+                        <a class="footer-logo__ask-lib"
+                           href="{% url 'ssearch:frontend:ecatalog' %}?library={{ library.code }}">
+                            {% for ancestor in library.get_ancestors %}
+                                {{ ancestor.name }} →
+                            {% endfor %}
+                            <b>{{ library }}</b>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
             <div class="row">
-                <div class="col-12">
-                    {% if library %}
-                        <h3>Выполнить поиск по каталогу:</h3>
-                        <div>
-                            <a class="footer-logo__ask-lib"
-                               href="{% url 'ssearch:frontend:ecatalog' %}?library={{ library.code }}">
-                                {% for ancestor in library.get_ancestors %}
-                                    {{ ancestor.name }} →
-                                {% endfor %}
-                                <b>{{ library }}</b>
-                            </a>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card card_mt">
+                        <div class="card__body">
+                            <p class="card__text card__text-center">Вход на портал с использованием идентификатора
+                                и пароля Единого Читательского билета.
+                            </p>
+                            <br>
+                            <form method="POST">
+                                {% csrf_token %}
+                                {% bootstrap_form form %}
+                                <button class="btn btn_wf">Войти</button>
+                            </form>
                         </div>
-                    {% endif %}
-
-                    <h1 class="content-page__title">Авторизация</h1>
-
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="auth-box">
-                                {% if form.non_field_errors %}
-                                    {% for error in form.non_field_errors %}
-                                        <div class="auth-box__error">{{ error }}</div>
-                                    {% endfor %}
-                                {% endif %}
-                                <p class="auth-box__info">Вход на портал с использованием идентификатора
-                                    и пароля Единого Читательского билета.
-                                </p>
-
-                                <form method="POST">
-                                    {% csrf_token %}
-                                    {% bootstrap_form form %}
-                                    <button type="submit">Войти</button>
-                                    <a href="{% url 'accounts:frontend:password_reset' %}">Забыли пароль?</a>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="esia-box">
-                                <p class="esia-box__info">
-                                   Вход с использованием учетной записи на портале Госуслуг <b>Временно отключен</b>.
-                               </p>
-
-                                <p class="esia-box__info">
-                                    Вы автоматически станете читателем и сможете
-                                    пользоваться сервисами библиотек.
-                                </p>
-                                <!--<a href="{% url 'sso_esia:index' %}" title="Войти через ЕСИА">Войти через ЕСИА</a>-->
-                                <p class="esia-box__info">
-                                    Вход с использованием учетной записи на портале электронного образования РТ.
-                                </p>
-                                <a href="{% url 'sso_tatedu:index' %}" title="Войти через ЕСИА">Войти через портал ЭО
-                                    РТ</a>
-                            </div>
+                        <div class="card__footer">
+                            <ul class="card-nav">
+                                <li class="card-nav__item">
+                                    <a class="card-nav__link" href="{% url 'accounts:frontend:password_reset' %}">
+                                        Забыли пароль?
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <section class="card card_bs-2 card_mt">
+                        <div class="card__body">
+                            <p class="card__text card__text-center"> Вход с использованием учетной записи на портале электронного
+                                образования РТ.
+                            </p>
+                        </div>
+                        <div class="card__footer">
+                            <ul class="card-nav">
+                                <li class="card-nav__item">
+                                    <a class="card-nav__link" href="{% url 'sso_tatedu:index' %}">
+                                        Войти через портал ЭО РТ
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>

@@ -4,93 +4,81 @@
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
-    </nav>
     <main>
         <div class="container">
-            <ul class="bread__crumbs">
-                <li>
-                    <a class="bread__crumbs_link" href="{% url 'index:frontend:index' %}">
-                        {% if LANGUAGE_CODE == 'ru' %}
-                            Главная
-                        {% elif LANGUAGE_CODE == 'tt' %}
-                            Төп бит
-                        {% else %}
-                            Home
-                        {% endif %}
-                    </a>
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a class="bread__crumbs_link bread__crumbs_link_active">
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li>
+                    <span class="crumb__current">
                         {{ current_section.1 }}
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <hr class="footer-hr">
-        <div class="container content-page">
+                    </span>
+                    </li>
+                </ol>
+            </nav>
             <div class="row">
-                <div class="col-12">
-                    <h1 class="content-page__title">{{ current_section.1 }}</h1>
-
-                    <div class="school">
-                    {% if current_section.0 == 'school' %}
-                        <p>Для классов:</p>
-                        <ul class="school-list">
-                            {% url 'recommended_reading:frontend:index' as index_url %}
-                            {% for school_class in school_classes %}
-                                <li class="school-list__item">
-                                    <a class="school-list__link {% if school_class.0|slugify == request.GET.school_class %}school-list__link_active{% endif %}"
-                                       href="{{ index_url }}?school_class={{ school_class.0|urlencode }}">{{ school_class.1 }}</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                        <div class="result-container">
-
-                            {% for item in items_page.object_list %}
-
-
-                                <div class="result">
-                                    <div class="result__index">
-                                        1
-                                    </div>
-                                    <div class="result__info">
-                                        <h3>
-                                            <a href="{% url 'recommended_reading:frontend:detail' item.id %}?back={{ request.get_full_path|urlencode }}">
-                                                {{ item.title }}
-                                            </a>
-                                        </h3>
-                                        <div class="result__detail">
-                                            <div class="result__detail_box">
-                                                {% include 'recommended_reading/frontend/item_attrs.html' with item=item %}
-                                            </div>
-                                        </div>
-{#                                        <p class="result__download-list">Скачать:#}
-{#                                            <a href="#" target="_blank">pdf</a>#}
-{#                                            <a href="#" target="_blank">fb2</a>#}
-{#                                            <a href="#" target="_blank">epub</a>#}
-{#                                        </p>#}
-                                    </div>
-                                    <div class="result__img">
-                                        {% if item.cover %}
-                                            <a href="{{ item_url }}">
-                                                <img class="result__detail_img" src="{{ MEDIA_URL }}{{ item.cover }}"/>
+                <div class="col-lg-9 col-md-12">
+                    <div class="content">
+                        <h1 class="content__title">{{ current_section.1 }}</h1>
+                        {% if current_section.0 == 'school' %}
+                            <div class="search-nav">
+                                <div class="search-nav__item">
+                                    <span class="search-nav__title">Для классов:</span>
+                                </div>
+                                {% url 'recommended_reading:frontend:index' as index_url %}
+                                {% for school_class in school_classes %}
+                                    <div class="search-nav__item">
+                                        {% if school_class.0|slugify == request.GET.school_class %}
+                                            <span class="search-nav__text">{{ school_class.1 }}</span>
+                                        {% else %}
+                                            <a class="search-nav__link"
+                                               href="{{ index_url }}?school_class={{ school_class.0|urlencode }}">{{ school_class.1 }}
                                             </a>
                                         {% endif %}
                                     </div>
-                                </div>
-                            {% endfor %}
-                            {% admin_pagination items_page %}
-                        </div>
-
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
+                    <div class="list list_mt">
+                        {% for item in items_page.object_list %}
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <h3 class="list__title">
+                                        <a class="list__title-link"
+                                           href="{% url 'recommended_reading:frontend:detail' item.id %}?back={{ request.get_full_path|urlencode }}">
+                                            {{ item.title }}
+                                        </a>
+                                    </h3>
+                                    {% include 'recommended_reading/frontend/item_attrs.html' with item=item %}
+                                </div>
+                                <div class="list__col-img">
+                                    <div class="list__img-wrap">
+                                        {% if item.cover %}
+                                            <img class="list__img"
+                                                 src="{{ MEDIA_URL }}{{ item.cover }}"
+                                                 alt="{{ item.title }}">
+                                        {% else %}
+                                            <img class="list__img"
+                                                 src="{{ STATIC_URL }}dist/images/list/file.svg"
+                                                 alt="{{ item.title }}">
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% admin_pagination items_page %}
                 </div>
             </div>
         </div>

@@ -1,7 +1,9 @@
-{% for key, val in item.get_attrs.items %}
-    {% if val.value %}
-        <div>
-        {{ val.title }}: {{ val.value }}
-        </div>
-    {% endif %}
-{% endfor %}
+<dl class="list__dl">
+    {% for key, val in item.get_attrs.items %}
+        {% if val.value %}
+            <dt>{{ val.title }}:</dt>
+            <dd>{{ val.value }}</dd>
+
+        {% endif %}
+    {% endfor %}
+</dl>
