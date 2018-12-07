@@ -161,21 +161,21 @@
                                     </ul>
                                 </div>
                             {% endif %}
-                            <div class="card card_bs-2 marc-card">
-                                <div class="card__body">
-                                    {{ marc_dump|safe }}
-                                </div>
-                            </div>
                         </div>
                         <div class="record-detail__col-img">
-{#                            {% get_record_cover  %}#}
+                            {#                            {% get_record_cover  %}#}
                             {% if doc.cover %}
                                 <img class="record-detail__img"
-                                 src="{{ doc.cover.0 }}" alt="">
+                                     src="{{ doc.cover.0 }}" alt="">
                             {% else %}
-                            <img class="record-detail__img"
-                                 src="{{ STATIC_URL }}dist/images/list/file.svg" alt="">
+                                <img class="record-detail__img"
+                                     src="{{ STATIC_URL }}dist/images/list/file.svg" alt="">
                             {% endif %}
+                        </div>
+                    </div>
+                    <div class="card card_bs-2 marc-card">
+                        <div class="card__body">
+                            {{ marc_dump|safe }}
                         </div>
                     </div>
                 </div>
