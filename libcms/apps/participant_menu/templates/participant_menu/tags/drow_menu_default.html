@@ -1,6 +1,6 @@
 {% load mptt_tags %}
-{% if nodes %}
-    <nav class="lib-nav-wrap">
+<nav class="lib-nav-wrap">
+    {% if nodes %}
         <ul class="lib-nav">
             {% recursetree nodes %}
                 <li {% if node.level == 1 %}class="lib-nav__item"{% endif %}>
@@ -15,6 +15,7 @@
                 </li>
             {% endrecursetree %}
         </ul>
-    </nav>
-{% else %}<p>Информация отсутствует</p>
-{% endif %}
+    {% else %}
+        <div class="alert alert-info">Информация отсутствует</div>
+    {% endif %}
+</nav>

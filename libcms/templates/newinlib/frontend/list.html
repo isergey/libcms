@@ -4,71 +4,75 @@
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
-    </nav>
     <main>
         <div class="container">
-            <ul class="bread__crumbs">
-                <li>
-                    <a class="bread__crumbs_link" href="{% url 'index:frontend:index' %}">
-                        {% if LANGUAGE_CODE == 'ru' %}
-                            Главная
-                        {% elif LANGUAGE_CODE == 'tt' %}
-                            Төп бит
-                        {% else %}
-                            Home
-                        {% endif %}
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
                         </a>
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a class="bread__crumbs_link bread__crumbs_link_active">
-                        {% if LANGUAGE_CODE == 'ru' %}Новые поступления{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән
-                            китаплар{% else %}From new arrivals{% endif %}
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <hr class="footer-hr">
-        <div class="container">
-        {% admin_pagination items_page %}
-        <div class="result-container">
-
-            {% for item in items_list %}
-                {% if item.id_in_catalog %}
-                    {% url 'ssearch:frontend:detail'  item.id_in_catalog  as item_url %}
-                {% else %}
-                    {% url 'newinlib:frontend:show' item.id as item_url %}
-                {% endif %}
-                <div class="result">
-                    <div class="result__info">
-                        <h3>
-                            <a href="{{ item_url }}">{{ item.item_content.title }}</a>
-                        </h3>
-
-
-
-                        <div class="result__detail">
-                            <div class="result__detail_box">
-                                {% if item.avatar_img_name %}
-                                    <a href="{{ item_url }}"><img class="result__detail_img"
-                                         src="{{ MEDIA_URL }}uploads/newinlib/itemavatars/{{ item.avatar_img_name }}"/>
-                                    </a>
-                                {% endif %}
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                             {% if LANGUAGE_CODE == 'ru' %}Новые поступления{% elif LANGUAGE_CODE == 'tt' %}Соңгы
+                                 кертелгән
+                                 китаплар{% else %}From new arrivals{% endif %}
+                        </span>
+                    </li>
+                </ol>
+            </nav>
+            <div class="content">
+                <h1 class="content__title">
+                    {% if LANGUAGE_CODE == 'ru' %}Новые поступления{% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән
+                        китаплар{% else %}From new arrivals{% endif %}
+                </h1>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-lg-9 col-md-12">
+                    <div class="list list_mt">
+                        {% for item in items_list %}
+                            {% if item.id_in_catalog %}
+                                {% url 'ssearch:frontend:detail'  item.id_in_catalog  as item_url %}
+                            {% else %}
+                                {% url 'newinlib:frontend:show' item.id as item_url %}
+                            {% endif %}
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <h3 class="list__title">
+                                        <a class="list__title-link"
+                                           href="{{ item_url }}">{{ item.item_content.title }}</a>
+                                    </h3>
+                                    <p class="list__description">
+                                        {{ item.item_content.content|safe }}
+                                    </p>
+                                </div>
+                                <div class="list__col-img">
+                                    <div class="list__img-wrap">
+                                        {% if item.avatar_img_name %}
+                                            <img class="list__img"
+                                                 src="{{ MEDIA_URL }}uploads/newinlib/itemavatars/{{ item.avatar_img_name }}"
+                                                 alt="{{ item.item_content.title }}">
+                                        {% else %}
+                                            <img class="list__img"
+                                                 src="{{ STATIC_URL }}dist/images/list/file.svg"
+                                                 alt="{{ item.item_content.title }}">
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
-                            <div class="result__detail_box">{{ item.item_content.content|safe }}</div>
-                        </div>
+                        {% endfor %}
                     </div>
+                    {% admin_pagination items_page %}
                 </div>
-            {% endfor %}
-        </div>
-
-        {% admin_pagination items_page %}
+            </div>
         </div>
     </main>
 {% endblock %}

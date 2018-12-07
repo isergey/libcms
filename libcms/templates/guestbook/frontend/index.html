@@ -3,7 +3,10 @@
 {% load bootstrap3 %}
 {% get_current_language as LANGUAGE_CODE %}
 {% load pagination_tag %}
-{% block title %}{{ content.title }}{% endblock %}
+{% block title %}
+    {% if LANGUAGE_CODE == 'ru' %}Отзывы{% elif LANGUAGE_CODE == 'tt' %}Бәяләмәләр{% else %}
+        Feedbacks{% endif %}
+{% endblock %}
 {% block content %}
     <main>
         <div class="container">

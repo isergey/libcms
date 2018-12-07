@@ -1,45 +1,51 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-<div class="event-list">
-    <div class="swiper-container swiper-container-event">
-        <div class="swiper-wrapper">
-            {% for group in groups %}
-                <div class="swiper-slide">
-                    {% for event in group %}
-                        <article class="event-list__item">
-                            <div class="event-list__date-wrap">
-                                <time class="event-list__date">
-                                    <span>{{ event.start_date|date:'j' }}</span>
-                                    <span>{{ event.start_date|date:'E' }}</span>
-                                    <span>{{ event.start_date|date:'H:i' }}</span>
-                                </time>
-                            </div>
-                            <div class="event-list__detail">
-                                <h3 class="event-list__detail-title">
-                                    <a class="event-list__detail-link"
-                                       href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}">
-                                        {{ event.event_content.title }}
+{% if groups %}
+    <div class="event-list">
+        <div class="swiper-container swiper-container-event">
+            <div class="swiper-wrapper">
+                {% for group in groups %}
+                    <div class="swiper-slide">
+                        {% for event in group %}
+                            <article class="event-list__item">
+                                <div class="event-list__date-wrap">
+                                    <time class="event-list__date">
+                                        <span>{{ event.start_date|date:'j' }}</span>
+                                        <span>{{ event.start_date|date:'E' }}</span>
+                                        <span>{{ event.start_date|date:'H:i' }}</span>
+                                    </time>
+                                </div>
+                                <div class="event-list__detail">
+                                    <h3 class="event-list__detail-title">
+                                        <a class="event-list__detail-link"
+                                           href="{% url 'participant_events:frontend:show' event.library.code event.id %}?back={{ request.get_full_path }}">
+                                            {{ event.event_content.title }}
+                                        </a>
+                                    </h3>
+                                    <p class="event-list__detail-description">{{ event.event_content.teaser }}</p>
+                                    <p class="event-list__detail-description">Место
+                                        проведения: {{ event.library.district.name }}, {{ event.library.name }}</p>
+
+                                    <a class="event-list__detail-description-link"
+                                       href="{% url 'participant_events:frontend:create_notification' event.library.code event.id %}">
+                                        {% if LANGUAGE_CODE == 'ru' %}Установить
+                                            напоминание{% elif LANGUAGE_CODE == 'tt' %}Искә төшерү
+                                            кую{% else %}Set reminder{% endif %}
                                     </a>
-                                </h3>
-                                <p class="event-list__detail-description">{{ event.event_content.teaser }}</p>
-                                <p class="event-list__detail-description">Место
-                                    проведения: {{ event.library.district.name }}, {{ event.library.name }}</p>
 
-                                <a class="event-list__detail-description-link"
-                                   href="{% url 'participant_events:frontend:create_notification' event.library.code event.id %}">
-                                    {% if LANGUAGE_CODE == 'ru' %}Установить
-                                        напоминание{% elif LANGUAGE_CODE == 'tt' %}Искә төшерү
-                                        кую{% else %}Set reminder{% endif %}
-                                </a>
-
-                            </div>
-                        </article>
-                    {% endfor %}
-                </div>
-            {% endfor %}
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination swiper-pagination-event"></div>
         </div>
-        <div class="swiper-pagination swiper-pagination-event"></div>
+        <div class="swiper-button-next swiper-button-next-event"></div>
+        <div class="swiper-button-prev swiper-button-prev-event"></div>
     </div>
-    <div class="swiper-button-next swiper-button-next-event"></div>
-    <div class="swiper-button-prev swiper-button-prev-event"></div>
-</div>
+{% else %}
+    <div class="alert alert-info">
+        Мероприятий нет
+    </div>
+{% endif %}
