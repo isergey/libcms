@@ -14,112 +14,73 @@
 {% endblock %}
 
 {% block content %}
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
-    </nav>
     <main>
         <div class="container">
             {% block breadcrumb %}
-                <ul class="bread__crumbs">
-                    <li>
-                        <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                            {% if LANGUAGE_CODE == 'ru' %}
-                                Главная
-                            {% elif LANGUAGE_CODE == 'tt' %}
-                                Төп бит
-                            {% else %}
-                                Home
-                            {% endif %}
-                        </a>
-                    </li>
-                    <li>
-                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                    </li>
-                    <li>
-                        <a class="bread__crumbs_link bread__crumbs_link_active">
-                            Спроси библиотекар
-                        </a>
-                    </li>
-                </ul>
+                <nav class="crumb">
+                    <ol class="crumb__list">
+                        <li>
+                            <a href="{% url 'index:frontend:index' %}">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Главная
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Төп бит
+                                {% else %}
+                                    Home
+                                {% endif %}
+                            </a>
+                        </li>
+                        <li>
+                             <span class="crumb__current">
+                                Спроси библиотекар
+                            </span>
+                        </li>
+                    </ol>
+                </nav>
             {% endblock %}
+            <div class="ask-container">
+                <div class="row">
+                    <div class="col-lg-9 col-md-12">
+                        {% block index_content %}
 
-        </div>
-        <hr class="footer-hr">
-        <div class="container content-page">
-            <div class="row">
-                <div class="col-7">
-                    {% block index_content %}
-
-                    {% endblock %}
-                </div>
-                <div class="col-5">
-                    <div class="side-box">
-                        <h2 class="side-box__title">Категории вопросов</h2>
-                        <a class="side-box__btn__ask" title="Задать вопрос библиотекарю" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>
-
-                        {% cache 30 questions_category_menu LANGUAGE_CODE %}
-                            {% drow_categories_tree %}
-                        {% endcache %}
-
+                        {% endblock %}
                     </div>
-
+                    {% if request.path_info != '/ask_librarian/ask' %}
+                        <div class="col-lg-3 col-md-12">
+                            <div class="ask-facet">
+                                <section class="card card_bs-2 card_facet">
+                                    <div class="card__header">
+                                        <h2 class="card__title card__title_sm">Задать вопрос</h2>
+                                    </div>
+                                    <div class="card__body">
+                                        <p class="card__text">Ищете информацию? Подбираете литературу? Есть вопросы о
+                                            работе
+                                            библиотеки? Виртуальная справочная служба поможет.</p>
+                                    </div>
+                                    <div class="card__footer">
+                                        <ul class="card-nav">
+                                            <li class="card-nav__item">
+                                                <a class="card-nav__link" href="{% url 'ask_librarian:frontend:ask' %}">Задать
+                                                    вопрос</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </section>
+                                <section class="card card_bs-2 card_mt card_facet">
+                                    <div class="card__header">
+                                        <h2 class="card__title card__title_sm">Категории вопросов</h2>
+                                    </div>
+                                    <div class="card__body">
+                                        {% cache 30 questions_category_menu LANGUAGE_CODE %}
+                                            {% drow_categories_tree %}
+                                        {% endcache %}
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </main>
-
-{#    <div class="span12">#}
-{#        {% block breadcrumb %}#}
-{#            <ul class="breadcrumb">#}
-{#                <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
-{#                <li>Спроси библиотекаря</li>#}
-{#            </ul>#}
-{#        {% endblock %}#}
-{#    </div>#}
-{##}
-{#    <div class="span3">#}
-{#        <a style="display: block; padding: 15px 0 15px 0" class="btn btn-success"#}
-{#           href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>#}
-{#        {% cache 30 questions_category_menu LANGUAGE_CODE %}#}
-{#            {% drow_categories_tree %}#}
-{#        {% endcache %}#}
-{##}
-{#    </div>#}
-{#    <div class="span9">#}
-{#        {% block index_content %}#}
-{##}
-{#        {% endblock %}#}
-{#    </div>#}
-
-
-
-
-
-
-
-
-
-
-    {#    <ul class="breadcrumb">#}
-    {#        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>#}
-    {#        {% for ancestor in content.page.get_ancestors_titles %}#}
-    {#            <li><a href="{% url pages:frontend:show ancestor.url_path %}">#}
-    {#                {% if not ancestor.title %}#}
-    {#                    {{ ancestor }}#}
-    {#                {% else %}#}
-    {#                    {{ ancestor.title }}#}
-    {#                {% endif %}#}
-    {#            </a> <span class="divider">/</span></li>#}
-    {#        {% endfor %}#}
-    {#        <li>#}
-    {#            {% if not content.title %}#}
-    {#                заглавие страницы для этого языка не указано.#}
-    {#            {% else %}#}
-    {#                {{ content.title }}#}
-    {#            {% endif %}#}
-    {#        </li>#}
-    {#    </ul>#}
-    {#    {{ content.content|safe }}#}
 {% endblock %}

@@ -10,24 +10,46 @@
     {% else %}
         Ask librarian
     {% endif %}
+    /
+    Вопрос № {{ question.id }}
 {% endblock %}
 {% block breadcrumb %}
-    <ul class="bread__crumbs">
-        <li>
-            <a class="bread__crumbs_link" href="{% url 'index:frontend:index' %}">
-            {% if LANGUAGE_CODE == 'ru' %}
-                Главная
-            {% elif LANGUAGE_CODE == 'tt' %}
-                Төп бит
-            {% else %}
-                Home
-            {% endif %}
-            </a>
-        </li>
-        <li>
-            <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-        </li>
-        <li><a class="bread__crumbs_link" href="{% url 'ask_librarian:frontend:index' %}">
+    <nav class="crumb">
+        <ol class="crumb__list">
+            <li>
+                <a href="{% url 'index:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'ask_librarian:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Спроси библиотекаря
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Китапханәчедән сора
+                    {% else %}
+                        Ask librarian
+                    {% endif %}
+                </a>
+            </li>
+            <li>
+                <span class="crumb__current">
+                    Вопрос № {{ question.id }}
+                </span>
+            </li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{% block index_content %}
+    <div class="content">
+        <h1 class="content__title">
             {% if LANGUAGE_CODE == 'ru' %}
                 Спроси библиотекаря
             {% elif LANGUAGE_CODE == 'tt' %}
@@ -35,180 +57,61 @@
             {% else %}
                 Ask librarian
             {% endif %}
-        </a></li>
-        <li>
-            <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
+            →
+            Вопрос № {{ question.id }}
+        </h1>
+    </div>
+    <ul class="ask-nav">
+        <li class="ask-nav__item">
+            <a class="ask-nav__link" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>
         </li>
-        <li><a class="bread__crumbs_link bread__crumbs_link_active">Вопрос № {{ question.id }}</a></li>
+        <li class="ask-nav__item">
+            <button id="askNavBtn" class="ask-nav__link">Категории вопросов</button>
+        </li>
     </ul>
-{% endblock %}
 
-{% block index_content %}
-
-    <div class="content-page">
-        <h1 class="content-page__title">Вопрос:</h1>
-
-        <div class="content-page__text">
-            {% if question.is_ready %}
-                {{ question.question|safe }}
-            {% else %}
-                {{ question.question }}
-            {% endif %}<br/>
+    <div class="content">
+        {% if question.is_ready %}
+            {{ question.question|safe }}
+        {% else %}
+            <p>{{ question.question }}</p>
+        {% endif %}
+        <div class="content__sub">
             {% if question.category_id %}
-                <b>Категория:</b>
-                {% cache 30 questions_category question.category_id LANGUAGE_CODE %}
-                    {% for ancestor in  question.category.get_t_ancestors %}
-                        {{ ancestor }}  →
-                    {% endfor %}
-                    {{ question.category }}
-                {% endcache %}
-
+                <span>
+                    Категория:
+                    {% cache 30 questions_category question.category_id LANGUAGE_CODE %}
+                        {% for ancestor in  question.category.get_t_ancestors %}
+                            {{ ancestor }}  →
+                        {% endfor %}
+                        {{ question.category }}
+                    {% endcache %}
+                </span>
             {% endif %}
-            <br/>
-
-            <b>Статус</b>: <span
-                class="question_status{{ question.status }}">{{ question.get_status_display }} </span>
+            <span>Статус: {{ question.get_status_display }}</span>
         </div>
-        <h1 class="content-page__title">Ответ:</h1>
-
-        <div class="content-page__text">
-            {% if question.is_ready %}
-                {{ question.answer|safe }}
-                {% if bib_records %}
-                    <h3>Библиографические записи к ответу:</h3>
-                    <ul>
+        <h2>Ответ</h2>
+        {% if question.is_ready %}
+            {{ question.answer|safe }}
+            {% if bib_records %}
+                <h3>Библиографические записи к ответу:</h3>
+                <ul>
                     {% for bib_record in bib_records %}
                         <li>
                             {{ bib_record.card|safe }}
-                            <div><a href="{% url 'ssearch:frontend:detail' bib_record.record.gen_id %}">подробнее</a></div>
-                            {% if not forloop.last %}<hr/>{% endif %}
+                            <a href="{% url 'ssearch:frontend:detail' bib_record.record.gen_id %}">Подробнее</a>
                         </li>
                     {% endfor %}
-                    </ul>
-                {% endif %}
-            {% else %}
-                Ответа на вопрос еще нет.
+                </ul>
             {% endif %}
-            <a href="{% url 'ask_librarian:frontend:printed_detail' question.id %}" target="_blank">Версия для
-                печати</a>
-        </div>
+        {% else %}
+            <div class="alert alert-info">
+                Ответа на вопрос еще нет.
+            </div>
+            <br>
+        {% endif %}
+        <a class="btn" href="{% url 'ask_librarian:frontend:printed_detail' question.id %}" target="_blank">Версия
+            для
+            печати</a>
     </div>
-
-
-
-    {#    <div class="answer-box">#}
-    {#        <div class="answer-box__index">#}
-    {#            {{ question.id }}#}
-    {#        </div>#}
-    {#        <div class="answer-box__content_padding">#}
-    {#            <div class="answer-box__content">#}
-    {#                <div class="answer-box__content__question">#}
-    {#                    <h3>Вопрос:</h3>#}
-    {#                    {% if question.is_ready %}#}
-    {#                        {{ question.question|safe }}#}
-    {#                    {% else %}#}
-    {#                        {{ question.question }}#}
-    {#                    {% endif %}<br/>#}
-    {#                    {% if question.category_id %}#}
-    {#                        <b>Категория:</b>#}
-    {#                        {% cache 30 questions_category question.category_id LANGUAGE_CODE %}#}
-    {#                            {% for ancestor in  question.category.get_t_ancestors %}#}
-    {#                                {{ ancestor }}  →#}
-    {#                            {% endfor %}#}
-    {#                            {{ question.category }}#}
-    {#                        {% endcache %}#}
-    {##}
-    {#                    {% endif %}#}
-    {#                    <br/>#}
-    {##}
-    {#                    <b>Статус</b>: <span#}
-    {#                        class="question_status{{ question.status }}">{{ question.get_status_display }} </span>#}
-    {#                </div>#}
-    {#                <hr class="answer-box__content__hr">#}
-    {#                <div class="answer-box__content__question">#}
-    {#                    <h3>Ответ:</h3>#}
-    {#                    {% if question.is_ready %}#}
-    {#                        {{ question.answer|safe }}#}
-    {#                    {% else %}#}
-    {#                        Ответа на вопрос еще нет.#}
-    {#                    {% endif %}#}
-    {#                    <a href="{% url 'ask_librarian:frontend:printed_detail' question.id %}" target="_blank">Версия для#}
-    {#                        печати</a>#}
-    {#                </div>#}
-    {#            </div>#}
-    {#        </div>#}
-    {#    </div>#}
-
-
-
-
-
-    {##}
-    {#    <style>#}
-    {#        form#recomended_form textarea {#}
-    {#            width: 99%;#}
-    {#        }#}
-    {#    </style>#}
-    {##}
-    {#    <div>#}
-    {#        <h3>Вопрос:</h3>#}
-    {#        {% if question.is_ready %}#}
-    {#            {{ question.question|safe }}#}
-    {#        {% else %}#}
-    {#            {{ question.question }}#}
-    {#        {% endif %}<br/>#}
-    {#        {% if question.category_id %}#}
-    {#            <b>Категория:#}
-    {#                {% cache 30 questions_category question.category_id LANGUAGE_CODE %}#}
-    {#                    {% for ancestor in  question.category.get_t_ancestors %}#}
-    {#                        {{ ancestor }}  →#}
-    {#                    {% endfor %}#}
-    {#                    {{ question.category }}#}
-    {#                {% endcache %}#}
-    {#            </b>#}
-    {#        {% endif %}#}
-    {#        <br/>#}
-    {##}
-    {#        <b>Статус</b>: <span class="question_status{{ question.status }}">{{ question.get_status_display }} </span>#}
-    {#        <hr/>#}
-    {#    </div>#}
-    {#    <div>#}
-    {#        <h3>Ответ:</h3>#}
-    {#        {% if question.is_ready %}#}
-    {#            {{ question.answer|safe }}#}
-    {#        {% else %}#}
-    {#            Ответа на вопрос еще нет.#}
-    {#        {% endif %}#}
-    {#    </div>#}
-    {#    <hr/>#}
-    {#    <a href="{% url 'ask_librarian:frontend:printed_detail' question.id %}" target="_blank">Версия для печати</a>#}
-    {#        {% if recomendations %}#}
-    {#            <div>#}
-    {#                <hr/>#}
-    {#                <h3>Рекомендации к этому вопросу</h3>#}
-    {#                <ul>#}
-    {#                    {% for  recomendation in recomendations %}#}
-    {#                        <li>{{ recomendation.text }}</li>#}
-    {#                    {% endfor %}#}
-    {#                </ul>#}
-    {#            </div>#}
-    {#        {% endif %}#}
-    {#        <div>#}
-    {#        <hr/>#}
-    {#            <div class="alert alert-info">#}
-    {#                Если у вас есть ответ на вопрос или дополнительная информация, которая поможет дополнить ответ,#}
-    {#                Вы можете указать ее в рекомендации. Мы будем очень признательны.#}
-    {#            </div>#}
-    {#            <form id="recomended_form" class="" method="POST">{% csrf_token %}#}
-    {#                <legend>Рекомендовать:</legend>#}
-    {#                <fieldset>#}
-    {#                    {% include 'frontend/base_form_fields.html' with form=recomendation_form %}#}
-    {#                    <div class="form-actions">#}
-    {#                        <button type="submit" class="btn btn-primary">Отправить</button>#}
-    {#                    </div>#}
-    {#                </fieldset>#}
-    {#            </form>#}
-    {#        </div>#}
-
-
 {% endblock %}

@@ -3,98 +3,77 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% block title %}Удаленный возврат{% endblock %}
 {% block content %}
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
-    </nav>
     <main>
-<div class="container">
-            <ul class="bread__crumbs">
-                <li>
-                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                        {% if LANGUAGE_CODE == 'ru' %}
-                            Главная
-                        {% elif LANGUAGE_CODE == 'tt' %}
-                            Төп бит
-                        {% else %}
-                            Home
-                        {% endif %}
-                    </a>
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a href="{% url 'personal:frontend:index' %}" class="bread__crumbs_link">
-                        Личный кабинет
-                    </a>
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a class="bread__crumbs_link bread__crumbs_link_active">
-                        Удаленный возврат
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <hr class="footer-hr">
-        <div class="container content-page">
-            <div class="row">
-                <div class="col-12">
-                    <h1 class="content-page__title">Удаленный возврат</h1>
-
-                    <div class="content-page__text">
-                        {% for order in orders %}
-                            <table class="table table-bordered" style="margin-bottom: 50px">
-                                <tr>
-                                    <th>Идентификатор:</th>
-                                    <td><b>{{ order.order_id }}</b></td>
-                                </tr>
-                                <tr>
-                                    <th>Дата возврата:</th>
-                                    <td>{{ order.receipt_date }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Состояние:</th>
-                                    <td>{{ order.state }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Место возврата:</th>
-                                    <td>
-                                        {% if not order.receipter_org %}
-                                            {{ order.receipter_id }}
-                                        {% else %}
-                                            {% for ancestor in order.receipter_org.get_ancestors %}
-                                                {{ ancestor.name }} →
-                                            {% endfor %}
-                                            <b>{{ order.receipter_org.name }}</b>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Документ:</th>
-                                    <td>{{ order.bib_card }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Держатель:</th>
-                                    <td>
-                                        {% if not order.owner_org %}
-                                            {{ order.owner_id }}
-                                        {% else %}
-                                            {% for ancestor in order.owner_org.get_ancestors %}
-                                                {{ ancestor.name }} →
-                                            {% endfor %}
-                                            <b>{{ order.owner_org.name }}</b>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            </table>
-                        {% endfor %}
+        <div class="container">
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'personal:frontend:index' %}">
+                            Личный кабинет
+                        </a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                            Удаленный возврат
+                        </span>
+                    </li>
+                </ol>
+            </nav>
+            <div class="content">
+                <h1 class="content__title">Удаленный возврат</h1>
+            </div>
+            <div class="list list_mt">
+                {% for order in orders %}
+                    <div class="list__item">
+                        <div class="list__col-text">
+                            <h3 class="list__title">Идентификатор: {{ order.order_id }}</h3>
+                            <dl class="list__dl">
+                                <dt>Дата возврата:</dt>
+                                <dd>{{ order.receipt_date }}</dd>
+                                <dt>Состояние:</dt>
+                                <dd>{{ order.state }}</dd>
+                                <dt>Место возврата:</dt>
+                                <dd>
+                                    {% if not order.receipter_org %}
+                                        {{ order.receipter_id }}
+                                    {% else %}
+                                        {% for ancestor in order.receipter_org.get_ancestors %}
+                                            {{ ancestor.name }} →
+                                        {% endfor %}
+                                        <b>{{ order.receipter_org.name }}</b>
+                                    {% endif %}
+                                </dd>
+                                <dt>Документ:</dt>
+                                <dd>{{ order.bib_card }}</dd>
+                                <dt>Держатель:</dt>
+                                <dd>
+                                    {% if not order.owner_org %}
+                                        {{ order.owner_id }}
+                                    {% else %}
+                                        {% for ancestor in order.owner_org.get_ancestors %}
+                                            {{ ancestor.name }} →
+                                        {% endfor %}
+                                        <b>{{ order.owner_org.name }}</b>
+                                    {% endif %}
+                                </dd>
+                            </dl>
+                        </div>
                     </div>
-                </div>
+                {% empty %}
+                    <br>
+                    <div class="alert alert-info">Список пуст.</div>
+                {% endfor %}
             </div>
         </div>
     </main>

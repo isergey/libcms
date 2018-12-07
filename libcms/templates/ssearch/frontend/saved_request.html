@@ -7,55 +7,46 @@
 {% load mydocs_tags %}
 {% block title %}Сохраненные поисковые запросы{% endblock %}
 {% block content %}
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
-    </nav>
     <main>
         <div class="container">
-            <ul class="bread__crumbs">
-                <li>
-                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                        {% if LANGUAGE_CODE == 'ru' %}
-                            Главная
-                        {% elif LANGUAGE_CODE == 'tt' %}
-                            Төп бит
-                        {% else %}
-                            Home
-                        {% endif %}
-                    </a>
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a href="{% url 'personal:frontend:index' %}" class="bread__crumbs_link">
-                        Личный кабинет
-                    </a>
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a class="bread__crumbs_link bread__crumbs_link_active">
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'personal:frontend:index' %}">
+                            Личный кабинет
+                        </a>
+                    </li>
+                    <li>
+                    <span class="crumb__current">
                         Сохраненные поисковые запросы
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <hr class="footer-hr">
-        <div class="container content-page">
+                    </span>
+                    </li>
+                </ol>
+            </nav>
+            <div class="content">
+                <h1 class="content__title">Сохраненные поисковые запросы</h1>
+            </div>
             <div class="row">
-                <div class="col-12">
-                    <h1 class="content-page__title">Сохраненные поисковые запросы</h1>
-
-                    <div class="content-page__text">
+                <div class="col-lg-12">
+                    <div class="list list_mt">
                         {% for srequest in srequests %}
-                            <li>
-                                <div class="thumbnail">
-                                    <div class="request_info">
-                                        <a href="{% url 'ssearch:frontend:index' %}?
+                            <div class="list__item">
+                                <div class="list__col-text">
+                                    <h3 class="list__title">
+                                        <a class="list__title-link" href="{% url 'ssearch:frontend:index' %}?
+
+
                                                 {{ srequest.breads|last|hash:"href" }}{% if srequest.catalog %}&catalog={{ srequest.catalog|urlencode }}{% endif %}">
                                             {% for search_breadcumb in srequest.breads %}
                                                 {% if not forloop.last %}
@@ -73,98 +64,22 @@
                                                 {% endif %}
                                             {% endfor %}
                                         </a>
-                                        {#                        {% if not forloop.last %}<hr/>{% endif %}#}
-                                    </div>
-                                    <div class="actions">
-                                        <a class="delete"
-                                           href="{% url 'ssearch:frontend:delete_search_request' srequest.saved_request.id %}">Удалить</a>
-                                        <span style="float: right;">{{ srequest.saved_request.add_time }}</span>
-                                    </div>
+                                    </h3>
+                                    <p class="list__description">{{ srequest.saved_request.add_time }}</p>
+                                    <a class="list__link delete"
+                                       href="{% url 'ssearch:frontend:delete_search_request' srequest.saved_request.id %}">Удалить</a>
                                 </div>
-                            </li>
+                            </div>
                         {% empty %}
-                            <li>
-                                <div class="alert">Список сохраненных запросов пуст.</div>
-                            </li>
+                            <div class="alert alert-info">Список сохраненных запросов пуст.</div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
-
     </main>
-
-
-
-
-
-
-{#    <style>#}
-{#        ul.saved_requests {#}
-{#            list-style: none;#}
-{#            margin: 0;#}
-{#        }#}
-{##}
-{#        ul.saved_requests .thumbnail {#}
-{#            margin-bottom: 10px;#}
-{#        }#}
-{##}
-{#        ul.saved_requests .request_info {#}
-{#            padding: 10px;#}
-{#        }#}
-{#    </style>#}
-{#    <div class="span12">#}
-{#        <ul class="breadcrumb">#}
-{##}
-{#            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
-{#            <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>#}
-{#            <li class="active">Сохраненные поисковые запросы</li>#}
-{##}
-{#        </ul>#}
-{#        <ul class="saved_requests" style="">#}
-{#            {% for srequest in srequests %}#}
-{#                <li>#}
-{#                    <div class="thumbnail">#}
-{#                        <div class="request_info">#}
-{#                            <a href="{% url 'ssearch:frontend:index' %}?#}
-{#                                    {{ srequest.breads|last|hash:"href" }}{% if srequest.catalog %}&catalog={{ srequest.catalog|urlencode }}{% endif %}">#}
-{#                                {% for search_breadcumb in srequest.breads %}#}
-{#                                    {% if not forloop.last %}#}
-{#                                        <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</span>#}
-{#                                        →#}
-{#                                    {% else %}#}
-                                        {#                <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>#}
-{#                                        {% if search_breadcumb.attr == 'content-type' %}#}
-{#                                            <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|content_type_title }}</span>#}
-{#                                        {% elif search_breadcumb.attr == 'code-language' %}#}
-{#                                            <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|language_title }}</span>#}
-{#                                        {% else %}#}
-{#                                            <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</span>#}
-{#                                        {% endif %}#}
-{#                                    {% endif %}#}
-{#                                {% endfor %}#}
-{#                            </a>#}
-                            {#                        {% if not forloop.last %}<hr/>{% endif %}#}
-{#                        </div>#}
-{#                        <div class="actions">#}
-{#                            <a class="delete"#}
-{#                               href="{% url 'ssearch:frontend:delete_search_request' srequest.saved_request.id %}">Удалить</a>#}
-{#                            <span style="float: right;">{{ srequest.saved_request.add_time }}</span>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </li>#}
-{#            {% empty %}#}
-{#                <li>#}
-{#                    <div class="alert">Список сохраненных запросов пуст.</div>#}
-{#                </li>#}
-{#            {% endfor %}#}
-{#        </ul>#}
-{#    </div>#}
-
-
-
-
-
+{% endblock %}
+{% block scripts %}
     <script type="text/javascript">
         $('.delete').click(function () {
             var button = $(this);
@@ -185,5 +100,4 @@
             return false;
         });
     </script>
-
 {% endblock %}

@@ -1,16 +1,49 @@
+{% extends 'theme_frontend_base.html' %}
 {% load bootstrap3 %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<p>Текущий email: {{ current_email }}</p>
-<form method="post">
-    {% csrf_token %}
-    {% bootstrap_form form %}
-    <button type="submit">Изменить</button>
-</form>
-</body>
-</html>
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block title %}Изменить email{% endblock %}
+{% block content %}
+    <main>
+        <div class="container">
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'personal:frontend:index' %}">
+                            Личный кабинет
+                        </a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                            Изменить email
+                        </span>
+                    </li>
+                </ol>
+            </nav>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="content">
+                        <h1 class="content__title">Изменить email</h1>
+                        <p>Текущий email: {{ current_email }}</p>
+                        <form method="post">
+                            {% csrf_token %}
+                            {% bootstrap_form form %}
+                            <button class="btn">Изменить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

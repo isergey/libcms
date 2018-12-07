@@ -10,55 +10,60 @@
     {% else %}
         Ask librarian
     {% endif %}
+    /
+    Задать вопрос
 {% endblock %}
 {% block breadcrumb %}
-    <ul class="bread__crumbs">
-        <li>
-            <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                {% if LANGUAGE_CODE == 'ru' %}
-                    Главная
-                {% elif LANGUAGE_CODE == 'tt' %}
-                    Төп бит
-                {% else %}
-                    Home
-                {% endif %}
-            </a>
-        </li>
-        <li>
-            <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-        </li>
-        <li>
-            <a href="{% url 'ask_librarian:frontend:index' %}" class="bread__crumbs_link">
-                Спроси библиотекаря
-            </a>
-        </li>
-        <li>
-            <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-        </li>
-        <li>
-            <a href="{% url 'ask_librarian:frontend:index' %}" class="bread__crumbs_link bread__crumbs_link_active">
-                Задать вопрос
-            </a>
-        </li>
-    </ul>
+    <nav class="crumb">
+        <ol class="crumb__list">
+            <li>
+                <a href="{% url 'index:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'ask_librarian:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Спроси библиотекаря
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Китапханәчедән сора
+                    {% else %}
+                        Ask librarian
+                    {% endif %}
+                </a>
+            </li>
+            <li>
+                <span class="crumb__current">
+                    Задать вопрос
+                </span>
+            </li>
+        </ol>
+    </nav>
 {% endblock %}
 {% block index_content %}
-    <div class="side-box">
-        <form class="side-box__form" method="POST">{% csrf_token %}
-{#            {% include 'frontend/base_form_fields.html' with form=form %}#}
-            {% bootstrap_form form %}
-            <button class="side-box__form__btn" type="submit" class="btn">Спросить</button>
-        </form>
+    <div class="content">
+        <h1 class="content__title">
+            {% if LANGUAGE_CODE == 'ru' %}
+                Спроси библиотекаря
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Китапханәчедән сора
+            {% else %}
+                Ask librarian
+            {% endif %}
+            →
+            Задать вопрос
+        </h1>
     </div>
-
-    {#    <form id="ask_form" class="side-box__form" method="POST">{% csrf_token %}#}
-    {#    <legend>Задать вопрос</legend>#}
-    {#    <fieldset>#}
-    {#        {% include 'frontend/base_form_fields.html' with form=form %}#}
-    {#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
-    {#        <div class="form-actions">#}
-    {#            <button type="submit" class="btn">Спросить</button>#}
-    {#        </div>#}
-    {#    </fieldset>#}
-    {#</form>#}
+    <br>
+    <form class="side-box__form" method="POST">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button class="btn" type="submit">Спросить</button>
+    </form>
 {% endblock %}

@@ -10,36 +10,60 @@
     {% else %}
         Ask librarian
     {% endif %}
+    /
+    Спасибо за вопрос
 {% endblock %}
 {% block breadcrumb %}
-    <ul class="breadcrumb">
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        <li>
-            <a href="{% url 'ask_librarian:frontend:index' %}">
-                {% if LANGUAGE_CODE == 'ru' %}
-                    Спроси библиотекаря
-                {% elif LANGUAGE_CODE == 'tt' %}
-                    Китапханәчедән сора
-                {% else %}
-                    Ask librarian
-                {% endif %}
-            </a>
-            <span class="divider">/</span></li>
-        <li>Вопрос № {{ question.id }}</li>
-    </ul>
+    <nav class="crumb">
+        <ol class="crumb__list">
+            <li>
+                <a href="{% url 'index:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'ask_librarian:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Спроси библиотекаря
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Китапханәчедән сора
+                    {% else %}
+                        Ask librarian
+                    {% endif %}
+                </a>
+            </li>
+            <li>
+                <span class="crumb__current">
+                    Вопрос № {{ question.id }}
+                </span>
+            </li>
+        </ol>
+    </nav>
 {% endblock %}
 {% block index_content %}
-    {% if request.user.is_authenticated %}
-        <div class="alert alert-success">
-            Спасибо за вопрос. За статусом его выполнения Вы можете следить в личном кабинете.
-            Так же Вы можете найти его по номеру. Номер Вашего вопроса: <b>{{ question.id }}</b>
-            Ответ на вопрос будет выслан  на указанный Вами email.
-        </div>
-    {% else %}
-        <div class="alert alert-success">
-            Спасибо за вопрос.Вы можете отслеживать его статус по номеру. Номер Вашего вопроса: <b>{{ question.id }}</b>.
-            Ответ на вопрос будет выслан  на указанный Вами email.
-        </div>
-    {% endif %}
-    <a href="{% url 'ask_librarian:frontend:detail' question.id %}">Перейти к вопросу</a>
+    <div class="content">
+        <h1 class="content__title">
+            Спасибо за вопрос
+        </h1>
+        <br>
+        {% if request.user.is_authenticated %}
+            <div class="alert alert-success">
+                За статусом его выполнения Вы можете следить в личном кабинете.
+                Так же Вы можете найти его по номеру. Номер Вашего вопроса: <b>{{ question.id }}</b>
+                Ответ на вопрос будет выслан на указанный Вами email.
+            </div>
+        {% else %}
+            <div class="alert alert-success">
+                Вы можете отслеживать его статус по номеру. Номер Вашего вопроса: <b>{{ question.id }}</b>.
+                Ответ на вопрос будет выслан на указанный Вами email.
+            </div>
+        {% endif %}
+        <p><a href="{% url 'ask_librarian:frontend:detail' question.id %}">Перейти к вопросу</a></p>
+    </div>
 {% endblock %}

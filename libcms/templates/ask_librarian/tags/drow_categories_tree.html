@@ -3,24 +3,21 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 {% url 'ask_librarian:frontend:index' as ask_librarian_index %}
-<ul class="side-box__list-category">
+<ul class="card-list">
     {% if nodes %}
         {% recursetree nodes %}
-            <li {% if path == node.item_title.url  %}class="active"{% endif %}>
-                <a href="{{ ask_librarian_index }}?category={{ node.id }}">{{ node.node_title.title }}
-            {#     (<b>{%  get_question_category_count node %}</b>)#}
-                 </a>
+            <li class="card-list__item {% if path == node.item_title.url %}card-list__item_active{% endif %}">
+                <a class="card-list__link" href="{{ ask_librarian_index }}?category={{ node.id }}">
+                    <span class="card-list__title">{{ node.node_title.title }}</span>
+                </a>
+                {% if not node.is_leaf_node %}
+                    <li>
+                        <ul>
+                            {{ children }}
+                        </ul>
+                    </li>
+                {% endif %}
             </li>
-            {% if not node.is_leaf_node %}
-
-                <li><ul class="children" style="list-style: none;">
-                    {{ children }}
-                </ul>
-                </li>
-            {% endif %}
         {% endrecursetree %}
     {% endif %}
 </ul>
-
-
-

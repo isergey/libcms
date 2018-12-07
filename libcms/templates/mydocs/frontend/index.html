@@ -3,144 +3,68 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% block title %}Мои документы{% endblock %}
 {% block content %}
-
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
-    </nav>
     <main>
         <div class="container">
-            <ul class="bread__crumbs">
-                <li>
-                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">
-                        {% if LANGUAGE_CODE == 'ru' %}
-                            Главная
-                        {% elif LANGUAGE_CODE == 'tt' %}
-                            Төп бит
-                        {% else %}
-                            Home
-                        {% endif %}
-                    </a>
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a href="{% url 'personal:frontend:index' %}" class="bread__crumbs_link">
-                        Личный кабинет
-                    </a>
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a class="bread__crumbs_link bread__crumbs_link_active">
-                        Мои документы
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <hr class="footer-hr">
-        <div class="container detail-page">
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'personal:frontend:index' %}">
+                            Личный кабинет
+                        </a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                            Мои документы
+                        </span>
+                    </li>
+                </ol>
+            </nav>
+            <div class="content">
+                <h1 class="content__title">Мои документы</h1>
+            </div>
             <div class="row">
-                <div class="col-8">
-                    <h1 class="detail-page__title">Мои документы</h1>
+                <div class="col-lg-12">
                     {% if list %}
-                    <p>Список: {{ list.name }} <a href="{% url 'm' %}"></a></p>
+                        <div class="content">
+                            <p>Список: {{ list.name }} <a href="{% url 'm' %}"></a></p>
+                        </div>
                     {% endif %}
                     {% for record in records %}
-                        <div id="{{ record.saved_doc.gen_id }}" style="margin-left: 10px">
-                            <div class="detail-page__info">
+                        <section id="{{ record.saved_doc.gen_id }}" class="card card_bs-2 card_mt">
+                            <div class="card__body">
                                 {{ record.bib.0|safe }}
-                            </div>
-                            {% if record.saved_doc.comments %}
-                                <div class="alert alert-success">
-                                    {{ record.saved_doc.comments }}
+                                <div class="content">
+                                    {% if record.saved_doc.comments %}
+                                        <p>{{ record.saved_doc.comments }}</p>
+                                    {% endif %}
                                 </div>
-                            {% endif %}
-                            <div class="detail-page__options detail-page__options_border-bottom">
-                                <a class="detail-page__options__btn"
-                                   href="{% url 'ssearch:frontend:detail' record.saved_doc.gen_id %}">Детальная
-                                    информация</a>
-                                <a
-                                        href="{% url 'mydocs:frontend:delete' record.saved_doc.id %}"
-                                        class="detail-page__options__btn delete">удалить</a>
+                                <a class="btn" href="{% url 'ssearch:frontend:detail' record.saved_doc.gen_id %}">Подробнее</a>
+                                <a class="btn btn_ol" href="{% url 'mydocs:frontend:delete' record.saved_doc.id %}"
+                                   class="delete">Удалить</a>
                             </div>
-                        </div>
+                        </section>
+
                     {% empty %}
-                        <div class="detail-page__info" style="margin-left: 40px">Список документов пуст.</div>
+                        <br>
+                        <div class="alert alert-info">Список документов пуст.</div>
                     {% endfor %}
-                    <hr class="search-result-hr">
-                </div>
-                <div class="col-4">
-                    <a href="{% url 'mydocs:frontend:create_list' %}">Добавить список</a>
-                    <ul>
-                        {% for list in lists %}
-                            <li><a href="{% url 'mydocs:frontend:index' %}?list={{ list.id }}">{{ list.name }}</a> <a
-                                    href="{% url 'mydocs:frontend:delete_list' list.id %}">удалить</a></li>
-                        {% endfor %}
-                    </ul>
                 </div>
             </div>
         </div>
-
     </main>
-
-
-
-
-
-
-    {#    #}
-    {#    <style type="text/css">#}
-    {#        .alert{#}
-    {#            margin: 5px 0;#}
-    {#            clear: both;#}
-    {#        }#}
-    {#        ul.doclist {#}
-    {#            margin: 0; padding: 0; list-style: none#}
-    {##}
-    {#        }#}
-    {#        ul.doclist .doc_info{#}
-    {#            padding: 10px;#}
-    {#        }#}
-    {#        ul.doclist .thumbnail{#}
-    {#            margin-bottom: 20px;#}
-    {#        }#}
-    {#    </style>#}
-    {##}
-    {#    <div class="span12" style="margin-bottom: 10px;">#}
-    {#        <ul class="breadcrumb">#}
-    {#            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
-    {#            <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>#}
-    {#            <li class="active">Мои документы</li>#}
-    {#        </ul>#}
-    {##}
-    {##}
-    {#            <ul class="doclist">#}
-    {#                {% for record in records %}#}
-    {#                    <li id="{{ record.saved_doc.gen_id }}">#}
-    {#                    <div class="thumbnail">#}
-    {#                            <div class="doc_info">#}
-    {#                            {{ record.bib.0|safe }}#}
-    {#                            </div>#}
-    {#                            {% if record.saved_doc.comments %}#}
-    {#                                <div class="alert alert-success">#}
-    {#                                    {{ record.saved_doc.comments }}#}
-    {#                                </div>#}
-    {#                            {% endif %}#}
-    {#                            <div class="actions">#}
-    {#                                <a href="{% url 'ssearch:frontend:detail' record.saved_doc.gen_id %}">Детальная информация</a>#}
-    {#                                <a style="float: right;" href="{% url 'mydocs:frontend:delete' record.saved_doc.id %}" class="delete">удалить</a>#}
-    {#                            </div>#}
-    {#                    </div>#}
-    {#                    </li>#}
-    {#                {% empty %}#}
-    {#                    <li><div class="alert">Список документов пуст.</div></li>#}
-    {#                {% endfor %}#}
-    {#            </ul>#}
-    {#    </div>#}
+{% endblock %}
+{% block scripts %}
     <script type="text/javascript">
         $('.delete').click(function () {
             var button = $(this);
