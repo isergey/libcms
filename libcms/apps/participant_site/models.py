@@ -78,7 +78,7 @@ class LibraryAvatar(models.Model):
 @receiver(models.signals.post_save, sender=LibraryAvatar)
 def resize_avatar(sender, **kwargs):
     instance = kwargs['instance']
-    image_path = MEDIA_ROOT + unicode(instance.avatar)
+    image_path = os.path.join(MEDIA_ROOT, unicode(instance.avatar))
     im = Image.open(image_path)
     im.thumbnail(AVATAR_THUMBNAIL_SIZE)
     im.convert('RGB').save(image_path, "JPEG", quality=90, optimize=True, progressive=True)
@@ -87,6 +87,6 @@ def resize_avatar(sender, **kwargs):
 @receiver(models.signals.post_delete, sender=LibraryAvatar)
 def delete_avatar(sender, **kwargs):
     instance = kwargs['instance']
-    image_path = MEDIA_ROOT + unicode(instance.avatar)
+    image_path = os.path.join(MEDIA_ROOT, unicode(instance.avatar))
     if os.path.isfile(image_path) and os.access(image_path, os.W_OK):
         os.remove(image_path)
