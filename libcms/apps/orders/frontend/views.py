@@ -38,7 +38,6 @@ RUSLAN_USERNAME = RUSLAN.get('username', '')
 RUSLAN_PASSWORD = RUSLAN.get('password', '')
 
 
-
 def set_cookies_to_response(cookies, response, domain=None):
     for key in cookies:
         response.set_cookie(key, cookies[key], domain=domain)
@@ -293,6 +292,7 @@ def mail_order(request, library_id, gen_id):
         'record': record
     })
 
+
 def _get_content(args):
     # необходимо чтобы функция имела таймаут
     uh = urllib2.urlopen(args['url'], timeout=10)
@@ -445,7 +445,7 @@ def check_for_can_delete(transaction):
     for apdu in transaction.illapdus:
         if isinstance(apdu.delivery_status, ILLRequest):
             if apdu.delivery_status.ill_service_type in can_delete_statuses and \
-                            transaction.status in can_delete_statuses[apdu.delivery_status.ill_service_type]:
+                    transaction.status in can_delete_statuses[apdu.delivery_status.ill_service_type]:
                 return True
     return False
 
@@ -546,8 +546,6 @@ def mba_orders(request):
     # else:
     #    orgs[org_id] = org_id
     # orders_by_org[org_id] = orders
-
-
 
     return render(request, 'orders/frontend/mba_orders_list.html', {
         'orders': orders,
