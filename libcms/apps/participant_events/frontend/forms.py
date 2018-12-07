@@ -86,10 +86,12 @@ def get_current_month_choice():
 
 
 class CalendarFilterForm(forms.Form):
-    month = forms.ChoiceField(choices=MONTH_CHOICES,
-                              label=u"Месяц",
-                              widget=forms.Select(attrs={'onchange': 'this.form.submit();'}))
-    year = forms.ChoiceField(choices=get_years_choice(),
-                             label=u"Год",
-                             widget=forms.Select(attrs={'onchange': 'this.form.submit();'}))
-    #Возвращаем список из предыдущего текущего и следующего года
+    month = forms.ChoiceField(
+        choices=MONTH_CHOICES,
+        label=u"Месяц",
+        widget=forms.Select(attrs={'onchange': 'this.form.submit();', 'class': 'form-control'}))
+    year = forms.ChoiceField(
+        choices=get_years_choice(),
+        label=u"Год",
+        widget=forms.Select(attrs={'onchange': 'this.form.submit();', 'class': 'form-control'}))
+    # Возвращаем список из предыдущего текущего и следующего года
