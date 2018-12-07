@@ -424,7 +424,7 @@ RUSMARC
   <xsl:param name="p" select="."/>
   <xsl:choose>
     <xsl:when test="$p/field[@id='029']/indicator[@id='1'] = 1">
-      <div class="header">
+      <div class="armr_header">
       <xsl:call-template name="std">
         <xsl:with-param name="p" select="$p"/>
       </xsl:call-template>
@@ -437,7 +437,7 @@ RUSMARC
       <xsl:variable name="h2">
         <xsl:apply-templates select="$p/field[@id='710']"/>
       </xsl:variable>
-      <div class="header">
+      <div class="armr_header">
         <xsl:choose>
           <xsl:when test="$follow.header and not($enclosed_link) and not(//record[@syntax='1.2.840.10003.5.106']) and //database != $circ.db">
             <xsl:if test="string-length($h1) &gt; 0">

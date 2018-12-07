@@ -551,7 +551,7 @@
     <xsl:otherwise>
       <tr>
 	<td class="top" colspan="2">
-   	<table class="header">
+   	<table class="armr_header">
 	<tr>
     <td class="logo">&#160;</td>
     <td class="title"><a href="/about_project.html" class="menu">О проекте</a>|

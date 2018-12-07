@@ -214,7 +214,7 @@ def zorder(request, library_id):
     form_params['use_1'] = '12:1.2.840.10003.3.1'
     form_params['term_1'] = record_id
     (result, cookies) = zworker.request(zcatalog.url, data=form_params, cookies=cookies)
-
+    print(zcatalog.url)
     # анализируем полученный html на содержание текса с идентификатором записи - значит нашли
     if result.decode('utf-8').find(u'id="%s' % (record_id,)) >= 0:
         #        link = reverse('zgate_index', args=(catalog.id,)) + '?zstate=preorder+%s+1+default+1+1.2.840.10003.5.28+rus' % session_id
