@@ -1,27 +1,93 @@
-{% extends 'index/frontend/index.html' %}
+{% extends 'participant_site/frontend/index.html' %}
 {% load pagination_tag %}
-{% block title %}{{ content.title }}{% endblock %}
-{% block content %}
-    <div class="span12">
-        <div class="breadcrumb">
-            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
+{% block title %}Подписка оформлена / {{ library.name }}{% endblock %}
+{% block content_library-crumb %}
+    {% url 'participant_events:frontend:show' library.code event.id  as event_url %}
+    <nav class="crumb">
+        <ol class="crumb__list">
+            <li>
+                <a href="{% url 'index:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
+                </a>
+            </li>
             {% for ancestor in library.get_ancestors %}
-                <span>
-                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>
-                    <span class="divider">/</span>
-                </span>
+                <li>
+                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">
+                        {{ ancestor.name }}
+                    </a>
+                </li>
             {% endfor %}
-            <span><a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a> <span
-                    class="divider">/</span></span>
-            <span><a href="{% url 'participant_events:frontend:index' library.code %}">Афиша</a> <span class="divider">/</span></span>
-            <span><a href="{% url 'participant_events:frontend:subscribe' library.code %}">Подписка на мероприятия</a> <span class="divider">/</span></span>
-            <span class="active">Подписка оформлена</span>
+            <li>
+                <a href="{% url 'participant_site:frontend:index' library.code %}">
+                    {{ library.name }}
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'participant_events:frontend:index' library.code %}">
+                    Афиша
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'participant_events:frontend:subscribe' library.code %}">
+                    Подписка на мероприятия
+                </a>
+            </li>
+            <li>
+                <span class="crumb__current">
+                    Подписка оформлена
+                </span>
+            </li>
+        </ol>
+    </nav>
+{% endblock %}
+{% block content_library %}
+    <div class="col-lg-8 col-md-12">
+        <div class="card-transparent">
+            <div class="content">
+                <h1 class="content__title">Подписка оформлена</h1>
+                <br>
+                <div class="alert alert-success">Ваша подписка оформлена. Теперь Вы будете получать уведомления о новых
+                    событиях и мероприятиях библиотеки
+                </div>
+            </div>
         </div>
     </div>
-    <div class="span3">
-                {% include 'participant_site/frontend/site_menu.html' %}
-    </div>
-    <div class="span9">
-        <p>Ваша подписка оформлена. Теперь Вы будете получать уведомления о новых событиях и мероприятиях библиотеки</p>
-    </div>
 {% endblock %}
+
+
+
+
+
+{#{% block content %}#}
+{#    <div class="span12">#}
+{#        <div class="breadcrumb">#}
+{#            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>#}
+{#            {% for ancestor in library.get_ancestors %}#}
+{#                <span>#}
+{#                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>#}
+{#                    <span class="divider">/</span>#}
+{#                </span>#}
+{#            {% endfor %}#}
+{#            <span><a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a> <span#}
+{#                    class="divider">/</span></span>#}
+{#            <span><a href="{% url 'participant_events:frontend:index' library.code %}">Афиша</a> <span#}
+{#                    class="divider">/</span></span>#}
+{#            <span><a#}
+{#                    href="{% url 'participant_events:frontend:subscribe' library.code %}">Подписка на мероприятия</a> <span#}
+{#                    class="divider">/</span></span>#}
+{#            <span class="active">Подписка оформлена</span>#}
+{#        </div>#}
+{#    </div>#}
+{#    <div class="span3">#}
+{#        {% include 'participant_site/frontend/site_menu.html' %}#}
+{#    </div>#}
+{#    <div class="span9">#}
+{#        <p>Ваша подписка оформлена. Теперь Вы будете получать уведомления о новых событиях и мероприятиях библиотеки</p>#}
+{#    </div>#}
+{#{% endblock %}#}

@@ -1,7 +1,6 @@
 {% extends 'participant_site/frontend/index.html' %}
 {% load pagination_tag %}
-{% block title %}{{ content.title }}{% endblock %}
-
+{% block title %}Афиша / {{ library.name }}{% endblock %}
 {% block content_library-crumb %}
     <nav class="crumb">
         <ol class="crumb__list">
@@ -14,7 +13,9 @@
                 </li>
             {% endfor %}
             <li>
-                <a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a>
+                <a href="{% url 'participant_site:frontend:index' library.code %}">
+                    {{ library.name }}
+                </a>
             </li>
             <li>
                     <span class="crumb__current">Афиша {% if date %}за
@@ -23,12 +24,12 @@
         </ol>
     </nav>
 {% endblock %}
-
 {% block content_library %}
     <div class="col-lg-8 col-md-12">
         <div class="card-transparent">
             <div class="card-transparent__header">
                 <h2 class="card-transparent__title">Афиша</h2>
+                <a class="card-transparent__link" href="{% url 'participant_events:frontend:subscribe' library.code %}">Подписаться</a>
             </div>
             <div class="event-list">
                 {% for event in events_list %}

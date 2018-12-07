@@ -5,8 +5,7 @@
 {#{% load ssearch_tags %}#}
 {#{% load participiants_tags %}#}
 {#{% load cache %}#}
-{% block title %}{{ content.title }}{% endblock %}
-
+{% block title %}{{ content.title }} / {{ library.name }}{% endblock %}
 {% block content_library-crumb %}
     <nav class="crumb">
         <ol class="crumb__list">

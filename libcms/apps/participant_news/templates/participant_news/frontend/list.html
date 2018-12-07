@@ -2,7 +2,7 @@
 {% load pagination_tag %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-
+{% block title %}Новости / {{ library.name }}{% endblock %}
 {% block content_library-crumb %}
     <nav class="crumb">
         <ol class="crumb__list">
@@ -17,14 +17,13 @@
                 </a>
             </li>
             <li>
-                  <span class="crumb__current">
+                <span class="crumb__current">
                     Новости
                 </span>
             </li>
         </ol>
     </nav>
 {% endblock %}
-
 {% block content_library %}
     <div class="col-lg-7 col-md-12">
         <div class="card-transparent">
@@ -36,7 +35,8 @@
                     <article class="news-list__item news-list__item_mb-big">
                         <time class="news-list__date">{{ news.create_date|date:'d E Y' }}</time>
                         <h3 class="news-list__title">
-                            <a class="news-list__link" href="{% url 'participant_news:frontend:show' library.code news.id %}">
+                            <a class="news-list__link"
+                               href="{% url 'participant_news:frontend:show' library.code news.id %}">
                                 {{ news.title }}
                             </a>
                         </h3>
