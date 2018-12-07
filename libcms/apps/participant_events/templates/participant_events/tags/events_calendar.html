@@ -2,8 +2,18 @@
 <table class="cal-table cal-table__margin-news">
 <caption class="cal-caption">
     <form class="event_calendar_filter" name="event_calendar_filter" action="" method="POST">{% csrf_token %}
-    {{ form.month }}
-    {{ form.year }}
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    {{ form.month }}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    {{ form.year }}
+                </div>
+            </div>
+        </div>
 </form>
 </caption>
     <thead>
