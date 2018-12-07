@@ -1,108 +1,64 @@
-{% extends 'index/frontend/index.html' %}
+{% extends 'participant_site/frontend/index.html' %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-{% block title %}{{ content.title }}{% endblock %}
-{% block content %}
-    <nav class="bg bg_second">
-        <div class="container">
-            {% include 'main_menu.html' %}
-        </div>
+{% block title %}Добавить напоминание о {{ content.title }}{% endblock %}
+{% block content_library-crumb %}
+    <nav class="crumb">
+        <ol class="crumb__list">
+            <li>
+                <a href="{% url 'index:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
+                </a>
+            </li>
+            {% for ancestor in event.library.get_ancestors %}
+                <li>
+                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">
+                        {{ ancestor.name }}
+                    </a>
+                </li>
+            {% endfor %}
+            <li>
+                <a href="{% url 'participant_site:frontend:index' event.library.code %}">
+                    {{ event.library.name }}
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'participant_events:frontend:index' event.library.code %}">
+                    Афиша
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'participant_events:frontend:show' event.library.code event.id %}">
+                    {{ content.title }}
+                </a>
+            </li>
+            <li>
+                <span class="crumb__current">
+                    Добавить напоминание
+                </span>
+            </li>
+        </ol>
     </nav>
-    <main>
-        <div class="container">
-            <ul class="bread__crumbs">
-                <li><a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">Главная</a></li>
-                {% for ancestor in event.library.get_ancestors %}
-                    <li>
-                        <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                    </li>
-                    <li>
-                        <a href="{% url 'participant_site:frontend:index' ancestor.code %}"
-                           class="bread__crumbs_link">{{ ancestor.name }}</a>
-                    </li>
-                {% endfor %}
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a href="{% url 'participant_site:frontend:index' event.library.code %}" class="bread__crumbs_link">{{ event.library.name }}</a>
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a href="{% url 'participant_events:frontend:index' event.library.code %}" class="bread__crumbs_link">Афиша</a>
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li>
-                    <a href="{% url 'participant_events:frontend:show' event.library.code event.id %}" class="bread__crumbs_link">{{ content.title }}</a>
-                </li>
-                <li>
-                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
-                </li>
-                <li><a class="bread__crumbs_link bread__crumbs_link_active">Добавить напоминание</a></li>
-            </ul>
-        </div>
-        <hr class="footer-hr">
-        <div class="container content-page">
-            <div class="row">
-                <div class="col-7">
-                    <h1 class="content-page__title">Добавить напоминание</h1>
-
-                    <div class="content-page__text">
-                        <form method="post" class="form-all">
-                            {% csrf_token %}
-                            {% include 'administration/base_form_fields.html' with form=notification_form %}
-                            <br>
-                            <button type="submit" class="side-box__form__btn">Создать напоминание</button>
-                        </form>
-                    </div>
-                </div>
+{% endblock %}
+{% block content_library %}
+    <div class="col-lg-8 col-md-12">
+        <div class="card-transparent">
+            <div class="content">
+                <h1 class="content__title">Добавить напоминание</h1>
+                <br>
+                <form method="post" class="form-all">
+                    {% csrf_token %}
+                    {% include 'administration/base_form_fields.html' with form=notification_form %}
+                    <br>
+                    <button type="submit" class="btn">Создать напоминание</button>
+                </form>
             </div>
         </div>
-    </main>
-
-
-
-
-
-    {##}
-    {#    <div class="span12">#}
-    {#        <div class="breadcrumb">#}
-    {#            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>#}
-    {#            {% for ancestor in event.library.get_ancestors %}#}
-    {#                <span>#}
-    {#                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>#}
-    {#                    <span class="divider">/</span>#}
-    {#                </span>#}
-    {#            {% endfor %}#}
-    {#            <span>#}
-    {#                <a href="{% url 'participant_site:frontend:index' event.library.code %}">{{ event.library.name }}</a>#}
-    {#                <span class="divider">/</span></span>#}
-    {#            <span><a href="{% url 'participant_events:frontend:index' event.library.code %}">Афиша</a> <span class="divider">/</span></span>#}
-    {#            <span><a href="{% url 'participant_events:frontend:show' event.library.code event.id %}">{{ content.title }}</a> <span class="divider">/</span></span>#}
-    {#            <span>Добавить напоминание</span>#}
-    {#        </div>#}
-    {#    </div>#}
-    {##}
-    {#    <div class="span3">#}
-    {#        {% include 'participant_site/frontend/site_menu.html' %}#}
-    {#    </div>#}
-    {##}
-    {#    <div class="span9">#}
-    {#        {% include 'participant_site/frontend/inline_org_info.html' %}#}
-    {#        <form method="post" class="form-horizontal">#}
-    {#            {% csrf_token %}#}
-    {#            {% include 'administration/base_form_fields.html' with form=notification_form %}#}
-    {#            <div class="control-group">#}
-    {#                <div class="controls">#}
-    {#                    <button type="submit" class="btn btn-success">Создать напоминание</button>#}
-    {#                </div>#}
-    {#            </div>#}
-    {#        </form>#}
-    {#    </div>#}
-
-
+    </div>
 {% endblock %}
