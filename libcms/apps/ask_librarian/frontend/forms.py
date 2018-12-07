@@ -45,4 +45,4 @@ class RecomendationForm(forms.ModelForm):
 
 
 class DateFilterForm(forms.Form):
-    date = forms.DateField(label=u'', help_text=u'формат даты: дд.мм.гггг')
+    date = forms.DateField(label=u'', help_text=u'формат даты: дд.мм.гггг', widget=forms.TextInput(attrs={'class': 'form-control'}))
