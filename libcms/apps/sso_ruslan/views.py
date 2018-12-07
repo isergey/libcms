@@ -15,8 +15,13 @@ RUSLAN_USERS_DATABASE = RUSLAN.get('users_database', 'allusers')
 EMAIL_FIELD_TAG = '122'
 RECORD_ID_TAG = '1'
 
+
 @login_required
 def change_email(request):
+    try:
+        models.RuslanUser.objects.get(user=request.user)
+    except models.RuslanUser.DoesNotExist:
+        return HttpResponse(u'Вы не являетесь читателем')
     ruslan_user = models.get_ruslan_user(request)
     portal_client = connection_pool.get_client(API_ADDRESS, API_USERNAME, API_PASSWORD)
     sru_response = portal_client.get_user(ruslan_user.username, RUSLAN_USERS_DATABASE)
