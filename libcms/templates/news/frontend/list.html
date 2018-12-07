@@ -3,7 +3,15 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% load news_tags %}
 {% load pagination_tag %}
-{% block title %}{{ content.title }}{% endblock %}
+{% block title %}
+    {% if LANGUAGE_CODE == 'ru' %}
+        Новости
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Яңалыклар
+    {% else %}
+        News
+    {% endif %}
+{% endblock %}
 {% block content %}
     <main>
         <div class="container">

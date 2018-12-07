@@ -1,7 +1,7 @@
 {% extends 'participant_site/frontend/index.html' %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-{% block title %}{{ content.title }}{% endblock %}
+{% block title %}{{ content.title }} / {{ event.library.name }}{% endblock %}
 {% block content_library-crumb %}
     <nav class="crumb">
         <ol class="crumb__list">
