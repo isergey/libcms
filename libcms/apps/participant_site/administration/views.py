@@ -41,11 +41,10 @@ def edit_info(request, library_code, managed_libraries=[]):
         if avatar_from.is_valid() and library_form.is_valid():
             avatar = avatar_from.save(commit=False)
             avatar.library = library
-            avatar.save()
-            # try:
-            #     avatar.save()
-            # except IOError as e:
-            #     error = u'Ошибка при сохранении изображения %s' % e.message
+            try:
+                avatar.save()
+            except IOError as e:
+                error = u'Ошибка при сохранении изображения %s' % e.message
             library_form.save()
     else:
         avatar_from = forms.AvatarForm(prefix='avatar_form', instance=avatar)
