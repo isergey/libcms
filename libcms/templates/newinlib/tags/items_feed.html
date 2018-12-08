@@ -17,17 +17,14 @@
                                     <img class="new-arrival__img"
                                      src="{{ item.cover }}"
                                      alt="{{ item.title }}" />
-                                    {{ item.cover }}
                                 {% else %}
                                     <img class="new-arrival__img"
                                      src="{{ STATIC_URL }}dist/images/list/file.svg"
                                      alt="{{ item.title }}" />
                                 {% endif %}
-
                             </a>
                         </div>
                         <div class="new-arrival__detail">
-                            {{ item.cover }}
                             <a class="new-arrival__detail-link" href="{{ item_url }}">
                                 <h3 class="new-arrival__detail-title">{{ item.title }}</h3>
                                 <p class="new-arrival__detail-description">{{ item.content|striptags }}</p>
