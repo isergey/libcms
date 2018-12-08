@@ -130,13 +130,12 @@
                     </label>
                     <input class="form-control" id="number" type="number" name="id">
                 </div>
-
             </form>
         </div>
         <div class="form-grid__col">
             <form action="" method="POST">
                 {% csrf_token %}
-                <div class="form-group ">
+                <div class="form-group">
                     <label class="control-label">
                         {% if LANGUAGE_CODE == 'ru' %}
                             Найти вопросы по дате:
@@ -146,16 +145,19 @@
                             Filter by date:
                         {% endif %}
                     </label>
-
                     {% for field in date_filter_form.visible_fields %}
-
-                            <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
-
-                                {{ field }}
-                                {% if field.errors %}
-                                    {{ field.errors }}
-                                {% endif %}
-                                {% if  field.help_text %}<p class="help-block">{{ field.help_text }}</p>{% endif %}
+                            <label class="control-label" for="{{ field.auto_id }}">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                            {% if field.errors %}
+                                {{ field.errors }}
+                            {% endif %}
+                            {% if  field.help_text %}
+                                <p class="help-block">
+                                    {{ field.help_text }}
+                                </p>
+                            {% endif %}
 
                         </div>
                     {% endfor %}
