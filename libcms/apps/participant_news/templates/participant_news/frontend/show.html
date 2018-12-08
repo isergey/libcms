@@ -34,17 +34,41 @@
                     </time>
                 </div>
                 {{ news.content|safe }}
-                {% if news_images %}
-                    <h3>Фотоматериалы</h3>
-                    <div class="fotorama" data-nav="thumbs">
-                        {% for news_image in news_images %}
-                            <a data-caption='{{ news_image.title }}' title="1111"
-                               href="{{ MEDIA_URL }}{{ news_image.image }}"><img title="2222" src="
-                                            {{ MEDIA_URL }}{{ news_image.get_tmb_path }}"></a>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+                {#                {% if news_images %}#}
+                {#                    <h3>Фотоматериалы</h3>#}
+                {#                    <div class="fotorama" data-nav="thumbs">#}
+                {#                        {% for news_image in news_images %}#}
+                {#                            <a data-caption='{{ news_image.title }}' title="1111"#}
+                {#                               href="{{ MEDIA_URL }}{{ news_image.image }}"><img title="2222" src="#}
+                {#                                            {{ MEDIA_URL }}{{ news_image.get_tmb_path }}"></a>#}
+                {#                        {% endfor %}#}
+                {#                    </div>#}
+                {#                {% endif %}#}
             </div>
+            {% if news_images %}
+                <div class="swiper-content-img-slider">
+                    <div class="swiper-container gallery-top">
+                        <div class="swiper-wrapper">
+                            {% for news_image in news_images %}
+                                <div id="{{ image_item.id }}" class="swiper-slide"
+                                     title="{{ image_item.content.title }}"
+                                     style="background-image:url({{ MEDIA_URL }}{{ news_image.image }})"></div>
+                            {% endfor %}
+                        </div>
+                        <div class="swiper-button-next swiper-button-white"></div>
+                        <div class="swiper-button-prev swiper-button-white"></div>
+                    </div>
+                    <div class="swiper-container gallery-thumbs">
+                        <div class="swiper-wrapper">
+                            {% for news_image in news_images %}
+                                <div id="{{ image_item.id }}" class="swiper-slide"
+                                     title="{{ image_item.content.title }}"
+                                     style="background-image:url({{ MEDIA_URL }}{{ news_image.image }})"></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
             <div class="ya-share2"
                  data-services="vkontakte,facebook,odnoklassniki,gplus,twitter,viber,whatsapp,telegram"></div>
         </div>
