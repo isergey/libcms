@@ -176,7 +176,7 @@
                                 </div>
 
                                 <div class="search-nav__item">
-                                    <a class="search-nav__link" href="{% url 'ssearch:frontend:index' %}">
+                                    <a class="search-nav__link" href="{% url 'ssearch:frontend:index' %}{% if request.GET.library %}?library={{ request.GET.library }}{% endif %}">
                                         {% if LANGUAGE_CODE == 'ru' %}
                                             Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}
                                     </a>
