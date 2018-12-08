@@ -1,106 +1,74 @@
-{% extends 'index/frontend/index.html' %}
+{% extends 'participant_site/frontend/index.html' %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-{% block title %}{{ content.title }}{% endblock %}
-{% block content %}
-{#    <style>#}
-{#    .modal-body {#}
-{#        max-height: 4000px;#}
-{#    }#}
-{#    </style>#}
-    <style>
-    body.modal-open {
-        overflow: hidden;
-    }
-    </style>
-    <div class="span12">
-        <div class="breadcrumb">
-            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>
-            {% for ancestor in event.library.get_ancestors %}
-                <span>
+{% block title %}{{ content.title }} / {{ library.name }}{% endblock %}
+{% block content_library-crumb %}
+    <nav class="crumb">
+        <ol class="crumb__list">
+            <li>
+                <a href="{% url 'index:frontend:index' %}">
+                    Главная
+                </a>
+            </li>
+            {% for ancestor in library.get_ancestors %}
+                <li>
                     <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>
-                    <span class="divider">/</span>
-                </span>
+                </li>
             {% endfor %}
-            <span>
-                <a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a>
-                <span class="divider">/</span></span>
-            <span><a href="{% url 'participant_photopolls:frontend:index' library.code %}">Фотоконкурсы</a> <span
-                    class="divider">/</span></span>
-        </div>
-    </div>
-
-    <div class="span3">
-        {% include 'participant_site/frontend/site_menu.html' %}
-    </div>
-
-    <div class="span9">
-        {% include 'participant_site/frontend/inline_org_info.html' %}
-        <h3>{{ content.title }}</h3>
-        <table class="table">
-            <tr>
-                <th>Начало:</th>
-                <td>{{ poll.start_date|date:'D' }} {{ poll.start_date|date:'d E Y H:i' }}</td>
-            </tr>
-            <tr>
-                <th>Окончание:</th>
-                <td>{{ poll.end_date|date:'D' }} {{ poll.end_date|date:'d E Y H:i' }}</td>
-            </tr>
-        </table>
-        <hr/>
-        <p>
-            {{ content.content|safe }}
-        </p>
-        <hr>
-        <ul>
-            {% for image_item in images_list %}
-                <a href="#1"><img class="photo" id="{{ image_item.id }}" width="200"
-                                  title="{{ image_item.content.title }}"
-                                  src="{{ MEDIA_URL }}{{ image_item.image.image }}"/></a>
-
-            {% endfor %}
-        </ul>
-        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-            Launch demo modal
-        </button>
-
-        <!-- Modal -->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
-                                class="sr-only">Close</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            <li>
+                <a href="{% url 'participant_site:frontend:index' library.code %}">
+                    {{ library.name }}
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'participant_photopolls:frontend:index' library.code %}">
+                    Фотоконкурсы
+                </a>
+            </li>
+        </ol>
+    </nav>
+{% endblock %}
+{% block content_library %}
+    <div class="col-lg-7 col-md-12">
+        <div class="card-transparent">
+            <div class="content">
+                <h1 class="content__title">{{ content.title }}</h1>
+                <div class="content__info">
+                    <span><span
+                            class="icon-runer-silhouette-running-fast"></span>&nbsp;&nbsp;Начало: {{ poll.start_date|date:'D' }} {{ poll.start_date|date:'d E Y H:i' }}</span>
+                    <span><span
+                            class="icon-racing-flag"></span>&nbsp;&nbsp;Окончание: {{ poll.end_date|date:'D' }} {{ poll.end_date|date:'d E Y H:i' }}</span>
+                </div>
+                {{ content.content|safe }}
+{#                <ul>#}
+{#                    {% for image_item in images_list %}#}
+{#                        <a href="#1"><img class="photo" id="{{ image_item.id }}" width="200"#}
+{#                                          title="{{ image_item.content.title }}"#}
+{#                                          src="{{ MEDIA_URL }}{{ image_item.image.image }}"/></a>#}
+{##}
+{#                    {% endfor %}#}
+{#                </ul>#}
+            </div>
+            <div class="swiper-content-img-slider">
+                <div class="swiper-container gallery-top">
+                    <div class="swiper-wrapper">
+                        {% for image_item in images_list %}
+                        <div id="{{ image_item.id }}" class="swiper-slide" title="{{ image_item.content.title }}"
+                             style="background-image:url({{ MEDIA_URL }}{{ image_item.image.image }})"></div>
+                        {% endfor %}
                     </div>
-                    <div>
-                        wefwef
-                        wef
-                        wef
-                        wefwef
-                    </div>
-                    <div class="modal-body">
-
-
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                    <div class="swiper-button-next swiper-button-white"></div>
+                    <div class="swiper-button-prev swiper-button-white"></div>
+                </div>
+                <div class="swiper-container gallery-thumbs">
+                    <div class="swiper-wrapper">
+                        {% for image_item in images_list %}
+                        <div id="{{ image_item.id }}" class="swiper-slide" title="{{ image_item.content.title }}"
+                             style="background-image:url({{ MEDIA_URL }}{{ image_item.image.image }})"></div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script type="text/html">
-        <
-    </script>
-    <script>
-        $(function () {
-            $('.photo').on('click', function () {
-                $('#myModal').modal('show');
-            });
-        });
-    </script>
 {% endblock %}
