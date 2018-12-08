@@ -28,7 +28,10 @@
         function updateSize() {
             //  var IE = '\v' == 'v';
             //   if (IE) {
-            elfViewer.height = viewContainer.clientHeight - viewHeader.offsetHeight;
+            if (elfViewer != undefined) {
+                elfViewer.height = viewContainer.clientHeight - viewHeader.offsetHeight;
+            }
+
             //    }
         }
 
