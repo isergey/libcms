@@ -1,8 +1,7 @@
 $(document).ready(function () {
 
     // Remove style attr content manager
-    $(".content *").removeAttr("style");
-    $(".content *").removeAttr("border cellspacing cellpadding bgcolor width align colspan");
+    $(".content *").removeAttr("style border cellspacing cellpadding bgcolor width align colspan");
 
     $(".search-input__select, .search-input__input").focus(function () {
         $(this).parent().addClass("search-input_focus");
@@ -50,6 +49,24 @@ $(document).ready(function () {
             nextEl: '.swiper-button-next-event',
             prevEl: '.swiper-button-prev-event',
         },
+    });
+
+    let galleryThumbs = new Swiper('.gallery-thumbs', {
+        spaceBetween: 10,
+        slidesPerView: 4,
+        freeMode: true,
+        watchSlidesVisibility: true,
+        watchSlidesProgress: true,
+    });
+    let galleryTop = new Swiper('.gallery-top', {
+        spaceBetween: 10,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        thumbs: {
+            swiper: galleryThumbs
+        }
     });
 
     // Nav btn click
