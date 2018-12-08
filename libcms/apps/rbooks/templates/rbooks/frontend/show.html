@@ -28,7 +28,7 @@
         function updateSize() {
             //  var IE = '\v' == 'v';
             //   if (IE) {
-            if (elfViewer != undefined) {
+            if (typeof(elfViewer) !== 'undefined') {
                 elfViewer.height = viewContainer.clientHeight - viewHeader.offsetHeight;
             }
 
