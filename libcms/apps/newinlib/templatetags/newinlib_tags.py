@@ -25,17 +25,23 @@ def last_items_feed(count=5):
     for items_lis in items_list:
         records_ids.append(items_lis.item.id_in_catalog)
 
-    saved_documents = mydocs_models.SavedDocument.objects.values('gen_id').filter(gen_id__in=records_ids)
-
-    for saved_document in saved_documents:
-        item_content = nd.get(saved_document.get('gen_id'))
-        if item_content:
-            item_content.in_favorite = True
-
-    for record in get_records(records_ids):
-        item_content = nd.get(record.gen_id)
-        if item_content:
-            nd[record.gen_id].attrs = xml_doc_to_dict(record.content)
+    records = get_records(records_ids)
+    for record in records:
+        doc = xml_doc_to_dict(record.content)
+        item = nd.get(record.gen_id)
+        if item is not None:
+            item.cover = doc.get('cover', [''])[0]
+    # saved_documents = mydocs_models.SavedDocument.objects.values('gen_id').filter(gen_id__in=records_ids)
+    #
+    # for saved_document in saved_documents:
+    #     item_content = nd.get(saved_document.get('gen_id'))
+    #     if item_content:
+    #         item_content.in_favorite = True
+    #
+    # for record in get_records(records_ids):
+    #     item_content = nd.get(record.gen_id)
+    #     if item_content:
+    #         nd[record.gen_id].attrs = xml_doc_to_dict(record.content)
 
     return ({
         'items_list': items_list,

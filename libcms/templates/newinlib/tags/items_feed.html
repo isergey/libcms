@@ -13,12 +13,21 @@
                     <div class="new-arrival">
                         <div class="new-arrival__img-wrap">
                             <a class="new-arrival__img-link" href="{{ item_url }}">
-                                <img class="new-arrival__img"
+                                {% if item.cover %}
+                                    <img class="new-arrival__img"
+                                     src="{{ item.cover }}"
+                                     alt="{{ item.title }}" />
+                                    {{ item.cover }}
+                                {% else %}
+                                    <img class="new-arrival__img"
                                      src="{{ STATIC_URL }}dist/images/list/file.svg"
-                                     alt="{{ item.title }}">
+                                     alt="{{ item.title }}" />
+                                {% endif %}
+
                             </a>
                         </div>
                         <div class="new-arrival__detail">
+                            {{ item.cover }}
                             <a class="new-arrival__detail-link" href="{{ item_url }}">
                                 <h3 class="new-arrival__detail-title">{{ item.title }}</h3>
                                 <p class="new-arrival__detail-description">{{ item.content|striptags }}</p>
