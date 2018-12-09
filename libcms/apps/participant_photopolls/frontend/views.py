@@ -88,7 +88,7 @@ def vote(request, library_code, poll_id, image_id):
             can_vote = False
 
     if can_vote:
-        models.Vote(user=user, image=image, ip=ip).save()
+        models.Vote(user=user, poll_image=image, ip=ip).save()
     return HttpResponse('Спасибо за голос')
     return redirect('participant_photopolls:frontend:show', library_code=library_code, id=poll.id)
 
