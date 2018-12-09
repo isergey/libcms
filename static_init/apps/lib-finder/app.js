@@ -196,9 +196,9 @@ const ContextMenu = React.createClass({
         document.removeEventListener('touchend', this._checkClickAway);
     },
     render() {
-        const classes = ['abc-crumbs__list__hover-box'];
+        const classes = ['map-nav-dropdown-wrap'];
         if (this.state.open) {
-            classes.push('abc-crumbs__list__hover-box_show');
+            classes.push('map-nav-dropdown-wrap_show');
         }
         const style = {};
         if (this.state.left !== 0 || this.state.top !== 0) {
@@ -362,18 +362,18 @@ const AbcCrumbLetter = React.createClass({
     renderContextMenu() {
         const districts = (this.props.letter.districts || []).map((district, index) => {
             return (
-                <div key={district.id || index} className="map-box__list-bib__item">
+                <li key={district.id || index} className="map-nav-dropdown-menu__item">
                     <a onClick={this.handleDistrictClick.bind(this, district.id)}
-                       className="map-box__list-bib__item__link" href="#1"
+                       className="map-nav-dropdown-menu__link" href="#1"
                     >{district.name}</a>
-                </div>
+                </li>
             );
         });
         return (
             <ContextMenu ref="contextMenu">
-                <div className="map-box__list-bib">
+                <ul className="map-nav-dropdown-menu">
                     {districts}
-                </div>
+                </ul>
             </ContextMenu>
         );
     },
