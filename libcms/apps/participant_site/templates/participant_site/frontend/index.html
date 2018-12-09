@@ -6,7 +6,7 @@
 {% load participant_banners_tags %}
 {% load participiants_tags %}
 
-{% block title %}{{ library.name }}{% endblock %}
+{% block title %}{{ library.name }}{% for ancestor in ancestors %} / {{ ancestor.name }}{% endfor %}{% endblock %}
 {% block content %}
     {% get_current_language as LANGUAGE_CODE %}
     {% get_library_avatar_src library.id as avatar_src %}
@@ -64,6 +64,10 @@
                         {% endfor %}
                         <a class="lib-detail__link" href="{% url 'ssearch:frontend:index' %}?library={{ library.code }}"
                            target="_blank">Поиск в каталоге</a>
+                        <br>
+                        <a class="lib-detail__link" href="{% url 'participant_photopolls:frontend:index' library.code %}">
+                            Фотоконкурсы
+                        </a>
                     </div>
                 </div>
                 <ul class="lib-hot-nav">
