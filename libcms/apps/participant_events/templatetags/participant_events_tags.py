@@ -78,8 +78,8 @@ def participant_events_nearest(library_id, count=5):
     end = now + timedelta(days=32)
     query = Q(
         active=True,
-        start_date__gte=now,
-        end_date__lte=datetime(end.year, end.month, end.day),
+        start_date__lte=now,
+        end_date__gte=datetime(end.year, end.month, end.day),
     )
     if library_id:
         query &= Q(library_id=library_id)
