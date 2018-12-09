@@ -40,52 +40,55 @@
                             class="icon-racing-flag"></span>&nbsp;&nbsp;Окончание: {{ poll.end_date|date:'D' }} {{ poll.end_date|date:'d E Y H:i' }}</span>
                 </div>
                 {{ content.content|safe }}
-{#                <ul>#}
-{#                    {% for image_item in images_list %}#}
-{#                        <a href="#1"><img class="photo" id="{{ image_item.id }}" width="200"#}
-{#                                          title="{{ image_item.content.title }}"#}
-{#                                          src="{{ MEDIA_URL }}{{ image_item.image.image }}"/></a>#}
-{##}
-{#                    {% endfor %}#}
-{#                </ul>#}
             </div>
-{#            <div class="swiper-content-img-slider">#}
-{#                <div class="swiper-container gallery-top">#}
-{#                    <div class="swiper-wrapper">#}
-{#                        {% for image_item in images_list %}#}
-{#                        <div id="{{ image_item.id }}" class="swiper-slide" title="{{ image_item.content.title }}"#}
-{#                             style="background-image:url({{ MEDIA_URL }}{{ image_item.image.image }})"></div>#}
-{#                        {% endfor %}#}
-{#                    </div>#}
-{#                    <div class="swiper-button-next swiper-button-white"></div>#}
-{#                    <div class="swiper-button-prev swiper-button-white"></div>#}
-{#                </div>#}
-{#                <div class="swiper-container gallery-thumbs">#}
-{#                    <div class="swiper-wrapper">#}
-{#                        {% for image_item in images_list %}#}
-{#                        <div id="{{ image_item.id }}" class="swiper-slide" title="{{ image_item.content.title }}"#}
-{#                             style="background-image:url({{ MEDIA_URL }}{{ image_item.image.image }})"></div>#}
-{#                        {% endfor %}#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-                <ul>
-                {% for image_item in images_list %}
-                    <li>
-                        <div>{{ image_item.content.title }}</div>
-                        <div>{{ image_item.content.description|safe }}</div>
-                        <div>
-                            <img src="{{ MEDIA_URL }}{{ image_item.image.image }}">
-                        </div>
-                    <div>
-                        <span>Голосов: {{ image_item.image.get_votes_count }}.</span>
-                        <a href="{% url 'participant_photopolls:frontend:vote' library.code poll.id image_item.image.id  %}">
-                            отдать голос
-                        </a>
+            <div class="swiper-content-img-slider">
+                <div class="swiper-container gallery-top">
+                    <div class="swiper-wrapper">
+                        {% for image_item in images_list %}
+                            <div id="{{ image_item.id }}" class="swiper-slide" title="{{ image_item.content.title }}"
+                                 style="background-image:url({{ MEDIA_URL }}{{ image_item.image.image }})">
+                                <div class="swiper-slide-content">
+                                    <span>{{ image_item.content.title }}</span>
+                                    <br>
+                                    <span>{{ image_item.content.description|safe }}</span>
+                                    <br>
+                                    <span>Голосов: {{ image_item.image.get_votes_count }}.</span>
+                                    <a href="{% url 'participant_photopolls:frontend:vote' library.code poll.id image_item.image.id %}">
+                                        Отдать голос
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
-                    </li>
-                {% endfor %}
-                </ul>
+                    <div class="swiper-button-next swiper-button-white"></div>
+                    <div class="swiper-button-prev swiper-button-white"></div>
+                </div>
+                <div class="swiper-container gallery-thumbs">
+                    <div class="swiper-wrapper">
+                        {% for image_item in images_list %}
+                            <div id="{{ image_item.id }}" class="swiper-slide" title="{{ image_item.content.title }}"
+                                 style="background-image:url({{ MEDIA_URL }}{{ image_item.image.image }})"></div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+{#            <ul>#}
+{#                {% for image_item in images_list %}#}
+{#                    <li>#}
+{#                        <div>{{ image_item.content.title }}</div>#}
+{#                        <div>{{ image_item.content.description|safe }}</div>#}
+{#                        <div>#}
+{#                            <img src="{{ MEDIA_URL }}{{ image_item.image.image }}">#}
+{#                        </div>#}
+{#                        <div>#}
+{#                            <span>Голосов: {{ image_item.image.get_votes_count }}.</span>#}
+{#                            <a href="{% url 'participant_photopolls:frontend:vote' library.code poll.id image_item.image.id %}">#}
+{#                                отдать голос#}
+{#                            </a>#}
+{#                        </div>#}
+{#                    </li>#}
+{#                {% endfor %}#}
+{#            </ul>#}
         </div>
 
     </div>
