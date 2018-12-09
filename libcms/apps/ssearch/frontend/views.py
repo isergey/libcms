@@ -349,14 +349,30 @@ def search(request, catalog=None, library=None):
     #         holders_query |= solr.Q(**{'holder-sigla_s': holder})
     #     query = query & holders_query
 
+    filter_q = solr.Q()
     if holders:
-        holders_query = solr.Q(**{'system-holder_s': holders[0]})
-        for holder in holders[1:]:
-            holders_query |= solr.Q(**{'system-holder_s': holder})
-        query = query & holders_query
+        holders_q = solr.Q()
+
+        for holder in holders:
+            holders_q |= solr.Q(**{'system-holder_s': holder})
+
+        filter_q &= holders_q
+
+    # if holders:
+    #     holders_query = solr.Q(**{'system-holder_s': holders[0]})
+    #     for holder in holders[1:]:
+    #         holders_query |= solr.Q(**{'system-holder_s': holder})
+    #     query = query & holders_query
 
     solr_searcher = solr.query(query)
-    solr_searcher = solr_searcher.filter(**{'org_type_s': ' AND '.join(PARTICIPANTS_SHOW_ORG_TYPES)})
+    if PARTICIPANTS_SHOW_ORG_TYPES:
+        participant_types_q = solr.Q()
+        for PARTICIPANTS_SHOW_ORG_TYPE in PARTICIPANTS_SHOW_ORG_TYPES:
+            participant_types_q |= solr.Q(**{'org_type_s': PARTICIPANTS_SHOW_ORG_TYPE})
+
+        filter_q &= participant_types_q
+
+    solr_searcher = solr_searcher.filter(filter_q)
 
     if 'full-text' in request.GET.getlist('attr'):
         solr_searcher = solr_searcher.highlight(fields=['full-text'])
@@ -632,7 +648,6 @@ def detail(request, gen_id):
             record_dict['id'] = record.gen_id
             linked_docs.append(record_dict)
 
-
             #        for doc in mlt_docs:
             #            doc['record'] = records_dict.get(doc['id'])
 
@@ -678,8 +693,6 @@ def to_print(request, gen_id):
     # if len(leader8) == 1:
     #     analitic_level = leader8[0].text
 
-
-
     bib_tree = xslt_bib_draw_transformer(doc_tree)
     marct_tree = xslt_marc_dump_transformer(doc_tree)
     bib_dump = etree.tostring(bib_tree, encoding='utf-8')
@@ -712,11 +725,8 @@ def to_print(request, gen_id):
     #         record_dict['id'] = record.gen_id
     #         linked_docs.append(record_dict)
 
-
     #        for doc in mlt_docs:
     #            doc['record'] = records_dict.get(doc['id'])
-
-
 
     # access_count = DetailAccessLog.objects.filter(catalog=catalog, gen_id=record.gen_id).count()
 

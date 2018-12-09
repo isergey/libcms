@@ -36,7 +36,7 @@ def edit_info(request, library_code, managed_libraries=[]):
         avatar = None
 
     if request.method == 'POST':
-        avatar_from = forms.AvatarForm(request.POST, request.FILES, prefix='avatar_from', instance=avatar)
+        avatar_from = forms.AvatarForm(request.POST, request.FILES, prefix='avatar_form', instance=avatar)
         library_form = forms.LibraryInfoForm(request.POST, prefix='library_form', instance=library)
         if avatar_from.is_valid() and library_form.is_valid():
             avatar = avatar_from.save(commit=False)
@@ -47,7 +47,7 @@ def edit_info(request, library_code, managed_libraries=[]):
                 error = u'Ошибка при сохранении изображения %s' % e.message
             library_form.save()
     else:
-        avatar_from = forms.AvatarForm(prefix='avatar_from', instance=avatar)
+        avatar_from = forms.AvatarForm(prefix='avatar_form', instance=avatar)
         library_form = forms.LibraryInfoForm(prefix='library_form', instance=library)
     return render(request, 'participant_site/administration/edit_info.html', {
         'avatar_from': avatar_from,

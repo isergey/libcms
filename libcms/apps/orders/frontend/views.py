@@ -38,7 +38,6 @@ RUSLAN_USERNAME = RUSLAN.get('username', '')
 RUSLAN_PASSWORD = RUSLAN.get('password', '')
 
 
-
 def set_cookies_to_response(cookies, response, domain=None):
     for key in cookies:
         response.set_cookie(key, cookies[key], domain=domain)
@@ -215,7 +214,7 @@ def zorder(request, library_id):
     form_params['use_1'] = '12:1.2.840.10003.3.1'
     form_params['term_1'] = record_id
     (result, cookies) = zworker.request(zcatalog.url, data=form_params, cookies=cookies)
-
+    print(zcatalog.url)
     # анализируем полученный html на содержание текса с идентификатором записи - значит нашли
     if result.decode('utf-8').find(u'id="%s' % (record_id,)) >= 0:
         #        link = reverse('zgate_index', args=(catalog.id,)) + '?zstate=preorder+%s+1+default+1+1.2.840.10003.5.28+rus' % session_id
@@ -292,6 +291,7 @@ def mail_order(request, library_id, gen_id):
         'library': library,
         'record': record
     })
+
 
 def _get_content(args):
     # необходимо чтобы функция имела таймаут
@@ -445,7 +445,7 @@ def check_for_can_delete(transaction):
     for apdu in transaction.illapdus:
         if isinstance(apdu.delivery_status, ILLRequest):
             if apdu.delivery_status.ill_service_type in can_delete_statuses and \
-                            transaction.status in can_delete_statuses[apdu.delivery_status.ill_service_type]:
+                    transaction.status in can_delete_statuses[apdu.delivery_status.ill_service_type]:
                 return True
     return False
 
@@ -546,8 +546,6 @@ def mba_orders(request):
     # else:
     #    orgs[org_id] = org_id
     # orders_by_org[org_id] = orders
-
-
 
     return render(request, 'orders/frontend/mba_orders_list.html', {
         'orders': orders,

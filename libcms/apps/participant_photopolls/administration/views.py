@@ -70,7 +70,7 @@ def poll_detail(request, library_code, id, managed_libraries=[]):
         })
 
 @login_required
-@permission_required_or_403('participant_photopolls.add_poll')
+# @permission_required_or_403('participant_photopolls.add_poll')
 @transaction.atomic()
 @decorators.must_be_org_user
 def create_poll(request, library_code, managed_libraries=[]):
@@ -121,7 +121,7 @@ def create_poll(request, library_code, managed_libraries=[]):
     })
 
 @login_required
-@permission_required_or_403('participant_photopolls.change_poll')
+# @permission_required_or_403('participant_photopolls.change_poll')
 @transaction.atomic()
 @decorators.must_be_org_user
 def edit_poll(request, library_code, id, managed_libraries=[]):
@@ -199,7 +199,7 @@ def edit_poll(request, library_code, id, managed_libraries=[]):
 
 
 @login_required
-@permission_required_or_403('participant_photopolls.delete_poll')
+# @permission_required_or_403('participant_photopolls.delete_poll')
 @transaction.atomic()
 @decorators.must_be_org_user
 def delete_poll(request, id, library_code, managed_libraries=[]):
@@ -215,7 +215,7 @@ def delete_poll(request, id, library_code, managed_libraries=[]):
 
 
 @login_required
-@permission_required_or_403('participant_photopoll.add_poll')
+# @permission_required_or_403('participant_photopoll.add_poll')
 @transaction.atomic()
 @decorators.must_be_org_user
 def create_poll_image(request, library_code, id, managed_libraries=[]):
@@ -268,7 +268,7 @@ def create_poll_image(request, library_code, id, managed_libraries=[]):
     })
 
 @login_required
-@permission_required_or_403('participant_photopoll.change_poll')
+# @permission_required_or_403('participant_photopoll.change_poll')
 @transaction.atomic()
 @decorators.must_be_org_user
 def edit_poll_image(request, library_code, id, image_id, managed_libraries=[]):
@@ -348,7 +348,7 @@ def edit_poll_image(request, library_code, id, image_id, managed_libraries=[]):
 
 
 @login_required
-@permission_required_or_403('participant_photopoll.change_poll')
+# @permission_required_or_403('participant_photopoll.change_poll')
 @transaction.atomic()
 @decorators.must_be_org_user
 def delete_poll_image(request, library_code, id, image_id, managed_libraries=[]):

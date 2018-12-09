@@ -38,32 +38,33 @@
             <div class="row">
                 <div class="col-lg-9 col-md-12">
                     <div class="list list_mt">
-                        {% for item in items_list %}
-                            {% if item.id_in_catalog %}
-                                {% url 'ssearch:frontend:detail'  item.id_in_catalog  as item_url %}
+                        {% for item in items_page.object_list %}
+                            {% if item.item.id_in_catalog %}
+                                {% url 'ssearch:frontend:detail'  item.item.id_in_catalog  as item_url %}
                             {% else %}
-                                {% url 'newinlib:frontend:show' item.id as item_url %}
+                                {% url 'newinlib:frontend:show' item.item_id as item_url %}
                             {% endif %}
                             <div class="list__item">
                                 <div class="list__col-text">
                                     <h3 class="list__title">
                                         <a class="list__title-link"
-                                           href="{{ item_url }}">{{ item.item_content.title }}</a>
+                                           href="{{ item_url }}">{{ item.title }}</a>
                                     </h3>
                                     <p class="list__description">
-                                        {{ item.item_content.content|safe }}
+                                        {{ item.content|safe }}
                                     </p>
                                 </div>
                                 <div class="list__col-img">
+                                    {{ item.item.cover }}
                                     <div class="list__img-wrap">
-                                        {% if item.avatar_img_name %}
+                                        {% if item.cover %}
                                             <img class="list__img"
-                                                 src="{{ MEDIA_URL }}uploads/newinlib/itemavatars/{{ item.avatar_img_name }}"
-                                                 alt="{{ item.item_content.title }}">
+                                                 src="{{ item.cover }}"
+                                                 alt="{{ item.title }}"/>
                                         {% else %}
                                             <img class="list__img"
                                                  src="{{ STATIC_URL }}dist/images/list/file.svg"
-                                                 alt="{{ item.item_content.title }}">
+                                                 alt="{{ item.title }}"/>
                                         {% endif %}
                                     </div>
                                 </div>

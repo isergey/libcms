@@ -76,7 +76,7 @@
                                 </button>
                             </div>
                         </form>
-                        <a class="search-sub-link" href="#">Поиск по школьным библиотекам<i
+                        <a class="search-sub-link" href="https://school.kitap.tatar.ru">Поиск по школьным библиотекам<i
                                 class="icon-right-arrow"></i></a>
                     </section>
                 </div>
@@ -126,12 +126,11 @@
                     </section>
                 </div>
             </div>
-            {#            <section class="card news-main">#}
-            {#                <h2 class="news-main__title">Объявляется приём изданий на национальный конкурс «Книга года» - 2018</h2>#}
-            {#                <p class="news-main__description">На конкурс принимаются книги, вышедшие в свет в период с 1 августа#}
-            {#                    2017 года по 1 июля 2018 года.</p>#}
-            {#                <a class="news-main__link" href="#">Подробнее о конкурсе</a>#}
-            {#            </section>#}
+            <section class="card news-main">
+                <h2 class="news-main__title">Мы обновляем дизайн, а также вносим другие изменения</h2>
+                <p class="news-main__description">Некоторое время могут возникать проблемы с входом в кабинет, но не грустите - мы постараемся как можно быстрее завершить работы.</p>
+{#                <a class="news-main__link" href="#">Подробнее о конкурсе</a>#}
+            </section>
             <section class="card-transparent new-arrival-card">
                 <header class="card-transparent__header">
                     <h2 class="card-transparent__title">
@@ -196,7 +195,7 @@
             <section class="card-transparent">
                 <header class="card-transparent__header">
                     <h2 class="card-transparent__title">Карта библиотек</h2>
-                    <a class="card-transparent__link" href="#">Все библиотеки</a>
+                    <a class="card-transparent__link" href="{% url 'participants:frontend:index' %}">Все библиотеки</a>
                 </header>
                 <style>
                     .abc-crumbs__list__hover-box {

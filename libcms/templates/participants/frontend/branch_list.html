@@ -1,9 +1,8 @@
 {% extends 'theme_frontend_base.html' %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-{% block title %}Библиотеки{% endblock %}
+{% block title %}{{ library.name }} /{% if library.parent_id %} {{ library.parent.name }} /{% endif %} Библиотеки{% endblock %}
 {% block content %}
-
     <main>
         <div class="container">
             <nav class="crumb">

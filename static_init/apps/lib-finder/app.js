@@ -200,7 +200,7 @@ const ContextMenu = React.createClass({
         if (this.state.open) {
             classes.push('abc-crumbs__list__hover-box_show');
         }
-        const style = {}
+        const style = {};
         if (this.state.left !== 0 || this.state.top !== 0) {
             style.left = this.state.left;
             style.top = this.state.top;

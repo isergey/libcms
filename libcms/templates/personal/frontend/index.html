@@ -1,5 +1,7 @@
 {% extends 'theme_frontend_base.html' %}
 {% load i18n %}
+{% load participiants_tags %}
+{% load cache %}
 {% get_current_language as LANGUAGE_CODE %}
 {% block title %}Личный кабинет{% endblock %}
 {% block content %}
@@ -57,6 +59,15 @@
                             <li class="card-menu__item">
                                 <a class="card-menu__link" href="{% url 'sso_ruslan:change_email' %}">Изменить email</a>
                             </li>
+                            {% cache 600 user_org request.user.id %}
+                                {% personal_cabinet_links as cabinet_links %}
+                                {% for cabinet_link in cabinet_links %}
+                                    <li class="card-menu__item">
+                                        <a class="card-menu__link"
+                                           href="{{ cabinet_link.href|safe }}">{{ cabinet_link.title }}</a>
+                                    </li>
+                                {% endfor %}
+                            {% endcache %}
                         </ul>
                     </div>
                 </div>
@@ -80,7 +91,7 @@
                                 </a>
                             </p>
                         {% endif %}
-                        <a class="btn btn_ol" href="{% url 'accounts:frontend:logout' %}">Выйти аккаунта</a>
+                        <a class="btn btn_ol" href="{% url 'accounts:frontend:logout' %}">Выйти из аккаунта</a>
                     </div>
                 </div>
             </div>

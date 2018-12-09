@@ -150,7 +150,7 @@ class Comment(models.Model):
 @receiver(models.signals.post_save, sender=Poll)
 def resize_poll_avatar(sender, **kwargs):
     instance = kwargs['instance']
-    image_path = MEDIA_ROOT + unicode(instance.avatar)
+    image_path = os.path.join(MEDIA_ROOT, unicode(instance.avatar))
     im = Image.open(image_path).convert('RGB')
     tumbnail = image_utils.image_crop_center(im)
     tumbnail.save(image_path, "JPEG", quality=95, optimize=True, progressive=True)
@@ -160,7 +160,7 @@ def resize_poll_image(sender, **kwargs):
     maximum_width =  1920
     maximum_height = 1440
     instance = kwargs['instance']
-    image_path = MEDIA_ROOT + unicode(instance.image)
+    image_path = os.path.join(MEDIA_ROOT, unicode(instance.image))
     im = Image.open(image_path).convert('RGB')
 
     resized_im = image_utils.adjust_image(im, [maximum_width, maximum_height])
@@ -181,7 +181,7 @@ def resize_poll_image(sender, **kwargs):
 @receiver(models.signals.post_delete, sender=Poll)
 def delete_poll_avatar(sender, **kwargs):
     instance = kwargs['instance']
-    image_path = MEDIA_ROOT + unicode(instance.avatar)
+    image_path = os.path.join(MEDIA_ROOT, unicode(instance.avatar))
     if os.path.isfile(image_path) and os.access(image_path, os.W_OK):
         os.remove(image_path)
 
@@ -189,6 +189,6 @@ def delete_poll_avatar(sender, **kwargs):
 @receiver(models.signals.post_delete, sender=PollImage)
 def delete_poll_image(sender, **kwargs):
     instance = kwargs['instance']
-    image_path = MEDIA_ROOT + unicode(instance.image)
+    image_path = os.path.join(MEDIA_ROOT, unicode(instance.image))
     if os.path.isfile(image_path) and os.access(image_path, os.W_OK):
         os.remove(image_path)

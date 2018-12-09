@@ -63,6 +63,19 @@
                 <div class="col-lg-9 col-md-12">
                     <div class="search search_sm-mt">
                         <form role="search" method="get">
+                            {% if request.GET.library %}
+                                <input type="hidden" name="library" value="{{ request.GET.library }}">
+                            {% endif %}
+                            {% for search_breadcumb in search_breadcumbs %}
+                                    {% if forloop.last %}
+                                    <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">
+                                    <input type="hidden" name="q" value="{{ search_breadcumb.value }}">
+                                {% else %}
+                                    <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">
+                                    <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
+                                {% endif %}
+                            {% endfor %}
+
                             <div class="search-input search-input_border">
                                 <select name="attr" class="search-input__select">
                                     <option value="text_t"
@@ -163,7 +176,7 @@
                                 </div>
 
                                 <div class="search-nav__item">
-                                    <a class="search-nav__link" href="{% url 'ssearch:frontend:index' %}">
+                                    <a class="search-nav__link" href="{% url 'ssearch:frontend:index' %}{% if request.GET.library %}?library={{ request.GET.library }}{% endif %}">
                                         {% if LANGUAGE_CODE == 'ru' %}
                                             Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}
                                     </a>
@@ -172,7 +185,7 @@
                                     {% if not forloop.last %}
                                         <div class="search-nav__item">
                                             <a class="search-nav__link"
-                                               href="?{{ search_breadcumb.href }}">→ {{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</a>
+                                               href="?{{ search_breadcumb.href }}{% if request.GET.library %}&library={{ request.GET.library|urlencode }}{% endif %}">→ {{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</a>
                                         </div>
                                     {% else %}
                                         {#                <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>#}
@@ -653,7 +666,7 @@
                     </h2>
                     <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
                 </header>
-                <main class="modal__content">
+                <div class="modal__content">
                     <div class="lds-roller-wrap-center">
                         <div class="lds-roller">
                             <div></div>
@@ -666,7 +679,7 @@
                             <div></div>
                         </div>
                     </div>
-                </main>
+                </div>
                 <footer class="modal__footer">
                     <button class="btn btn_ol" data-micromodal-close aria-label="Закрыть">Закрыть
                     </button>

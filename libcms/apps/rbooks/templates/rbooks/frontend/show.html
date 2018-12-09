@@ -28,7 +28,10 @@
         function updateSize() {
             //  var IE = '\v' == 'v';
             //   if (IE) {
-            elfViewer.height = viewContainer.clientHeight - viewHeader.offsetHeight;
+            if (typeof(elfViewer) !== 'undefined') {
+                elfViewer.height = viewContainer.clientHeight - viewHeader.offsetHeight;
+            }
+
             //    }
         }
 
@@ -37,7 +40,7 @@
 </head>
 
 <body onload="updateSize()" onResize="updateSize()">
-
+<div id="get_flash" style="position: absolute; z-index: 1; background-color: #ffda00"></div>
 <div id="viewContainer">
 
     <div id="viewHeader">
@@ -108,7 +111,7 @@
         var alternateContent = 'Alternate HTML content should be placed here. '
                 + 'This content requires the Adobe Flash Player. '
                 + '<a href=http://www.adobe.com/go/getflash/>Get Flash</a>';
-        document.write(alternateContent);  // insert non-flash content
+        document.getElementById('get_flash').innerHTML = alternateContent;  // insert non-flash content
     }
     // -->
 </script>
