@@ -72,10 +72,13 @@
                 <ul>
                 {% for image_item in images_list %}
                     <li>
+                        <div>{{ image_item.content.title }}</div>
+                        <div>{{ image_item.content.description|safe }}</div>
                         <div>
                             <img src="{{ MEDIA_URL }}{{ image_item.image.image }}">
                         </div>
                     <div>
+                        <span>Голосов: {{ image_item.image.get_votes_count }}.</span>
                         <a href="{% url 'participant_photopolls:frontend:vote' library.code poll.id image_item.image.id  %}">
                             отдать голос
                         </a>

@@ -115,6 +115,9 @@ class PollImage(models.Model):
             content = None
         return content
 
+    def get_votes_count(self):
+        return Vote.objects.filter(poll_image=self).count()
+
     class Meta:
         ordering = ['-order']
 
