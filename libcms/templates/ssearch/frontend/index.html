@@ -66,6 +66,7 @@
                             {% if request.GET.library %}
                                 <input type="hidden" name="library" value="{{ request.GET.library }}">
                             {% endif %}
+                        {% if request.GET.in_founded %}
                             {% for search_breadcumb in search_breadcumbs %}
                                     {% if forloop.last %}
                                     <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">
@@ -75,7 +76,7 @@
                                     <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
                                 {% endif %}
                             {% endfor %}
-
+                        {% endif %}
                             <div class="search-input search-input_border">
                                 <select name="attr" class="search-input__select">
                                     <option value="text_t"
