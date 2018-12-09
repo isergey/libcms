@@ -81,10 +81,10 @@ def vote(request, library_code, poll_id, image_id):
     can_vote = True
     ip = get_client_ip(request)
     if not poll.multi_vote:
-        if models.Vote.objects.filter(image=image, user=user).exists():
+        if models.Vote.objects.filter(poll_image=image, user=user).exists():
             can_vote = False
 
-        if models.Vote.objects.filter(image=image, ip=ip).exists():
+        if models.Vote.objects.filter(poll_image=image, ip=ip).exists():
             can_vote = False
 
     if can_vote:
