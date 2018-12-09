@@ -19,7 +19,7 @@ def index(request, library_code):
         request, models.Event.objects.filter(
             active=True,
             library=library
-        ).prefetch_related('age_category', 'event_type').order_by('-create_date')
+        ).prefetch_related('age_category', 'event_type').order_by('start_date')
     )
 
     event_contents = list(

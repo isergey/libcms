@@ -1,5 +1,6 @@
 {% extends 'participant_site/frontend/index.html' %}
 {% load pagination_tag %}
+{% load bootstrap3 %}
 {% block title %}Подписка на мероприятия / {{ library.name }}{% endblock %}
 {% block content_library-crumb %}
     <nav class="crumb">
@@ -50,7 +51,7 @@
                 </p>
                 <form method="POST" class="form-all">
                     {% csrf_token %}
-                    {% include 'administration/base_form_fields.html' %}
+                    {% bootstrap_form form %}
                     <button type="submit" class="btn">Подписаться</button>
                 </form>
             </div>
