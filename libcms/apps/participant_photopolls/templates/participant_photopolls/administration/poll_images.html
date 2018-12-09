@@ -32,7 +32,7 @@
                         <img src="{{ MEDIA_URL }}{{ image.get_tmb_path }}" alt="">
                     </a>
                 </td>
-                <td>{{ image.get_votes_count }}</td>
+                <td>{{ image.image.get_votes_count }}</td>
                 <td>{{ image.get_comments|default:'0'}}</td>
                 <td><a class="delete btn btn-danger"  href="#"><i class="icon-trash icon-white" title="Удалить"></i></a></td>
             </tr>
