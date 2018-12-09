@@ -78,8 +78,8 @@ def participant_events_nearest(library_id, count=5):
     end = now + timedelta(days=32)
     query = Q(
         active=True,
-        start_date__lte=now,
-        end_date__gte=datetime(end.year, end.month, end.day),
+        start_date__gte=datetime(now.year, now.month, now.day, 0, 0, 0),
+        start_date__lte=datetime(end.year, end.month, end.day, 23, 59, 59),
     )
     if library_id:
         query &= Q(library_id=library_id)
@@ -90,6 +90,7 @@ def participant_events_nearest(library_id, count=5):
             .prefetch_related('age_category', 'event_type')
             .order_by('start_date')[:count]
     )
+
     event_contents = list(EventContent.objects.filter(event__in=events, lang=get_language()[:2]))
 
     t_dict = {}
