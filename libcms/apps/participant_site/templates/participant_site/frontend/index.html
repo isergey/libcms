@@ -134,7 +134,7 @@
                                 <a class="card-transparent__link"
                                    href="{% url 'participant_news:frontend:index' library.code %}">Архив новостей</a>
                             </header>
-                            {% participant_news_feed library.id '6' %}
+                            {% participant_news_feed library.id 6 %}
                         </section>
                     </div>
                     <div class="col-lg-5 col-md-12">
@@ -146,7 +146,7 @@
                                 <a class="card-transparent__link"
                                    href="{% url 'participant_events:frontend:subscribe' library.code %}">Подписаться</a>
                             </header>
-                            {% participant_events_nearest library.id '5' %}
+                            {% participant_events_nearest library.id 5 %}
                         </section>
                     </div>
                 {% endblock %}
