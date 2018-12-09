@@ -11,7 +11,6 @@ from .. import models
 import forms
 
 
-
 def index(request, library_code):
     library = get_object_or_404(Library, code=library_code)
     polls_page = get_page(
@@ -38,7 +37,7 @@ def index(request, library_code):
         'library': library,
         'polls_list': polls_page.object_list,
         'polls_page': polls_page,
-        })
+    })
 
 
 def show(request, library_code, id):
@@ -68,3 +67,36 @@ def show(request, library_code, id):
         'content': content,
         'images_list': images_list
     })
+
+
+def vote(request, library_code, poll_id, image_id):
+    library = get_object_or_404(Library, code=library_code)
+    poll = get_object_or_404(models.Poll, id=poll_id, library=library)
+    image = get_object_or_404(models.PollImage, poll=poll, id=image_id)
+
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+
+    can_vote = True
+    ip = get_client_ip(request)
+    if not poll.multi_vote:
+        if models.Vote.objects.filter(image=image, user=user).exists():
+            can_vote = False
+
+        if models.Vote.objects.filter(image=image, ip=ip).exists():
+            can_vote = False
+
+    if can_vote:
+        models.Vote(user=user, image=image, ip=ip).save()
+    return HttpResponse('Спасибо за голос')
+    return redirect('participant_photopolls:frontend:show', library_code=library_code, id=poll.id)
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip

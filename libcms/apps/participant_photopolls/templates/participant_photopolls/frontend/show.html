@@ -49,26 +49,41 @@
 {#                    {% endfor %}#}
 {#                </ul>#}
             </div>
-            <div class="swiper-content-img-slider">
-                <div class="swiper-container gallery-top">
-                    <div class="swiper-wrapper">
-                        {% for image_item in images_list %}
-                        <div id="{{ image_item.id }}" class="swiper-slide" title="{{ image_item.content.title }}"
-                             style="background-image:url({{ MEDIA_URL }}{{ image_item.image.image }})"></div>
-                        {% endfor %}
+{#            <div class="swiper-content-img-slider">#}
+{#                <div class="swiper-container gallery-top">#}
+{#                    <div class="swiper-wrapper">#}
+{#                        {% for image_item in images_list %}#}
+{#                        <div id="{{ image_item.id }}" class="swiper-slide" title="{{ image_item.content.title }}"#}
+{#                             style="background-image:url({{ MEDIA_URL }}{{ image_item.image.image }})"></div>#}
+{#                        {% endfor %}#}
+{#                    </div>#}
+{#                    <div class="swiper-button-next swiper-button-white"></div>#}
+{#                    <div class="swiper-button-prev swiper-button-white"></div>#}
+{#                </div>#}
+{#                <div class="swiper-container gallery-thumbs">#}
+{#                    <div class="swiper-wrapper">#}
+{#                        {% for image_item in images_list %}#}
+{#                        <div id="{{ image_item.id }}" class="swiper-slide" title="{{ image_item.content.title }}"#}
+{#                             style="background-image:url({{ MEDIA_URL }}{{ image_item.image.image }})"></div>#}
+{#                        {% endfor %}#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+                <ul>
+                {% for image_item in images_list %}
+                    <li>
+                        <div>
+                            <img src="{{ MEDIA_URL }}{{ image_item.image.image }}">
+                        </div>
+                    <div>
+                        <a href="{% url 'participant_photopolls:frontend:vote' library.code poll.id image_item.image.id  %}">
+                            отдать голос
+                        </a>
                     </div>
-                    <div class="swiper-button-next swiper-button-white"></div>
-                    <div class="swiper-button-prev swiper-button-white"></div>
-                </div>
-                <div class="swiper-container gallery-thumbs">
-                    <div class="swiper-wrapper">
-                        {% for image_item in images_list %}
-                        <div id="{{ image_item.id }}" class="swiper-slide" title="{{ image_item.content.title }}"
-                             style="background-image:url({{ MEDIA_URL }}{{ image_item.image.image }})"></div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
+                    </li>
+                {% endfor %}
+                </ul>
         </div>
+
     </div>
 {% endblock %}

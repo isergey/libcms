@@ -21,9 +21,9 @@ TMB_SUFFIX = 'tmb'
 
 
 def get_avatar_file_name(instance, arg_filename):
-    filename= arg_filename.lower()
+    filename = arg_filename.lower()
     filename_hash = str(binascii.crc32(filename.encode('utf-8')) & 0xffffffff)
-    return  os.path.join(AVATAR_MEDIA_SUFFIX, filename_hash[0:2], filename_hash + '.jpg')
+    return os.path.join(AVATAR_MEDIA_SUFFIX, filename_hash[0:2], filename_hash + '.jpg')
 
 
 class Poll(models.Model):
@@ -32,9 +32,9 @@ class Poll(models.Model):
     show_avatar = models.BooleanField(verbose_name=u"Показывать изображение события", default=False)
 
     start_date = models.DateTimeField(verbose_name=u"Дата начала голосования",
-        null=False, blank=False, db_index=True)
+                                      null=False, blank=False, db_index=True)
     end_date = models.DateTimeField(verbose_name=u"Дата окончания голосования",
-        null=False, blank=False, db_index=True)
+                                    null=False, blank=False, db_index=True)
 
     publicated = models.BooleanField(
         verbose_name=u'Опубликовано', default=False, db_index=True,
@@ -62,7 +62,8 @@ class Poll(models.Model):
         verbose_name=u'Отображать результаты после отдачи голоса', default=False
     )
 
-    only_auth = models.BooleanField(verbose_name=u'Могут голосовать только авторизированные пользователи', default=False)
+    only_auth = models.BooleanField(verbose_name=u'Могут голосовать только авторизированные пользователи',
+                                    default=False)
     premoderate_comments = models.BooleanField(verbose_name=u'Премодерация комментариев', default=True)
     create_date = models.DateTimeField(auto_now_add=True, db_index=True)
 
@@ -74,7 +75,6 @@ class Poll(models.Model):
             content = None
         return content
 
-
     class Meta:
         ordering = ['-create_date']
 
@@ -85,23 +85,23 @@ class PollContent(models.Model):
     title = models.CharField(verbose_name=u'Заглавие', max_length=512)
     teaser = models.CharField(verbose_name=u'Тизер', max_length=512)
     content = models.TextField(verbose_name=u'Описание')
+
     class Meta:
         unique_together = (('poll', 'lang'),)
 
 
-
 def get_image_file_name(instance, arg_filename):
-    filename= arg_filename.lower()
+    filename = arg_filename.lower()
     filename_hash = str(binascii.crc32(filename.encode('utf-8')) & 0xffffffff)
-    return  os.path.join(IMAGES_MEDIA_SUFFIX, filename_hash[0:2], filename_hash + '.jpg')
+    return os.path.join(IMAGES_MEDIA_SUFFIX, filename_hash[0:2], filename_hash + '.jpg')
 
 
 class PollImage(models.Model):
     poll = models.ForeignKey(Poll)
-    image = models.ImageField(max_length=255, upload_to=get_image_file_name, verbose_name=u'Изображение фотоматериалов новости')
+    image = models.ImageField(max_length=255, upload_to=get_image_file_name,
+                              verbose_name=u'Изображение фотоматериалов новости')
     order = models.IntegerField(default=0, verbose_name=u'Порядок')
     is_show = models.BooleanField(default=True, verbose_name=u'Показывать фото')
-
 
     def get_tmb_path(self):
         image_path = unicode(self.image)
@@ -129,12 +129,11 @@ class PollImageContent(models.Model):
         unique_together = (('poll_image', 'lang'),)
 
 
-
 class Vote(models.Model):
     poll_image = models.ForeignKey(PollImage)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     ip = models.CharField(max_length=255, db_index=True)
-    vote_date = models.DateTimeField(db_index=True)
+    vote_date = models.DateTimeField(db_index=True, auto_now_add=True)
 
 
 class Comment(models.Model):
@@ -155,9 +154,10 @@ def resize_poll_avatar(sender, **kwargs):
     tumbnail = image_utils.image_crop_center(im)
     tumbnail.save(image_path, "JPEG", quality=95, optimize=True, progressive=True)
 
+
 @receiver(models.signals.post_save, sender=PollImage)
 def resize_poll_image(sender, **kwargs):
-    maximum_width =  1920
+    maximum_width = 1920
     maximum_height = 1440
     instance = kwargs['instance']
     image_path = os.path.join(MEDIA_ROOT, unicode(instance.image))
@@ -175,7 +175,6 @@ def resize_poll_image(sender, **kwargs):
     if not os.path.exists(tumbnail_dir):
         os.makedirs(tumbnail_dir)
     tumbnail.save(tumbnail_path, "JPEG", quality=95, optimize=True, progressive=True)
-
 
 
 @receiver(models.signals.post_delete, sender=Poll)
