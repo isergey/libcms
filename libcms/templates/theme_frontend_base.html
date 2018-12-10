@@ -101,23 +101,17 @@
         <nav class="nav-wrap">
             <ul class="nav nav_tool">
                 <li class="nav__item {% if "/ru" in request.path %}nav__item_active{% endif %}">
-                    <a href="/ru
-
-                            {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                    <a href="/ru{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
                        class="nav__link"
                        title="Русский">Рус</a>
                 </li>
                 <li class="nav__item {% if "/tt" in request.path %}nav__item_active{% endif %}">
-                    <a href="/tt
-
-                            {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                    <a href="/tt{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
                        class="nav__link"
                        title="Татарский">Тат</a>
                 </li>
                 <li class="nav__item {% if "/en" in request.path %}nav__item_active{% endif %}">
-                    <a href="/en
-
-                            {{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
+                    <a href="/en{{ request.path|rmlocale }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
                        class="nav__link"
                        title="English">Eng</a>
                 </li>
