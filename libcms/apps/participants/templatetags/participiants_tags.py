@@ -32,8 +32,11 @@ def cbs_map():
     }
 
 
-@register.assignment_tag
-def get_user_org(user):
+@register.assignment_tag(takes_context=True)
+def get_user_org(context, user=None):
+    if not context.request.user.is_authenticated() or user is None:
+        return None
+
     user_libraies = models.UserLibrary.objects.filter(user=user)[:1]
     if user_libraies:
         return user_libraies[0].library

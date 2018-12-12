@@ -3,11 +3,13 @@
 {% load ssearch_tags %}
 {% load order_tags %}
 {% load mydocs_tags %}
+{% load participiants_tags %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 {% block title %}{% if LANGUAGE_CODE == 'ru' %}Детальная информация{% elif LANGUAGE_CODE == 'tt' %}Детальная информация
 {% else %}Detail information{% endif %}{% endblock %}
 {% block content %}
+    {% get_user_org as user_org %}
     <main>
         <div class="container">
             <nav class="crumb">
@@ -62,12 +64,14 @@
                             <a class="record-nav__link" href="{% url 'ssearch:frontend:to_print' gen_id %}"
                                target="_blank"><i class="icon-printer"></i>&nbsp;&nbsp;Печать</a>
                         </li>
-                        <li class="record-nav__item">
-                            <button id="marcCardBtn" class="record-nav__link"><i class="icon-note"></i>&nbsp;&nbsp;
-                                {% if LANGUAGE_CODE == 'ru' %}Карточка{% elif LANGUAGE_CODE == 'tt' %}
-                                    Карточка{% else %}Card{% endif %}
-                            </button>
-                        </li>
+                        {% if user_org or request.user.is_superuser or request.user.is_staff %}
+                            <li class="record-nav__item">
+                                <button id="marcCardBtn" class="record-nav__link"><i class="icon-note"></i>&nbsp;&nbsp;
+                                    {% if LANGUAGE_CODE == 'ru' %}Карточка{% elif LANGUAGE_CODE == 'tt' %}
+                                        Карточка{% else %}Card{% endif %}
+                                </button>
+                            </li>
+                        {% endif %}
                     </ul>
                     <div class="record-detail">
                         <div class="record-detail__col-text">
@@ -173,6 +177,7 @@
                             {% endif %}
                         </div>
                     </div>
+
                     <div class="card card_bs-2 marc-card">
                         <div class="card__body">
                             {{ marc_dump|safe }}
@@ -182,7 +187,7 @@
                 <div class="col-lg-4 col-md-12">
                     <div class="record-booking">
                         {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}
-                        {% drow_holders_menu gen_id %}
+{#                        {% drow_holders_menu gen_id %}#}
                     </div>
                 </div>
             </div>
