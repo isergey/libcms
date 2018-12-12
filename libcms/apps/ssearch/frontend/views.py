@@ -465,6 +465,7 @@ def search(request, catalog=None, library=None):
             'href': query_dict.urlencode()
         })
 
+
     if catalog == u'ebooks' and len(search_breadcumbs) > 1 and star:
         return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
 
