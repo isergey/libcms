@@ -76,7 +76,9 @@
                     <div class="record-detail">
                         <div class="record-detail__col-text">
                             {{ doc_dump|safe }}
-                            <p class="record-detail__info">Идентификатор записи: {{ gen_id }}</p>
+                            {% if user_org or request.user.is_superuser or request.user.is_staff %}
+                                <p class="record-detail__info">Идентификатор записи: {{ gen_id }}</p>
+                            {% endif %}
                             <p class="record-detail__info">
                                 {% if LANGUAGE_CODE == 'ru' %}Количество
                                     обращений{% elif LANGUAGE_CODE == 'tt' %}Количество обращений{% else %}
@@ -166,16 +168,11 @@
                                 </div>
                             {% endif %}
                         </div>
+                    {% if doc.cover %}
                         <div class="record-detail__col-img">
-                            {#                            {% get_record_cover  %}#}
-                            {% if doc.cover %}
-                                <img class="record-detail__img"
-                                     src="{{ doc.cover.0 }}" alt="">
-                            {% else %}
-                                <img class="record-detail__img"
-                                     src="{{ STATIC_URL }}dist/images/list/file.svg" alt="">
-                            {% endif %}
+                            <img class="record-detail__img" src="{{ doc.cover.0 }}" alt="">
                         </div>
+                    {% endif %}
                     </div>
 
                     <div class="card card_bs-2 marc-card">

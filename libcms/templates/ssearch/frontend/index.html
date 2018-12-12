@@ -505,19 +505,15 @@
                                             Версия для печати
                                         </a>
                                     </div>
-                                    <div class="list__col-img">
-                                        <div class="list__img-wrap">
-                                            {% if doc.record.cover %}
-                                                <img class="list__img"
-                                                     src="{{ doc.record.cover.0 }}"
-                                                     alt="{{ doc.record.title.0 }}">
-                                            {% else %}
-                                                <img class="list__img"
-                                                     src="{{ STATIC_URL }}dist/images/list/file.svg"
-                                                     alt="{{ doc.record.title.0 }}">
-                                            {% endif %}
+                                    {% if doc.record.cover %}
+                                        <div class="list__col-img">
+                                            <div class="list__img-wrap">
+                                                    <img class="list__img"
+                                                         src="{{ doc.record.cover.0 }}"
+                                                         alt="{{ doc.record.title.0 }}">
+                                            </div>
                                         </div>
-                                    </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                         </div>

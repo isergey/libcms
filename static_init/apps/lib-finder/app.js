@@ -207,6 +207,9 @@ const ContextMenu = React.createClass({
         }
         return (
             <div className={classes.join(' ')} style={style}>
+                <button className="map-nav-dropdown-btn" onClick={this.close}>
+                    Закрыть
+                </button>
                 {this.props.children}
             </div>
         );
@@ -305,8 +308,9 @@ const MapBoxItems = React.createClass({
         return <div>Ничего не найдено</div>;
     },
     renderNotInited() {
-        return <div className="help-text">Укажите букву района или нажмите на стрелку для поиска ближайших
-            библиотек</div>;
+        // return <div className="help-text">Укажите букву района или нажмите на стрелку для поиска ближайших
+        //     библиотек</div>;
+        return null;
     },
     render() {
         let content = null;
@@ -316,12 +320,14 @@ const MapBoxItems = React.createClass({
         } else if (!this.state.loaded) {
             content = renderLoader();
         } else if (!this.state.inited) {
-            content = this.renderNotInited();
+            return null;
+            // content = this.renderNotInited();
         } else if (!this.state.items.length) {
             content = this.renderNotFound();
         } else {
             content = this.renderItems();
         }
+
         return (
             <div key={searchId} className="map-nav-result-box">
                 {content}
