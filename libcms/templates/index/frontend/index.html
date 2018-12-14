@@ -76,8 +76,16 @@
                                 </button>
                             </div>
                         </form>
-                        <a class="search-sub-link" href="https://school.kitap.tatar.ru">Поиск по школьным библиотекам<i
-                                class="icon-right-arrow"></i></a>
+                        <a class="search-sub-link" href="https://school.kitap.tatar.ru">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Поиск по школьным библиотекам
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Мәктәп китапханәләре буенча эзләү
+                            {% else %}
+                                School libraries search
+                            {% endif %}
+                            <i class="icon-right-arrow"></i>
+                        </a>
                     </section>
                 </div>
                 <div class="col-lg-4 col-md-12 col_as-fe">
@@ -94,8 +102,18 @@
                             </h2>
                         </div>
                         <div class="card__body">
-                            <p class="card__ask-lib-text">Ищете информацию? Подбираете литературу? Есть вопросы о работе
-                                библиотеки? Виртуальная справочная служба поможет!</p>
+                            <p class="card__ask-lib-text">
+                                {% if LANGUAGE_CODE == 'en' %}
+                                    Looking for information? Need literature? questions about the the libraries’ work?
+                                    Welcome to “Ask a Librarian” virtual reference service!
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Ищу мәгълүмат? Әдәбият сайлыйсызмы? Китапханәнең эше турында сораулар бармы?
+                                    Виртуаль белешмә хезмәте ярдәм итәчәк!
+                                {% else %}
+                                    Ищете информацию? Подбираете литературу? Есть вопросы о работе
+                                    библиотеки? Виртуальная справочная служба поможет!
+                                {% endif %}
+                            </p>
                         </div>
                         <div class="card__footer">
                             <ul class="card-nav">
@@ -183,8 +201,16 @@
                     <section class="card-transparent">
                         <header class="card-transparent__header">
                             <h2 class="card-transparent__title">Афиша</h2>
-                            <a class="card-transparent__link" href="{% url 'events:frontend:index' %}">Все
-                                мероприятия</a>
+                            <a class="card-transparent__link" href="{% url 'events:frontend:index' %}">
+
+                                {% if LANGUAGE_CODE == 'en' %}
+                                    All events
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Барлык чаралар
+                                {% else %}
+                                    Все мероприятия
+                                {% endif %}
+                            </a>
                         </header>
                         {% cache 600 'participant_events_nearest' %}
                             {% participant_events_nearest 0 10 %}
@@ -194,8 +220,24 @@
             </div>
             <section class="card-transparent">
                 <header class="card-transparent__header">
-                    <h2 class="card-transparent__title">Карта библиотек</h2>
-                    <a class="card-transparent__link" href="{% url 'participants:frontend:index' %}">Все библиотеки</a>
+                    <h2 class="card-transparent__title">
+                        {% if LANGUAGE_CODE == 'en' %}
+                            Libraries map
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Китапханәләр картасы
+                        {% else %}
+                            Карта библиотек
+                        {% endif %}
+                    </h2>
+                    <a class="card-transparent__link" href="{% url 'participants:frontend:index' %}">
+                        {% if LANGUAGE_CODE == 'en' %}
+                            All libraries
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Барлык китапханәләр
+                        {% else %}
+                            Все библиотеки
+                        {% endif %}
+                    </a>
                 </header>
                 <style>
                     .abc-crumbs__list__hover-box {

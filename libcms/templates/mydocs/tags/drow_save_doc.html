@@ -1,8 +1,17 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% if already_saved %}
 
     <li class="record-nav__item">
-        <a class="record-nav__link" href="{% url 'mydocs:frontend:index' %}#{{ gen_id }}"><i class="icon-folder"></i>&nbsp;&nbsp;Сохранен
-            в документах</a>
+        <a class="record-nav__link" href="{% url 'mydocs:frontend:index' %}#{{ gen_id }}"><i class="icon-folder"></i>&nbsp;&nbsp;
+            {% if LANGUAGE_CODE == 'en' %}
+                Saved in documents
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Документларда сакланган
+            {% else %}
+                Сохранен в документах
+            {% endif %}
+        </a>
     </li>
 
     {#    <a class="detail-page__options__btn" href="{% url 'mydocs:frontend:index' %}#{{ gen_id }}">Сохранен в документах</a>#}
@@ -14,7 +23,14 @@
 
         <li class="record-nav__item">
             <button class="record-nav__link" data-custom-open="save_doc_modal">
-                <i class="icon-folder"></i>&nbsp;&nbsp;Сохранить в документах
+                <i class="icon-folder"></i>&nbsp;&nbsp;
+                {% if LANGUAGE_CODE == 'en' %}
+                    Save in documents
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Документларда саклау
+                {% else %}
+                    Сохранить в документах
+                {% endif %}
             </button>
         </li>
     {% else %}
@@ -25,50 +41,31 @@
 
         <li class="record-nav__item">
             <button class="record-nav__link" onclick="alert('Необходимо войти на портал')">
-                <i class="icon-folder"></i>&nbsp;&nbsp;Сохранить в документах
+                <i class="icon-folder"></i>&nbsp;&nbsp;
+                {% if LANGUAGE_CODE == 'en' %}
+                    Save in documents
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Документларда саклау
+                {% else %}
+                    Сохранить в документах
+                {% endif %}
             </button>
         </li>
     {% endif %}
 
-    {#    <style>#}
-    {#        #save_doc_form textarea {#}
-    {#            width: 99%;#}
-    {#        }#}
-    {#    </style>#}
-
-
-    {#    <div class="modal" id="save_doc_modal">#}
-    {#        <div class="modal-dialog modal-lg">#}
-    {#            <div class="modal-content">#}
-    {#                <form action="{% url 'mydocs:frontend:save' %}" method="POST" id="save_doc_form">#}
-    {##}
-    {##}
-    {#                    <div class="modal-header">#}
-    {#                        <a class="close" data-dismiss="modal">×</a>#}
-    {##}
-    {#                        <h3>Сохранение документа</h3>#}
-    {#                    </div>#}
-    {#                    <h1 class="content-page__title" style="margin-left: 20px">Сохранение документа</h1>#}
-    {#                    <div class="modal-body" style="padding: 20px">#}
-    {#                        {% include 'frontend/base_form_fields.html' %}#}
-    {#                    </div>#}
-    {#                    <div class="modal-footer">#}
-    {#                        <a href="#" class="detail-page__options__btn" data-dismiss="modal">Закрыть</a>#}
-    {#                        <button type="submit" class="detail-page__options__btn" id='save_doc_submit'>Сохранить</button>#}
-    {#                    </div>#}
-    {##}
-    {##}
-    {#                </form>#}
-    {#            </div>#}
-    {#        </div>#}
-    {#    </div>#}
 
     <div class="modal micromodal-slide" id="save_doc_modal" aria-hidden="true" role="dialog">
         <div class="modal__overlay" tabindex="-1" data-micromodal-close>
             <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="save_doc_modal-title">
                 <header class="modal__header">
                     <h2 class="modal__title" id="save_doc_modal-title">
+                    {% if LANGUAGE_CODE == 'en' %}
+                        Document saving
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Документны саклау
+                    {% else %}
                         Сохранение документа
+                    {% endif %}
                     </h2>
                     <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
                 </header>
@@ -78,51 +75,28 @@
                         {% include 'frontend/base_form_fields.html' %}
                     </main>
                     <footer class="modal__footer">
-                        <button id="save_doc_submit" class="btn">Сохранить</button>
-                        <button class="btn btn_ol" data-micromodal-close aria-label="Закрыть">Закрыть
+                        <button id="save_doc_submit" class="btn">
+                            {% if LANGUAGE_CODE == 'en' %}
+                                Save
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Саклау
+                            {% else %}
+                                Сохранить
+                            {% endif %}
+                        </button>
+                        <button class="btn btn_ol" data-micromodal-close aria-label="Закрыть">
+                            {% if LANGUAGE_CODE == 'en' %}
+                                Close
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Каплау
+                            {% else %}
+                                Закрыть
+                            {% endif %}
                         </button>
                     </footer>
                 </form>
             </div>
         </div>
     </div>
-
-
-    {#    {% block scripts %}#}
-    {#        <script type="text/javascript">#}
-    {#            $('#save_doc_form').submit(function () {#}
-    {#                $.ajax({#}
-    {#                    url: '{% url 'mydocs:frontend:save' %}',#}
-    {#                    type: 'POST',#}
-    {#                    dataType: "json",#}
-    {#                    async: false,#}
-    {#                    data: $(this).serialize(),#}
-    {#                    statusCode: {#}
-    {#                        401: function () {#}
-    {#                            alert("Вы должны войти на портал.");#}
-    {#                        },#}
-    {#                        403: function () {#}
-    {#                            alert("Действие запрещено.");#}
-    {#                        },#}
-    {#                        500: function () {#}
-    {#                            alert("На сервере возникла ошибка. Администраторы оповещены.");#}
-    {#                        }#}
-    {#                    },#}
-    {#                    success: function (response) {#}
-    {#                        if (response.status == 'error') {#}
-    {#                            alert("При сохранении возникла ошибка");#}
-    {#                        }#}
-    {#                        if (response.status == 'ok') {#}
-    {#                            $('#save_doc_submit').addClass('btn-success');#}
-    {#                            $('#save_doc_submit').attr('disabled', 'disabled');#}
-    {#                            $('#save_doc_submit').attr('value', 'Сохранено');#}
-    {#                        }#}
-    {#                    }#}
-    {#                });#}
-    {##}
-    {#                return false;#}
-    {#            });#}
-    {#        </script>#}
-    {#    {% endblock %}#}
 
 {% endif %}

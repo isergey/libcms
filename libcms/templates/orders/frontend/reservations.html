@@ -20,7 +20,13 @@
                     </li>
                     <li>
                         <a href="{% url 'personal:frontend:index' %}">
-                            Личный кабинет
+                            {% if LANGUAGE_CODE == 'en' %}
+                                Personal cabinet
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Шәхси кабинет
+                            {% else %}
+                                Личный кабинет
+                            {% endif %}
                         </a>
                     </li>
                     <li>

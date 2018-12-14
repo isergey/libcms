@@ -18,13 +18,69 @@
 </caption>
     <thead>
     <tr>
-        <th>Пн</th>
-        <th>Вт</th>
-        <th>Ср</th>
-        <th>Чт</th>
-        <th>Пт</th>
-        <th>Сб</th>
-        <th>ВС</th>
+        <th>
+            {% if LANGUAGE_CODE == 'en' %}
+                Mo
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Дш
+            {% else %}
+                Пн
+            {% endif %}
+        </th>
+        <th>
+            {% if LANGUAGE_CODE == 'en' %}
+                Tu
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Сш
+            {% else %}
+                Вт
+            {% endif %}
+        </th>
+        <th>
+            {% if LANGUAGE_CODE == 'en' %}
+                We
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Чш
+            {% else %}
+                Ср
+            {% endif %}
+        </th>
+        <th>
+            {% if LANGUAGE_CODE == 'en' %}
+                Th
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Пҗ
+            {% else %}
+                Чт
+            {% endif %}
+        </th>
+        <th>
+            {% if LANGUAGE_CODE == 'en' %}
+                Fr
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Җм
+            {% else %}
+                Пт
+            {% endif %}
+        </th>
+        <th>
+            {% if LANGUAGE_CODE == 'en' %}
+                Sa
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Шм
+            {% else %}
+                Сб
+            {% endif %}
+        </th>
+        <th>
+            {% if LANGUAGE_CODE == 'en' %}
+                Su
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Яш
+            {% else %}
+                Вс
+            {% endif %}
+        </th>
     </tr>
     </thead>
     <tbody class="cal-body">

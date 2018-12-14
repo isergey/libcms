@@ -166,11 +166,23 @@
                                     {% if request.user.is_authenticated %}
                                         <a id="save_request_button" class="search-nav__link"
                                            href="{% url 'ssearch:frontend:save_search_request' %}?srequest={{ search_request|urlencode }}&catalog={{ catalog|urlencode }}">
-                                            Сохранить запрос
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Сохранить запрос
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Гарызнамә саклап калу
+                                            {% else %}
+                                                Save search
+                                            {% endif %}
                                         </a>
                                     {% else %}
                                         <a class="search-nav__link" data-custom-open="save_request_anonim" href="#1">
-                                            Сохранить запрос
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Сохранить запрос
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Гарызнамә саклап калу
+                                            {% else %}
+                                                Save request
+                                            {% endif %}
                                         </a>
                                     {% endif %}
                                 </div>
@@ -502,7 +514,13 @@
                                         {% endif %}
                                         <a class="list__link"
                                            href="{% url 'ssearch:frontend:to_print' doc.id %}" target="_blank">
-                                            Версия для печати
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Версия для печати
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Матбугат өчен Версия
+                                            {% else %}
+                                                Print version
+                                            {% endif %}
                                         </a>
                                     </div>
                                     {% if doc.record.cover %}
@@ -544,7 +562,15 @@
                                             <span>{{ library.name }}</span>
                                         </p>
                                     {% else %}
-                                        <p class="card__text">Выберите библиотеку</p>
+                                        <p class="card__text">
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Выберите библиотеку
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Сайлагыз Китапханә
+                                            {% else %}
+                                                Select a library
+                                            {% endif %}
+                                        </p>
                                     {% endif %}
                                 </div>
                                 <div class="card__footer">
@@ -553,7 +579,14 @@
                                             <li class="card-nav__item">
                                                 <button class="card-nav__link js_select_library"
                                                         data-custom-open="select_library">
-                                                    Выбрать другую
+
+                                                    {% if LANGUAGE_CODE == 'ru' %}
+                                                        Выбрать другую
+                                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                                        Кайсын сайлау
+                                                    {% else %}
+                                                        Select other
+                                                    {% endif %}
                                                 </button>
                                             </li>
                                             <li class="card-nav__item">
@@ -691,13 +724,35 @@
             <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="save_doc_modal-title">
                 <header class="modal__header">
                     <h2 class="modal__title" id="save_doc_modal-title">
-                        Сохранение запроса
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Сохранение запроса
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Саклау соратып алу
+                        {% else %}
+                            Saving search
+                        {% endif %}
                     </h2>
                     <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
                 </header>
-                <p>Для сохранения запроса <a href="{% url 'accounts:frontend:login' %}">войдите</a> в систему</p>
+                <p>
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Для сохранения запроса <a href="{% url 'accounts:frontend:login' %}">войдите</a> в систему
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        <a href="{% url 'accounts:frontend:login' %}">Керегез</a>  системасына саклау өчен запрос
+                    {% else %}
+                        For saving search <a href="{% url 'accounts:frontend:login' %}">login</a> in system</p>
+                    {% endif %}
+                </p>
                 <footer class="modal__footer">
-                    <button class="btn btn_ol" data-micromodal-close aria-label="Закрыть">Закрыть</button>
+                    <button class="btn btn_ol" data-micromodal-close aria-label="Закрыть">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Закрыть
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Каплау
+                        {% else %}
+                            Close
+                        {% endif %}
+                    </button>
                 </footer>
             </div>
         </div>

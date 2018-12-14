@@ -23,14 +23,25 @@
                                         </a>
                                     </h3>
                                     <p class="event-list__detail-description">{{ event.event_content.teaser }}</p>
-                                    <p class="event-list__detail-description">Место
-                                        проведения: {{ event.library.district.name }}, {{ event.library.name }}</p>
+                                    <p class="event-list__detail-description">
+                                        {% if LANGUAGE_CODE == 'en' %}
+                                            Location:
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Үткәрү урыны:
+                                        {% else %}
+                                            Место проведения:
+                                        {% endif %}
+                                        {{ event.library.district.name }}, {{ event.library.name }}</p>
 
                                     <a class="event-list__detail-description-link"
                                        href="{% url 'participant_events:frontend:create_notification' event.library.code event.id %}">
-                                        {% if LANGUAGE_CODE == 'ru' %}Установить
-                                            напоминание{% elif LANGUAGE_CODE == 'tt' %}Искә төшерү
-                                            кую{% else %}Set reminder{% endif %}
+                                        {% if LANGUAGE_CODE == 'ru' %}
+                                            Установить напоминание
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Искә төшерү кую
+                                        {% else %}
+                                            Set reminder
+                                        {% endif %}
                                     </a>
 
                                 </div>
@@ -46,6 +57,12 @@
     </div>
 {% else %}
     <div class="alert alert-info">
-        Мероприятий нет
+        {% if LANGUAGE_CODE == 'en' %}
+            There is no events
+        {% elif LANGUAGE_CODE == 'tt' %}
+            Чаралар юк
+        {% else %}
+            Мероприятий нет
+        {% endif %}
     </div>
 {% endif %}

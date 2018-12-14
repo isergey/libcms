@@ -18,6 +18,9 @@
 
     <link rel="icon" type="image/ico" href="{{ STATIC_URL }}theme/favicon.ico"/>
     <link rel="stylesheet" href="{{ STATIC_URL }}dist/styles/index.css?235436">
+    <script>
+        window.CURRENT_LANGUAGE = '{{ LANGUAGE_CODE }}';
+    </script>
 </head>
 <body>
 <div class="content-wrap">
@@ -127,12 +130,31 @@
             {% include 'main_menu_footer.html' %}
             <ul class="footer-nav">
                 <li class="footer-nav__item">
-                    <a class="footer-nav__link" href="{% url 'index:frontend:index' %}" title="На главную!">Национальная
-                        электронная библиотека Республики Татарстан</a>
+                    <a class="footer-nav__link" href="{% url 'index:frontend:index' %}" title="На главную!">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            <span>Национальная электронная библиотека</span>
+                            <span>Республики Татарстан</span>
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            <span>Татарстан Республикасының Милли</span>
+                            <span>электрон китапханәсе</span>
+                        {% else %}
+                            <span>National Electronic Library of the</span>
+                            <span>Republic of Tatarstan</span>
+                        {% endif %}
+                    </a>
                 </li>
                 <li class="footer-nav__item">
                     <a class="footer-nav__link" href="http://mic.tatarstan.ru/" target="_blank"
-                       rel="nofollow, noopener">Министерство информатизации и связи Республики Татарстан</a>
+                       rel="nofollow, noopener">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Министерство информатизации и связи Республики Татарстан
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Татарстан Республикасы мәгълүматлаштыру һәм элемтә министрлыгы
+                        {% else %}
+                            Ministry of Informatization and Communication of the Republic of Tatarstan
+                        {% endif %}
+
+                    </a>
                 </li>
             </ul>
         </div>

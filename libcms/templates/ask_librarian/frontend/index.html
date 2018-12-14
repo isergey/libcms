@@ -53,9 +53,18 @@
                                         <h2 class="card__title card__title_sm">Задать вопрос</h2>
                                     </div>
                                     <div class="card__body">
-                                        <p class="card__text">Ищете информацию? Подбираете литературу? Есть вопросы о
-                                            работе
-                                            библиотеки? Виртуальная справочная служба поможет.</p>
+                                        <p class="card__text">
+                                            {% if LANGUAGE_CODE == 'en' %}
+                                                Looking for information? Need literature? questions about the the libraries’ work?
+                                                Welcome to “Ask a Librarian” virtual reference service!
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Ищу мәгълүмат? Әдәбият сайлыйсызмы? Китапханәнең эше турында сораулар бармы?
+                                                Виртуаль белешмә хезмәте ярдәм итәчәк!
+                                            {% else %}
+                                                Ищете информацию? Подбираете литературу? Есть вопросы о работе
+                                                библиотеки? Виртуальная справочная служба поможет!
+                                            {% endif %}
+                                        </p>
                                     </div>
                                     <div class="card__footer">
                                         <ul class="card-nav">

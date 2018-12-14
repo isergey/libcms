@@ -30,7 +30,13 @@
             </li>
             <li>
                 <a href="{% url 'participant_events:frontend:index' event.library.code %}">
-                    Афиша
+                    {% if LANGUAGE_CODE == 'en' %}
+                        Events
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Афиша
+                    {% else %}
+                        Афиша
+                    {% endif %}
                 </a>
             </li>
             <li>
@@ -40,7 +46,13 @@
             </li>
             <li>
                 <span class="crumb__current">
-                    Добавить напоминание
+                    {% if LANGUAGE_CODE == 'en' %}
+                        Set reminder
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Искәртү урнаштыру
+                    {% else %}
+                        Установить напоминание
+                    {% endif %}
                 </span>
             </li>
         </ol>
@@ -50,13 +62,29 @@
     <div class="col-lg-8 col-md-12">
         <div class="card-transparent">
             <div class="content">
-                <h1 class="content__title">Добавить напоминание</h1>
+                <h1 class="content__title">
+                    {% if LANGUAGE_CODE == 'en' %}
+                        Set reminder
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Искәртү урнаштыру
+                    {% else %}
+                        Установить напоминание
+                    {% endif %}
+                </h1>
                 <br>
                 <form method="post" class="form-all">
                     {% csrf_token %}
                     {% include 'administration/base_form_fields.html' with form=notification_form %}
                     <br>
-                    <button type="submit" class="btn">Создать напоминание</button>
+                    <button type="submit" class="btn">
+                        {% if LANGUAGE_CODE == 'en' %}
+                            Save
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Саклап язу
+                        {% else %}
+                            Сохранить
+                        {% endif %}
+                    </button>
                 </form>
             </div>
         </div>

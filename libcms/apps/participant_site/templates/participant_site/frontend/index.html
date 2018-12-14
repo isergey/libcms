@@ -144,9 +144,25 @@
                     <div class="col-lg-5 col-md-12">
                         <section class="card-transparent">
                             <header class="card-transparent__header">
-                                <h2 class="card-transparent__title">Афиша</h2>
+                                <h2 class="card-transparent__title">
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        Library events
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Афиша
+                                    {% else %}
+                                        Афиша
+                                    {% endif %}
+                                </h2>
                                 <a class="card-transparent__link"
-                                   href="{% url 'participant_events:frontend:index' library.code %}">Все мероприятия</a>
+                                   href="{% url 'participant_events:frontend:index' library.code %}">
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        All events
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Барлык чаралар
+                                    {% else %}
+                                        Все мероприятия
+                                    {% endif %}
+                                </a>
                                 <a class="card-transparent__link"
                                    href="{% url 'participant_events:frontend:subscribe' library.code %}">Подписаться</a>
                             </header>

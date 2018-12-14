@@ -4,7 +4,15 @@
     <div class="span12">
         <ul class="breadcrumb">
             <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{% url 'personal:frontend:index' %}">Личный кабинет</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'personal:frontend:index' %}">
+                {% if LANGUAGE_CODE == 'en' %}
+                    Personal cabinet
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Шәхси кабинет
+                {% else %}
+                    Личный кабинет
+                {% endif %}
+            </a> <span class="divider">/</span></li>
             <li><a href="{% url 'urt:frontend:index' %}">Мои библиотеки</a> <span class="divider">/</span></li>
             <li class="active">Авторизация</li>
         </ul>

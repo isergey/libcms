@@ -33,7 +33,17 @@
     {% else %}
         <div style="position: absolute; right: 1px">{% include 'cabinet.html' %}</div>
 {#        <a id="auth" href="{% url accounts:frontend:logout %}"><span>Выход</span></a>#}
-        <a id="auth" href="#" style="background: none; z-index: -1000"><span style="color: #ffffff; padding-left: 70px">Личный кабинет</span></a>
+        <a id="auth" href="#" style="background: none; z-index: -1000">
+            <span style="color: #ffffff; padding-left: 70px">
+                {% if LANGUAGE_CODE == 'en' %}
+                    Personal cabinet
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Шәхси кабинет
+                {% else %}
+                    Личный кабинет
+                {% endif %}
+            </span>
+        </a>
 
 
     {% endif %}

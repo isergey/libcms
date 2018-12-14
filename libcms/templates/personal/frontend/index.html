@@ -3,7 +3,15 @@
 {% load participiants_tags %}
 {% load cache %}
 {% get_current_language as LANGUAGE_CODE %}
-{% block title %}Личный кабинет{% endblock %}
+{% block title %}
+    {% if LANGUAGE_CODE == 'en' %}
+        Personal cabinet
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Шәхси кабинет
+    {% else %}
+        Личный кабинет
+    {% endif %}
+{% endblock %}
 {% block content %}
     <main>
         <div class="container">
@@ -22,42 +30,108 @@
                     </li>
                     <li>
                     <span class="crumb__current">
-                        Личный кабинет
+                        {% if LANGUAGE_CODE == 'en' %}
+                            Personal cabinet
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Шәхси кабинет
+                        {% else %}
+                            Личный кабинет
+                        {% endif %}
                     </span>
                     </li>
                 </ol>
             </nav>
             <div class="content">
-                <h1 class="content__title">Личный кабинет</h1>
+                <h1 class="content__title">
+                    {% if LANGUAGE_CODE == 'en' %}
+                        Personal cabinet
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Шәхси кабинет
+                    {% else %}
+                        Личный кабинет
+                    {% endif %}
+                </h1>
             </div>
             <div class="row">
                 <div class="col-lg-3 col-sm-12">
                     <div class="card card_mt">
                         <ul class="card-menu">
                             <li class="card-menu__item">
-                                <a class="card-menu__link" href="{% url 'orders:frontend:reservations' %}">Заказы на
-                                    бронирование</a>
+                                <a class="card-menu__link" href="{% url 'orders:frontend:reservations' %}">
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        Reservation requests
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Броньлау өчен заказлар
+                                    {% else %}
+                                        Заказы на бронирование
+                                    {% endif %}
+                                </a>
                             </li>
                             <li class="card-menu__item">
-                                <a class="card-menu__link" href="{% url 'mydocs:frontend:index' %}">Мои документы</a>
+                                <a class="card-menu__link" href="{% url 'mydocs:frontend:index' %}">
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        My documents
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Минем документлар
+                                    {% else %}
+                                        Мои документы
+                                    {% endif %}
+                                </a>
                             </li>
                             <li class="card-menu__item">
-                                <a class="card-menu__link" href="{% url 'ssearch:frontend:saved_search_requests' %}">Поисковые
-                                    запросы</a>
+                                <a class="card-menu__link" href="{% url 'ssearch:frontend:saved_search_requests' %}">
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        Search requests
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Эзләү запрослары
+                                    {% else %}
+                                        Поисковые запросы
+                                    {% endif %}
+                                </a>
                             </li>
                             <li class="card-menu__item">
-                                <a class="card-menu__link" href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a>
+                                <a class="card-menu__link" href="{% url 'orders:frontend:on_hand' %}">
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        On hand books
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                       Бирелгән китаплар
+                                    {% else %}
+                                        Выданные книги
+                                    {% endif %}
+                                </a>
                             </li>
                             <li class="card-menu__item">
-                                <a class="card-menu__link" href="{% url 'ask_librarian:frontend:my_questions' %}">Мои
-                                    вопросы</a>
+                                <a class="card-menu__link" href="{% url 'ask_librarian:frontend:my_questions' %}">
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        My questions
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                       Минем сораулар
+                                    {% else %}
+                                        Мои вопросы
+                                    {% endif %}
+                                </a>
                             </li>
                             <li class="card-menu__item">
-                                <a class="card-menu__link" href="{% url 'ruslan_cabinet:frontend:remote_return' %}">Удаленный
-                                    возврат</a>
+                                <a class="card-menu__link" href="{% url 'ruslan_cabinet:frontend:remote_return' %}">
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        Remote return of book
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                       Ерактан торып кире кайтару
+                                    {% else %}
+                                        Удаленный возврат
+                                    {% endif %}
+                                </a>
                             </li>
                             <li class="card-menu__item">
-                                <a class="card-menu__link" href="{% url 'sso_ruslan:change_email' %}">Изменить email</a>
+                                <a class="card-menu__link" href="{% url 'sso_ruslan:change_email' %}">
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        Change E-mail
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                       Үзгәртергә email
+                                    {% else %}
+                                        Изменить email
+                                    {% endif %}
+                                </a>
                             </li>
                             {% cache 600 user_org request.user.id %}
                                 {% personal_cabinet_links as cabinet_links %}
@@ -75,9 +149,22 @@
                     <div class="content">
                         <p>
                             {% if not ruslan_user %}
-                                Вы не являетесь читателем
+                                {% if LANGUAGE_CODE == 'en' %}
+                                    You are not a reader
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Сез читатель түгел
+                                {% else %}
+                                    Вы не являетесь читателем
+                                {% endif %}
                             {% else %}
-                                Ваш идентификатор читателя: {{ ruslan_user.username }}
+                                {% if LANGUAGE_CODE == 'en' %}
+                                    Your reader ID:
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                   Сезнең укучысы идентификатор кертә:
+                                {% else %}
+                                    Ваш идентификатор читателя:
+                                {% endif %}
+                                 {{ ruslan_user.username }}
                             {% endif %}
                         </p>
                         {% if current_library %}
@@ -91,7 +178,15 @@
                                 </a>
                             </p>
                         {% endif %}
-                        <a class="btn btn_ol" href="{% url 'accounts:frontend:logout' %}">Выйти из аккаунта</a>
+                        <a class="btn btn_ol" href="{% url 'accounts:frontend:logout' %}">
+                            {% if LANGUAGE_CODE == 'en' %}
+                                    Logout
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                   Чыгарга аккаунта
+                                {% else %}
+                                    Выйти из аккаунта
+                                {% endif %}
+                        </a>
                     </div>
                 </div>
             </div>

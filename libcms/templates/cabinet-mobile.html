@@ -9,7 +9,13 @@
     <ul class="nav nav_user">
         <li class="nav__item">
             <a class="nav__link" href="{% url 'personal:frontend:index' %}">
-                Личный кабинет
+                {% if LANGUAGE_CODE == 'en' %}
+                    Personal cabinet
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Шәхси кабинет
+                {% else %}
+                    Личный кабинет
+                {% endif %}
                 {% if user.first_name %}
                     {{ user.first_name }} {% if user.last_name.0 %} {{ user.last_name.0 }}.{% endif %}
                 {% else %}
@@ -18,64 +24,14 @@
             </a>
         </li>
     </ul>
-
-    {#    <div class="col-4">#}
-    {##}
-    {#        <div class="user-block">#}
-    {#            {% if request.user.password == '!' %}#}
-    {#                <p class="user-block__btn">Вы вошли через социальную сеть</p>#}
-    {#            {% else %}#}
-    {#                <a href="{% url 'personal:frontend:index' %}" class="user-block__btn"#}
-    {#                   title="Перейти в личный кабинет"><img src="{{ STATIC_URL }}dist/images/user_block_key2.svg"#}
-    {#                                                         alt="Вы вошли как:">#}
-    {#                    {% if user.first_name %}#}
-    {#                        {{ user.first_name }} {% if user.last_name.0 %} {{ user.last_name.0 }}.{% endif %}#}
-    {#                    {% else %}#}
-    {#                        {{ user.username }}#}
-    {#                    {% endif %}#}
-    {#                </a>#}
-    {#            {% endif %}#}
-    {##}
-    {##}
-    {##}
-    {#            <div class="click-nav">#}
-    {#                <ul class="no-js">#}
-    {#                    <li>#}
-    {#                        <a href="#" class="clicker">#}
-    {#                            <img src="{{ STATIC_URL }}dist/images/user_block_drop.svg" alt="Icon">#}
-    {#                        </a>#}
-    {#                        <ul>#}
-    {#                            <li><a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a></li>#}
-    {#                            <li><a href="{% url 'orders:frontend:reservations' %}">Заказы на бронирование</a></li>#}
-    {#                            <li><a href="{% url 'mydocs:frontend:index' %}">Мои документы</a></li>#}
-    {#                            <li><a href="{% url 'ruslan_cabinet:frontend:remote_return' %}">Удаленный книговозврат</a>#}
-    {#                            </li>#}
-    {#                            <li><a href="{% url 'ask_librarian:frontend:my_questions' %}">Мои вопросы</a></li>#}
-    {#                            <li><a href="{% url 'ssearch:frontend:saved_search_requests' %}">Поисковые запросы</a></li>#}
-    {#                            <hr>#}
-    {#                            {% cache 600 user_org request.user.id %}#}
-    {#                                {% personal_cabinet_links as cabinet_links %}#}
-    {#                                {% for cabinet_link in cabinet_links %}#}
-    {#                                    <li><a href="{{ cabinet_link.href|safe }}">{{ cabinet_link.title }}</a></li>#}
-    {#                                {% endfor %}#}
-    {#                                {% if cabinet_links %}#}
-    {#                                    <li class="divider"></li>#}
-    {#                                {% endif %}#}
-    {#                            {% endcache %}#}
-    {#                            <hr>#}
-    {#                            <li><a href="{% url 'accounts:frontend:logout' %}">Выход</a></li>#}
-    {#                        </ul>#}
-    {#                    </li>#}
-    {#                </ul>#}
-    {#            </div>#}
-    {#        </div>#}
-    {#    </div>#}
 {% else %}
 
     <ul class="nav nav_user">
         <li class="nav__item">
             <a class="nav__link" href="{% url 'accounts:frontend:registration' %}">
-                {% if LANGUAGE_CODE == 'tt' %}
+                {% if LANGUAGE_CODE == 'en' %}
+                    Registration
+                {% elif LANGUAGE_CODE == 'tt' %}
                     Теркәлү
                 {% else %}
                     Регистрация
@@ -84,7 +40,9 @@
         </li>
         <li class="nav__item">
             <a class="nav__link" href="{% url 'accounts:frontend:login' %}">
-                {% if LANGUAGE_CODE == 'tt' %}
+                {% if LANGUAGE_CODE == 'en' %}
+                    Login
+                {% elif LANGUAGE_CODE == 'tt' %}
                     Керү
                 {% else %}
                     Вход
@@ -93,58 +51,4 @@
             </a>
         </li>
     </ul>
-
-    {##}
-    {#    <div class="col-4">#}
-    {##}
-    {#        <div class="user-block">#}
-    {#            <a class="user-block__auth" href="{% url 'accounts:frontend:login' %}">#}
-    {#                {% if LANGUAGE_CODE == 'tt' %}#}
-    {#                    Керү#}
-    {#                {% else %}#}
-    {#                    Вход#}
-    {#                {% endif %}#}
-    {#            </a>#}
-    {#            <a class="user-block__auth" href="{% url 'accounts:frontend:registration' %}">#}
-    {#                {% if LANGUAGE_CODE == 'tt' %}#}
-    {#                    Теркәлү#}
-    {#                {% else %}#}
-    {#                    Регистрация#}
-    {#                {% endif %}#}
-    {#            </a>#}
-    {#            <a class="user-block__auth" href="{% url 'accounts:frontend:password_reset' %}">Забыли пароль?</a>#}
-    {#        </div>#}
-    {#    </div>#}
-
 {% endif %}
-
-{#<div style="clear: both;">#}
-{#    <div style="float: right;">#}
-{#        <div class="btn-group">#}
-{#            <a class="btn btn btn-large" href="{% url 'personal:frontend:index' %}"><i class="icon-user"></i> Личный#}
-{#                кабинет</a>#}
-{#            <a class="btn dropdown-toggle btn btn-large" data-toggle="dropdown" href="#"><span#}
-{#                    class="caret"></span></a>#}
-{#            <ul class="dropdown-menu">#}
-{#                <li><a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a></li>#}
-{#                <li><a href="{% url 'orders:frontend:on_hand' %}">Выданные книги</a></li>#}
-{#                <li><a href="{% url 'orders:frontend:reservations' %}">Заказы на бронирование</a></li>#}
-{#                <li><a href="{% url 'mydocs:frontend:index' %}">Мои документы</a></li>#}
-{#                <li><a href="{% url 'ask_librarian:frontend:my_questions' %}">Мои вопросы</a></li>#}
-{#                <li><a href="{% url 'ssearch:frontend:saved_search_requests' %}">Поисковые запросы</a></li>#}
-{#                <li class="divider"></li>#}
-{#                {% cache 600 user_org request.user.id %}#}
-{#                    {% personal_cabinet_links as cabinet_links %}#}
-{#                    {% for cabinet_link in cabinet_links %}#}
-{#                        <li><a href="{{ cabinet_link.href|safe }}">{{ cabinet_link.title }}</a></li>#}
-{#                    {% endfor %}#}
-{#                     {% if cabinet_links %}#}
-{#                        <li class="divider"></li>#}
-{#                    {% endif %}#}
-{#                {% endcache %}#}
-{#                <li><a href="{% url 'accounts:frontend:logout' %}">Выход</a></li>#}
-{##}
-{#            </ul>#}
-{#        </div>#}
-{#    </div>#}
-{#</div>#}

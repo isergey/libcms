@@ -1,7 +1,15 @@
 {% extends 'theme_frontend_base.html' %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-{% block title %}Мои документы{% endblock %}
+{% block title %}
+    {% if LANGUAGE_CODE == 'ru' %}
+        Мои документы
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Минем документлар
+    {% else %}
+        My documents
+    {% endif %}
+{% endblock %}
 {% block content %}
     <main>
         <div class="container">
@@ -20,24 +28,52 @@
                     </li>
                     <li>
                         <a href="{% url 'personal:frontend:index' %}">
-                            Личный кабинет
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Личный кабинет
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Шәхси кабинет
+                            {% else %}
+                                Personal cabinet
+                            {% endif %}
                         </a>
                     </li>
                     <li>
                         <span class="crumb__current">
-                            Мои документы
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Мои документы
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Минем документлар
+                            {% else %}
+                                My documents
+                            {% endif %}
                         </span>
                     </li>
                 </ol>
             </nav>
             <div class="content">
-                <h1 class="content__title">Мои документы</h1>
+                <h1 class="content__title">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Мои документы
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Минем документлар
+                    {% else %}
+                        My documents
+                    {% endif %}
+                </h1>
             </div>
             <div class="row">
                 <div class="col-lg-12">
                     {% if list %}
                         <div class="content">
-                            <p>Список: {{ list.name }} <a href="{% url 'm' %}"></a></p>
+                            <p>
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Список:
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Исемлек:
+                                {% else %}
+                                    List:
+                                {% endif %}
+                                 {{ list.name }} <a href="{% url 'm' %}"></a></p>
                         </div>
                     {% endif %}
                     {% for record in records %}
@@ -49,7 +85,15 @@
                                         <p>{{ record.saved_doc.comments }}</p>
                                     {% endif %}
                                 </div>
-                                <a class="btn" href="{% url 'ssearch:frontend:detail' record.saved_doc.gen_id %}">Подробнее</a>
+                                <a class="btn" href="{% url 'ssearch:frontend:detail' record.saved_doc.gen_id %}">
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        подробнее
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        җентекле
+                                    {% else %}
+                                        details
+                                    {% endif %}
+                                </a>
                                 <a class="btn btn_ol" href="{% url 'mydocs:frontend:delete' record.saved_doc.id %}"
                                    class="delete">Удалить</a>
                             </div>
@@ -57,7 +101,15 @@
 
                     {% empty %}
                         <br>
-                        <div class="alert alert-info">Список документов пуст.</div>
+                        <div class="alert alert-info">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Список документов пуст.
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Документлар исемлеге буш.
+                            {% else %}
+                                There is no documents.
+                            {% endif %}
+                        </div>
                     {% endfor %}
                 </div>
             </div>

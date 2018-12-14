@@ -6,7 +6,7 @@
 {% load participiants_tags %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-{% block title %}{% if LANGUAGE_CODE == 'ru' %}Детальная информация{% elif LANGUAGE_CODE == 'tt' %}Детальная информация
+{% block title %}{% if LANGUAGE_CODE == 'ru' %}Детальная информация{% elif LANGUAGE_CODE == 'tt' %}Җентекле мәгълүмат
 {% else %}Detail information{% endif %}{% endblock %}
 {% block content %}
     {% get_user_org as user_org %}
@@ -44,7 +44,8 @@
                             {% if LANGUAGE_CODE == 'ru' %}
                                 Детальная информация
                             {% elif LANGUAGE_CODE == 'tt' %}
-                                Детальная информация{% else %}
+                                Җентекле мәгълүмат
+                            {% else %}
                                 Detail information
                             {% endif %}
                         </span>
@@ -56,19 +57,39 @@
                 <div class="col-lg-8 col-md-12">
                     <ul class="record-nav">
                         <li class="record-nav__item record-nav__item_booking">
-                            <button id="recordNavBtn" class="record-nav__link"><i class="icon-menu"></i>&nbsp;&nbsp;Бронирование
+                            <button id="recordNavBtn" class="record-nav__link"><i class="icon-menu"></i>&nbsp;&nbsp;
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Reserve document
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Броньлау
+                                {% else %}
+                                    Print
+                                {% endif %}
                             </button>
                         </li>
                         {% drow_save_doc request.user gen_id %}
                         <li class="record-nav__item">
                             <a class="record-nav__link" href="{% url 'ssearch:frontend:to_print' gen_id %}"
-                               target="_blank"><i class="icon-printer"></i>&nbsp;&nbsp;Печать</a>
+                               target="_blank"><i class="icon-printer"></i>&nbsp;&nbsp;
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Печать
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Бастырып чыгарырга
+                                {% else %}
+                                    Print
+                                {% endif %}
+                            </a>
                         </li>
                         {% if user_org or request.user.is_superuser or request.user.is_staff %}
                             <li class="record-nav__item">
                                 <button id="marcCardBtn" class="record-nav__link"><i class="icon-note"></i>&nbsp;&nbsp;
-                                    {% if LANGUAGE_CODE == 'ru' %}Карточка{% elif LANGUAGE_CODE == 'tt' %}
-                                        Карточка{% else %}Card{% endif %}
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        Карточка
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Карточкалар
+                                    {% else %}
+                                        Card
+                                    {% endif %}
                                 </button>
                             </li>
                         {% endif %}
@@ -77,17 +98,34 @@
                         <div class="record-detail__col-text">
                             {{ doc_dump|safe }}
                             {% if user_org or request.user.is_superuser or request.user.is_staff %}
-                                <p class="record-detail__info">Идентификатор записи: {{ gen_id }}</p>
+                                <p class="record-detail__info">
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        Идентификатор записи:
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Язылу идентификаторы
+                                    {% else %}
+                                        Record ID:
+                                    {% endif %}
+                                    {{ gen_id }}</p>
                             {% endif %}
                             <p class="record-detail__info">
                                 {% if LANGUAGE_CODE == 'ru' %}Количество
-                                    обращений{% elif LANGUAGE_CODE == 'tt' %}Количество обращений{% else %}
+                                    обращений{% elif LANGUAGE_CODE == 'tt' %}Мөрәҗәгатьләр саны{% else %}
                                     Views{% endif %}
                                 : {{ access_count }}
                             </p>
                             {% if linked_docs %}
                                 <div class="results">
-                                    <p class="header">Это издание состоит из следующих томов/частей: </p>
+                                    <p class="header">
+                                        {% if LANGUAGE_CODE == 'ru' %}
+                                            Это издание состоит из следующих томов/частей:
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Бу басма түбәндәге томнардан тора/өлештән:
+                                        {% else %}
+                                            This document consists of the following volumes / parts:
+                                        {% endif %}
+
+                                    </p>
                                     <ul class="list">
                                         {% for doc in linked_docs %}
 

@@ -5,7 +5,16 @@
 {% load ssearch_tags %}
 {% load order_tags %}
 {% load mydocs_tags %}
-{% block title %}Сохраненные поисковые запросы{% endblock %}
+{% block title %}
+    {% if LANGUAGE_CODE == 'ru' %}
+        Сохраненные поисковые запросы
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Сакланган эзләү запрослары
+    {% else %}
+        Saved search requests
+    {% endif %}
+
+{% endblock %}
 {% block content %}
     <main>
         <div class="container">
@@ -24,7 +33,13 @@
                     </li>
                     <li>
                         <a href="{% url 'personal:frontend:index' %}">
-                            Личный кабинет
+                            {% if LANGUAGE_CODE == 'en' %}
+                                Personal cabinet
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Шәхси кабинет
+                            {% else %}
+                                Личный кабинет
+                            {% endif %}
                         </a>
                     </li>
                     <li>
@@ -45,6 +60,7 @@
                                 <div class="list__col-text">
                                     <h3 class="list__title">
                                         <a class="list__title-link" href="{% url 'ssearch:frontend:index' %}?
+
 
 
                                                 {{ srequest.breads|last|hash:"href" }}{% if srequest.catalog %}&catalog={{ srequest.catalog|urlencode }}{% endif %}">
