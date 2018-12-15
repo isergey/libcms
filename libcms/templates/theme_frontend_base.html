@@ -44,6 +44,8 @@
             header-border_1
         {% elif 'site' in request.build_absolute_uri %}
             header-border_3
+        {% elif 'accounts' in request.build_absolute_uri %}
+            header-border_4
         {% endif %}">
         <div class="container">
             <header class="header">
