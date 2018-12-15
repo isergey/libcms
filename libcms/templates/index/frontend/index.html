@@ -11,143 +11,129 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% block content %}
     <main>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-md-12">
-                    <section class="search">
-                        <h1 class="search__title">
-                            {% if LANGUAGE_CODE == 'ru' %}
-                                В электронном каталоге вы сможете найти и забронировать книги в библиотеках Республики
-                                Татарстан
-                            {% elif LANGUAGE_CODE == 'tt' %}
-                                Электрон каталог һәм коллекцияләр буенча эзләү
-                            {% else %}
-                                Search in e-catalog and e-collections
-                            {% endif %}
-                        </h1>
-                        <form action="{% url 'ssearch:frontend:index' %}" method="get" role="search">
-                            <div class="search-input search-input_mw">
-                                <select name="attr" class="search-input__select">
-                                    <option value="text_t"
-                                            {% if request.GET.attr == 'text_t' or not request.GET.attr %}selected{% endif %}>
-                                        {% if LANGUAGE_CODE == 'ru' %}Везде{% elif LANGUAGE_CODE == 'tt' %}Һәр
-                                            урында{% else %}Anywhere{% endif %}
-                                    </option>
-                                    <option value="author_t" {% if request.GET.attr == 'author_t' %}selected{% endif %}>
-                                        {% if LANGUAGE_CODE == 'ru' %}Автор{% elif LANGUAGE_CODE == 'tt' %}
-                                            Автор{% else %}
-                                            Author{% endif %}
-                                    </option>
-                                    <option value="title_t" {% if request.GET.attr == 'title_t' %}selected{% endif %}>
-                                        {% if LANGUAGE_CODE == 'ru' %}Заглавие{% elif LANGUAGE_CODE == 'tt' %}
-                                            Исем{% else %}
-                                            Title{% endif %}
-                                    </option>
-                                    {% if catalog == 'ebooks' %}
-                                        <option value="full-text"
-                                                {% if request.GET.attr == 'full-text' %}selected{% endif %}>
-                                            Полный текст
-                                        </option>
-                                    {% endif %}
-                                    <option value="subject-heading_t"
-                                            {% if request.GET.attr == 'subject-heading_t' %}selected{% endif %}>
-                                        {% if LANGUAGE_CODE == 'ru' %}Тематика{% elif LANGUAGE_CODE == 'tt' %}
-                                            Темасы{% else %}
-                                            Subject{% endif %}
-                                    </option>
-                                    <option value="date-of-publication_s"
-                                            {% if request.GET.attr == 'date-of-publication_dt' %}selected{% endif %}>
-                                        {% if LANGUAGE_CODE == 'ru' %}Год
-                                            публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып чыгару
-                                            елы{% else %}Publication year{% endif %}
-                                    </option>
-                                    <option value="isbn_t" {% if request.GET.attr == 'isbn_t' %}selected{% endif %}>
-                                        ISBN
-                                    </option>
-                                    <option value="issn_t" {% if request.GET.attr == 'issn_t' %}selected{% endif %}>
-                                        ISSN
-                                    </option>
-                                </select>
-                                <input class="search-input__input" name="q" id="appendedInputButton" type="text"
-                                       placeholder="{% if LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}...">
-                                <button class="search-input__btn">
-                                    <i class="icon-search"
-                                       title="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}"></i>
-                                </button>
-                            </div>
-                        </form>
-                        <a class="search-sub-link" href="https://school.kitap.tatar.ru">
-                            {% if LANGUAGE_CODE == 'ru' %}
-                                Поиск по школьным библиотекам
-                            {% elif LANGUAGE_CODE == 'tt' %}
-                                Мәктәп китапханәләре буенча эзләү
-                            {% else %}
-                                School libraries search
-                            {% endif %}
-                            <i class="icon-right-arrow"></i>
-                        </a>
-                    </section>
-                </div>
-                <div class="col-lg-4 col-md-12 col_as-fe">
-                    <section class="card card_md-mt">
-                        <div class="card__header">
-                            <h2 class="card__title">
+        <div class="bg">
+            <div class="bg-img">
+                <div class="container">
+                    <div class="bg-content">
+                        <div class="search search_center">
+                            <h1 class="search__title">
                                 {% if LANGUAGE_CODE == 'ru' %}
-                                    Задать вопрос библиотекарю
+                                    Поиск в сводном библиотечном каталоге и электронных
+                                    коллекциях
                                 {% elif LANGUAGE_CODE == 'tt' %}
-                                    Китапханәчегә сорау бирү
+                                    Электрон каталог һәм коллекцияләр буенча эзләү
                                 {% else %}
-                                    Ask question
+                                    Search in e-catalog and e-collections
                                 {% endif %}
-                            </h2>
-                        </div>
-                        <div class="card__body">
-                            <p class="card__ask-lib-text">
-                                {% if LANGUAGE_CODE == 'en' %}
-                                    Looking for information? Need literature? questions about the the libraries’ work?
-                                    Welcome to “Ask a Librarian” virtual reference service!
-                                {% elif LANGUAGE_CODE == 'tt' %}
-                                    Ищу мәгълүмат? Әдәбият сайлыйсызмы? Китапханәнең эше турында сораулар бармы?
-                                    Виртуаль белешмә хезмәте ярдәм итәчәк!
-                                {% else %}
-                                    Ищете информацию? Подбираете литературу? Есть вопросы о работе
-                                    библиотеки? Виртуальная справочная служба поможет!
-                                {% endif %}
-                            </p>
-                        </div>
-                        <div class="card__footer">
-                            <ul class="card-nav">
-                                <li class="card-nav__item">
-                                    <a class="card-nav__link" href="{% url 'ask_librarian:frontend:ask' %}">
-                                        {% if LANGUAGE_CODE == 'ru' %}
-                                            Задать вопрос
-                                        {% elif LANGUAGE_CODE == 'tt' %}
-                                            Китапханәчегә сорау
-                                        {% else %}
-                                            Ask question
+                            </h1>
+                            <form action="{% url 'ssearch:frontend:index' %}" method="get" role="search">
+                                <div class="search-input search-input_mw search-input_center">
+                                    <select name="attr" class="search-input__select">
+                                        <option value="text_t"
+                                                {% if request.GET.attr == 'text_t' or not request.GET.attr %}selected{% endif %}>
+                                            {% if LANGUAGE_CODE == 'ru' %}Везде{% elif LANGUAGE_CODE == 'tt' %}Һәр
+                                                урында{% else %}Anywhere{% endif %}
+                                        </option>
+                                        <option value="author_t"
+                                                {% if request.GET.attr == 'author_t' %}selected{% endif %}>
+                                            {% if LANGUAGE_CODE == 'ru' %}Автор{% elif LANGUAGE_CODE == 'tt' %}
+                                                Автор{% else %}
+                                                Author{% endif %}
+                                        </option>
+                                        <option value="title_t"
+                                                {% if request.GET.attr == 'title_t' %}selected{% endif %}>
+                                            {% if LANGUAGE_CODE == 'ru' %}Заглавие{% elif LANGUAGE_CODE == 'tt' %}
+                                                Исем{% else %}
+                                                Title{% endif %}
+                                        </option>
+                                        {% if catalog == 'ebooks' %}
+                                            <option value="full-text"
+                                                    {% if request.GET.attr == 'full-text' %}selected{% endif %}>
+                                                Полный текст
+                                            </option>
                                         {% endif %}
+                                        <option value="subject-heading_t"
+                                                {% if request.GET.attr == 'subject-heading_t' %}selected{% endif %}>
+                                            {% if LANGUAGE_CODE == 'ru' %}Тематика{% elif LANGUAGE_CODE == 'tt' %}
+                                                Темасы{% else %}
+                                                Subject{% endif %}
+                                        </option>
+                                        <option value="date-of-publication_s"
+                                                {% if request.GET.attr == 'date-of-publication_dt' %}selected{% endif %}>
+                                            {% if LANGUAGE_CODE == 'ru' %}Год
+                                                публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып чыгару
+                                                елы{% else %}Publication year{% endif %}
+                                        </option>
+                                        <option value="isbn_t" {% if request.GET.attr == 'isbn_t' %}selected{% endif %}>
+                                            ISBN
+                                        </option>
+                                        <option value="issn_t" {% if request.GET.attr == 'issn_t' %}selected{% endif %}>
+                                            ISSN
+                                        </option>
+                                    </select>
+                                    <input class="search-input__input" name="q" id="appendedInputButton" type="text"
+                                           placeholder="{% if LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}...">
+                                    <button class="search-input__btn">
+                                        <i class="icon-search"
+                                           title="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}"></i>
+                                    </button>
+                                </div>
+                            </form>
+                            <a class="search-sub-link" href="https://school.kitap.tatar.ru" target="_blank">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Поиск по школьным библиотекам
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Мәктәп китапханәләре буенча эзләү
+                                {% else %}
+                                    School libraries search
+                                {% endif %}
+                                <i class="icon-right-arrow"></i>
+                            </a>
+                        </div>
+                        <div class="nav-hot-wrap">
+                            <ul class="nav-hot-list">
+                                <li class="nav-hot-list__item">
+                                    <a class="nav-hot-list__link" href="{% url 'participants:frontend:index' %}">
+                                        <h2 class="nav-hot-list__title">Библиотеки</h2>
+                                        <p class="nav-hot-list__description">Найдите свою библиотеку в Республике
+                                            Татарстан</p>
                                     </a>
                                 </li>
-                                <li class="card-nav__item">
-                                    <a class="card-nav__link" href="{% url 'ask_librarian:frontend:index' %}">
-                                        {% if LANGUAGE_CODE == 'ru' %}
-                                            Все вопросы
-                                        {% elif LANGUAGE_CODE == 'tt' %}
-                                            Барлык сораулар
-                                        {% else %}
-                                            All questions
-                                        {% endif %}
+                                <li class="nav-hot-list__item">
+                                    <a class="nav-hot-list__link nav-hot-list__link_2" href="{% url 'ask_librarian:frontend:index' %}">
+                                        <h2 class="nav-hot-list__title">Задать вопрос</h2>
+                                        <p class="nav-hot-list__description">Ищете информацию? Виртуальная справочная
+                                            служба поможет!</p>
+                                    </a>
+                                </li>
+                                <li class="nav-hot-list__item">
+                                    <a class="nav-hot-list__link nav-hot-list__link_3" href="{% url 'events:frontend:index' %}">
+                                        <h2 class="nav-hot-list__title">Афиша</h2>
+                                        <p class="nav-hot-list__description">Приглашения на мероприятия в библиотеках
+                                            республики</p>
+                                    </a>
+                                </li>
+                                <li class="nav-hot-list__item">
+                                    <a class="nav-hot-list__link nav-hot-list__link_4" href="{% url 'recommended_reading:frontend:index' 'school' %}">
+                                        <h2 class="nav-hot-list__title">Школьникам</h2>
+                                        <p class="nav-hot-list__description">Рекомендуемая литература с 1го по 11ый
+                                            класс</p>
                                     </a>
                                 </li>
                             </ul>
                         </div>
-                    </section>
+                    </div>
                 </div>
             </div>
+        </div>
+
+
+        <div class="container">
             <section class="card news-main">
                 <h2 class="news-main__title">Мы обновляем дизайн, а также вносим другие изменения</h2>
-                <p class="news-main__description">Некоторое время могут возникать проблемы с входом в кабинет, но не грустите - мы постараемся как можно быстрее завершить работы.</p>
-{#                <a class="news-main__link" href="#">Подробнее о конкурсе</a>#}
+                <p class="news-main__description">Некоторое время могут возникать проблемы с входом в кабинет, но не
+                    грустите - мы постараемся как можно быстрее завершить работы.</p>
+                {#                <a class="news-main__link" href="#">Подробнее о конкурсе</a>#}
             </section>
             <section class="card-transparent new-arrival-card">
                 <header class="card-transparent__header">

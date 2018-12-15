@@ -10,12 +10,13 @@ $(document).ready(function () {
     })
 
     let newArrivalSwiper = new Swiper('.swiper-container-news-arrival', {
-        slidesPerView: 3,
+        slidesPerView: 4,
         spaceBetween: 25,
         loop: true,
         mousewheel: true,
         autoplay: true,
         delay: 5000,
+        releaseOnEdges: true,
         pagination: {
             el: '.swiper-pagination-news-arrival',
             clickable: true,
@@ -26,7 +27,7 @@ $(document).ready(function () {
         },
         breakpoints: {
             1300: {
-                slidesPerView: 2,
+                slidesPerView: 3,
             },
             768: {
                 slidesPerView: 1,
@@ -41,6 +42,7 @@ $(document).ready(function () {
         loop: true,
         autoplay: true,
         delay: 10000,
+        releaseOnEdges: true,
         pagination: {
             el: '.swiper-pagination-event',
             clickable: true,
