@@ -17,7 +17,7 @@
     <meta name="keywords" content>
 
     <link rel="icon" type="image/ico" href="{{ STATIC_URL }}theme/favicon.ico"/>
-    <link rel="stylesheet" href="{{ STATIC_URL }}dist/styles/index.css?2354367">
+    <link rel="stylesheet" href="{{ STATIC_URL }}dist/styles/index.css?erw34rw34r">
     <script>
         window.CURRENT_LANGUAGE = '{{ LANGUAGE_CODE }}';
     </script>
@@ -44,6 +44,10 @@
             header-border_1
         {% elif 'site' in request.build_absolute_uri %}
             header-border_3
+        {% elif 'accounts' in request.build_absolute_uri %}
+            header-border_4
+        {% elif 'personal' in request.build_absolute_uri %}
+            header-border_4
         {% endif %}">
         <div class="container">
             <header class="header">
