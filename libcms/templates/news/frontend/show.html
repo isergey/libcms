@@ -60,7 +60,15 @@
                 <div class="col-lg-5 col-md-12">
                     <section class="card card_md-mt">
                         <header class="card__header">
-                            <h2 class="card__title">Другие новости</h2>
+                            <h2 class="card__title">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Другие новости
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Башка яңалыклар
+                                {% else %}
+                                    Other news
+                                {% endif %}
+                            </h2>
                         </header>
                         <div class="card__body">
                             {% other_news news.id %}
@@ -68,7 +76,15 @@
                         <div class="card__footer">
                             <ul class="card-nav">
                                 <li class="card-nav__item">
-                                    <a class="card-nav__link" href="{% url 'news:frontend:index' %}">Все новости</a>
+                                    <a class="card-nav__link" href="{% url 'news:frontend:index' %}">
+                                        {% if LANGUAGE_CODE == 'ru' %}
+                                            Все новости
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Яңалыклар
+                                        {% else %}
+                                            Other news
+                                        {% endif %}
+                                    </a>
                                 </li>
                             </ul>
                         </div>

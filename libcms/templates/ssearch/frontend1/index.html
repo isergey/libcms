@@ -38,7 +38,15 @@
 
             <div class="sel_imul">
                 <div class="sel_selected">
-                    <div class="selected-text">Везде</div>
+                    <div class="selected-text">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Везде
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Һәр урында
+                        {% else %}
+                            All fields
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="sel_options">
                     {% for search_attr in search_attrs %}

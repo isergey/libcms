@@ -74,7 +74,7 @@ facet_titles = {
     'fond': {
         'ru': u'Коллекция',
         'en': u'Collection',
-        'tt': u'Коллекция'
+        'tt': u'Җыелма'
     },
     'title': {
         'ru': u'Заглавие',
@@ -99,7 +99,7 @@ facet_titles = {
     'record-create-date': {
         'ru': u'Дата поступления',
         'en': u'Incoming date',
-        'tt': u'Дата поступления'
+        'tt': u'Керү датасы'
     },
     'subject-heading': {
         'ru': u'Тематика',
@@ -118,8 +118,8 @@ facet_titles = {
     },
     'text': {
         'ru': u'Везде',
-        'en': u'Anywhere',
-        'tt': u'Везде'
+        'en': u'All fields',
+        'tt': u' Һәр урында'
     },
     'full-text': {
         'ru': u'Полный текст',

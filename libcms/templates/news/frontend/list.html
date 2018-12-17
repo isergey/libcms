@@ -73,7 +73,16 @@
                 <div class="col-lg-5 col-md-12">
                     <section class="card">
                         <header class="card__header">
-                            <h2 class="card__title">Архив новостей</h2>
+                            <h2 class="card__title">
+
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Архив новостей
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Яңалыклар Архивы
+                                {% else %}
+                                    News archive
+                                {% endif %}
+                            </h2>
                         </header>
                         <div class="card__body">
                             {% news_calendar %}

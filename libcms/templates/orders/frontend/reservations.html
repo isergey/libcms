@@ -31,13 +31,27 @@
                     </li>
                     <li>
                         <span class="crumb__current">
-                            Заказы на бронирование
+                            {% if LANGUAGE_CODE == 'en' %}
+                                Reservation requests
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Броньлау өчен заказлар
+                            {% else %}
+                                Заказы на бронирование
+                            {% endif %}
                         </span>
                     </li>
                 </ol>
             </nav>
             <div class="content">
-                <h1 class="content__title">Заказы на бронирование</h1>
+                <h1 class="content__title">
+                    {% if LANGUAGE_CODE == 'en' %}
+                        Reservation requests
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Броньлау өчен заказлар
+                    {% else %}
+                        Заказы на бронирование
+                    {% endif %}
+                </h1>
             </div>
             {% if libraries %}
                 <div class="list list_mt">
@@ -58,18 +72,60 @@
                                         {% for order in library.reservations %}
                                             <p class="list__description">{{ order.record|safe }}</p>
                                             <dl class="list__dl">
-                                                <dt>Номер:</dt>
+                                                <dt>
+                                                    {% if LANGUAGE_CODE == 'en' %}
+                                                        Id:
+                                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                                        Сан:
+                                                    {% else %}
+                                                         Номер:
+                                                    {% endif %}
+
+                                                </dt>
                                                 <dd>{{ order.target_reference }}</dd>
-                                                <dt>Статус:</dt>
+                                                <dt>
+                                                    {% if LANGUAGE_CODE == 'en' %}
+                                                        Id:
+                                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                                        Броньлау өчен заказлар:
+                                                    {% else %}
+                                                         Статус:
+                                                    {% endif %}
+                                                </dt>
                                                 <dd>{{ order.task_status }}</dd>
-                                                <dt>Дата создания:</dt>
+                                                <dt>
+                                                    {% if LANGUAGE_CODE == 'en' %}
+                                                        Creat date:
+                                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                                        Оешу датасы:
+                                                    {% else %}
+                                                         Дата создания:
+                                                    {% endif %}
+                                                </dt>
                                                 <dd>{{ order.creation_date_time }}</dd>
-                                                <dt>Отчет:</dt>
+                                                <dt>
+                                                    {% if LANGUAGE_CODE == 'en' %}
+                                                        Report:
+                                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                                        Хисап:
+                                                    {% else %}
+                                                         Отчет:
+                                                    {% endif %}
+                                                </dt>
                                                 <dd>{{ order.status_or_error_report }}</dd>
                                             </dl>
                                         {% empty %}
                                             <br>
-                                            <div class="alert alert-info">Заказов нет</div>
+                                            <div class="alert alert-info">
+                                                {% if LANGUAGE_CODE == 'en' %}
+                                                    There is no orders
+                                                {% elif LANGUAGE_CODE == 'tt' %}
+                                                    Заказлар юк
+                                                {% else %}
+                                                     Заказов нет
+                                                {% endif %}
+
+                                            </div>
                                         {% endfor %}
                                     {% endif %}
                                 </div>
@@ -80,10 +136,21 @@
             {% else %}
                 <br>
                 <div class="alert alert-info">
-                    Вы не являетесь читателем. Обратитесь в <a
+                {% if LANGUAGE_CODE == 'en' %}
+                    You are not a reader.
+                    <a href="{% url 'participants:frontend:geosearch' %}">Contact the nearest library </a>
+                    or login to the portal using your Public services portal account.
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Сез читатель түгел.
+                    <a href="{% url 'participants:frontend:geosearch' %}">Алдагы китапханәгә</a>
+                    мөрәҗәгать итегез яки дәүләт хезмәтләре порталында хисап язмагыз кулланып порталга керегез.
+                {% else %}
+                     Вы не являетесь читателем. Обратитесь в <a
                         href="{% url 'participants:frontend:geosearch' %}">ближайшую
                     библиотеку</a> или войдите на портал с использованием учетной записи на портале
                     Госуслуг.
+                {% endif %}
+
                 </div>
             {% endif %}
         </div>

@@ -169,7 +169,14 @@
                         </p>
                         {% if current_library %}
                             <p>
-                                Поиск в библиотеке:
+                                {% if LANGUAGE_CODE == 'en' %}
+                                    Search in library:
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Китапханәдә эзләү:
+                                {% else %}
+                                    Поиск в библиотеке:
+                                {% endif %}
+
                                 <a href="{% url 'ssearch:frontend:ecatalog' %}?library={{ current_library.code|urlencode }}">
                                     {% for ancestor in current_library.get_ancestors %}
                                         {{ ancestor.name }} →

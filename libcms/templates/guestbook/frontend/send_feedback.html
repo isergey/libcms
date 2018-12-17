@@ -4,31 +4,69 @@
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
     <style type="text/css">
-    form.feedback_from textarea{
-        width: 99%;
-    }
+        form.feedback_from textarea {
+            width: 99%;
+        }
     </style>
     <div class="span12">
         <ul class="breadcrumb">
-            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{% url 'guestbook:frontend:index' %}">
+            <li>
+                <a href="{% url 'index:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
+                </a>
+                <span class="divider">/</span>
+            </li>
+            <li>
+                <a href="{% url 'guestbook:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Гостевая книга
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Кунаклар китабы
+                    {% else %}
+                        Guest book
+                    {% endif %}
+                </a>
+                <span class="divider">/</span></li>
+            <li class="active">
                 {% if LANGUAGE_CODE == 'ru' %}
-                    Гостевая книга
+                    Оставить запись
                 {% elif LANGUAGE_CODE == 'tt' %}
-                    Кунаклар китабы
+                    Фикер калдыру
                 {% else %}
-                    Guest book
+                    Send feedback
                 {% endif %}
-            </a> <span class="divider">/</span></li>
-            <li class="active">Оставить запись</li>
+
+            </li>
 
         </ul>
         <form class="feedback_from" method="POST">{% csrf_token %}
-            <legend>Оставить запись</legend>
+            <legend>
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Оставить запись
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Фикер калдыру
+                {% else %}
+                    Send feedback
+                {% endif %}
+            </legend>
             <fieldset>
                 {% include 'frontend/base_form_fields.html' %}
                 <div class="form-actions">
-                    <button type="submit" class="btn">Написать</button>
+                    <button type="submit" class="btn">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Оставить запись
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Фикер калдыру
+                        {% else %}
+                            Send feedback
+                        {% endif %}
+                    </button>
                 </div>
             </fieldset>
         </form>

@@ -49,14 +49,29 @@
                                     {% endif %}
                                 {% endfor %}
                                 <p>
-                                    Электронные версии:
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        Электронные версии:
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Электрон версиясе:
+                                    {% else %}
+                                        e-version:
+                                    {% endif %}
+
                                     {% for attachment in attachments %}
                                         <a href="
                                                 {{ MEDIA_URL }}{{ attachment.file }}">{{ attachment.get_type_display }}</a>
                                     {% endfor %}
                                 </p>
                                 {% if item.annotation %}
-                                    <h2>Описание:</h2>
+                                    <h2>
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        Описание:
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Тасвирлама:
+                                    {% else %}
+                                        Description:
+                                    {% endif %}
+                                    </h2>
                                     <p>{{ item.annotation|safe }}</p>
                                 {% endif %}
                             </div>

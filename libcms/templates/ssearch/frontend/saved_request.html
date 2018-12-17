@@ -44,13 +44,27 @@
                     </li>
                     <li>
                     <span class="crumb__current">
-                        Сохраненные поисковые запросы
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Сохраненные поисковые запросы
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Сакланган эзләү запрослары
+                        {% else %}
+                            Saved search requests
+                        {% endif %}
                     </span>
                     </li>
                 </ol>
             </nav>
             <div class="content">
-                <h1 class="content__title">Сохраненные поисковые запросы</h1>
+                <h1 class="content__title">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Сохраненные поисковые запросы
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Сакланган эзләү запрослары
+                    {% else %}
+                        Saved search requests
+                    {% endif %}
+                </h1>
             </div>
             <div class="row">
                 <div class="col-lg-12">
@@ -59,11 +73,7 @@
                             <div class="list__item">
                                 <div class="list__col-text">
                                     <h3 class="list__title">
-                                        <a class="list__title-link" href="{% url 'ssearch:frontend:index' %}?
-
-
-
-                                                {{ srequest.breads|last|hash:"href" }}{% if srequest.catalog %}&catalog={{ srequest.catalog|urlencode }}{% endif %}">
+                                        <a class="list__title-link" href="{% url 'ssearch:frontend:index' %}?{{ srequest.breads|last|hash:"href" }}{% if srequest.catalog %}&catalog={{ srequest.catalog|urlencode }}{% endif %}">
                                             {% for search_breadcumb in srequest.breads %}
                                                 {% if not forloop.last %}
                                                     <span>{{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value|lower|capfirst }}</span>
@@ -83,11 +93,28 @@
                                     </h3>
                                     <p class="list__description">{{ srequest.saved_request.add_time }}</p>
                                     <a class="list__link delete"
-                                       href="{% url 'ssearch:frontend:delete_search_request' srequest.saved_request.id %}">Удалить</a>
+                                       href="{% url 'ssearch:frontend:delete_search_request' srequest.saved_request.id %}">
+                                        {% if LANGUAGE_CODE == 'en' %}
+                                            Delete
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Бетерү
+                                        {% else %}
+                                            Удалить
+                                        {% endif %}
+                                    </a>
                                 </div>
                             </div>
                         {% empty %}
-                            <div class="alert alert-info">Список сохраненных запросов пуст.</div>
+                            <div class="alert alert-info">
+
+                                {% if LANGUAGE_CODE == 'en' %}
+                                    The list of saved queries is empty.
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Сакланган мөрәҗәгатьләр исемлеге буш
+                                {% else %}
+                                    Список сохраненных запросов пуст
+                                {% endif %}
+                            </div>
                         {% endfor %}
                     </div>
                 </div>

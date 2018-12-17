@@ -80,7 +80,7 @@
                                     <option value="text_t"
                                             {% if request.GET.attr == 'text_t' or not request.GET.attr %}selected{% endif %}>
                                         {% if LANGUAGE_CODE == 'ru' %}Везде{% elif LANGUAGE_CODE == 'tt' %}Һәр
-                                            урында{% else %}Anywhere{% endif %}
+                                            урында{% else %}All fields{% endif %}
                                     </option>
                                     <option value="author_t" {% if request.GET.attr == 'author_t' %}selected{% endif %}>
                                         {% if LANGUAGE_CODE == 'ru' %}Автор{% elif LANGUAGE_CODE == 'tt' %}

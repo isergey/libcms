@@ -1,12 +1,27 @@
 {% extends 'container.html' %}
-{% block title %}Заказ{% endblock %}
+{% block title %}
+    {% if LANGUAGE_CODE == 'ru' %}
+        Заказ
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Заказ
+    {% else %}
+        Reserve document
+    {% endif %}
+{% endblock %}
 {% block breadcrumbs %}
     <li>
         <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">
     </li>
     <li>
         <a href="{% url 'external_orders:frontend:index' %}" class="bread__crumbs_link">
-            Бронирование издания
+            {% if LANGUAGE_CODE == 'ru' %}
+                Бронирование издания
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Басмалар броньлау
+            {% else %}
+                Reserve document
+            {% endif %}
+
         </a>
     </li>
     <li>
@@ -15,27 +30,66 @@
     <li>
         <a href="{% url 'external_orders:frontend:order' library.code record.record.gen_id %}"
            class="bread__crumbs_link bread__crumbs_link_active">
-            Оформление заказа
+            {% if LANGUAGE_CODE == 'ru' %}
+                Оформление заказа
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Заказны рәсмиләштерү
+            {% else %}
+                Create order
+            {% endif %}
         </a>
     </li>
 {% endblock %}
 {% block container_content %}
     <div class="col-12">
         <form class="side-box__form" method="POST">{% csrf_token %}
-            <h3>Бронирование издания</h3>
+            <h3>
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Бронирование издания
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Басмалар броньлау
+                {% else %}
+                    Reserve document
+                {% endif %}
+            </h3>
             <table class="table table-bordered">
                 <tr>
-                    <th>Организация</th>
+                    <th>
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Организация
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Оешма
+                        {% else %}
+                            Organization
+                        {% endif %}
+                    </th>
                     <td>{{ library.name }}</td>
                 </tr>
                 <tr>
-                    <th>Издание</th>
+                    <th>
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Издание
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Басма
+                        {% else %}
+                            Document
+                        {% endif %}
+                    </th>
+                    </th>
                     <td>{{ record.card|safe }}</td>
                 </tr>
 
             </table>
             {% include 'frontend/base_form_fields.html' with form=form %}
-            <button class="side-box__form__btn" type="submit" class="btn">Забронировать</button>
+            <button class="side-box__form__btn" type="submit" class="btn">
+                {% if LANGUAGE_CODE == 'ru' %}
+                            Забронировать
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Броньлау
+                        {% else %}
+                            oder
+                        {% endif %}
+            </button>
         </form>
     </div>
 {% endblock %}

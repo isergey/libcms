@@ -1,7 +1,15 @@
 {% extends 'theme_frontend_base.html' %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-{% block title %}Выданные книги{% endblock %}
+{% block title %}
+    {% if LANGUAGE_CODE == 'en' %}
+        Borrowed books
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Шәхси кабинет
+    {% else %}
+        Выданные книги
+    {% endif %}
+{% endblock %}
 {% block content %}
     <main>
         <div class="container">
@@ -31,13 +39,27 @@
                     </li>
                     <li>
                         <span class="crumb__current">
-                            Выданные книги
+                            {% if LANGUAGE_CODE == 'en' %}
+                                Borrowed books
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Шәхси кабинет
+                            {% else %}
+                                Выданные книги
+                            {% endif %}
                         </span>
                     </li>
                 </ol>
             </nav>
             <div class="content">
-                <h1 class="content__title">Выданные книги</h1>
+                <h1 class="content__title">
+                    {% if LANGUAGE_CODE == 'en' %}
+                        Borrowed books
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Шәхси кабинет
+                    {% else %}
+                        Выданные книги
+                    {% endif %}
+                </h1>
             </div>
             {% if libraries %}
                 <div class="list list_mt">
@@ -58,12 +80,29 @@
                                         {% for book in library.books %}
                                             <p class="list__description">{{ book.record|safe }}</p>
                                             <dl class="list__dl">
-                                                <dt>Примечание:</dt>
+                                                <dt>
+                                                        {% if LANGUAGE_CODE == 'en' %}
+                                                            Note:
+                                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                                            Искәрмә:
+                                                        {% else %}
+                                                            Примечание:
+                                                        {% endif %}
+                                                </dt>
                                                 <dd>{{ book.description }}</dd>
                                             </dl>
                                         {% empty %}
                                             <br>
-                                            <div class="alert alert-info">Выданных книг нет</div>
+                                            <div class="alert alert-info">
+                                                {% if LANGUAGE_CODE == 'en' %}
+                                                    No books issued
+                                                {% elif LANGUAGE_CODE == 'tt' %}
+                                                    Бирелгән китаплар юк
+                                                {% else %}
+                                                    Выданных книг нет
+                                                {% endif %}
+
+                                            </div>
                                         {% endfor %}
                                     {% endif %}
                                 </div>
@@ -76,121 +115,22 @@
             {% else %}
                 <br>
                 <div class="alert alert-info">
-                    Вы не являетесь читателем. Обратитесь в <a
-                        href="{% url 'participants:frontend:geosearch' %}">ближайшую
-                    библиотеку</a> или войдите на портал с использованием учетной записи на портале
-                    Госуслуг.
+                    {% if LANGUAGE_CODE == 'en' %}
+                        You are not a reader.
+                        <a href="{% url 'participants:frontend:geosearch' %}">Contact the nearest library </a>
+                        or login to the portal using your Public services portal account.
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Сез читатель түгел.
+                        <a href="{% url 'participants:frontend:geosearch' %}">Алдагы китапханәгә</a>
+                        мөрәҗәгать итегез яки дәүләт хезмәтләре порталында хисап язмагыз кулланып порталга керегез.
+                    {% else %}
+                         Вы не являетесь читателем. Обратитесь в <a
+                            href="{% url 'participants:frontend:geosearch' %}">ближайшую
+                        библиотеку</a> или войдите на портал с использованием учетной записи на портале
+                        Госуслуг.
+                    {% endif %}
                 </div>
             {% endif %}
         </div>
     </main>
-
-
-
-
-
-
-
-
-
-
-
-
-
-{#    <nav class="bg bg_second">#}
-{#        <div class="container">#}
-{#            {% include 'main_menu.html' %}#}
-{#        </div>#}
-{#    </nav>#}
-{#    <main>#}
-{#        <div class="container">#}
-{#            <ul class="bread__crumbs">#}
-{#                <li>#}
-{#                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">#}
-{#                        {% if LANGUAGE_CODE == 'ru' %}#}
-{#                            Главная#}
-{#                        {% elif LANGUAGE_CODE == 'tt' %}#}
-{#                            Төп бит#}
-{#                        {% else %}#}
-{#                            Home#}
-{#                        {% endif %}#}
-{#                    </a>#}
-{#                </li>#}
-{#                <li>#}
-{#                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">#}
-{#                </li>#}
-{#                <li>#}
-{#                    <a href="{% url 'personal:frontend:index' %}" class="bread__crumbs_link">#}
-{#                        Личный кабинет#}
-{#                    </a>#}
-{#                </li>#}
-{#                <li>#}
-{#                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">#}
-{#                </li>#}
-{#                <li>#}
-{#                    <a class="bread__crumbs_link bread__crumbs_link_active">#}
-{#                        Выданные книги#}
-{#                    </a>#}
-{#                </li>#}
-{#            </ul>#}
-{#        </div>#}
-{#        <hr class="footer-hr">#}
-{#        <div class="container content-page">#}
-{#            <div class="row">#}
-{#                <div class="col-12">#}
-{#                    <h1 class="content-page__title">Выданные книги</h1>#}
-{##}
-{#                    <div class="content-page__text">#}
-{#                        {% if libraries %}#}
-{#                            <ul style="list-style: none; margin: 0">#}
-{#                                {% for library in libraries %}#}
-{#                                    {% if library.books %}#}
-{#                                        <li>#}
-{#                                            <div class="thumbnail" style="margin-bottom: 10px;">#}
-{#                                                <h3><a target="_blank"#}
-{#                                                       href="{% url 'participants:frontend:detail' library.code %}">{{ library.name }}</a>#}
-{#                                                </h3>#}
-{##}
-{#                                                <div class="on_hand"#}
-{#                                                     id="{% url 'orders:frontend:on_hand_in_lib' library.id %}">#}
-{#                                                    <ul style="list-style: none;">#}
-{#                                                        {% if library.error %}#}
-{#                                                            <li>#}
-{#                                                                <div class="alert alert-error">{{ library.error }}</div>#}
-{#                                                            </li>#}
-{#                                                        {% else %}#}
-{#                                                            {% for book in library.books %}#}
-{#                                                                <li>{{ book.record|safe }}#}
-{#                                                                    <div class="alert alert-success">#}
-{#                                                                        <b>Примечание</b>: {{ book.description }}#}
-{#                                                                    </div>#}
-{#                                                                </li>#}
-{#                                                                {% if not forloop.last %}#}
-{#                                                                    <hr/>{% endif %}#}
-{#                                                            {% empty %}#}
-{#                                                                <li>#}
-{#                                                                    <div class="alert">Выданных книг нет</div>#}
-{#                                                                </li>#}
-{#                                                            {% endfor %}#}
-{#                                                        {% endif %}#}
-{#                                                    </ul>#}
-{#                                                </div>#}
-{#                                            </div>#}
-{#                                        </li>#}
-{#                                    {% endif %}#}
-{#                                {% endfor %}#}
-{#                            </ul>#}
-{#                        {% else %}#}
-{#                            <p>#}
-{#                                Вы не являетесь читателем. Обратитесь в <a#}
-{#                                    href="{% url 'participants:frontend:geosearch' %}">ближайшую библиотеку</a> или#}
-{#                                войдите на портал с использованием учетной записи на портале Госуслуг.#}
-{#                            </p>#}
-{#                        {% endif %}#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{##}
-{#    </main>#}
 {% endblock %}

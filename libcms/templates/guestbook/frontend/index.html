@@ -49,7 +49,15 @@
                                 <div class="card__body">
                                     {{ feedback.content|safe }}
                                     {% if feedback.comment %}
-                                        <h4>Ответ</h4>
+                                        <h4>
+                                        {% if LANGUAGE_CODE == 'ru' %}
+                                            Җавап
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Кунаклар китабы
+                                        {% else %}
+                                            Answer
+                                        {% endif %}
+                                        </h4>
                                         {{ feedback.comment|safe }}
                                     {% endif %}
                                 </div>

@@ -6,7 +6,15 @@
 <section>
     <div id="breadcrumbs">
         <ul class="breadcrumb">
-            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">
+            {% if LANGUAGE_CODE == 'ru' %}
+                Главная
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Төп бит
+            {% else %}
+                Home
+            {% endif %}
+            </a> <span class="divider">/</span></li>
             {% if request.GET.back %}
                 <li><a href="{{ request.GET.back }}">{% if LANGUAGE_CODE == 'ru' %}Галерея{% else %}Gallery{% endif %}</a><span class="divider">/</span></li>
             {% else %}
