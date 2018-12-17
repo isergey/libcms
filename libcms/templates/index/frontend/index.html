@@ -94,30 +94,95 @@
                             <ul class="nav-hot-list">
                                 <li class="nav-hot-list__item">
                                     <a class="nav-hot-list__link" href="{% url 'participants:frontend:index' %}">
-                                        <h2 class="nav-hot-list__title">Библиотеки</h2>
-                                        <p class="nav-hot-list__description">Найдите свою библиотеку в Республике
-                                            Татарстан</p>
+                                        <h2 class="nav-hot-list__title">
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Библиотеки
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Китапханә
+                                            {% else %}
+                                                Libraries
+                                            {% endif %}
+                                        </h2>
+                                        <p class="nav-hot-list__description">
+
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Найдите свою библиотеку в Республике
+                                                Татарстан
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Татарстан Республикасында үз китапханәгегезне табыгыз
+                                            {% else %}
+                                                Find your library in the Republic of Tatarstan
+                                            {% endif %}
+                                        </p>
                                     </a>
                                 </li>
                                 <li class="nav-hot-list__item">
                                     <a class="nav-hot-list__link nav-hot-list__link_2" href="{% url 'ask_librarian:frontend:index' %}">
-                                        <h2 class="nav-hot-list__title">Задать вопрос</h2>
-                                        <p class="nav-hot-list__description">Ищете информацию? Виртуальная справочная
-                                            служба поможет!</p>
+                                        <h2 class="nav-hot-list__title">
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Задать вопрос
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Сорау бирү
+                                            {% else %}
+                                                Ask a question
+                                            {% endif %}
+                                        </h2>
+                                        <p class="nav-hot-list__description">
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Ищете информацию? Виртуальная справочная
+                                                служба поможет!
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Ищу мәгълүмат? Виртуаль белешмә хезмәте ярдәм итәчәк!
+                                            {% else %}
+                                                Looking for information? Ask a question service will help!
+                                            {% endif %}
+
+                                        </p>
                                     </a>
                                 </li>
                                 <li class="nav-hot-list__item">
                                     <a class="nav-hot-list__link nav-hot-list__link_3" href="{% url 'events:frontend:index' %}">
-                                        <h2 class="nav-hot-list__title">Афиша</h2>
-                                        <p class="nav-hot-list__description">Приглашения на мероприятия в библиотеках
-                                            республики</p>
+                                        <h2 class="nav-hot-list__title">
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Афиша
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Афиша
+                                            {% else %}
+                                                Library events
+                                            {% endif %}
+                                        </h2>
+                                        <p class="nav-hot-list__description">
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Приглашения на мероприятия в библиотеках республики
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Республика китапханәләрендәге чараларга чакыру
+                                            {% else %}
+                                                Invitations to events in the libraries of the Republic
+                                            {% endif %}
+                                        </p>
                                     </a>
                                 </li>
                                 <li class="nav-hot-list__item">
                                     <a class="nav-hot-list__link nav-hot-list__link_4" href="{% url 'recommended_reading:frontend:index' 'school' %}">
-                                        <h2 class="nav-hot-list__title">Школьникам</h2>
-                                        <p class="nav-hot-list__description">Рекомендуемая литература с 1го по 11ый
-                                            класс</p>
+                                        <h2 class="nav-hot-list__title">
+
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Школьникам
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Мәктәп укучыларына
+                                            {% else %}
+                                                Schoolchildren
+                                            {% endif %}
+                                        </h2>
+                                        <p class="nav-hot-list__description">
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Рекомендуемая литература с 1-го по 11-ый класс
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                1-11 класска тәкъдим ителә торган әдәбият
+                                            {% else %}
+                                                Recommended literature 1st to 11th grade
+                                            {% endif %}
+                                        </p>
                                     </a>
                                 </li>
                             </ul>
@@ -129,12 +194,12 @@
 
 
         <div class="container">
-            <section class="card news-main">
-                <h2 class="news-main__title">Мы обновляем дизайн, а также вносим другие изменения</h2>
-                <p class="news-main__description">Некоторое время могут возникать проблемы с входом в кабинет, но не
-                    грустите - мы постараемся как можно быстрее завершить работы.</p>
+{#            <section class="card news-main">#}
+{#                <h2 class="news-main__title">Мы обновляем дизайн, а также вносим другие изменения</h2>#}
+{#                <p class="news-main__description">Некоторое время могут возникать проблемы с входом в кабинет, но не#}
+{#                    грустите - мы постараемся как можно быстрее завершить работы.</p>#}
                 {#                <a class="news-main__link" href="#">Подробнее о конкурсе</a>#}
-            </section>
+{#            </section>#}
             <section class="card-transparent new-arrival-card">
                 <header class="card-transparent__header">
                     <h2 class="card-transparent__title">
