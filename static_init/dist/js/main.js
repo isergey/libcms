@@ -13,10 +13,9 @@ $(document).ready(function () {
         slidesPerView: 4,
         spaceBetween: 25,
         loop: true,
-        mousewheel: true,
+        mousewheel: false,
         autoplay: true,
         delay: 5000,
-        releaseOnEdges: true,
         pagination: {
             el: '.swiper-pagination-news-arrival',
             clickable: true,
@@ -38,11 +37,10 @@ $(document).ready(function () {
     let eventSwiper = new Swiper('.swiper-container-event', {
         spaceBetween: 0,
         slidesPerView: 1,
-        mousewheel: true,
+        mousewheel: false,
         loop: true,
         autoplay: true,
         delay: 10000,
-        releaseOnEdges: true,
         pagination: {
             el: '.swiper-pagination-event',
             clickable: true,
