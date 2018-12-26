@@ -5,7 +5,6 @@
 {% load participant_events_tags %}
 {% load participant_banners_tags %}
 {% load participiants_tags %}
-
 {% block title %}{{ library.name }}{% for ancestor in ancestors %} / {{ ancestor.name }}{% endfor %}{% endblock %}
 {% block content %}
     {% get_current_language as LANGUAGE_CODE %}
@@ -17,7 +16,13 @@
                     <ol class="crumb__list">
                         <li>
                             <a href="{% url 'index:frontend:index' %}">
-                                Главная
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Главная
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Төп бит
+                                {% else %}
+                                    Home
+                                {% endif %}
                             </a>
                         </li>
                         {% for ancestor in ancestors %}
@@ -63,19 +68,50 @@
                             <p class="lib-detail__title-sub"> {{ ancestor.name }}</p>
                         {% endfor %}
                         <a class="lib-detail__link" href="{% url 'ssearch:frontend:index' %}?library={{ library.code }}"
-                           target="_blank">Поиск в каталоге</a>
+                           target="_blank">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Поиск в каталоге
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Эзләү каталоге
+                            {% else %}
+                                Search in catalog
+                            {% endif %}
+                        </a>
                         <br>
                         <a class="lib-detail__link" href="{% url 'participant_photopolls:frontend:index' library.code %}">
-                            Фотоконкурсы
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Фотоконкурсы
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Фотоконкурс
+                            {% else %}
+                                Photo contest
+                            {% endif %}
+
                         </a>
                     </div>
                 </div>
                 <ul class="lib-hot-nav">
                     <li class="lib-hot-nav__item">
-                        <button id="libraryMenuBtn" class="lib-hot-nav__link">Меню</button>
+                        <button id="libraryMenuBtn" class="lib-hot-nav__link">
+                            {% if LANGUAGE_CODE == 'en' %}
+                                Menu
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Меню
+                            {% else %}
+                                Меню
+                            {% endif %}
+                        </button>
                     </li>
                     <li class="lib-hot-nav__item">
-                        <button id="libraryContactBtn" class="lib-hot-nav__link">Контакты</button>
+                        <button id="libraryContactBtn" class="lib-hot-nav__link">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Контакты
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Бәйләнеш
+                            {% else %}
+                                Contacts
+                            {% endif %}
+                        </button>
                     </li>
                 </ul>
                 <div class="col-lg-6 col-md-12">
@@ -83,7 +119,15 @@
                         <div class="lib-contact__col">
                             <ul class="lib-contact-nav">
                                 <li class="lib-contact-nav__item">
-                                    <span class="lib-contact-nav__title">Сайт:</span>
+                                    <span class="lib-contact-nav__title">
+                                        {% if LANGUAGE_CODE == 'en' %}
+                                            Web site:
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Сайт:
+                                        {% else %}
+                                            Сайт:
+                                        {% endif %}
+                                    </span>
                                     {% if library.http_service %}
                                         <a class="lib-contact-nav__link" target="_blank" rel="nofollow, noopener"
                                            href="{{ library.http_service }}">{{ library.http_service }}</a>
@@ -96,12 +140,28 @@
                                     {% endif %}
                                 </li>
                                 <li class="lib-contact-nav__item">
-                                    <span class="lib-contact-nav__title">Телефон:</span>
+                                    <span class="lib-contact-nav__title">
+                                        {% if LANGUAGE_CODE == 'en' %}
+                                            Phone:
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Телефон:
+                                        {% else %}
+                                            Телефон:
+                                        {% endif %}
+                                    </span>
                                     {% if library.phone %}
                                         <a class="lib-contact-nav__link"
                                            href="tel:{{ library.phone }}">{{ library.phone }}</a>
                                     {% else %}
-                                        <span class="lib-contact-nav__text">не указан</span>
+                                        <span class="lib-contact-nav__text">
+                                            {% if LANGUAGE_CODE == 'en' %}
+                                                not have
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                юк
+                                            {% else %}
+                                                не указан
+                                            {% endif %}
+                                        </span>
                                     {% endif %}
                                 </li>
                                 <li class="lib-contact-nav__item">
@@ -110,11 +170,28 @@
                                         <a class="lib-contact-nav__link"
                                            href="mailto:{{ library.mail|lower }}">{{ library.mail|lower }}</a>
                                     {% else %}
-                                        <span class="lib-contact-nav__text">не указан</span>
+                                        <span class="lib-contact-nav__text">
+                                            {% if LANGUAGE_CODE == 'en' %}
+                                                not have
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                юк
+                                            {% else %}
+                                                не указан
+                                            {% endif %}
+                                        </span>
                                     {% endif %}
                                 </li>
                                 <li class="lib-contact-nav__item">
-                                    <span class="lib-contact-nav__title">Адрес:</span>
+                                    <span class="lib-contact-nav__title">
+
+                                        {% if LANGUAGE_CODE == 'en' %}
+                                            Address:
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Адрес:
+                                        {% else %}
+                                            Адрес:
+                                        {% endif %}
+                                    </span>
                                     <span class="lib-contact-nav__text">{{ library.postal_address|default:'не указан' }}</span>
                                 </li>
                             </ul>
@@ -134,9 +211,25 @@
                     <div class="col-lg-4 col-md-12">
                         <section class="card-transparent">
                             <header class="card-transparent__header">
-                                <h2 class="card-transparent__title">Новости</h2>
+                                <h2 class="card-transparent__title">
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        News
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Яңалыклар
+                                    {% else %}
+                                        Новости
+                                    {% endif %}
+                                </h2>
                                 <a class="card-transparent__link"
-                                   href="{% url 'participant_news:frontend:index' library.code %}">Архив новостей</a>
+                                   href="{% url 'participant_news:frontend:index' library.code %}">
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        News archive
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Яңалыклар Архивы
+                                    {% else %}
+                                        Архив новостей
+                                    {% endif %}
+                                </a>
                             </header>
                             {% participant_news_feed library.id 6 %}
                         </section>
@@ -164,7 +257,15 @@
                                     {% endif %}
                                 </a>
                                 <a class="card-transparent__link"
-                                   href="{% url 'participant_events:frontend:subscribe' library.code %}">Подписаться</a>
+                                   href="{% url 'participant_events:frontend:subscribe' library.code %}">
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        Subscribe
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Язылу
+                                    {% else %}
+                                        Подписаться
+                                    {% endif %}
+                                </a>
                             </header>
                             {% participant_events_nearest library.id 5 %}
                         </section>

@@ -3,7 +3,15 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% load events_tags %}
 {% load pagination_tag %}
-{% block title %}Афиша{% endblock %}
+{% block title %}
+    {% if LANGUAGE_CODE == 'ru' %}
+        Афиша
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Афиша
+    {% else %}
+        Library events
+    {% endif %}
+{% endblock %}
 {% block content %}
     <main>
         <div class="container">
@@ -22,21 +30,52 @@
                     </li>
                     {% if not date_filtered %}
                         <li>
-                            <span class="crumb__current">Афиша</span>
+                            <span class="crumb__current">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Афиша
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Афиша
+                                {% else %}
+                                    Library events
+                                {% endif %}
+                            </span>
                         </li>
                     {% else %}
                         <li>
-                            <a href="{% url 'events:frontend:index' %}">Афиша</a>
+                            <a href="{% url 'events:frontend:index' %}">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Афиша
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Афиша
+                                {% else %}
+                                    Library events
+                                {% endif %}
+                            </a>
                         </li>
                         <li>
-                        <span class="crumb__current">Афиша события за:
+                        <span class="crumb__current">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Афиша событий за:
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Вакыйгалар афишасы:
+                            {% else %}
+                                Date events:
+                            {% endif %}
                             {{ date_filtered|date:'j E Y' }}</span>
                         </li>
                     {% endif %}
                 </ol>
             </nav>
             <div class="content">
-                <h1 class="content__title">Афиша</h1>
+                <h1 class="content__title">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Афиша
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Афиша
+                    {% else %}
+                        Library events
+                    {% endif %}
+                </h1>
             </div>
             <br>
             <div class="row">

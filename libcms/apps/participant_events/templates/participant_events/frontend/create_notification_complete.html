@@ -1,5 +1,7 @@
 {% extends 'participant_site/frontend/index.html' %}
 {% load pagination_tag %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% block title %}Уведомление создано / {{ content.title }}{% endblock %}
 {% block content_library-crumb %}
     {% url 'participant_events:frontend:show' library.code event.id  as event_url %}
@@ -32,7 +34,13 @@
             </li>
             <li>
                 <span class="crumb__current">
-                    Уведомление создано
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Уведомление создано
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Нотификация булдырылган
+                    {% else %}
+                        The notification is created
+                    {% endif %}
                 </span>
             </li>
         </ol>
@@ -43,13 +51,44 @@
     <div class="col-lg-8 col-md-12">
         <div class="card-transparent">
             <div class="content">
-                <h1 class="content__title">Уведомление создано</h1>
+                <h1 class="content__title">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Уведомление создано
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Нотификация булдырылган
+                    {% else %}
+                        The notification is created
+                    {% endif %}
+                </h1>
                 <br>
                 <div class="alert alert-success">
-                    Заявка на уведомление о событии создана. Вы получите письмо с уведомлением в указанный Вами срок.
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Заявка на уведомление о событии создана. Вы получите письмо с уведомлением в указанный Вами срок.
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Гариза турында хәбәрнамә булдырылган вакыйга. Сез алачаксыз хат белән күрсәтелгән сезнең вакыты.
+                    {% else %}
+                        An event notification request has been created. You will receive a notification email within the time limit you specify.
+                    {% endif %}
+
                 </div>
-                <p>Через несколько секунд Вы будете переправлены на страницу события.
-                    <a href="{{ event_url }}">Перейти к событию</a>
+                <p>
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Через несколько секунд Вы будете переправлены на страницу события.
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Берничә секундтан соң, сез булачаксыз переправлены бу сәхифәне вакыйгалар.
+                    {% else %}
+                        After a few seconds, You will be redirected to the event page.
+                    {% endif %}
+
+                    <a href="{{ event_url }}">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Перейти к событию
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Вакыйгаларга күчү
+                        {% else %}
+                            Go to event
+                        {% endif %}
+                    </a>
                 </p>
             </div>
         </div>

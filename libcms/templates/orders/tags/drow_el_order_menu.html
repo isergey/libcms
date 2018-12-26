@@ -1,7 +1,18 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% if owners %}
     <section class="card card_bs-2 card_booking">
         <div class="card__header">
-            <h2 class="card__title card__title_sm">Бронирование ({{ owners|length }})</h2>
+            <h2 class="card__title card__title_sm">
+                {% if LANGUAGE_CODE == 'en' %}
+                    Reserve document
+                {% elif LANGUAGE_CODE == 'tt'  %}
+                    Броньлау
+                {% else %}
+                    Бронирование
+                {% endif %}
+                ({{ owners|length }})
+            </h2>
         </div>
         <div class="card__body">
             <ul class="card-booking">
@@ -14,9 +25,25 @@
                         </a>
                         {% if owner.has_catalog %}
                             <a class="card-booking__btn"
-                               href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">Забронировать</a>
+                               href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">
+                            {% if LANGUAGE_CODE == 'en' %}
+                                Reserve
+                            {% elif LANGUAGE_CODE == 'tt'  %}
+                                Броньларга
+                            {% else %}
+                                Забронировать
+                            {% endif %}
+                            </a>
                         {% else %}
-                            <span class="card-booking__btn card-booking__btn_dsb">Заказ отключен</span>
+                            <span class="card-booking__btn card-booking__btn_dsb">
+                                {% if LANGUAGE_CODE == 'en' %}
+                                    Order disabled
+                                {% elif LANGUAGE_CODE == 'tt'  %}
+                                    Заказ туктатылган
+                                {% else %}
+                                    Заказ отключен
+                                {% endif %}
+                            </span>
                         {% endif %}
                     </li>
                 {% endfor %}

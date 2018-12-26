@@ -1,12 +1,20 @@
 {% extends 'participant_site/frontend/index.html' %}
 {% load pagination_tag %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% block title %}Фотоконкурсы / {{ library.name }}{% endblock %}
 {% block content_library-crumb %}
     <nav class="crumb">
         <ol class="crumb__list">
             <li>
                 <a href="{% url 'index:frontend:index' %}">
-                    Главная
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
                 </a>
             </li>
             {% for ancestor in library.get_ancestors %}
@@ -21,7 +29,13 @@
             </li>
             <li>
                 <span class="crumb__current">
-                    Фотоконкурсы
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Фотоконкурсы
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Фотоконкурс
+                    {% else %}
+                        Photo contests
+                    {% endif %}
                 </span>
             </li>
         </ol>
@@ -31,7 +45,15 @@
     <div class="col-lg-7 col-md-12">
         <div class="card-transparent">
             <div class="card-transparent__header">
-                <h2 class="card-transparent__title">Фотоконкурсы</h2>
+                <h2 class="card-transparent__title">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Фотоконкурсы
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Фотоконкурс
+                    {% else %}
+                        Photo contests
+                    {% endif %}
+                </h2>
             </div>
             <div class="list list_mt">
                 {% for poll in polls_list %}
@@ -45,9 +67,25 @@
                             </h3>
                             <p class="list__description">{{ poll.poll_content.teaser }}</p>
                             <dl class="list__dl">
-                                <dt>Начало конкурса:</dt>
+                                <dt>
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        Начало конкурса:
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Бәйге башлана:
+                                    {% else %}
+                                        Start:
+                                    {% endif %}
+                                </dt>
                                 <dd>{{ poll.start_date|date:'d E Y H:i' }}</dd>
-                                <dt>Окончание конкурса:</dt>
+                                <dt>
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        Окончание конкурса:
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Бәйге тәмам:
+                                    {% else %}
+                                        End:
+                                    {% endif %}
+                                </dt>
                                 <dd>{{ poll.end_date|date:'d E Y H:i' }}</dd>
                             </dl>
                         </div>

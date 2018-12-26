@@ -18,7 +18,13 @@
             </li>
             <li>
                 <span class="crumb__current">
-                    Новости
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Новости
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Яңалык
+                    {% else %}
+                        News
+                    {% endif %}
                 </span>
             </li>
         </ol>
@@ -28,7 +34,15 @@
     <div class="col-lg-7 col-md-12">
         <div class="card-transparent">
             <div class="card-transparent__header">
-                <h2 class="card-transparent__title">Новости</h2>
+                <h2 class="card-transparent__title">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Новости
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Яңалык
+                    {% else %}
+                        News
+                    {% endif %}
+                </h2>
             </div>
             <div class="news-list">
                 {% for news in news_list %}

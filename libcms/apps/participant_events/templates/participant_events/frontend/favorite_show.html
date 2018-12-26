@@ -1,12 +1,39 @@
 {% extends 'index/frontend/index.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
     <ul class="breadcrumb">
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">
+            {% if LANGUAGE_CODE == 'ru' %}
+                Главная
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Төп бит
+            {% else %}
+                Home
+            {% endif %}
+        </a> <span class="divider">/</span></li>
         {% if request.GET.back %}
-            <li><a href="{{ request.GET.back }}">Мои события</a> <span class="divider">/</span></li>
+            <li><a href="{{ request.GET.back }}">
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Мои события
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Минем вакыйгалар
+                {% else %}
+                    My events
+                {% endif %}
+
+            </a> <span class="divider">/</span></li>
         {% else %}
-            <li><a href="{% url 'events:frontend:index' %}">Мои события</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'events:frontend:index' %}">
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Мои события
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Минем вакыйгалар
+                {% else %}
+                    My events
+                {% endif %}
+            </a> <span class="divider">/</span></li>
         {% endif %}
         <li class="active">{{ content.title }}</li>
     </ul>
@@ -15,7 +42,21 @@
     </div>
     <hr/>
     <div class="info">
-        <b>Место проведения</b>: {{ event.address }}<br/>
-        <b>Начало</b>: {{ event.start_date }}
+        {% if LANGUAGE_CODE == 'ru' %}
+            <b>Место проведения</b>:
+        {% elif LANGUAGE_CODE == 'tt' %}
+            <b>Үткәрү урыны</b>:
+        {% else %}
+            <b>Location</b>:
+        {% endif %}
+        {{ event.address }}<br/>
+        {% if LANGUAGE_CODE == 'ru' %}
+            <b>Начало</b>:
+        {% elif LANGUAGE_CODE == 'tt' %}
+            <b>Башлану датасы</b>:
+        {% else %}
+            <b>Start date</b>:
+        {% endif %}
+        {{ event.start_date }}
     </div>
 {% endblock %}

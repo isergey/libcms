@@ -133,7 +133,15 @@
                                                     </h3>
                                                     <a class="list__link"
                                                        href="{% url 'ssearch:frontend:index' %}?library={{ cbs.code }}"
-                                                       target="_blank">Поиск в каталоге</a>
+                                                       target="_blank">
+                                                        {% if LANGUAGE_CODE == 'ru' %}
+                                                            Поиск в каталоге
+                                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                                            Эзләү каталоге
+                                                        {% else %}
+                                                            Search in catalog
+                                                        {% endif %}
+                                                    </a>
                                                 </div>
                                             </div>
                                         {% empty %}

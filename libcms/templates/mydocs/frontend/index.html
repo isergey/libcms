@@ -87,15 +87,23 @@
                                 </div>
                                 <a class="btn" href="{% url 'ssearch:frontend:detail' record.saved_doc.gen_id %}">
                                     {% if LANGUAGE_CODE == 'ru' %}
-                                        подробнее
+                                        Подробнее
                                     {% elif LANGUAGE_CODE == 'tt' %}
-                                        җентекле
+                                        Җентекле
                                     {% else %}
-                                        details
+                                        Details
                                     {% endif %}
                                 </a>
                                 <a class="btn btn_ol" href="{% url 'mydocs:frontend:delete' record.saved_doc.id %}"
-                                   class="delete">Удалить</a>
+                                   class="delete">
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        Удалить
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Бетерү
+                                    {% else %}
+                                        Delete
+                                    {% endif %}
+                                </a>
                             </div>
                         </section>
 

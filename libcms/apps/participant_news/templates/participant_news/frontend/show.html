@@ -7,7 +7,13 @@
         <ol class="crumb__list">
             <li>
                 <a href="{% url 'index:frontend:index' %}">
-                    Главная
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
                 </a>
             </li>
             <li>
@@ -17,7 +23,13 @@
             </li>
             <li>
                 <a href="{% url 'participant_news:frontend:index' news.library.code %}">
-                    Новости
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Новости
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Яңалык
+                    {% else %}
+                        News
+                    {% endif %}
                 </a>
             </li>
         </ol>

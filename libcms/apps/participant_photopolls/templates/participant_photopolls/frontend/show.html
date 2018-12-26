@@ -7,7 +7,13 @@
         <ol class="crumb__list">
             <li>
                 <a href="{% url 'index:frontend:index' %}">
-                    Главная
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
                 </a>
             </li>
             {% for ancestor in library.get_ancestors %}
@@ -22,7 +28,13 @@
             </li>
             <li>
                 <a href="{% url 'participant_photopolls:frontend:index' library.code %}">
-                    Фотоконкурсы
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Фотоконкурсы
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Фотоконкурс
+                    {% else %}
+                        Photo contests
+                    {% endif %}
                 </a>
             </li>
         </ol>
@@ -34,10 +46,27 @@
             <div class="content">
                 <h1 class="content__title">{{ content.title }}</h1>
                 <div class="content__info">
+                    <span>
+                        <span class="icon-runer-silhouette-running-fast"></span>&nbsp;&nbsp;
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Начало конкурса:
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Бәйге башлана:
+                        {% else %}
+                            Start:
+                        {% endif %}
+                        {{ poll.start_date|date:'D' }} {{ poll.start_date|date:'d E Y H:i' }}
+                    </span>
                     <span><span
-                            class="icon-runer-silhouette-running-fast"></span>&nbsp;&nbsp;Начало: {{ poll.start_date|date:'D' }} {{ poll.start_date|date:'d E Y H:i' }}</span>
-                    <span><span
-                            class="icon-racing-flag"></span>&nbsp;&nbsp;Окончание: {{ poll.end_date|date:'D' }} {{ poll.end_date|date:'d E Y H:i' }}</span>
+                            class="icon-racing-flag"></span>&nbsp;&nbsp;
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Окончание конкурса:
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Бәйге тәмам:
+                        {% else %}
+                            End:
+                        {% endif %}
+                        {{ poll.end_date|date:'D' }} {{ poll.end_date|date:'d E Y H:i' }}</span>
                 </div>
                 {{ content.content|safe }}
             </div>
@@ -52,9 +81,23 @@
                                     <br>
                                     <span>{{ image_item.content.description|safe }}</span>
                                     <br>
-                                    <span>Голосов: {{ image_item.image.get_votes_count }}.</span>
+                                    <span>
+                                        {% if LANGUAGE_CODE == 'ru' %}
+                                            Голосов:
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Тавыш бирүчеләр саны:
+                                        {% else %}
+                                            Votes:
+                                        {% endif %}
+                                        {{ image_item.image.get_votes_count }}.</span>
                                     <a href="{% url 'participant_photopolls:frontend:vote' library.code poll.id image_item.image.id %}">
-                                        Отдать голос
+                                        {% if LANGUAGE_CODE == 'ru' %}
+                                            Тавыш бирү
+                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                            Тавыш бирүчеләр саны:
+                                        {% else %}
+                                            Vote
+                                        {% endif %}
                                     </a>
                                 </div>
                             </div>
@@ -72,23 +115,6 @@
                     </div>
                 </div>
             </div>
-{#            <ul>#}
-{#                {% for image_item in images_list %}#}
-{#                    <li>#}
-{#                        <div>{{ image_item.content.title }}</div>#}
-{#                        <div>{{ image_item.content.description|safe }}</div>#}
-{#                        <div>#}
-{#                            <img src="{{ MEDIA_URL }}{{ image_item.image.image }}">#}
-{#                        </div>#}
-{#                        <div>#}
-{#                            <span>Голосов: {{ image_item.image.get_votes_count }}.</span>#}
-{#                            <a href="{% url 'participant_photopolls:frontend:vote' library.code poll.id image_item.image.id %}">#}
-{#                                отдать голос#}
-{#                            </a>#}
-{#                        </div>#}
-{#                    </li>#}
-{#                {% endfor %}#}
-{#            </ul>#}
         </div>
 
     </div>

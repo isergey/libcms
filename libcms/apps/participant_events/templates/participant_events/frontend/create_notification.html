@@ -1,5 +1,6 @@
 {% extends 'participant_site/frontend/index.html' %}
 {% load i18n %}
+{% load bootstrap3 %}
 {% get_current_language as LANGUAGE_CODE %}
 {% block title %}Добавить напоминание о {{ content.title }}{% endblock %}
 {% block content_library-crumb %}
@@ -74,7 +75,8 @@
                 <br>
                 <form method="post" class="form-all">
                     {% csrf_token %}
-                    {% include 'administration/base_form_fields.html' with form=notification_form %}
+                    {% bootstrap_form notification_form %}
+{#                    {% include 'administration/base_form_fields.html' with form=notification_form %}#}
                     <br>
                     <button type="submit" class="btn">
                         {% if LANGUAGE_CODE == 'en' %}

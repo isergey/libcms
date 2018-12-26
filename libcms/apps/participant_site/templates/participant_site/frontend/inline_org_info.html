@@ -1,15 +1,32 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <div class="inline-org-info">
     <h3>{{ lubrary.name }}</h3>
 
     <div class="breadcrumb">
         <a title="Показать информацию об организации" class="show-org-info-toggler" href="#1">
             <span class="toggler">+</span>
-            <span>подробнее об организации</span>
+            <span>
+                {% if LANGUAGE_CODE == 'ru' %}
+                    подробнее об организации
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    оешма турында тулырак
+                {% else %}
+                    more about the organization
+                {% endif %}
+            </span>
         </a>
 
         <div class="inline-org-info__body" style="display: none">
             <p>
-                Сайт: {% if library.http_service %}
+                {% if LANGUAGE_CODE == 'en' %}
+                    Web site:
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Сайт:
+                {% else %}
+                    Сайт:
+                {% endif %}
+                {% if library.http_service %}
                 <a target="_blank" href="{{ library.http_service }}">{{ library.http_service }}</a>
             {% else %}
                 {% url 'participant_site:frontend:index' library.code as library_site_address %}
@@ -20,7 +37,15 @@
 
             </p>
 
-            <p>Адрес: {{ library.postal_address|default:'не указан' }}</p>
+            <p>
+                {% if LANGUAGE_CODE == 'en' %}
+                    Address:
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Адрес:
+                {% else %}
+                    Адрес:
+                {% endif %}
+                {{ library.postal_address|default:'не указан' }}</p>
         </div>
     </div>
 </div>

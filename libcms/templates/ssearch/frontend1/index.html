@@ -142,7 +142,15 @@
                                 <option value="author" {% if sort_attr == 'author' %}selected="selected"{% endif %}>Автору</option>
                                 <option value="title" {% if sort_attr == 'title' %}selected="selected"{% endif %}>Заглавию</option>
                                 <option value="date-of-publication" {% if sort_attr == 'date-of-publication' %}selected="selected"{% endif %}>Году публикации</option>
-                                <option value="tom" {% if sort_attr == 'tom' %}selected="selected"{% endif %}>Тому/части</option>
+                                <option value="tom" {% if sort_attr == 'tom' %}selected="selected"{% endif %}>
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        тому/части
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        бүлек
+                                    {% else %}
+                                        vol./part
+                                    {% endif %}
+                                </option>
                             </select>
                         {% empty %}
                             <select name="sort" style="width: auto;" class="sort_select">
@@ -150,7 +158,15 @@
                                 <option value="author">Автору</option>
                                 <option value="title">Заглавию</option>
                                 <option value="date-of-publication">Году публикации</option>
-                                <option value="tom">Тому/части</option>
+                                <option value="tom">
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        тому/части
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        бүлек
+                                    {% else %}
+                                        vol./part
+                                    {% endif %}
+                                </option>
                             </select>
                         {% endfor %}
                         <a href="#1" id="add_sort_button" title="Добавить условие сортировки">добавить</a>

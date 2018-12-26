@@ -72,7 +72,7 @@
                                         </option>
                                     </select>
                                     <input class="search-input__input" name="q" id="appendedInputButton" type="text"
-                                           placeholder="{% if LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}...">
+                                           placeholder="{% if LANGUAGE_CODE == 'en' %}Enter author, title, subject{% elif LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}...">
                                     <button class="search-input__btn">
                                         <i class="icon-search"
                                            title="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}"></i>
@@ -171,7 +171,7 @@
                                             {% elif LANGUAGE_CODE == 'tt' %}
                                                 Мәктәп укучыларына
                                             {% else %}
-                                                Schoolchildren
+                                                For schoolchildren
                                             {% endif %}
                                         </h2>
                                         <p class="nav-hot-list__description">
@@ -251,7 +251,15 @@
                 <div class="col-lg-6 col-md-12">
                     <section class="card-transparent">
                         <header class="card-transparent__header">
-                            <h2 class="card-transparent__title">Афиша</h2>
+                            <h2 class="card-transparent__title">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Афиша
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Афиша
+                                {% else %}
+                                    Library events
+                                {% endif %}
+                            </h2>
                             <a class="card-transparent__link" href="{% url 'events:frontend:index' %}">
 
                                 {% if LANGUAGE_CODE == 'en' %}

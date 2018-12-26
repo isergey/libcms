@@ -6,7 +6,7 @@
     <form action="{% url 'search:frontend:index' %}" method="GET">
 
         {% if  request.META.PATH_INFO == '/ru/' %}<h3 class="search">Поиск</h3>{% endif %}
-        <input type="text" placeholder="{% if LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}" name="value"/>
+        <input type="text" placeholder="{% if LANGUAGE_CODE == 'en' %}Enter author, title, subject{% elif LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}" name="value"/>
         <button type="submit" class="btn">Найти</button>
         <br>
         <label class="radio"><input type="radio" name="attr" id="all_tru" value="all_t"

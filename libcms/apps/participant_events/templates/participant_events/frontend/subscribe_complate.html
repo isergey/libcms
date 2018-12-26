@@ -1,5 +1,7 @@
 {% extends 'participant_site/frontend/index.html' %}
 {% load pagination_tag %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% block title %}Подписка оформлена / {{ library.name }}{% endblock %}
 {% block content_library-crumb %}
     {% url 'participant_events:frontend:show' library.code event.id  as event_url %}
@@ -30,17 +32,35 @@
             </li>
             <li>
                 <a href="{% url 'participant_events:frontend:index' library.code %}">
-                    Афиша
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Афиша
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Афиша
+                    {% else %}
+                        Events
+                    {% endif %}
                 </a>
             </li>
             <li>
                 <a href="{% url 'participant_events:frontend:subscribe' library.code %}">
-                    Подписка на мероприятия
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Подписка на мероприятия
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Язылу
+                    {% else %}
+                        Subscription
+                    {% endif %}
                 </a>
             </li>
             <li>
                 <span class="crumb__current">
-                    Подписка оформлена
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Подписка оформлена
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Язылу эшләнгән
+                    {% else %}
+                        Subscription is done
+                    {% endif %}
                 </span>
             </li>
         </ol>
@@ -50,44 +70,27 @@
     <div class="col-lg-8 col-md-12">
         <div class="card-transparent">
             <div class="content">
-                <h1 class="content__title">Подписка оформлена</h1>
+                <h1 class="content__title">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Подписка оформлена
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Язылу эшләнгән
+                    {% else %}
+                        Subscription is done
+                    {% endif %}
+                </h1>
                 <br>
-                <div class="alert alert-success">Ваша подписка оформлена. Теперь Вы будете получать уведомления о новых
-                    событиях и мероприятиях библиотеки
+                <div class="alert alert-success">
+
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Ваша подписка оформлена. Теперь Вы будете получать уведомления о новых событиях и мероприятиях библиотеки.
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Сезнең язылу әзер. Хәзер сез китапханәнең яңа вакыйгалары һәм чаралары турында мәгълүмат алачаксыз.
+                    {% else %}
+                        Your subscription is complete. You will now be notified of new library events and activities.
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
-
-
-
-
-
-{#{% block content %}#}
-{#    <div class="span12">#}
-{#        <div class="breadcrumb">#}
-{#            <span><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></span>#}
-{#            {% for ancestor in library.get_ancestors %}#}
-{#                <span>#}
-{#                    <a href="{% url 'participant_site:frontend:index' ancestor.code %}">{{ ancestor.name }}</a>#}
-{#                    <span class="divider">/</span>#}
-{#                </span>#}
-{#            {% endfor %}#}
-{#            <span><a href="{% url 'participant_site:frontend:index' library.code %}">{{ library.name }}</a> <span#}
-{#                    class="divider">/</span></span>#}
-{#            <span><a href="{% url 'participant_events:frontend:index' library.code %}">Афиша</a> <span#}
-{#                    class="divider">/</span></span>#}
-{#            <span><a#}
-{#                    href="{% url 'participant_events:frontend:subscribe' library.code %}">Подписка на мероприятия</a> <span#}
-{#                    class="divider">/</span></span>#}
-{#            <span class="active">Подписка оформлена</span>#}
-{#        </div>#}
-{#    </div>#}
-{#    <div class="span3">#}
-{#        {% include 'participant_site/frontend/site_menu.html' %}#}
-{#    </div>#}
-{#    <div class="span9">#}
-{#        <p>Ваша подписка оформлена. Теперь Вы будете получать уведомления о новых событиях и мероприятиях библиотеки</p>#}
-{#    </div>#}
-{#{% endblock %}#}

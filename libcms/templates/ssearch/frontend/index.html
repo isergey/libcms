@@ -45,7 +45,14 @@
                                     сорауүтәлү вакыты
                                 {% else %}
                                     request time
-                                {% endif %}: {{ search_statisics.search_time }} с.
+                                {% endif %}: {{ search_statisics.search_time }}
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    с.
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    с.
+                                {% else %}
+                                    s.
+                                {% endif %}
                             </span>
                         </li>
                     {% else %}
@@ -118,7 +125,7 @@
                                     </option>
                                 </select>
                                 <input class="search-input__input" type="text" name="q"
-                                       placeholder="{% if LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}...">
+                                       placeholder="{% if LANGUAGE_CODE == 'en' %}Enter author, title, subject{% elif LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}...">
                                 <button class="search-input__btn">
                                     <i class="icon-search"
                                        title="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}"></i>
@@ -134,7 +141,7 @@
                                             <span class="label-text">
                                                 {% if LANGUAGE_CODE == 'ru' %}Искать в
                                                     найденном{% elif LANGUAGE_CODE == 'tt' %}Табылганнан
-                                                    эзләү{% else %}Search in results{% endif %}
+                                                    эзләү{% else %}Search within results{% endif %}
                                             </span>
                                         </label>
                                     </div>
@@ -147,7 +154,7 @@
                                             {% elif LANGUAGE_CODE == 'tt' %}
                                                 Документлар табылды
                                             {% else %}
-                                                Records Found
+                                                Records found
                                             {% endif %}:
                                             {{ search_statisics.num_found }}
                                         </span>
@@ -190,8 +197,19 @@
                                 <div class="search-nav__item">
                                     <a class="search-nav__link" href="{% url 'ssearch:frontend:index' %}{% if request.GET.library %}?library={{ request.GET.library }}{% endif %}">
                                         {% if LANGUAGE_CODE == 'ru' %}
-                                            Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}
+                                            Очистить поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Clear search{% endif %}
                                     </a>
+                                </div>
+                                <div class="search-nav__item">
+                                    <span class="search-nav__text">
+                                         {% if LANGUAGE_CODE == 'ru' %}
+                                            Вы искали:
+                                         {% elif LANGUAGE_CODE == 'tt' %}
+                                             Сез эзләделәр:
+                                         {% else %}
+                                             You searched:
+                                         {% endif %}
+                                    </span>
                                 </div>
                                 {% for search_breadcumb in search_breadcumbs %}
                                     {% if not forloop.last %}
@@ -310,7 +328,13 @@
                                                {% if sort_attr == 'tom' %}checked{% endif %}
                                                onchange="this.form.submit()">
                                         <label class="search-btn__radio" for="sort-6">
-                                            тому/части
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                тому/части
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                бүлек
+                                            {% else %}
+                                                vol./part
+                                            {% endif %}
                                         </label>
                                     </span>
                                         </div>
@@ -382,7 +406,13 @@
                                                {% if sort_attr == 'tom' %}checked{% endif %}
                                                onchange="this.form.submit()">
                                         <label class="search-btn__radio" for="sort-6">
-                                            тому/части
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                тому/части
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                бүлек
+                                            {% else %}
+                                                vol./part
+                                            {% endif %}
                                         </label>
                                     </span>
                                         </div>
@@ -549,7 +579,7 @@
                                         {% elif LANGUAGE_CODE == 'tt' %}
                                             Китапханә буенча эзләү:
                                         {% else %}
-                                            Search in library:
+                                            Location in the library:
                                         {% endif %}
                                     </h2>
                                 </div>
@@ -562,15 +592,15 @@
                                             <span>{{ library.name }}</span>
                                         </p>
                                     {% else %}
-                                        <p class="card__text">
-                                            {% if LANGUAGE_CODE == 'ru' %}
-                                                Выберите библиотеку
-                                            {% elif LANGUAGE_CODE == 'tt' %}
-                                                Сайлагыз Китапханә
-                                            {% else %}
-                                                Select a library
-                                            {% endif %}
-                                        </p>
+{#                                        <p class="card__text">#}
+{#                                            {% if LANGUAGE_CODE == 'ru' %}#}
+{#                                                Выберите библиотеку#}
+{#                                            {% elif LANGUAGE_CODE == 'tt' %}#}
+{#                                                Сайлагыз Китапханә#}
+{#                                            {% else %}#}
+{#                                                Location in the library#}
+{#                                            {% endif %}#}
+{#                                        </p>#}
                                     {% endif %}
                                 </div>
                                 <div class="card__footer">
@@ -694,7 +724,13 @@
             <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="select_library-title">
                 <header class="modal__header">
                     <h2 class="modal__title" id="select_library-title">
-                        Выбрать библиотеку
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Выбрать библиотеку
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Китапханәне сайлау
+                        {% else %}
+                            Select a library:
+                        {% endif %}
                     </h2>
                     <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
                 </header>
@@ -713,7 +749,14 @@
                     </div>
                 </div>
                 <footer class="modal__footer">
-                    <button class="btn btn_ol" data-micromodal-close aria-label="Закрыть">Закрыть
+                    <button class="btn btn_ol" data-micromodal-close aria-label="Закрыть">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Закрыть
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Каплау
+                        {% else %}
+                            Close
+                        {% endif %}
                     </button>
                 </footer>
             </div>

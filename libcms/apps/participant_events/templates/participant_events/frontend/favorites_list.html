@@ -1,11 +1,29 @@
 {% extends 'index/frontend/index.html' %}
 {% load pagination_tag %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
     <ul class="breadcrumb">
 
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        <li class="active">Мои события</li>
+        <li><a href="{% url 'index:frontend:index' %}">
+            {% if LANGUAGE_CODE == 'ru' %}
+                Главная
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Төп бит
+            {% else %}
+                Home
+            {% endif %}
+        </a> <span class="divider">/</span></li>
+        <li class="active">
+            {% if LANGUAGE_CODE == 'ru' %}
+                Мои события
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Минем вакыйгалар
+            {% else %}
+                My events
+            {% endif %}
+        </li>
 
     </ul>
     <style>
@@ -34,7 +52,15 @@
                 {% endif %}
                 {{ event.event_content.teaser }}
             </div>
-            <div class="create_date">Начало: <b>{{ event.start_date }}</b></div>
+            <div class="create_date">
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Начало:
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Башлану датасы:
+                {% else %}
+                    Start date:
+                {% endif %}
+                <b>{{ event.start_date }}</b></div>
             {% if not forloop.last %}<hr/>{% endif %}
         {% endfor %}
     </ul>

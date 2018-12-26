@@ -6,7 +6,15 @@
     <nav class="crumb">
         <ol class="crumb__list">
             <li>
-                <a href="{% url 'index:frontend:index' %}">Главная</a>
+                <a href="{% url 'index:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
+                </a>
             </li>
             {% for ancestor in event.library.get_ancestors %}
                 <li>
@@ -17,7 +25,15 @@
                 <a href="{% url 'participant_site:frontend:index' event.library.code %}">{{ event.library.name }}</a>
             </li>
             <li>
-                <a href="{% url 'participant_events:frontend:index' event.library.code %}">Афиша</a>
+                <a href="{% url 'participant_events:frontend:index' event.library.code %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Афиша
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Афиша
+                    {% else %}
+                        Events
+                    {% endif %}
+                </a>
             </li>
             <li>
                 <span class="crumb__current">Информация о событии</span>
@@ -32,12 +48,43 @@
             <div class="content">
                 <h1 class="content__title">{{ content.title }}</h1>
                 <div class="content__info">
-                    <span><span class="icon-locating"></span>&nbsp;&nbsp;Место проведения: {{ event.address }}</span>
+                    <span><span class="icon-locating"></span>&nbsp;&nbsp;
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Место проведения:
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Үткәрү урыны:
+                        {% else %}
+                            Location:
+                        {% endif %}
+                        {{ event.address }}</span>
                     <span><span
-                            class="icon-runer-silhouette-running-fast"></span>&nbsp;&nbsp;Начало: {{ event.start_date|date:'D' }} {{ event.start_date|date:'d E Y H:i' }}</span>
+                            class="icon-runer-silhouette-running-fast"></span>
+                        {% if LANGUAGE_CODE == 'ru' %}
+                        Начало:
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Башлану датасы:
+                    {% else %}
+                        Start date:
+                    {% endif %}
+                        {{ event.start_date|date:'D' }} {{ event.start_date|date:'d E Y H:i' }}</span>
                     <span><span
-                            class="icon-racing-flag"></span>&nbsp;&nbsp;Окончание: {{ event.end_date|date:'D' }} {{ event.end_date|date:'d E Y H:i' }}</span>
-                    <span><span class="icon-wall-clock"></span>&nbsp;&nbsp;Длительность:
+                            class="icon-racing-flag"></span>&nbsp;&nbsp;
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Окончание:
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Тәмамлану көне:
+                        {% else %}
+                            End date:
+                        {% endif %}
+                        {{ event.end_date|date:'D' }} {{ event.end_date|date:'d E Y H:i' }}</span>
+                    <span><span class="icon-wall-clock"></span>&nbsp;&nbsp;
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Длительность:
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Озынлык:
+                        {% else %}
+                            Duration:
+                        {% endif %}
                         {% if period.0 %}
                             {{ period.0 }} д.
                         {% endif %}
@@ -48,17 +95,46 @@
                             {{ period.2 }} мин.
                         {% endif %}
                         </span>
-                    <span><span class="icon-man-user"></span>&nbsp;&nbsp;Возрастная категория:
+                    <span><span class="icon-man-user"></span>&nbsp;&nbsp;
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Возрастная категория:
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Яшь категориясе:
+                        {% else %}
+                            Age category:
+                        {% endif %}
+
                         {% for age_category in event.age_category.all %}
                             {{ age_category|lower }} {% endfor %}</span>
                     <span><span
-                            class="icon-line-chart"></span>&nbsp;&nbsp;Направление:
+                            class="icon-line-chart"></span>&nbsp;&nbsp;
+                        {% if LANGUAGE_CODE == 'ru' %}
+                           Направление:
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Юнәлеш:
+                        {% else %}
+                            Subject:
+                        {% endif %}
                         {% for event_type in event.event_type.all %}{{ event_type|lower }}{% endfor %}</span>
                 </div>
-                <p><a href="{% url 'participant_events:frontend:create_notification' library.code event.id %}">Установить
-                    напоминание</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a
-                        href="{% url 'participant_events:frontend:make_icalendar' library.code event.id %}">Загрузить в
-                    календарь</a>
+                <p><a href="{% url 'participant_events:frontend:create_notification' library.code event.id %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                       Установить напоминание:
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Искәртү урнаштыру:
+                    {% else %}
+                        Set a reminder:
+                    {% endif %}
+                </a>&nbsp;&nbsp;/&nbsp;&nbsp;<a
+                        href="{% url 'participant_events:frontend:make_icalendar' library.code event.id %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                       Загрузить в календарь
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Скачать бу календаре
+                    {% else %}
+                        Upload to calendar
+                    {% endif %}
+                </a>
                 </p>
                 {{ content.content|safe }}
             </div>

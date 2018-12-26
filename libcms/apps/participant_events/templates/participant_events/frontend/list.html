@@ -1,11 +1,21 @@
 {% extends 'participant_site/frontend/index.html' %}
 {% load pagination_tag %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% block title %}Афиша / {{ library.name }}{% endblock %}
 {% block content_library-crumb %}
     <nav class="crumb">
         <ol class="crumb__list">
             <li>
-                <a href="{% url 'index:frontend:index' %}">Главная</a>
+                <a href="{% url 'index:frontend:index' %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Главная
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Төп бит
+                    {% else %}
+                        Home
+                    {% endif %}
+                </a>
             </li>
             {% for ancestor in library.get_ancestors %}
                 <li>
@@ -18,8 +28,15 @@
                 </a>
             </li>
             <li>
-                    <span class="crumb__current">Афиша {% if date %}за
-                        {{ date|date:'d E Y' }}{% endif %}</span>
+                    <span class="crumb__current">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Афиша  {% if date %}за {{ date|date:'d E Y' }}{% endif %}
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Афиша {% if date %}за {{ date|date:'d E Y' }}{% endif %}
+                        {% else %}
+                            Events {% if date %}for {{ date|date:'d E Y' }}{% endif %}
+                        {% endif %}
+                    </span>
             </li>
         </ol>
     </nav>
@@ -29,7 +46,15 @@
         <div class="card-transparent">
             <div class="card-transparent__header">
                 <h2 class="card-transparent__title">Афиша</h2>
-                <a class="card-transparent__link" href="{% url 'participant_events:frontend:subscribe' library.code %}">Подписаться</a>
+                <a class="card-transparent__link" href="{% url 'participant_events:frontend:subscribe' library.code %}">
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Подписаться
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Язылу
+                    {% else %}
+                        Subscribe
+                    {% endif %}
+                </a>
             </div>
             <div class="event-list">
                 {% for event in events_list %}
@@ -49,8 +74,15 @@
                                 </a>
                             </h3>
                             <p class="event-list__detail-description">{{ event.event_content.teaser }}</p>
-                            <p class="event-list__detail-description">Место
-                                проведения: {{ event.library.name }}</p>
+                            <p class="event-list__detail-description">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Место проведения:
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Үткәрү урыны:
+                                {% else %}
+                                    Location:
+                                {% endif %}
+                                {{ event.library.name }}</p>
                         </div>
                     </article>
                 {% endfor %}

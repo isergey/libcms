@@ -67,7 +67,7 @@
         {% elif LANGUAGE_CODE == 'tt' %}
             Бу ай эчендә өстәлгән:
         {% else %}
-            Added for the current month:
+            Сurrent month arrivals:
         {% endif %}
         {{ stats.count_last_month }}
     </p>
@@ -77,7 +77,7 @@
         {% elif LANGUAGE_CODE == 'tt' %}
             Соңгы 30 көн эчендә өстәлгән:
         {% else %}
-            Added in the last 30 days:
+            Last 30 days arrivals:
         {% endif %}
         {{ stats.count_last_30 }}
     </p>
@@ -99,7 +99,14 @@
                         <div class="col-lg-9 col-sm-12">
                             <div class="content">
                                 <a href="{% url 'ssearch:frontend:ecollection' %}?q=%2A&q={{ collection|hash:'persistant-number'|hash:0 }}&attr=text&attr=fond_sf&in_founded=on">
-                                    Поиск по коллекции
+
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        Поиск по коллекции:
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Эзләү буенча коллекцияләр:
+                                    {% else %}
+                                        Collection search:
+                                    {% endif %}
                                 </a>
                                 <ul>
                                     {% for comments in collection.comments %}
@@ -118,7 +125,15 @@
                     </div>
                 </div>
                 <footer class="modal__footer">
-                    <button class="btn btn_ol" data-micromodal-close>Закрыть</button>
+                    <button class="btn btn_ol" data-micromodal-close>
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Закрыть
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Каплау
+                        {% else %}
+                            Close
+                        {% endif %}
+                    </button>
                 </footer>
             </div>
         </div>
