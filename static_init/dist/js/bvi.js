@@ -1,11 +1,11 @@
 /*!
  * Button visually impaired v1.0.6
  */
-(function ($) {
+(function($) {
 
     var method = {
         BviConsoleLog: function (setting, fun, param) {
-            if (setting == 1) {
+            if (setting == 1 ) {
                 $.each(param, function (id, value) {
                     console.log('console.log.bvi - ' + fun + ' | [' + id + ' - (' + value + ')]');
                 });
@@ -14,14 +14,14 @@
                 console.log('Bvi [console.log.bvi - off]');
             }
         },
-        Init: function (setting) {
+        Init: function(setting) {
             var selector = $(this).selector;
             var setting = $.extend({
                 BviPanel: 1,
                 BviPanelActive: 0,
                 BviPanelBg: "white",
                 BviPanelFontFamily: "default",
-                BviPanelFontSize: "14",
+                BviPanelFontSize: "12",
                 BviPanelLetterSpacing: "normal",
                 BviPanelLineHeight: "normal",
                 BviPanelImg: 1,
@@ -57,8 +57,8 @@
 
                 $(selector).addClass('bvi-hide');
                 $('.bvi-panel-open-menu').addClass('bvi-hide');
-                $(selector).after($('<a href="#" class="bvi-panel-close" title="' + setting.BviPanelCloseText + '"><i class="bvi-glyphicon bvi-glyphicon-eye-close"></i> ' + setting.BviPanelCloseText + '</a>'));
-                $('.bvi-panel-open-menu').after($('<li class="bvi-panel-close"><a href="#" class="bvi-panel-close" title="' + setting.BviPanelCloseText + '"> ' + setting.BviPanelCloseText + '</a></li>'));
+                $(selector).after($('<a href="#" class="bvi-panel-close" title="'+setting.BviPanelCloseText+'"><i class="bvi-glyphicon bvi-glyphicon-eye-close"></i> '+setting.BviPanelCloseText+'</a>'));
+                $('.bvi-panel-open-menu').after($('<li class="bvi-panel-close"><a href="#" class="bvi-panel-close" title="'+setting.BviPanelCloseText+'"> '+setting.BviPanelCloseText+'</a></li>'));
                 $(setting.BviCloseClassAndId).hide();
                 $('body').wrapInner('<div class="bvi-body"></div>');//wrapInner
                 $('<div class="bvi-panel"></div>').prependTo("body");
@@ -98,119 +98,119 @@
                     });
                 }
 
-                $('<div class="bvi-container">' +
-                    '<div class="bvi-row">' +
-                    '<div class="bvi-panel-menu">' +
-                    '<div class="bvi-col-xs-12 bvi-col-sm-12 bvi-col-md-12 bvi-col-lg-12 bvi-bg bvi-animated bvi-slideInDown">' +
-                    '<div class="bvi-row">' +
-                    '<div class="bvi-col-xs-6 bvi-col-sm-6 bvi-col-md-2 bvi-col-lg-2 bvi-vertical">' +
-                    '<div class="bvi-rows">' +
-                    '<div class="bvi-title-header">Размер шрифта</div>' +
-                    '<div class="bvi-btn-group">' +
-                    '<a href="#" id="bvi-font-size-minus" class="bvi-btn bvi-btn-default" title="Уменьшить шрифт"><i class="bvi-glyphicon bvi-glyphicon-font"></i><b>-</b></a>' +
-                    '<a href="#" id="bvi-font-size-plus" class="bvi-btn bvi-btn-default" title="Увеличить шрифт"><i class="bvi-glyphicon bvi-glyphicon-font"></i><b>+</b></a>' +
-                    '</div>' +
-                    '<div class="bvi-title-text"><span id="bvi-size-number"></span> <span id="bvi-size-text"></span></div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="bvi-col-xs-6 bvi-col-sm-6 bvi-col-md-4 bvi-col-lg-3 bvi-vertical">' +
-                    '<div class="bvi-rows">' +
-                    '<div class="bvi-title-header">Цвета сайта</div>' +
-                    '<div class="bvi-btn-group">' +
-                    '<a href="#" id="bvi-color-white" class="bvi-btn bvi-btn-white" title="Цвет сайта: Черным по белому"><i class="bvi-glyphicon bvi-glyphicon-font"></i></a>' +
-                    '<a href="#" id="bvi-color-black" class="bvi-btn bvi-btn-black" title="Цвет сайта: Белым по черному"><i class="bvi-glyphicon bvi-glyphicon-font"></i></a>' +
-                    '<a href="#" id="bvi-color-blue" class="bvi-btn bvi-btn-blue" title="Цвет сайта: Темно-синим по голубому"><i class="bvi-glyphicon bvi-glyphicon-font"></i></a>' +
-                    '<a href="#" id="bvi-color-brown" class="bvi-btn bvi-btn-brown" title="Цвет сайта: Коричневым по бежевому"><i class="bvi-glyphicon bvi-glyphicon-font"></i></a>' +
-                    '<a href="#" id="bvi-color-green" class="bvi-btn bvi-btn-green" title="Цвет сайта: Зеленым по темно-коричневому"><i class="bvi-glyphicon bvi-glyphicon-font"></i></a>' +
-                    '</div>' +
-                    '<div class="bvi-title-text"><span id="bvi-color-text"></span></div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="bvi-col-xs-6 bvi-col-sm-6 bvi-col-md-3 bvi-col-lg-3 bvi-vertical">' +
-                    '<div class="bvi-rows">' +
-                    '<div class="bvi-title-header">Изображения</div>' +
-                    '<div class="bvi-btn-group">' +
-                    '<a href="#" id="bvi-img-on" class="bvi-btn bvi-btn-default" title="Включить" style="color: green"><i class="bvi-glyphicon bvi-glyphicon-picture"></i></a>' +
-                    '<a href="#" id="bvi-img-off" class="bvi-btn bvi-btn-default" title="Выключить" style="color: red"><i class="bvi-glyphicon bvi-glyphicon-picture"></i></a>' +
-                    '<a href="#" id="bvi-img-grayscale" class="bvi-btn bvi-btn-default" title="Черно-белые"><i class="bvi-glyphicon bvi-glyphicon-adjust"></i></a>' +
-                    '</div>' +
-                    '<div class="bvi-title-text"><span id="bvi-img-text"></span></div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="bvi-col-xs-6 bvi-col-sm-6 bvi-col-md-4 bvi-col-lg-4">' +
-                    '<div class="bvi-rows">' +
-                    '<div class="bvi-title-header">Дополнительно</div>' +
-                    '<div class="bvi-btn-group">' +
+                $('<div class="bvi-container">'+
+                    '<div class="bvi-row">'+
+                    '<div class="bvi-panel-menu">'+
+                    '<div class="bvi-col-xs-12 bvi-col-sm-12 bvi-col-md-12 bvi-col-lg-12 bvi-bg bvi-animated bvi-slideInDown">'+
+                    '<div class="bvi-row">'+
+                    '<div class="bvi-col-xs-6 bvi-col-sm-6 bvi-col-md-2 bvi-col-lg-2 bvi-vertical">'+
+                    '<div class="bvi-rows">'+
+                    '<div class="bvi-title-header">Размер шрифта</div>'+
+                    '<div class="bvi-btn-group">'+
+                    '<a href="#" id="bvi-font-size-minus" class="bvi-btn bvi-btn-default" title="Уменьшить шрифт"><i class="bvi-glyphicon bvi-glyphicon-font"></i><b>-</b></a>'+
+                    '<a href="#" id="bvi-font-size-plus" class="bvi-btn bvi-btn-default" title="Увеличить шрифт"><i class="bvi-glyphicon bvi-glyphicon-font"></i><b>+</b></a>'+
+                    '</div>'+
+                    '<div class="bvi-title-text"><span id="bvi-size-number"></span> <span id="bvi-size-text"></span></div>'+
+                    '</div>'+
+                    '</div>'+
+                    '<div class="bvi-col-xs-6 bvi-col-sm-6 bvi-col-md-4 bvi-col-lg-3 bvi-vertical">'+
+                    '<div class="bvi-rows">'+
+                    '<div class="bvi-title-header">Цвета сайта</div>'+
+                    '<div class="bvi-btn-group">'+
+                    '<a href="#" id="bvi-color-white" class="bvi-btn bvi-btn-white" title="Цвет сайта: Черным по белому"><i class="bvi-glyphicon bvi-glyphicon-font"></i></a>'+
+                    '<a href="#" id="bvi-color-black" class="bvi-btn bvi-btn-black" title="Цвет сайта: Белым по черному"><i class="bvi-glyphicon bvi-glyphicon-font"></i></a>'+
+                    '<a href="#" id="bvi-color-blue" class="bvi-btn bvi-btn-blue" title="Цвет сайта: Темно-синим по голубому"><i class="bvi-glyphicon bvi-glyphicon-font"></i></a>'+
+                    '<a href="#" id="bvi-color-brown" class="bvi-btn bvi-btn-brown" title="Цвет сайта: Коричневым по бежевому"><i class="bvi-glyphicon bvi-glyphicon-font"></i></a>'+
+                    '<a href="#" id="bvi-color-green" class="bvi-btn bvi-btn-green" title="Цвет сайта: Зеленым по темно-коричневому"><i class="bvi-glyphicon bvi-glyphicon-font"></i></a>'+
+                    '</div>'+
+                    '<div class="bvi-title-text"><span id="bvi-color-text"></span></div>'+
+                    '</div>'+
+                    '</div>'+
+                    '<div class="bvi-col-xs-6 bvi-col-sm-6 bvi-col-md-3 bvi-col-lg-3 bvi-vertical">'+
+                    '<div class="bvi-rows">'+
+                    '<div class="bvi-title-header">Изображения</div>'+
+                    '<div class="bvi-btn-group">'+
+                    '<a href="#" id="bvi-img-on" class="bvi-btn bvi-btn-default" title="Включить" style="color: green"><i class="bvi-glyphicon bvi-glyphicon-picture"></i></a>'+
+                    '<a href="#" id="bvi-img-off" class="bvi-btn bvi-btn-default" title="Выключить" style="color: red"><i class="bvi-glyphicon bvi-glyphicon-picture"></i></a>'+
+                    '<a href="#" id="bvi-img-grayscale" class="bvi-btn bvi-btn-default" title="Черно-белые"><i class="bvi-glyphicon bvi-glyphicon-adjust"></i></a>'+
+                    '</div>'+
+                    '<div class="bvi-title-text"><span id="bvi-img-text"></span></div>'+
+                    '</div>'+
+                    '</div>'+
+                    '<div class="bvi-col-xs-6 bvi-col-sm-6 bvi-col-md-4 bvi-col-lg-4">'+
+                    '<div class="bvi-rows">'+
+                    '<div class="bvi-title-header">Дополнительно</div>'+
+                    '<div class="bvi-btn-group">'+
                     //'<div class="bvi-btn-toolbar">'+
-                    '<a href="#" id="bvi-voice-off" class="bvi-btn bvi-btn-default" title="Синтез речи"><i class="bvi-glyphicon bvi-glyphicon-volume-off"></i></a>' +
-                    '<a href="#" id="bvi-voice-on" class="bvi-btn bvi-btn-default" title="Синтез речи"><i class="bvi-glyphicon bvi-glyphicon-volume-up"></i></a>' +
+                    '<a href="#" id="bvi-voice-off" class="bvi-btn bvi-btn-default" title="Синтез речи"><i class="bvi-glyphicon bvi-glyphicon-volume-off"></i></a>'+
+                    '<a href="#" id="bvi-voice-on" class="bvi-btn bvi-btn-default" title="Синтез речи"><i class="bvi-glyphicon bvi-glyphicon-volume-up"></i></a>'+
                     ///'</div>'+
-                    '<a href="#" id="bvi-settings" class="bvi-btn bvi-btn-default" title="Настройки"><i class="bvi-glyphicon bvi-glyphicon-cog"></i> Настройки</a>' +
-                    '<a href="#" id="bvi-close" class="bvi-btn bvi-btn-default" title="Обычная версия сайта"><i class="bvi-glyphicon bvi-glyphicon-eye-close"></i></a>' +
-                    '<a href="#" id="bvi-panel-hide" class="bvi-btn bvi-btn-default" title="Свернуть панель для слабовидящих"><i class="bvi-glyphicon bvi-glyphicon-arrow-up"></i></a>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="bvi-row">' +
-                    '<div class="bvi-col-xs-12 bvi-col-sm-12 bvi-col-md-12 bvi-col-lg-12">' +
-                    '<div class="bvi-settings">' +
-                    '<hr>' +
-                    '<div class="bvi-col-xs-12 bvi-col-sm-12 bvi-col-md-12 bvi-col-lg-4">' +
-                    '<div class="bvi-rows">' +
-                    '<div class="bvi-title-header">Кернинг</div>' +
-                    '<div class="bvi-btn-group">' +
-                    '<a href="#" id="bvi-letter-spacing-normal" class="bvi-btn bvi-btn-default" title="Стандартный">Стандартный</a>' +
-                    '<a href="#" id="bvi-letter-spacing-average" class="bvi-btn bvi-btn-default" title="Средний">Средний</a>' +
-                    '<a href="#" id="bvi-letter-spacing-big" class="bvi-btn bvi-btn-default" title="Большой">Большой</a>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="bvi-col-xs-12 bvi-col-sm-12 bvi-col-md-12 bvi-col-lg-4">' +
-                    '<div class="bvi-rows">' +
-                    '<div class="bvi-title-header">Интервал</div>' +
-                    '<div class="bvi-btn-group">' +
-                    '<a href="#" id="bvi-line-height-normal" class="bvi-btn bvi-btn-default" title="Одинарный">Одинарный</a>' +
-                    '<a href="#" id="bvi-line-height-average" class="bvi-btn bvi-btn-default" title="Полуторный">Полуторный</a>' +
-                    '<a href="#" id="bvi-line-height-big" class="bvi-btn bvi-btn-default" title="Двойной">Двойной</a>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="bvi-col-xs-12 bvi-col-sm-12 bvi-col-md-12 bvi-col-lg-4">' +
-                    '<div class="bvi-rows">' +
-                    '<div class="bvi-title-header">Гарнитура</div>' +
-                    '<div class="bvi-btn-group">' +
-                    '<a href="#" id="bvi-font-family-default" class="bvi-btn bvi-btn-default" title="Без засечек">Без засечек</a>' +
+                    '<a href="#" id="bvi-settings" class="bvi-btn bvi-btn-default" title="Настройки"><i class="bvi-glyphicon bvi-glyphicon-cog"></i> Настройки</a>'+
+                    '<a href="#" id="bvi-close" class="bvi-btn bvi-btn-default" title="Обычная версия сайта"><i class="bvi-glyphicon bvi-glyphicon-eye-close"></i></a>'+
+                    '<a href="#" id="bvi-panel-hide" class="bvi-btn bvi-btn-default" title="Свернуть панель для слабовидящих"><i class="bvi-glyphicon bvi-glyphicon-arrow-up"></i></a>'+
+                    '</div>'+
+                    '</div>'+
+                    '</div>'+
+                    '</div>'+
+                    '<div class="bvi-row">'+
+                    '<div class="bvi-col-xs-12 bvi-col-sm-12 bvi-col-md-12 bvi-col-lg-12">'+
+                    '<div class="bvi-settings">'+
+                    '<hr>'+
+                    '<div class="bvi-col-xs-12 bvi-col-sm-12 bvi-col-md-12 bvi-col-lg-4">'+
+                    '<div class="bvi-rows">'+
+                    '<div class="bvi-title-header">Кернинг</div>'+
+                    '<div class="bvi-btn-group">'+
+                    '<a href="#" id="bvi-letter-spacing-normal" class="bvi-btn bvi-btn-default" title="Стандартный">Стандартный</a>'+
+                    '<a href="#" id="bvi-letter-spacing-average" class="bvi-btn bvi-btn-default" title="Средний">Средний</a>'+
+                    '<a href="#" id="bvi-letter-spacing-big" class="bvi-btn bvi-btn-default" title="Большой">Большой</a>'+
+                    '</div>'+
+                    '</div>'+
+                    '</div>'+
+                    '<div class="bvi-col-xs-12 bvi-col-sm-12 bvi-col-md-12 bvi-col-lg-4">'+
+                    '<div class="bvi-rows">'+
+                    '<div class="bvi-title-header">Интервал</div>'+
+                    '<div class="bvi-btn-group">'+
+                    '<a href="#" id="bvi-line-height-normal" class="bvi-btn bvi-btn-default" title="Одинарный">Одинарный</a>'+
+                    '<a href="#" id="bvi-line-height-average" class="bvi-btn bvi-btn-default" title="Полуторный">Полуторный</a>'+
+                    '<a href="#" id="bvi-line-height-big" class="bvi-btn bvi-btn-default" title="Двойной">Двойной</a>'+
+                    '</div>'+
+                    '</div>'+
+                    '</div>'+
+                    '<div class="bvi-col-xs-12 bvi-col-sm-12 bvi-col-md-12 bvi-col-lg-4">'+
+                    '<div class="bvi-rows">'+
+                    '<div class="bvi-title-header">Гарнитура</div>'+
+                    '<div class="bvi-btn-group">'+
+                    '<a href="#" id="bvi-font-family-default" class="bvi-btn bvi-btn-default" title="Без засечек">Без засечек</a>'+
                     //'<a href="#" id="bvi-font-family-arial" class="bvi-btn bvi-btn-default" title="Без засечек">Без засечек</a>'+
-                    '<a href="#" id="bvi-font-family-times-new-roman" class="bvi-btn bvi-btn-default" title="С засечками">С засечками</a>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="bvi-col-xs-12 bvi-col-sm-12 bvi-col-md-12 bvi-col-lg-12">' +
-                    '<div class="bvi-rows">' +
-                    '<div class="bvi-btn-toolbar bvi-left">' +
-                    '<a href="#" id="bvi-flash-on" class="bvi-btn bvi-btn-default" title="Включить Фрейм"><i class="bvi-glyphicon bvi-glyphicon-flash"></i> Включить Фрейм</a>' +
-                    '<a href="#" id="bvi-flash-off" class="bvi-btn bvi-btn-default" title="Отключить Фрейм"><i class="bvi-glyphicon bvi-glyphicon-flash"></i> Выключить Фрейм</a>' +
-                    '<a href="#" id="bvi-settings-default" class="bvi-btn bvi-btn-default" title="Вернуть стандартные настройки"><i class="bvi-glyphicon bvi-glyphicon-refresh"></i> Вернуть стандартные настройки</a>' +
-                    '<a href="#" id="bvi-close" class="bvi-btn bvi-btn-default" title="Обычная версия сайта"><i class="bvi-glyphicon bvi-glyphicon-eye-close"></i> Обычная версия сайта</a>' +
-                    '</div>' +
-                    '<div class="bvi-btn-toolbar bvi-right">' +
-                    '<a href="#" id="bvi-settings-close" class="bvi-btn bvi-btn-default" title="Закрыть"><i class="bvi-glyphicon bvi-glyphicon-remove"></i> Закрыть</a>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="bvi-panel-show"><a href="#" id="bvi-panel-show" class="bvi-btn-panel-show" title="Показать панель для слабовидящих"><i class="bvi-glyphicon bvi-glyphicon-eye"></i></a></div>' +
-                    '</div>' +
+                    '<a href="#" id="bvi-font-family-times-new-roman" class="bvi-btn bvi-btn-default" title="С засечками">С засечками</a>'+
+                    '</div>'+
+                    '</div>'+
+                    '</div>'+
+                    '<div class="bvi-col-xs-12 bvi-col-sm-12 bvi-col-md-12 bvi-col-lg-12">'+
+                    '<div class="bvi-rows">'+
+                    '<div class="bvi-btn-toolbar bvi-left">'+
+                    '<a href="#" id="bvi-flash-on" class="bvi-btn bvi-btn-default" title="Включить Фрейм"><i class="bvi-glyphicon bvi-glyphicon-flash"></i> Включить Фрейм</a>'+
+                    '<a href="#" id="bvi-flash-off" class="bvi-btn bvi-btn-default" title="Отключить Фрейм"><i class="bvi-glyphicon bvi-glyphicon-flash"></i> Выключить Фрейм</a>'+
+                    '<a href="#" id="bvi-settings-default" class="bvi-btn bvi-btn-default" title="Вернуть стандартные настройки"><i class="bvi-glyphicon bvi-glyphicon-refresh"></i> Вернуть стандартные настройки</a>'+
+                    '<a href="#" id="bvi-close" class="bvi-btn bvi-btn-default" title="Обычная версия сайта"><i class="bvi-glyphicon bvi-glyphicon-eye-close"></i> Обычная версия сайта</a>'+
+                    '</div>'+
+                    '<div class="bvi-btn-toolbar bvi-right">'+
+                    '<a href="#" id="bvi-settings-close" class="bvi-btn bvi-btn-default" title="Закрыть"><i class="bvi-glyphicon bvi-glyphicon-remove"></i> Закрыть</a>'+
+                    '</div>'+
+                    '</div>'+
+                    '</div>'+
+                    '</div>'+
+                    '</div>'+
+                    '</div>'+
+                    '</div>'+
+                    '</div>'+
+                    '<div class="bvi-panel-show"><a href="#" id="bvi-panel-show" class="bvi-btn-panel-show" title="Показать панель для слабовидящих"><i class="bvi-glyphicon bvi-glyphicon-eye"></i></a></div>'+
+                    '</div>'+
                     '</div>').appendTo(".bvi-panel");
             }
 
-            if (setting.BviPanelActive == 0) {
-                $('.bvi-panel-open-menu,' + selector).click(function () {
+            if (setting.BviPanelActive == 0 ) {
+                $('.bvi-panel-open-menu,'+selector).click( function () {
                     Cookies.set("bvi-selector", selector, {
                         path: "/"
                     });
@@ -343,10 +343,9 @@
                 }
 
             }
-
             function BviFontSize() {
                 size = Cookies.get("bvi-font-size");
-                if (size <= 100) {
+                if (size <= 100){
                     BviReturnSet({
                         fontsize: size
                     });
@@ -467,7 +466,7 @@
                 });
 
                 var numbers = String(setting.fontsize);
-                var numbers = numbers.charAt(numbers.length - 1);
+                var numbers = numbers.charAt(numbers.length-1);
                 var numbers = parseInt(numbers, 10);
 
                 if (numbers == 1) {
@@ -494,7 +493,7 @@
                     $(".bvi-img-off").remove();
                     $(".bvi-img-on").remove();
 
-                    $("img").each(function () {
+                    $("img").each(function() {
                         $(".bvi-img-grayscale").remove();
                         $(".bvi-img-off").remove();
                         $(this).show();
@@ -510,13 +509,13 @@
                     $(".bvi-img-off").remove();
                     $(".bvi-img-grayscale").remove();
 
-                    $("img").each(function () {
+                    $("img").each(function() {
                         var alt = this.alt || 'Нет описания к изображению';
                         var imgClass = $(this).attr("class") || '';
                         var imgId = $(this).attr("id") || 'bvi-img-off';
                         $(this).hide();
                         if (Cookies.get("bvi-img-XY") == '1') {
-                            $(this).after($('<div class="bvi-img-off ' + imgClass + '" id="' + imgId + '" style="width: ' + $(this).width() + "px; height: " + $(this).height() + 'px">').html(alt))
+                            $(this).after($('<div class="bvi-img-off '+imgClass+'" id="'+imgId+'" style="width: ' + $(this).width() + "px; height: " + $(this).height() + 'px">').html(alt))
                         } else {
                             $(this).after($('<div class="bvi-img-off">').text(alt))
                         }
@@ -532,19 +531,19 @@
                     $(".bvi-img-off").remove();
                     $(".bvi-img-grayscale").remove();
 
-                    $("img").each(function () {
+                    $("img").each(function() {
                         var alt = this.alt || 'Нет описания к изображению';
                         var src = this.src;
                         var imgClass = $(this).attr("class") || 'bvi-class';
                         var imgId = $(this).attr("id") || 'bvi-img-off';
 
                         $(this).hide();
-                        $(this).after($('<img src="' + src + '" alt="' + alt + '" id="bvi-img-grayscale ' + imgId + '" class="bvi-img-grayscale ' + imgClass + '">'));
+                        $(this).after($('<img src="'+src+'" alt="'+alt+'" id="bvi-img-grayscale '+imgId+'" class="bvi-img-grayscale '+imgClass+'">'));
                     });
 
                     $('#bvi-img-text').html('Черно-белые');
                 } else {
-                    $("img").each(function () {
+                    $("img").each(function() {
                         $(".bvi-img-grayscale").remove();
                         $(".bvi-img-off").remove();
                         $(this).show();
@@ -556,7 +555,6 @@
                 if (Cookies.get("bvi-voice") === '1') {
                     $('#bvi-voice-on').hide();
                     $('#bvi-voice-off').show();
-
                     function getSelectionText() {
                         var text = "";
                         if (window.getSelection) {
@@ -566,7 +564,6 @@
                         }
                         return text;
                     }
-
                     /*
                     $(document).mouseup(function () {
                         setTimeout(function () {
@@ -583,7 +580,7 @@
                 }
             }
 
-            $("#bvi-close, .bvi-panel-close").click(function () {
+            $("#bvi-close, .bvi-panel-close").click(function() {
                 $('body').removeClass('bvi');
 
                 if (Cookies.get("bvi-voice") == '1') {
@@ -592,17 +589,17 @@
 
                 $('.bvi-animated').removeClass('bvi-slideInDown').addClass('bvi-fadeOutUp');
 
-                $('*').each(function () {
-                    $(this).removeAttr("style", 'font-family');
-                    $(this).removeAttr("style", 'background-color');
-                    $(this).removeAttr("style", 'background-image');
-                    $(this).removeAttr("style", 'color');
-                    $(this).removeAttr("style", 'font-size');
-                    $(this).removeAttr("style", 'box-shadow');
-                    $(this).removeAttr("style", 'text-shadow');
-                    $(this).removeAttr("style", 'letter-spacing');
-                    $(this).removeAttr("style", 'border-color');
-                    $(this).attr("style", $(this).attr('data-bvi-original'));
+                $('*').each(function(){
+                    $(this).removeAttr("style",'font-family');
+                    $(this).removeAttr("style",'background-color');
+                    $(this).removeAttr("style",'background-image');
+                    $(this).removeAttr("style",'color');
+                    $(this).removeAttr("style",'font-size');
+                    $(this).removeAttr("style",'box-shadow');
+                    $(this).removeAttr("style",'text-shadow');
+                    $(this).removeAttr("style",'letter-spacing');
+                    $(this).removeAttr("style",'border-color');
+                    $(this).attr("style",$(this).attr('data-bvi-original'));
                     $(this).removeAttr('data-bvi-original');
                 });
 
@@ -683,7 +680,7 @@
                 return false;
             });
 
-            $("#bvi-flash-on").click(function () {
+            $("#bvi-flash-on").click(function() {
                 Cookies.set("bvi-flash", "1", {
                     path: "/"
                 });
@@ -694,7 +691,7 @@
                 return false;
             });
 
-            $("#bvi-flash-off").click(function () {
+            $("#bvi-flash-off").click(function() {
                 Cookies.set("bvi-flash", "0", {
                     path: "/"
                 });
@@ -705,7 +702,7 @@
                 return false;
             });
 
-            $("#bvi-letter-spacing-normal").click(function () {
+            $("#bvi-letter-spacing-normal").click(function() {
                 Cookies.set("bvi-letter-spacing", "normal", {
                     path: "/"
                 });
@@ -716,7 +713,7 @@
                 return false;
             });
 
-            $("#bvi-letter-spacing-average").click(function () {
+            $("#bvi-letter-spacing-average").click(function() {
                 Cookies.set("bvi-letter-spacing", "average", {
                     path: "/"
                 });
@@ -727,7 +724,7 @@
                 return false;
             });
 
-            $("#bvi-letter-spacing-big").click(function () {
+            $("#bvi-letter-spacing-big").click(function() {
                 Cookies.set("bvi-letter-spacing", "big", {
                     path: "/"
                 });
@@ -738,7 +735,7 @@
                 return false;
             });
 
-            $("#bvi-font-size-minus").click(function () {
+            $("#bvi-font-size-minus").click(function() {
                 size = parseFloat(Cookies.get("bvi-font-size")) - 1;
                 $(this).addClass('active');
                 $('#bvi-font-size-plus').removeClass('active');
@@ -750,7 +747,7 @@
 
                     BviFontSize();
                     var numbers = String(size);
-                    var numbers = numbers.charAt(numbers.length - 1);
+                    var numbers = numbers.charAt(numbers.length-1);
                     var numbers = parseInt(numbers, 10);
 
                     if (numbers == 1) {
@@ -761,15 +758,15 @@
                         var _numbers = 'пунктов';
                     }
 
-                    method.BviConsoleLog(setting.BviConsoleLog, "click", {"bvi-font-size[]": "Размер шрифта: " + size + " " + _numbers});
+                    method.BviConsoleLog(setting.BviConsoleLog, "click", {"bvi-font-size[]":"Размер шрифта: "+ size +" "+ _numbers});
                     if (Cookies.get("bvi-voice") == '1') {
-                        responsiveVoice.speak("Размер шрифта: " + size + " " + _numbers, "Russian Female");
+                        responsiveVoice.speak("Размер шрифта: " + size +" "+ _numbers, "Russian Female");
                     }
                 }
                 return false;
             });
 
-            $("#bvi-font-size-plus").click(function () {
+            $("#bvi-font-size-plus").click(function() {
                 $(this).addClass('active');
                 $('#bvi-font-size-minus').removeClass('active');
                 size = parseFloat(Cookies.get("bvi-font-size")) + 1;
@@ -781,7 +778,7 @@
 
                     BviFontSize();
                     var numbers = String(size);
-                    var numbers = numbers.charAt(numbers.length - 1);
+                    var numbers = numbers.charAt(numbers.length-1);
                     var numbers = parseInt(numbers, 10);
 
                     if (numbers == 1) {
@@ -792,19 +789,19 @@
                         var _numbers = 'пунктов';
                     }
 
-                    method.BviConsoleLog(setting.BviConsoleLog, "click", {"bvi-font-size[]": "Размер шрифта: " + size + " " + _numbers});
+                    method.BviConsoleLog(setting.BviConsoleLog, "click", {"bvi-font-size[]":"Размер шрифта: "+ size +" "+ _numbers});
                     if (Cookies.get("bvi-voice") == '1') {
-                        responsiveVoice.speak("Размер шрифта: " + size + " " + _numbers, "Russian Female");
+                        responsiveVoice.speak("Размер шрифта: " + size +" "+ _numbers, "Russian Female");
                     }
                 }
                 return false;
             });
 
-            $("#bvi-voice-on").click(function () {
+            $("#bvi-voice-on").click(function() {
                 Cookies.set("bvi-voice", "1", {
                     path: "/"
                 });
-                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-voice[1]': 'Синтез речи включён'});
+                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-voice[1]':'Синтез речи включён'});
                 if (Cookies.get("bvi-voice") == '1') {
                     responsiveVoice.speak("Синтез речи включён", "Russian Female");
                 }
@@ -812,11 +809,11 @@
                 return false;
             });
 
-            $("#bvi-voice-off").click(function () {
+            $("#bvi-voice-off").click(function() {
                 Cookies.set("bvi-voice", "0", {
                     path: "/"
                 });
-                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-voice[0]': 'Синтез речи выключен'});
+                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-voice[0]':'Синтез речи выключен'});
                 if (Cookies.get("bvi-voice") == '1') {
                     responsiveVoice.speak("Синтез речи выключен", "Russian Female");
                 }
@@ -824,11 +821,11 @@
                 return false;
             });
 
-            $("#bvi-color-white").click(function () {
+            $("#bvi-color-white").click(function() {
                 Cookies.set("bvi-bgcolor", "white", {
                     path: "/"
                 });
-                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-bgcolor[white]': 'Цвет сайта: Черным по белому'});
+                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-bgcolor[white]':'Цвет сайта: Черным по белому'});
                 if (Cookies.get("bvi-voice") == '1') {
                     responsiveVoice.speak("Цвет сайта: Черным по белому", "Russian Female");
                 }
@@ -836,11 +833,11 @@
                 return false;
             });
 
-            $("#bvi-color-black").click(function () {
+            $("#bvi-color-black").click(function() {
                 Cookies.set("bvi-bgcolor", "black", {
                     path: "/"
                 });
-                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-bgcolor[black]': 'Цвет сайта: Белым по черному'});
+                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-bgcolor[black]':'Цвет сайта: Белым по черному'});
                 if (Cookies.get("bvi-voice") == '1') {
                     responsiveVoice.speak("Цвет сайта: Белым по черному", "Russian Female");
                 }
@@ -848,11 +845,11 @@
                 return false;
             });
 
-            $("#bvi-color-blue").click(function () {
+            $("#bvi-color-blue").click(function() {
                 Cookies.set("bvi-bgcolor", "blue", {
                     path: "/"
                 });
-                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-bgcolor[blue]': 'Цвет сайта: Темно-синим по голубому'});
+                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-bgcolor[blue]':'Цвет сайта: Темно-синим по голубому'});
                 if (Cookies.get("bvi-voice") == '1') {
                     responsiveVoice.speak("Цвет сайта: Темно-синим по голубому", "Russian Female");
                 }
@@ -860,11 +857,11 @@
                 return false;
             });
 
-            $("#bvi-color-brown").click(function () {
+            $("#bvi-color-brown").click(function() {
                 Cookies.set("bvi-bgcolor", "brown", {
                     path: "/"
                 });
-                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-bgcolor[brown]': 'Цвет сайта: Коричневым по бежевому'});
+                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-bgcolor[brown]':'Цвет сайта: Коричневым по бежевому'});
                 if (Cookies.get("bvi-voice") == '1') {
                     responsiveVoice.speak("Цвет сайта: Коричневым по бежевому", "Russian Female");
                 }
@@ -872,11 +869,11 @@
                 return false;
             });
 
-            $("#bvi-color-green").click(function () {
+            $("#bvi-color-green").click(function() {
                 Cookies.set("bvi-bgcolor", "green", {
                     path: "/"
                 });
-                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-bgcolor[green]': 'Цвет сайта: Зеленым по темно-коричневому'});
+                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-bgcolor[green]':'Цвет сайта: Зеленым по темно-коричневому'});
                 if (Cookies.get("bvi-voice") == '1') {
                     responsiveVoice.speak("Цвет сайта: Зеленым по темно-коричневому", "Russian Female");
                 }
@@ -884,11 +881,11 @@
                 return false;
             });
 
-            $("#bvi-img-on").click(function () {
+            $("#bvi-img-on").click(function() {
                 Cookies.set("bvi-img", "1", {
                     path: "/"
                 });
-                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-img[1]': 'Изображения включены'});
+                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-img[1]':'Изображения включены'});
                 if (Cookies.get("bvi-voice") == '1') {
                     responsiveVoice.speak("Изображения включены", "Russian Female");
                 }
@@ -896,11 +893,11 @@
                 return false;
             });
 
-            $("#bvi-img-off").click(function () {
+            $("#bvi-img-off").click(function() {
                 Cookies.set("bvi-img", "0", {
                     path: "/"
                 });
-                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-img[0]': 'Изображения выключены'});
+                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-img[0]':'Изображения выключены'});
                 if (Cookies.get("bvi-voice") == '1') {
                     responsiveVoice.speak("Изображения выключены", "Russian Female");
                 }
@@ -908,11 +905,11 @@
                 return false;
             });
 
-            $("#bvi-img-grayscale").click(function () {
+            $("#bvi-img-grayscale").click(function() {
                 Cookies.set("bvi-img", "grayScale", {
                     path: "/"
                 });
-                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-img[grayScale]': 'Изображения черно-белые'});
+                method.BviConsoleLog(setting.BviConsoleLog, 'click', {'bvi-img[grayScale]':'Изображения черно-белые'});
                 if (Cookies.get("bvi-voice") == '1') {
                     responsiveVoice.speak("Изображения черно-белые", "Russian Female");
                 }
@@ -920,13 +917,13 @@
                 return false;
             });
 
-            $("#bvi-settings, #bvi-settings-close").click(function () {
+            $("#bvi-settings, #bvi-settings-close").click(function() {
                 $(".bvi-settings").slideToggle("slow");
                 $("#bvi-settings").toggleClass('active');
                 return false;
             });
 
-            $("#bvi-line-height-normal").click(function () {
+            $("#bvi-line-height-normal").click(function() {
                 Cookies.set("bvi-line-height", "normal", {
                     path: "/"
                 });
@@ -937,7 +934,7 @@
                 return false;
             });
 
-            $("#bvi-line-height-average").click(function () {
+            $("#bvi-line-height-average").click(function() {
                 Cookies.set("bvi-line-height", "average", {
                     path: "/"
                 });
@@ -948,7 +945,7 @@
                 return false;
             });
 
-            $("#bvi-line-height-big").click(function () {
+            $("#bvi-line-height-big").click(function() {
                 Cookies.set("bvi-line-height", "big", {
                     path: "/"
                 });
@@ -959,7 +956,7 @@
                 return false;
             });
 
-            $("#bvi-font-family-arial").click(function () {
+            $("#bvi-font-family-arial").click(function() {
                 Cookies.set("bvi-font-family", "arial", {
                     path: "/"
                 });
@@ -970,7 +967,7 @@
                 return false;
             });
 
-            $("#bvi-font-family-times-new-roman").click(function () {
+            $("#bvi-font-family-times-new-roman").click(function() {
                 Cookies.set("bvi-font-family", "times", {
                     path: "/"
                 });
@@ -981,7 +978,7 @@
                 return false;
             });
 
-            $("#bvi-font-family-default").click(function () {
+            $("#bvi-font-family-default").click(function() {
                 Cookies.set("bvi-font-family", "default", {
                     path: "/"
                 });
@@ -1008,7 +1005,7 @@
                 return false;
             });
 
-            $("#bvi-settings-default").click(function () {
+            $("#bvi-settings-default").click(function() {
                 Cookies.set("bvi-panel", setting.BviPanel, {
                     path: "/"
                 });
@@ -1158,7 +1155,7 @@
         }
     };
 
-    $.fn.bvi = function (setting) {
+    $.fn.bvi = function(setting) {
         if (method[setting]) {
             return method[setting].apply(this, Array.prototype.slice.call(arguments, 1))
         } else {
