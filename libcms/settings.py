@@ -207,4 +207,9 @@ LOCALE_INDEPENDENT_PATHS = (
 
 PARTICIPANTS_SHOW_ORG_TYPES = ['library', 'school']
 
+LOCALE_PATHS = (
+    os.path.join(PROJECT_PATH, 'locale/'),
+)
+
 from local_settings import *
+

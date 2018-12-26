@@ -1,0 +1,176 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-12-26 19:45+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: libcms/apps/accounts/administration/forms.py:11
+msgid "Password"
+msgstr "Пароль"
+
+#: libcms/apps/accounts/frontend/views.py:204
+msgid "Logged out"
+msgstr "Выход"
+
+#: libcms/apps/ask_librarian/frontend/forms.py:51
+msgid "date format: dd.mm.yyyy"
+msgstr "дата в формате: дд.мм.гггг"
+
+#: libcms/apps/core/views.py:12
+msgid "Hello"
+msgstr ""
+
+#: libcms/apps/filebrowser/administration/views.py:202
+msgid ""
+"File with this name already exist. Please, delete old file or rename "
+"uploadable file."
+msgstr "Файл с таким именем уже существует. Удалите файл и загрузите новый"
+
+#: libcms/apps/filebrowser/administration/views.py:205
+msgid ""
+"Directory with this name already exist. Please, delete old directory or "
+"rename uploadable file."
+msgstr "Директория с таким именем уже существует"
+
+#: libcms/apps/filebrowser/administration/views.py:230
+msgid ""
+"File with this name already exist. Please, delete old file or rename "
+"creatable directory."
+msgstr "Файл с таким именем уже существует. Удалите файл и загрузите новый"
+
+#: libcms/apps/filebrowser/administration/views.py:233
+msgid ""
+"Directory with this name already exist. Please, delete old directory or or "
+"rename creatable directory."
+msgstr "Директория с таким именем уже существует"
+
+#: libcms/apps/filebrowser/administration/views.py:236
+msgid "Path not founded"
+msgstr "Путь не найден"
+
+#: libcms/apps/forum/models.py:9 libcms/apps/menu/administration/forms.py:29
+msgid "Title"
+msgstr ""
+
+#: libcms/apps/forum/models.py:9 libcms/apps/forum/models.py:37
+msgid "Maximum 255 simbols"
+msgstr "Максимум 255 символов"
+
+#: libcms/apps/forum/models.py:10
+msgid "Slug"
+msgstr "Slug"
+
+#: libcms/apps/forum/models.py:10
+msgid "Small latin letter, \"-\" and \"_\""
+msgstr "Строчные латинские буквы, цифры \"-\" и \"_\""
+
+#: libcms/apps/forum/models.py:11
+msgid "Description"
+msgstr "Описание"
+
+#: libcms/apps/forum/models.py:11
+msgid "Maximum 1024 simbols"
+msgstr "Максимум 1024 символов"
+
+#: libcms/apps/forum/models.py:12
+msgid "Ordering"
+msgstr "Порядок"
+
+#: libcms/apps/forum/models.py:12
+msgid "Order in forums list"
+msgstr "Порядок в списке форумов"
+
+#: libcms/apps/forum/models.py:13 libcms/apps/forum/models.py:40
+msgid "Closed"
+msgstr ""
+
+#: libcms/apps/forum/models.py:13
+msgid "If forum is closed, users can not create topics"
+msgstr "Этот формум закрыт. Пользователи не могут создавать топики."
+
+#: libcms/apps/forum/models.py:14 libcms/apps/forum/models.py:41
+#: libcms/apps/forum/models.py:61
+msgid "Deleted"
+msgstr "Удалено"
+
+#: libcms/apps/forum/models.py:37
+msgid "Subject"
+msgstr "Тема"
+
+#: libcms/apps/forum/models.py:38 libcms/apps/forum/models.py:58
+#: libcms/apps/forum/models.py:59
+msgid "Created"
+msgstr "Создан"
+
+#: libcms/apps/forum/models.py:39
+msgid "Publicated"
+msgstr "Опубликован"
+
+#: libcms/apps/forum/models.py:40
+msgid "If topic is closed, users can not create messages"
+msgstr "Если топик закрыт, то пользователи не смогут создавать сообщения"
+
+#: libcms/apps/forum/models.py:56
+msgid "Author"
+msgstr "Автор"
+
+#: libcms/apps/forum/models.py:57
+msgid "Text of message"
+msgstr "Текст сообщения"
+
+#: libcms/apps/forum/models.py:57
+msgid "Maximum 10000 simbols"
+msgstr "Максимум 10000 символов"
+
+#: libcms/apps/menu/models.py:21 libcms/apps/participant_menu/models.py:12
+msgid "Родительский элемент"
+msgstr ""
+
+#: libcms/apps/newinlib/administration/views.py:15 libcms/local_settings.py:32
+msgid "Russian"
+msgstr "Русский"
+
+#: libcms/apps/pages/administration/views.py:162
+#: libcms/apps/participant_pages/administration/views.py:215
+#: libcms/apps/professionals_pages/administration/views.py:162
+msgid "Language is not registered in system."
+msgstr "Язык не зарегистрирован в системе"
+
+#: libcms/apps/pages/administration/views.py:162
+#: libcms/apps/participant_pages/administration/views.py:215
+#: libcms/apps/professionals_pages/administration/views.py:162
+msgid " Language code: "
+msgstr " Код языка"
+
+#: libcms/local_settings.py:33
+msgid "English"
+msgstr "Английский"
+
+#: libcms/local_settings.py:34
+msgid "Tatar"
+msgstr "Татарский"
+
+#: libcms/vendors/sorl/thumbnail/admin/compat.py:56
+msgid "Clear image"
+msgstr "Очистить сообщения"
+
+#: libcms/vendors/sorl/thumbnail/fields.py:47
+msgid ""
+"Upload a valid image. The file you uploaded was either not an image or a "
+"corrupted image."
+msgstr "Загрузите файл с изображением. Возможно изображение повреждено."

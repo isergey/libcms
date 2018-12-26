@@ -4,6 +4,7 @@ from django import forms
 from ..models import Question, Category, Recomendation
 from mptt.forms import TreeNodeChoiceField
 from django.forms.extras import widgets
+from django.utils.translation import gettext_lazy as _
 
 from captcha.fields import CaptchaField
 
@@ -47,6 +48,6 @@ class RecomendationForm(forms.ModelForm):
 
 class DateFilterForm(forms.Form):
     date = forms.DateField(
-        label=u'', help_text=u'формат даты: дд.мм.гггг',
+        label=u'', help_text=_('date format: dd.mm.yyyy'),
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
