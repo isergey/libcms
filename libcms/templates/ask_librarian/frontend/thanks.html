@@ -11,7 +11,13 @@
         Ask a librarian
     {% endif %}
     /
-    Спасибо за вопрос
+    {% if LANGUAGE_CODE == 'ru' %}
+        Спасибо за вопрос
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Сорау өчен рәхмәт
+    {% else %}
+        Thanks for the question
+    {% endif %}
 {% endblock %}
 {% block breadcrumb %}
     <nav class="crumb">
@@ -40,7 +46,14 @@
             </li>
             <li>
                 <span class="crumb__current">
-                    Вопрос № {{ question.id }}
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Вопрос №
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Эш №
+                    {% else %}
+                        Question #
+                    {% endif %}
+                    {{ question.id }}
                 </span>
             </li>
         </ol>
@@ -49,21 +62,57 @@
 {% block index_content %}
     <div class="content">
         <h1 class="content__title">
-            Спасибо за вопрос
+            {% if LANGUAGE_CODE == 'ru' %}
+                Спасибо за вопрос
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Сорау өчен рәхмәт
+            {% else %}
+                Thanks for the question
+            {% endif %}
         </h1>
         <br>
         {% if request.user.is_authenticated %}
             <div class="alert alert-success">
-                За статусом его выполнения Вы можете следить в личном кабинете.
-                Так же Вы можете найти его по номеру. Номер Вашего вопроса: <b>{{ question.id }}</b>
-                Ответ на вопрос будет выслан на указанный Вами email.
+                {% if LANGUAGE_CODE == 'ru' %}
+                    За статусом его выполнения Вы можете следить в личном кабинете.
+                    Так же Вы можете найти его по номеру. Номер Вашего вопроса: <b>{{ question.id }}</b>.
+                    Ответ на вопрос будет выслан на указанный Вами email.
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Аның үтәлеше статусын Сез шәхси кабинетта күзәтеп тора аласыз.
+                    Шулай ук таба аласыз, аның номеры буенча. Сезнең сорауның номеры: <b>{{ question.id }}</b>.
+                    Сорауга җавап булачак выслан күрсәтелгән сезнең email.
+                {% else %}
+                    For the status of its implementation, you can follow in your account.
+                    You can also find it by number. Your questions: <b>{{ question.id }}</b>.
+                    The answer to the question will be sent to your email.
+                {% endif %}
+
             </div>
         {% else %}
             <div class="alert alert-success">
-                Вы можете отслеживать его статус по номеру. Номер Вашего вопроса: <b>{{ question.id }}</b>.
-                Ответ на вопрос будет выслан на указанный Вами email.
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Вы можете отслеживать его статус по номеру. Номер Вашего вопроса: <b>{{ question.id }}</b>.
+                    Ответ на вопрос будет выслан на указанный Вами email.
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Сез күзәтеп торырга мөмкинлек бирә, аның статусын номеры буенча. Сезнең сорауның номеры: <b>{{ question.id }}</b>.
+                    Сорауга җавап булачак выслан күрсәтелгән сезнең email.
+                {% else %}
+                    Thanks for the question
+                    You can track its status by number. Your questions: <b>{{ question.id }}</b>.
+                    The answer to the question will be sent to your email.
+                {% endif %}
+
             </div>
         {% endif %}
-        <p><a href="{% url 'ask_librarian:frontend:detail' question.id %}">Перейти к вопросу</a></p>
+        <p><a href="{% url 'ask_librarian:frontend:detail' question.id %}">
+            {% if LANGUAGE_CODE == 'ru' %}
+                Перейти к вопросу
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Мәсьәләгә күчү
+            {% else %}
+                Go to question
+            {% endif %}
+        </a></p>
     </div>
 {% endblock %}
+

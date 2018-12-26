@@ -11,7 +11,14 @@
         Ask a librarian
     {% endif %}
     /
-    Вопрос № {{ question.id }}
+    {% if LANGUAGE_CODE == 'ru' %}
+        Вопрос №
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Эш №
+    {% else %}
+        Question #
+    {% endif %}
+    {{ question.id }}
 {% endblock %}
 {% block breadcrumb %}
     <nav class="crumb">
@@ -40,7 +47,14 @@
             </li>
             <li>
                 <span class="crumb__current">
-                    Вопрос № {{ question.id }}
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Вопрос №
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Эш №
+                    {% else %}
+                        Question #
+                    {% endif %}
+                    {{ question.id }}
                 </span>
             </li>
         </ol>
@@ -58,15 +72,38 @@
                 Ask a librarian
             {% endif %}
             →
-            Вопрос № {{ question.id }}
+            {% if LANGUAGE_CODE == 'ru' %}
+                Вопрос №
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Эш №
+            {% else %}
+                Question #
+            {% endif %}
+            {{ question.id }}
         </h1>
     </div>
     <ul class="ask-nav">
         <li class="ask-nav__item">
-            <a class="ask-nav__link" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>
+            <a class="ask-nav__link" href="{% url 'ask_librarian:frontend:ask' %}">
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Задать вопрос
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Сорау бирү
+                {% else %}
+                    Ask a question
+                {% endif %}
+            </a>
         </li>
         <li class="ask-nav__item">
-            <button id="askNavBtn" class="ask-nav__link">Категории вопросов</button>
+            <button id="askNavBtn" class="ask-nav__link">
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Категории вопросов
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Сораулар категорияләре
+                {% else %}
+                    Questions breakdown
+                {% endif %}
+            </button>
         </li>
     </ul>
 
@@ -79,7 +116,14 @@
         <div class="content__sub">
             {% if question.category_id %}
                 <span>
-                    Категория:
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Категория:
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Категория:
+                    {% else %}
+                        Category:
+                    {% endif %}
+
                     {% cache 30 questions_category question.category_id LANGUAGE_CODE %}
                         {% for ancestor in  question.category.get_t_ancestors %}
                             {{ ancestor }}  →
@@ -88,13 +132,29 @@
                     {% endcache %}
                 </span>
             {% endif %}
-            <span>Статус: {{ question.get_status_display }}</span>
+            <span>
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Статус:
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Статус:
+                {% else %}
+                    Status:
+                {% endif %}
+                {{ question.get_status_display }}</span>
         </div>
         <h2>Ответ</h2>
         {% if question.is_ready %}
             {{ question.answer|safe }}
             {% if bib_records %}
-                <h3>Библиографические записи к ответу:</h3>
+                <h3>
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Библиографические записи к ответу:
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Җавапка библиографик язмалар:
+                    {% else %}
+                        Bibliographic records to answer:
+                    {% endif %}
+                </h3>
                 <ul>
                     {% for bib_record in bib_records %}
                         <li>
@@ -106,12 +166,24 @@
             {% endif %}
         {% else %}
             <div class="alert alert-info">
-                Ответа на вопрос еще нет.
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Ответа на вопрос еще нет.
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Сорауга җавап юк әле.
+                {% else %}
+                    There is no answer to the question yet.
+                {% endif %}
             </div>
             <br>
         {% endif %}
-        <a class="btn" href="{% url 'ask_librarian:frontend:printed_detail' question.id %}" target="_blank">Версия
-            для
-            печати</a>
+        <a class="btn" href="{% url 'ask_librarian:frontend:printed_detail' question.id %}" target="_blank">
+            {% if LANGUAGE_CODE == 'ru' %}
+                Версия для печати
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Матбугат өчен Версия
+            {% else %}
+                Print version
+            {% endif %}
+        </a>
     </div>
 {% endblock %}

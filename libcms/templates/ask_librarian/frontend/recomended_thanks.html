@@ -30,5 +30,13 @@
     <div class="alert alert-success">
         Спасибо за рекомендацию. Мы обязательно её опубликуем после проверки, если она соответвет вопросу.
     </div>
-    <a href="{% url 'ask_librarian:frontend:detail' question.id %}">Перейти к вопросу</a>
+    <a href="{% url 'ask_librarian:frontend:detail' question.id %}">
+        {% if LANGUAGE_CODE == 'ru' %}
+            Перейти к вопросу
+        {% elif LANGUAGE_CODE == 'tt' %}
+            Мәсьәләгә күчү
+        {% else %}
+            Go to question
+        {% endif %}
+    </a>
 {% endblock %}

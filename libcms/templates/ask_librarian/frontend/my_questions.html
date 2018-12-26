@@ -3,7 +3,15 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% load cache %}
 {% load pagination_tag %}
-{% block title %}Мои вопросы{% endblock %}
+{% block title %}
+    {% if LANGUAGE_CODE == 'ru' %}
+        Мои вопросы
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Минем сораулар
+    {% else %}
+        My questions
+    {% endif %}
+{% endblock %}
 {% block breadcrumb %}
     <nav class="crumb">
         <ol class="crumb__list">
@@ -47,8 +55,10 @@
                 <span class="crumb__current">
                     {% if LANGUAGE_CODE == 'ru' %}
                         Мои вопросы
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Минем сораулар
                     {% else %}
-                        View question
+                        My questions
                     {% endif %}
                 </span>
             <li>
@@ -75,17 +85,42 @@
     </div>
     <ul class="ask-nav">
         <li class="ask-nav__item">
-            <a class="ask-nav__link" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>
+            <a class="ask-nav__link" href="{% url 'ask_librarian:frontend:ask' %}">
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Задать вопрос
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Сорау бирү
+                {% else %}
+                    Ask a question
+                {% endif %}
+            </a>
         </li>
         <li class="ask-nav__item">
-            <button id="askNavBtn" class="ask-nav__link">Категории вопросов</button>
+            <button id="askNavBtn" class="ask-nav__link">
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Категории вопросов
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Сораулар категорияләре
+                {% else %}
+                    Questions breakdown
+                {% endif %}
+            </button>
         </li>
     </ul>
     <div class="list ask-list-question">
         {% for question in questions_page.object_list %}
             <div class="list__item">
                 <div class="list__col-text">
-                    <span class="list__num">Вопрос № {{ question.id }}</span>
+                    <span class="list__num">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Вопрос №
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Эш №
+                        {% else %}
+                            Question #
+                        {% endif %}
+                        {{ question.id }}
+                    </span>
                     <div class="list__title list__title_sm">
                         <a class="list__title-link"
                            href="{% url 'ask_librarian:frontend:detail' question.id %}">
@@ -114,7 +149,15 @@
             </div>
         {% empty %}
             <br>
-            <div class="alert alert-info">Вопросов нет</div>
+            <div class="alert alert-info">
+                {% if LANGUAGE_CODE == 'ru' %}
+                    Вопросов нет
+                {% elif LANGUAGE_CODE == 'tt' %}
+                    Сораулар юк
+                {% else %}
+                    There is no questions
+                {% endif %}
+            </div>
         {% endfor %}
     </div>
     {% admin_pagination questions_page %}

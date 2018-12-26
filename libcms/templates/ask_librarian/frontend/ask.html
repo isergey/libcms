@@ -11,7 +11,14 @@
         Ask a librarian
     {% endif %}
     /
-    Задать вопрос
+    {% if LANGUAGE_CODE == 'ru' %}
+        Задать вопрос
+    {% elif LANGUAGE_CODE == 'tt' %}
+        Сорау бирү
+    {% else %}
+        Ask a question
+    {% endif %}
+
 {% endblock %}
 {% block breadcrumb %}
     <nav class="crumb">
@@ -40,7 +47,13 @@
             </li>
             <li>
                 <span class="crumb__current">
-                    Задать вопрос
+                    {% if LANGUAGE_CODE == 'ru' %}
+                        Задать вопрос
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Сорау бирү
+                    {% else %}
+                        Ask a question
+                    {% endif %}
                 </span>
             </li>
         </ol>
@@ -57,13 +70,27 @@
                 Ask a librarian
             {% endif %}
             →
-            Задать вопрос
+            {% if LANGUAGE_CODE == 'ru' %}
+                Задать вопрос
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Сорау бирү
+            {% else %}
+                Ask a question
+            {% endif %}
         </h1>
     </div>
     <br>
     <form class="side-box__form" method="POST">
         {% csrf_token %}
         {% bootstrap_form form %}
-        <button class="btn" type="submit">Спросить</button>
+        <button class="btn" type="submit">
+            {% if LANGUAGE_CODE == 'ru' %}
+                Спросить
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Сорау
+            {% else %}
+                Ask
+            {% endif %}
+        </button>
     </form>
 {% endblock %}

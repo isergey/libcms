@@ -32,7 +32,13 @@
                         </li>
                         <li>
                              <span class="crumb__current">
-                                Спроси библиотекар
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Спроси библиотекаря
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Китапханәчедән сора
+                                {% else %}
+                                    Ask a librarian
+                                {% endif %}
                             </span>
                         </li>
                     </ol>
@@ -50,7 +56,15 @@
                             <div class="ask-facet">
                                 <section class="card card_bs-2 card_facet">
                                     <div class="card__header">
-                                        <h2 class="card__title card__title_sm">Задать вопрос</h2>
+                                        <h2 class="card__title card__title_sm">
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Задать вопрос
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Сорау бирү
+                                            {% else %}
+                                                Ask a question
+                                            {% endif %}
+                                        </h2>
                                     </div>
                                     <div class="card__body">
                                         <p class="card__text">
@@ -69,15 +83,30 @@
                                     <div class="card__footer">
                                         <ul class="card-nav">
                                             <li class="card-nav__item">
-                                                <a class="card-nav__link" href="{% url 'ask_librarian:frontend:ask' %}">Задать
-                                                    вопрос</a>
+                                                <a class="card-nav__link" href="{% url 'ask_librarian:frontend:ask' %}">
+                                                    {% if LANGUAGE_CODE == 'ru' %}
+                                                        Задать вопрос
+                                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                                        Сорау бирү
+                                                    {% else %}
+                                                        Ask a question
+                                                    {% endif %}
+                                                </a>
                                             </li>
                                         </ul>
                                     </div>
                                 </section>
                                 <section class="card card_bs-2 card_mt card_facet">
                                     <div class="card__header">
-                                        <h2 class="card__title card__title_sm">Категории вопросов</h2>
+                                        <h2 class="card__title card__title_sm">
+                                            {% if LANGUAGE_CODE == 'ru' %}
+                                                Задать вопрос
+                                            {% elif LANGUAGE_CODE == 'tt' %}
+                                                Сорау бирү
+                                            {% else %}
+                                                Ask a question
+                                            {% endif %}
+                                        </h2>
                                     </div>
                                     <div class="card__body">
                                         {% cache 30 questions_category_menu LANGUAGE_CODE %}

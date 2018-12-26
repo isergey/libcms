@@ -104,29 +104,27 @@ def index(request):
 
     base_uplod_path = settings.FILEBROWSER['upload_dir']
 
-    show_path = u'' # root of upload path
+    show_path = u''  # root of upload path
     show_path_url = settings.FILEBROWSER['upload_dir_url']
-
 
     path = request.GET.get('path', u'/').strip('/')
     if '..' in path or '/.' in path:
-        raise Http404(u"Path not founded")
+        raise Http404(u"Path not found")
 
-    show_path =  path.encode(FILE_NAME_ENCODING)
+    show_path = path.encode(FILE_NAME_ENCODING)
 
     show_path_url += show_path
 
     if not chek_or_create_dir(base_uplod_path):
         return HttpResponse(u"Catalog '%s' can't be created" % show_path)
 
-    if not os.path.isdir(base_uplod_path + show_path):
-        raise Http404(u"Path not founded")
+    if not os.path.isdir(base_uplod_path + '/' + show_path):
+        raise Http404(u"Path not found")
 
-    dir_items = os.listdir(base_uplod_path + show_path)
-
+    dir_items = os.listdir(base_uplod_path + '/' + show_path)
     dir_map = []
     for dir_item in dir_items:
-        path_to_dir_item = base_uplod_path + show_path + '/' + dir_item
+        path_to_dir_item = base_uplod_path + '/' + show_path + '/' + dir_item
         if os.path.isfile(path_to_dir_item):
             dir_map.append(get_file_map(path_to_dir_item, show_path_url, show_path))
 
@@ -142,12 +140,12 @@ def index(request):
     breadcrumbs.append({
         'title': '/',
         'url': '/',
-        })
+    })
     for i, path_dir in enumerate(path_dirs):
         breadcrumbs.append({
             'title': path_dir,
             'url': '/' + '/'.join(path_dirs[:i + 1]),
-            })
+        })
 
     upload_form = UploadFileForm(initial={'path': show_path})
     dir_form = CreateDirectory(initial={'path': show_path}, prefix='dir_form')
@@ -167,7 +165,6 @@ def index(request):
 @login_required
 @permission_required_or_403('filebrowser.delete_file')
 def delete(request):
-
     base_uplod_path = settings.FILEBROWSER['upload_dir']
 
     current_dir = '/'
@@ -184,14 +181,13 @@ def delete(request):
             os.remove(delete_path)
         if os.path.isdir(delete_path):
             shutil.rmtree(delete_path)
-    return HttpResponseRedirect(reverse('filebrowser:administration:index') + '?path=' + current_dir.decode(FILE_NAME_ENCODING))
-
+    return HttpResponseRedirect(
+        reverse('filebrowser:administration:index') + '?path=' + current_dir.decode(FILE_NAME_ENCODING))
 
 
 @login_required
 @permission_required_or_403('filebrowser.add_file')
 def upload(request):
-
     path = u'/'
     base_uplod_path = settings.FILEBROWSER['upload_dir']
     if request.method == 'POST':
@@ -202,23 +198,24 @@ def upload(request):
             upload_path = base_uplod_path + path
             file_name = request.FILES['file'].name
             if os.path.isfile(upload_path + '/' + file_name.encode(FILE_NAME_ENCODING)):
-                return HttpResponse(_(u'File with this name already exist. Please, delete old file or rename uploadable file.'))
-            elif  os.path.isdir(upload_path + '/' + file_name.encode(FILE_NAME_ENCODING)):
-                return HttpResponse(_(u'Directory with this name already exist. Please, delete old directory or rename uploadable file.'))
+                return HttpResponse(
+                    _(u'File with this name already exist. Please, delete old file or rename uploadable file.'))
+            elif os.path.isdir(upload_path + '/' + file_name.encode(FILE_NAME_ENCODING)):
+                return HttpResponse(_(
+                    u'Directory with this name already exist. Please, delete old directory or rename uploadable file.'))
 
             if not os.path.isdir(upload_path):
                 raise Http404(u"Path not founded")
 
             handle_uploaded_file(f=request.FILES['file'], path=upload_path)
 
-    return HttpResponseRedirect(reverse('filebrowser:administration:index') + '?path=' + path.decode(FILE_NAME_ENCODING))
-
+    return HttpResponseRedirect(
+        reverse('filebrowser:administration:index') + '?path=' + path.decode(FILE_NAME_ENCODING))
 
 
 @login_required
 @permission_required_or_403('filebrowser.add_file')
 def create_directory(request):
-
     path = u'/'
     base_uplod_path = settings.FILEBROWSER['upload_dir']
 
@@ -228,16 +225,17 @@ def create_directory(request):
             path = dir_form.cleaned_data['path'].encode(FILE_NAME_ENCODING)
             upload_path = base_uplod_path + path
             dir_name = dir_form.cleaned_data['name'].encode(FILE_NAME_ENCODING)
-            if os.path.isfile(upload_path + '/' +dir_name):
-                return HttpResponse(_(u'File with this name already exist. Please, delete old file or rename creatable directory.'))
-            elif  os.path.isdir(upload_path + '/' + dir_name):
-                return HttpResponse(_(u'Directory with this name already exist. Please, delete old directory or or rename creatable directory.'))
+            if os.path.isfile(upload_path + '/' + dir_name):
+                return HttpResponse(
+                    _(u'File with this name already exist. Please, delete old file or rename creatable directory.'))
+            elif os.path.isdir(upload_path + '/' + dir_name):
+                return HttpResponse(_(
+                    u'Directory with this name already exist. Please, delete old directory or or rename creatable directory.'))
 
             if not os.path.isdir(upload_path):
                 raise Http404(_(u"Path not founded"))
             upload_path = upload_path.rstrip('/')
             os.mkdir(upload_path + '/' + dir_name, 0755)
 
-    return HttpResponseRedirect(reverse('filebrowser:administration:index') + '?path=' + path.decode(FILE_NAME_ENCODING))
-
-
+    return HttpResponseRedirect(
+        reverse('filebrowser:administration:index') + '?path=' + path.decode(FILE_NAME_ENCODING))
