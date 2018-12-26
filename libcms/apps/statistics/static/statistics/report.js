@@ -1,6 +1,8 @@
 ﻿$(document).ready(function () {
   //alert("ready!");
 
+  $(".stat-main-table").floatThead();
+
   $(".stat-parameters-select").change(function (evt) {
     var control = $(evt.target);
     var val = control.val();
@@ -42,7 +44,7 @@
 
 function showLevelTable(src) {
   var level = parseInt($(src).val());
-  $(".stat-main-table tr").each(function (index, elem) {
+  $(".stat-main-table tbody tr").each(function (index, elem) {
     var tr = $(elem);
     var levelStr = tr.attr("data-level");
     if (levelStr === null) {
