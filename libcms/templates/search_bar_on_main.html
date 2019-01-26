@@ -1,7 +1,7 @@
 <div class="search-bar">
     <form action="{% url 'ssearch:frontend:index' %}" method="GET">
         <h3 class="search">Поиск</h3>
-        <input type="text" placeholder="{% if LANGUAGE_CODE == 'en' %}Enter author, title, subject{% elif LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}" name="q"/>
+        <input type="text" placeholder="{% if LANGUAGE_CODE == 'en' %}Search by author, title, subject, etc.{% elif LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}" name="q"/>
         <button type="submit" class="btn">Найти</button>
         <br>
         <label class="radio"><input type="radio" name="attr" id="all_tru" value="all_tru"

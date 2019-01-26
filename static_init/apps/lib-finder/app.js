@@ -39,7 +39,7 @@ var translates = {
         'tt': 'Якындагы китапханәләр',
     },
     'Введите адрес для поиска ближайшей библиотеки': {
-        'en': 'Enter the address to search for the nearest library',
+        'en': 'Enter address to find a library nearby',
         'tt': 'Языгыз адрес эзләү өчен якындагы китапханә',
     },
     'подробнее': {

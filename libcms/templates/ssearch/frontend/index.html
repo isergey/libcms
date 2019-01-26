@@ -125,7 +125,7 @@
                                     </option>
                                 </select>
                                 <input class="search-input__input" type="text" name="q"
-                                       placeholder="{% if LANGUAGE_CODE == 'en' %}Enter author, title, subject{% elif LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}...">
+                                       placeholder="{% if LANGUAGE_CODE == 'en' %}Search by author, title, subject, etc.{% elif LANGUAGE_CODE == 'tt' %}Авторны, китап исемен, теманы сайлагыз{% else %}Введите автора, заглавие, тему{% endif %}...">
                                 <button class="search-input__btn">
                                     <i class="icon-search"
                                        title="{% if LANGUAGE_CODE == 'ru' %}Поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Search{% endif %}"></i>
@@ -318,7 +318,7 @@
                                         <label class="search-btn__radio" for="sort-5">
                                             {% if LANGUAGE_CODE == 'ru' %}дате
                                                 поступления{% elif LANGUAGE_CODE == 'tt' %}
-                                                дате поступления{% else %}incoming date{% endif %}
+                                                дате поступления{% else %}arrival date{% endif %}
                                         </label>
                                     </span>
                                         </div>
@@ -333,7 +333,7 @@
                                             {% elif LANGUAGE_CODE == 'tt' %}
                                                 бүлек
                                             {% else %}
-                                                vol./part
+                                                volume/part
                                             {% endif %}
                                         </label>
                                     </span>
@@ -396,7 +396,7 @@
                                         <label class="search-btn__radio" for="sort-5">
                                             {% if LANGUAGE_CODE == 'ru' %}дате
                                                 поступления{% elif LANGUAGE_CODE == 'tt' %}
-                                                дате поступления{% else %}incoming date{% endif %}
+                                                дате поступления{% else %}arrival date{% endif %}
                                         </label>
                                     </span>
                                         </div>

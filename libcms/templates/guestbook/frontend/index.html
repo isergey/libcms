@@ -51,9 +51,9 @@
                                     {% if feedback.comment %}
                                         <h4>
                                         {% if LANGUAGE_CODE == 'ru' %}
-                                            Җавап
+                                            Ответ
                                         {% elif LANGUAGE_CODE == 'tt' %}
-                                            Кунаклар китабы
+                                            Җавап
                                         {% else %}
                                             Answer
                                         {% endif %}
@@ -69,7 +69,15 @@
                 <div class="col-lg-5 col-md-12">
                     <section class="card card_mt">
                         <header class="card__header">
-                            <h2 class="card__title">Ваш отзыв</h2>
+                            <h2 class="card__title">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    Enter your feedback
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    Языгыз, Сезнең фикер
+                                {% else %}
+                                    Add feedback
+                                {% endif %}
+                            </h2>
                         </header>
                         <div class="card__body">
                             <form class="side-box__form" method="POST">{% csrf_token %}
@@ -81,7 +89,7 @@
                                     {% elif LANGUAGE_CODE == 'tt' %}
                                         Бәяләмә өстәү
                                     {% else %}
-                                        Add feedback
+                                        Add a feedback
                                     {% endif %}
                                 </button>
                             </form>
