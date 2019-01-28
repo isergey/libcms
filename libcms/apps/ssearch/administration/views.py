@@ -392,6 +392,14 @@ def _indexing(slug, reset=False):
                 if r:
                     doc['tom_f'] = float(r.groups()[0])
 
+        issn = doc.get('issn_t')
+        if issn:
+            doc['issn_t'].append(issn.replace('-', '').replace(' ', ''))
+
+        isbn = doc.get('isbn_t')
+        if isbn:
+            doc['isbn_t'].append(isbn.replace('-', '').replace(' ', ''))
+
         try:
             record_create_date = doc.get('record-create-date_dt', None)
             # print 'record_create_date1', record_create_date
