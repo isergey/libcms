@@ -53,13 +53,13 @@
     </ul>
     <p>
         {% if LANGUAGE_CODE == 'ru' %}
-            Всего документов в коллекции:
+            <a href="/ru/ssearch/ecollection/?attr=text_t&q=*">Всего документов в коллекции: {{ stats.count_all }}</a>
         {% elif LANGUAGE_CODE == 'tt' %}
-            Коллекциядә барлык документлар саны
+            <a href="/tt/ssearch/ecollection/?attr=text_t&q=*">Коллекциядә барлык документлар саны: {{ stats.count_all }}</a>
         {% else %}
-            Total documents:
+            <a href="/en/ssearch/ecollection/?attr=text_t&q=*">Total documents: {{ stats.count_all }}</a>
         {% endif %}
-        {{ stats.count_all }}
+
     </p>
     <p>
         {% if LANGUAGE_CODE == 'ru' %}

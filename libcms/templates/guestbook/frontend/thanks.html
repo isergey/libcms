@@ -13,11 +13,11 @@
             <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
             <li><a href="{% url 'guestbook:frontend:index' %}">
                 {% if LANGUAGE_CODE == 'ru' %}
-                    Гостевая книга
+                    Отзывы
                 {% elif LANGUAGE_CODE == 'tt' %}
-                    Кунаклар китабы
+                    Фикерләр
                 {% else %}
-                    Guest book
+                    Feedbacks
                 {% endif %}
             </a> <span class="divider">/</span></li>
             <li class="active">Оставить запись</li>

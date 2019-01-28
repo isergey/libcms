@@ -46,11 +46,7 @@
             {% endblock %}
             <div class="ask-container">
                 <div class="row">
-                    <div class="col-lg-9 col-md-12">
-                        {% block index_content %}
 
-                        {% endblock %}
-                    </div>
                     {% if request.path_info != '/ask_librarian/ask' %}
                         <div class="col-lg-3 col-md-12">
                             <div class="ask-facet">
@@ -118,7 +114,13 @@
                             </div>
                         </div>
                     {% endif %}
+                <div class="col-lg-9 col-md-12">
+                        {% block index_content %}
+
+                        {% endblock %}
+                    </div>
                 </div>
+
             </div>
         </div>
     </main>

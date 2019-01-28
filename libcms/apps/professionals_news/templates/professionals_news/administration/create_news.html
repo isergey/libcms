@@ -20,7 +20,7 @@
         <fieldset>
             {% include 'administration/base_form_fields.html' with form=news_form %}
             {% for news_content_form in news_content_forms %}
-                <p>Новостб на языке: <b>{{  news_content_form.lang }}</b>↴</p>
+                <p>Новость на языке: <b>{{  news_content_form.lang }}</b>↴</p>
                 {% include 'administration/base_form_fields.html' with form=news_content_form.form %}
                 <hr/>
             {% endfor %}
