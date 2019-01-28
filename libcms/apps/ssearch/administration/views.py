@@ -394,11 +394,17 @@ def _indexing(slug, reset=False):
 
         issn = doc.get('issn_t')
         if issn:
-            doc['issn_t'].append(issn.replace('-', '').replace(' ', ''))
+            for issn_item in issn:
+                new_issn_value = issn_item.replace('-', '').replace(' ', '')
+                if new_issn_value != issn_item:
+                    doc['issn_t'].append(new_issn_value)
 
         isbn = doc.get('isbn_t')
         if isbn:
-            doc['isbn_t'].append(isbn.replace('-', '').replace(' ', ''))
+            for isbn_item in isbn:
+                new_isbn_value = isbn_item.replace('-', '').replace(' ', '')
+                if new_isbn_value != isbn_item:
+                    doc['isbn_t'].append(new_isbn_value)
 
         try:
             record_create_date = doc.get('record-create-date_dt', None)
