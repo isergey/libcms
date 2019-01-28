@@ -43,6 +43,17 @@ def _check_for_error(response_dict):
     return error
 
 
+def _get_security(managed_libraries):
+    security = u'Организация=Total,00000000'
+    if managed_libraries:
+        if managed_libraries[0].is_root_node():
+            root_code = managed_libraries[0].code
+        else:
+            root_code = managed_libraries[0].get_root().code
+        security = u'Организация=' + root_code
+
+    return security
+
 @login_required
 @must_be_org_user
 def index(request, managed_libraries=[]):
@@ -50,10 +61,14 @@ def index(request, managed_libraries=[]):
             not request.user.has_perm('statistics.view_all_statistic') and not managed_libraries:
         return HttpResponse(u'Доступ запрещен', status=403)
     category = request.GET.get('category', 'All')
+
+    security = _get_security(managed_libraries)
+
     response, error = _make_request('get', url=REPORT_SERVER + 'reports', params={
         'token': TOKEN,
         'format': 'json',
         'category': category,
+        'security': security,
     })
     response_dict = {}
     if not error:
@@ -63,9 +78,7 @@ def index(request, managed_libraries=[]):
             error = _check_for_error(response_dict)
         except ValueError:
             error = u'Неожиданный ответ от сервера статистики'
-    print('category', category)
-    print('response_dict', response_dict)
-    print('error', error)
+
     return render(request, 'statistics/frontend/index.html', {
         'response_dict': response_dict,
         'error': error,
@@ -81,20 +94,16 @@ def report(request, managed_libraries=[]):
     category = request.GET.get('category', '')
     security = u'Организация=Total,00000000'
     access = False
+
     if request.user.has_perm('statistics.view_all_statistic'):
         access = True
     else:
         if managed_libraries:
-            access = True
-            root_code = ''
-            if managed_libraries[0].is_root_node():
-                root_code = managed_libraries[0].code
-            else:
-                root_code = managed_libraries[0].get_root().code
-            security = u'Организация=' + root_code
+            security = _get_security(managed_libraries)
 
     if not access:
         return HttpResponse(u'Доступ запрещен', status=403)
+
     report_form = forms.ReportForm(request.GET)
     parameters = request.GET.get('parameters', '')
     error = None

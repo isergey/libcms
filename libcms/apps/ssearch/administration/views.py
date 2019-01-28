@@ -684,9 +684,7 @@ def doc_tree_to_dict(doc_tree):
             continue
 
         if not old_value:
-            doc_dict[attrib] = value
-        elif type(old_value) != list:
-            doc_dict[attrib] = [doc_dict[attrib], value]
+            doc_dict[attrib] = [value]
         else:
             doc_dict[attrib].append(value)
 
