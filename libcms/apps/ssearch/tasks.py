@@ -5,4 +5,5 @@ from . import indexing
 @db_task()
 @lock_task('ssearch.indexing')
 def indexing(slug, reset):
+    print 'start indexing', slug, 'reset', reset
     indexing._indexing(slug, reset=reset)
