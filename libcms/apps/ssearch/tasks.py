@@ -1,3 +1,4 @@
+import traceback
 from django.conf import settings
 from huey.contrib.djhuey import db_task, lock_task
 from . indexing import _indexing
@@ -11,3 +12,4 @@ def indexing(slug, reset):
         _indexing(slug, reset=reset)
     except Exception as e:
         print(e)
+        traceback.print_exc()
