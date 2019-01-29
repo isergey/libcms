@@ -288,8 +288,11 @@ def full_text_extract(zip_file_name):
 @transaction.atomic
 def _indexing(slug, reset=False):
     sources_index = {}
+
+    print 'getting source'
     sources = list(Source.objects.using('records').all())
 
+    print 'total sources', len(sources)
     for source in sources:
         sources_index[source.id] = source
 
