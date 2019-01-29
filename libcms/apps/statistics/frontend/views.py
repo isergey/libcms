@@ -99,6 +99,7 @@ def report(request, managed_libraries=[]):
         access = True
     else:
         if managed_libraries:
+            access = True
             security = _get_security(managed_libraries)
 
     if not access:
