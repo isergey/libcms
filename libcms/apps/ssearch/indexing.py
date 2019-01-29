@@ -285,8 +285,9 @@ def full_text_extract(zip_file_name):
     return None
 
 
-@transaction.atomic
+#@transaction.atomic
 def _indexing(slug, reset=False):
+
     sources_index = {}
 
     print 'getting source'
