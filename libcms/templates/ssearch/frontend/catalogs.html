@@ -14,41 +14,19 @@
     </h1>
     <ul>
         {% for collection in collections %}
-            {% if collection.title == 'Фонд И. А. Второва' %}
-                <li><a href="#vtorov"
-                       data-custom-open="modal-{{ collection|hash:'persistant-number'|hash:0 }}">{{ collection.title.0 }}</a>:
-                    {{ collection.value }}</li>
-            {% elif collection.title == 'Коллекция И. А. Сахарова' %}
-                <li><a href="#saharov"
-                       data-custom-open="modal-{{ collection|hash:'persistant-number'|hash:0 }}">{{ collection.title.0 }}</a>:
-                    {{ collection.value }}</li>
-            {% elif collection.title == 'Татарика' %}
-                <li><a href="#tatarika"
-                       data-custom-open="modal-{{ collection|hash:'persistant-number'|hash:0 }}">{{ collection.title }}</a>:
-                    {{ collection.value }}</li>
-            {% elif collection.title == 'Прижизненные издания Г.Тукая' %}
-                <li><a href="#tukay"
-                       data-custom-open="modal-{{ collection|hash:'persistant-number'|hash:0 }}">{{ collection.title }}</a>:
-                    {{ collection.value }}</li>
-            {% elif collection.title == 'Коллекция русской старопечатной книги (до 1830 г.)' %}
-                <li><a href="#staropecht"
-                       data-custom-open="modal-{{ collection|hash:'persistant-number'|hash:0 }}">{{ collection.title }}</a>:
-                    {{ collection.value }}</li>
-            {% elif collection.title == 'Книги подаренные авторами' %}
-                <li><a href="#present"
-                       data-custom-open="modal-{{ collection|hash:'persistant-number'|hash:0 }}">{{ collection.title }}</a>:
-                    {{ collection.value }}</li>
-            {% elif collection.title == 'Периодические издания Казанской губернии' %}
-                <li><a href="#periodkazan"
-                       data-custom-open="modal-{{ collection|hash:'persistant-number'|hash:0 }}">{{ collection.title }}</a>:
-                    {{ collection.value }}</li>
-            {% elif collection.title == 'Тестовая коллекция' %}
-                {#                <li><a href="{% url ssearch:frontend:ecollection %}?q=%2A&q=Тестовая+коллекция&attr=text&attr=fond_sf&in_founded=on">{{ collection.title }}</a>: {{ collection.value }}</li>#}
-            {% else %}
-                <li><a href="#{{ collection|hash:'persistant-number'|hash:0 }}"
-                       data-custom-open="modal-{{ collection|hash:'persistant-number'|hash:0 }}">{{ collection.title.0 }}</a>: {{ collection.stats }}
-                </li>
-            {% endif %}
+             <li>
+                 <a href="#vtorov"
+                       data-custom-open="modal-{{ collection|hash:'persistant-number'|hash:0 }}">
+                     {% if LANGUAGE_CODE == 'ru' %}
+                        {{ collection.title.0 }}
+                     {% elif LANGUAGE_CODE == 'tt' %}
+                        {{ collection.collection_title_tt.0 }}
+                     {% else %}
+                        {{ collection.collection_title_en.0 }}
+                     {% endif %}
+
+                 </a>: {{ collection.stats }}
+             </li>
         {% endfor %}
     </ul>
     <p>
@@ -90,7 +68,13 @@
             <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
                 <header class="modal__header">
                     <h2 class="modal__title" id="modal-1-title">
+                        {% if LANGUAGE_CODE == 'ru' %}
                         {{ collection.title.0 }}
+                     {% elif LANGUAGE_CODE == 'tt' %}
+                        {{ collection.collection_title_tt.0 }}
+                     {% else %}
+                        {{ collection.collection_title_en.0 }}
+                     {% endif %}
                     </h2>
                     <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
                 </header>
@@ -109,9 +93,20 @@
                                     {% endif %}
                                 </a>
                                 <ul>
-                                    {% for comments in collection.comments %}
-                                        <li>{{ comments }}</li>
-                                    {% endfor %}
+                                    {% if LANGUAGE_CODE == 'ru' %}
+                                        {% for comments in collection.comments %}
+                                            <li>{{ comments }}</li>
+                                        {% endfor %}
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        {% for comments in collection.comments_tt %}
+                                            <li>{{ comments }}</li>
+                                        {% endfor %}
+                                    {% else %}
+                                        {% for comments in collection.comments_en %}
+                                            <li>{{ comments }}</li>
+                                        {% endfor %}
+                                    {% endif %}
+
                                 </ul>
                             </div>
                         </div>

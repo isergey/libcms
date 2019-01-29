@@ -61,6 +61,10 @@
             <xsl:call-template name="CollectionCover"/>
             <xsl:call-template name="Linked-record-number"/>
             <xsl:call-template name="URL"/>
+            <xsl:call-template name="Collection-title-tt"/>
+            <xsl:call-template name="Collection-comments-tt"/>
+            <xsl:call-template name="Collection-title-en"/>
+            <xsl:call-template name="Collection-comments-en"/>
         </doc>
 
     </xsl:template>
@@ -577,6 +581,52 @@
             </field>
         </xsl:for-each>
     </xsl:template>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="Collection-title-tt">
+        <xsl:for-each select="field[@id='900']/subfield[@id='a']">
+            <field name="collection_title_tt">
+                <xsl:value-of select="."/>
+            </field>
+        </xsl:for-each>
+    </xsl:template>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="Comments-tt">
+        <xsl:for-each select="field[@id='901']/subfield[@id='a']">
+            <field name="comments_tt">
+                <xsl:value-of select="."/>
+            </field>
+        </xsl:for-each>
+    </xsl:template>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="Collection-comments-tt">
+        <xsl:for-each select="field[@id='901']/subfield[@id='a']">
+            <field name="comments_tt">
+                <xsl:value-of select="."/>
+            </field>
+        </xsl:for-each>
+    </xsl:template>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="Collection-title-en">
+        <xsl:for-each select="field[@id='910']/subfield[@id='a']">
+            <field name="collection_title_en">
+                <xsl:value-of select="."/>
+            </field>
+        </xsl:for-each>
+    </xsl:template>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="Collection-comments-en">
+        <xsl:for-each select="field[@id='911']/subfield[@id='a']">
+            <field name="comments_en">
+                <xsl:value-of select="."/>
+            </field>
+        </xsl:for-each>
+    </xsl:template>
+
 </xsl:stylesheet>
 
 
