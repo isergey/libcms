@@ -304,6 +304,8 @@ def _indexing(slug, reset=False):
 
     if db_conf['ENGINE'] != 'django.db.backends.mysql':
         raise Exception(u' Support only Mysql Database where contains records.')
+
+    print 'connect to db', db_conf['HOST']
     try:
         conn = MySQLdb.connect(
             host=db_conf['HOST'],
@@ -328,14 +330,24 @@ def _indexing(slug, reset=False):
             use_unicode=True,
             cursorclass=MySQLdb.cursors.SSDictCursor
         )
+
+    print 'connected to db'
+
+    print 'load holdings'
     holdings_index = _load_holdings(conn)
+
+    print 'load orgs'
     orgs_index = _load_orgs()
+
+    print 'load sources'
     sources_index = _load_sources()
 
     try:
         index_status = IndexStatus.objects.get(catalog=slug)
     except IndexStatus.DoesNotExist:
         index_status = IndexStatus(catalog=slug)
+
+    print 'index_status', index_status.last_index_date
     # select_query = "SELECT * FROM records where deleted = 0 AND LENGTH(content) > 0 and record_id='ru\\\\nlrt\\\\1359411'"
     select_query = "SELECT * FROM records where deleted = 0 AND LENGTH(content) > 0"
     # if not getattr(index_status, 'last_index_date', None):
@@ -348,10 +360,14 @@ def _indexing(slug, reset=False):
     docs = list()
 
     start_index_date = datetime.datetime.now()
-
+    print 'execute query', select_query
     conn.query(select_query)
+    print 'query executed', select_query
+
     rows = conn.use_result()
+
     res = rows.fetch_row(how=1)
+    print 'start fetching'
 
     i = 0
     while res:
