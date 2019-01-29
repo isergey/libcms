@@ -195,7 +195,13 @@
                                 </div>
 
                                 <div class="search-nav__item">
-                                    <a class="search-nav__link" href="{% url 'ssearch:frontend:index' %}{% if request.GET.library %}?library={{ request.GET.library }}{% endif %}">
+                                    {% if catalog == 'ebooks' %}
+                                        {% url 'ssearch:frontend:ecollection' as  search_index_url %}
+                                    {% else %}
+                                        {% url 'ssearch:frontend:index' as search_index_url %}
+                                    {% endif %}
+
+                                    <a class="search-nav__link" href="{{ search_index_url|safe }}{% if request.GET.library %}?library={{ request.GET.library }}{% endif %}">
                                         {% if LANGUAGE_CODE == 'ru' %}
                                             Очистить поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Clear search{% endif %}
                                     </a>
