@@ -1,3 +1,5 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <form class="event_calendar_filter" name="event_calendar_filter" action="" method="POST">{% csrf_token %}
     <div class="row">
         <div class="col-lg-6">
@@ -14,14 +16,70 @@
 </form>
 <table class="calendar">
     <thead class="days-week">
-    <tr>
-        <th>Пн</th>
-        <th>Вт</th>
-        <th>Ср</th>
-        <th>Чт</th>
-        <th>Пт</th>
-        <th>Сб</th>
-        <th>Вс</th>
+<tr>
+        <th>
+            {% if LANGUAGE_CODE == 'en' %}
+                Mo
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Дш
+            {% else %}
+                Пн
+            {% endif %}
+        </th>
+        <th>
+            {% if LANGUAGE_CODE == 'en' %}
+                Tu
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Сш
+            {% else %}
+                Вт
+            {% endif %}
+        </th>
+        <th>
+            {% if LANGUAGE_CODE == 'en' %}
+                We
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Чш
+            {% else %}
+                Ср
+            {% endif %}
+        </th>
+        <th>
+            {% if LANGUAGE_CODE == 'en' %}
+                Th
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Пҗ
+            {% else %}
+                Чт
+            {% endif %}
+        </th>
+        <th>
+            {% if LANGUAGE_CODE == 'en' %}
+                Fr
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Җм
+            {% else %}
+                Пт
+            {% endif %}
+        </th>
+        <th>
+            {% if LANGUAGE_CODE == 'en' %}
+                Sa
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Шм
+            {% else %}
+                Сб
+            {% endif %}
+        </th>
+        <th>
+            {% if LANGUAGE_CODE == 'en' %}
+                Su
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Яш
+            {% else %}
+                Вс
+            {% endif %}
+        </th>
     </tr>
     </thead>
     <tbody>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-26 19:45+0300\n"
+"POT-Creation-Date: 2019-01-29 14:51+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -144,6 +144,54 @@ msgstr ""
 #: libcms/apps/newinlib/administration/views.py:15 libcms/local_settings.py:32
 msgid "Russian"
 msgstr "Русский"
+
+#: libcms/apps/news/frontend/forms.py:36
+msgid "January"
+msgstr "Январь"
+
+#: libcms/apps/news/frontend/forms.py:37
+msgid "February"
+msgstr "Февраль"
+
+#: libcms/apps/news/frontend/forms.py:38
+msgid "March"
+msgstr "Март"
+
+#: libcms/apps/news/frontend/forms.py:39
+msgid "April"
+msgstr "Апрель"
+
+#: libcms/apps/news/frontend/forms.py:40
+msgid "May"
+msgstr "Май"
+
+#: libcms/apps/news/frontend/forms.py:41
+msgid "June"
+msgstr "Июнь"
+
+#: libcms/apps/news/frontend/forms.py:42
+msgid "July"
+msgstr "Июль"
+
+#: libcms/apps/news/frontend/forms.py:43
+msgid "August"
+msgstr "Август"
+
+#: libcms/apps/news/frontend/forms.py:44
+msgid "September"
+msgstr "Сентябрь"
+
+#: libcms/apps/news/frontend/forms.py:45
+msgid "October"
+msgstr "Октябрь"
+
+#: libcms/apps/news/frontend/forms.py:46
+msgid "November"
+msgstr "Ноябрь"
+
+#: libcms/apps/news/frontend/forms.py:47
+msgid "December"
+msgstr "Декабрь"
 
 #: libcms/apps/pages/administration/views.py:162
 #: libcms/apps/participant_pages/administration/views.py:215

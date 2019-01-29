@@ -42,7 +42,6 @@ def filer_by_date(request, day='', month='', year=''):
     })
 
 
-
 def show(request, id):
     cur_language = translation.get_language()
     try:

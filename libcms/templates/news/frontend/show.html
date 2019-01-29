@@ -47,12 +47,12 @@
             <div class="row">
                 <div class="col-lg-7 col-md-12">
                     <div class="content">
-                        <h1 class="content__title">{{ content.title }}</h1>
+                        <h1 class="content__title">{{ content.get_title }}</h1>
                         <div class="content__info">
                             <time class="content__date"><span
                                     class="icon-wall-clock"></span>&nbsp;&nbsp;{{ news.create_date }}</time>
                         </div>
-                        {{ content.content|safe }}
+                        {{ content.get_content|safe }}
                     </div>
                     <div class="ya-share2"
                          data-services="vkontakte,facebook,odnoklassniki,gplus,twitter,viber,whatsapp,telegram"></div>

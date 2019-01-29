@@ -1,4 +1,5 @@
 {% extends 'theme_frontend_base.html' %}
+{% load pages_tags %}
 {% load newinlib_tags %}
 {% load i18n %}
 {% load news_tags %}
@@ -194,12 +195,7 @@
 
 
         <div class="container">
-{#            <section class="card news-main">#}
-{#                <h2 class="news-main__title">Мы обновляем дизайн, а также вносим другие изменения</h2>#}
-{#                <p class="news-main__description">Некоторое время могут возникать проблемы с входом в кабинет, но не#}
-{#                    грустите - мы постараемся как можно быстрее завершить работы.</p>#}
-                {#                <a class="news-main__link" href="#">Подробнее о конкурсе</a>#}
-{#            </section>#}
+            {% render_page_content 'adverbs' %}
             <section class="card-transparent new-arrival-card">
                 <header class="card-transparent__header">
                     <h2 class="card-transparent__title">

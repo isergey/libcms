@@ -3,7 +3,7 @@
         <article class="news-list__item">
             <time class="news-list__date">{{ news.create_date|date:"j E" }}</time>
             <h3 class="news-list__title"><a class="news-list__link"
-                                            href="{% url 'news:frontend:show' news.id %}">{{ news.news_content.title }}</a>
+                                            href="{% url 'news:frontend:show' news.id %}">{{ news.news_content.get_title }}</a>
             </h3>
         </article>
     {% endfor %}

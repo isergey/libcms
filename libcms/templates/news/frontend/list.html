@@ -61,10 +61,10 @@
                                 <time class="news-list__date">{{ news.create_date }}</time>
                                 <h3 class="news-list__title">
                                     <a class="news-list__link" href="{% url 'news:frontend:show' news.id %}">
-                                        {{ news.news_content.title }}
+                                        {{ news.news_content.get_title }}
                                     </a>
                                 </h3>
-                                <p class="news-list__description">{{ news.news_content.teaser }}</p>
+                                <p class="news-list__description">{{ news.news_content.get_teaser }}</p>
                             </article>
                         {% endfor %}
                     </div>
