@@ -375,6 +375,7 @@ def _indexing(slug, reset=False):
 
     i = 0
     while res:
+
         if not res[0]['content']:
             res = rows.fetch_row(how=1)
             continue
@@ -389,7 +390,7 @@ def _indexing(slug, reset=False):
         if date_of_publication:
             cleaned_date_of_publication = ''.join(ONLY_DIGITS_RE.findall(date_of_publication[0]))
             if cleaned_date_of_publication:
-                doc.doc['date_of_publication_ls'] = [cleaned_date_of_publication]
+                doc.get['date_of_publication_ls'] = [cleaned_date_of_publication]
         # для сортировки по тому, извлекаем строку содержащую номер тома или промежуток и посещаем резултат вычисления
         # в поле tom_f, которое в последствии сортируется
         # если трока типа т.1 то в том добавляется float 1

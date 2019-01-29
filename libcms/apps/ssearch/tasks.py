@@ -7,4 +7,7 @@ from . indexing import _indexing
 @settings.HUEY.lock_task('ssearch.indexing')
 def indexing(slug, reset):
     print 'start indexing', slug, 'reset', reset
-    _indexing(slug, reset=reset)
+    try:
+        _indexing(slug, reset=reset)
+    except Exception as e:
+        print(e)
