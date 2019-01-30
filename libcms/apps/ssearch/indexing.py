@@ -1,20 +1,21 @@
 # coding=utf-8
-import re
-import io
 import datetime
-import sunburnt
-import MySQLdb
-import zipfile
-import httplib2
+import io
 import os
-from lxml import etree
-from django.db import transaction
+import re
+import zipfile
+
+import MySQLdb
+import httplib2
 from django.conf import settings
-from participants.models import Library
-from ssearch.models import Upload, Record, IndexStatus
-from .models import requests_count, requests_by_attributes, requests_by_term, Source
+from lxml import etree
+
+import sunburnt
 from libcms.libs.common.xslt_transformers import xslt_indexing_transformer
+from participants.models import Library
+from ssearch.models import Record, IndexStatus
 from .common import resolve_date
+from .models import Source
 
 ONLY_DIGITS_RE = re.compile('\d+')
 
