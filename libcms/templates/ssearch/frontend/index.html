@@ -463,6 +463,26 @@
                                             {% endfor %}
                                         </p>
                                         <dl class="list__dl">
+                                            {% if doc.record|hash:'document_type' %}
+                                                <dt>
+                                                    {% if LANGUAGE_CODE == 'ru' %}
+                                                        Тип документа:
+                                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                                        Кәгазь тибы:
+                                                    {% else %}
+                                                        Document type:
+                                                    {% endif %}
+                                                </dt>
+                                                <dd>
+                                                    {% for document_type in doc.record|hash:'document_type' %}
+                                                        {% if not forloop.last %}
+                                                            {{ document_type }},
+                                                        {% else %}
+                                                            {{ document_type }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </dd>
+                                            {% endif %}
                                             {% if doc.record|hash:'code-language' %}
                                                 <dt>
                                                     {% if LANGUAGE_CODE == 'ru' %}

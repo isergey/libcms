@@ -61,6 +61,8 @@
             <xsl:call-template name="CollectionCover"/>
             <xsl:call-template name="Linked-record-number"/>
             <xsl:call-template name="URL"/>
+            <xsl:call-template name="Document-type"/>
+
             <xsl:call-template name="Collection-title-tt"/>
             <xsl:call-template name="Collection-comments-tt"/>
             <xsl:call-template name="Collection-title-en"/>
@@ -572,6 +574,16 @@
             </xsl:if>
         </xsl:for-each>
     </xsl:template>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="Document-type">
+        <xsl:for-each select="field[@id='200']/subfield[@id='b']">
+            <field name="document_type">
+                <xsl:value-of select="."/>
+            </field>
+        </xsl:for-each>
+    </xsl:template>
+
     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <xsl:template name="Linked-record-number">
