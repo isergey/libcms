@@ -463,7 +463,7 @@
                                             {% endfor %}
                                         </p>
                                         <dl class="list__dl">
-                                            {% if doc.record|hash:'document_type' %}
+                                            {% if doc.record|hash:'material_designation' %}
                                                 <dt>
                                                     {% if LANGUAGE_CODE == 'ru' %}
                                                         Обозначение материала:
@@ -474,7 +474,7 @@
                                                     {% endif %}
                                                 </dt>
                                                 <dd>
-                                                    {% for document_type in doc.record|hash:'document_type' %}
+                                                    {% for document_type in doc.record|hash:'material_designation' %}
                                                         {% if not forloop.last %}
                                                             {{ document_type }},
                                                         {% else %}
