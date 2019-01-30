@@ -91,6 +91,11 @@ facet_titles = {
         'en': u'Content type',
         'tt': u'Эчтәлек тибы'
     },
+    'document_type': {
+        'ru': u'Тип документа',
+        'en': u'Document type',
+        'tt': u'Кәгазь тибе'
+    },
     'date-of-publication': {
         'ru': u'Год публикации',
         'en': u'Publication year',
@@ -131,7 +136,7 @@ facet_titles = {
 
 @register.filter
 def facet_title(arg_code):
-    code = u''.join(arg_code.split('_')[:1])
+    code = u'_'.join(arg_code.split('_')[:-1])
     lang = get_language()[:2]
     try:
         title = facet_titles[code][lang]
@@ -250,10 +255,78 @@ language_titles = {
 
 }
 
+document_type_titles = {
+    u'article': {
+        u'ru': u'статья',
+    },
+    u'author_abstract': {
+        u'ru': u'автореферат',
+    },
+    u'book': {
+        u'ru': u'книга',
+    },
+    u'cinema': {
+        u'ru': u'кинофильм',
+    },
+    u'dict': {
+        u'ru': u'словарь',
+    },
+    u'disser': {
+        u'ru': u'диссертация',
+    },
+    u'encyc': {
+        u'ru': u'энциклопедия',
+    },
+    u'issue': {
+        u'ru': u'выпуск',
+    },
+    u'journal_np': {
+        u'ru': u'журнал, газета',
+    },
+    u'maps': {
+        u'ru': u'карты',
+    },
+    u'multimedia': {
+        u'ru': u'мультимедиа',
+    },
+    u'other': {
+        u'ru': u'не определен',
+    },
+    u'picture': {
+        u'ru': u'рисунок',
+    },
+    u'photographic_print': {
+        u'ru': u'фотоотпечаток',
+    },
+    u'ref': {
+        u'ru': u'справочник',
+    },
+    u'sound_record': {
+        u'ru': u'звукозапись',
+    },
+    u'tech_report': {
+        u'ru': u'технический отчет',
+    },
+    u'textbook': {
+        u'ru': u'учебник',
+    },
+    u'video_record': {
+        u'ru': u'видеозапись',
+    },
+    u'visual_projection': {
+        u'ru': u'визуально-проекционный',
+    }
+}
+
 
 @register.filter
 def language_title(code):
     return language_titles.get(code, code)
+
+
+@register.filter
+def document_type_title(code):
+    return document_type_titles.get(code, {}).get('ru', code)
 
 
 @register.inclusion_tag('ssearch/tags/count.html')

@@ -61,8 +61,8 @@
             <xsl:call-template name="CollectionCover"/>
             <xsl:call-template name="Linked-record-number"/>
             <xsl:call-template name="URL"/>
+            <xsl:call-template name="Material-designation"/>
             <xsl:call-template name="Document-type"/>
-
             <xsl:call-template name="Collection-title-tt"/>
             <xsl:call-template name="Collection-comments-tt"/>
             <xsl:call-template name="Collection-title-en"/>
@@ -576,12 +576,131 @@
     </xsl:template>
 
     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <xsl:template name="Document-type">
+    <xsl:template name="Material-designation">
         <xsl:for-each select="field[@id='200']/subfield[@id='b']">
-            <field name="document_type">
+            <field name="material_designation">
                 <xsl:value-of select="."/>
             </field>
         </xsl:for-each>
+    </xsl:template>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="Document-type">
+        <xsl:variable name="leader06" select="leader/type"/>
+        <xsl:variable name="leader07" select="leader/leader07"/>
+        <xsl:variable name="leader08" select="leader/leader08"/>
+
+        <xsl:variable name="f105_a" select="field[@id='105']/subfield[@id='a']"/>
+        <xsl:variable name="f115_a" select="field[@id='115']/subfield[@id='a']"/>
+	    <xsl:variable name="f116_a" select="field[@id='116']/subfield[@id='a']"/>
+	    <xsl:variable name="f105_a_4_7" select="substring($f105_a, 5, 4)"/>
+        <!--<xsl:variable name="f105_a_pos_4" select="substring($f105_a, 5, 1)"/>-->
+        <!--<xsl:variable name="f105_a_pos_5" select="substring($f105_a, 6, 1)"/>-->
+        <!--<xsl:variable name="f105_a_pos_6" select="substring($f105_a, 7, 1)"/>-->
+        <!--<xsl:variable name="f105_a_pos_7" select="substring($f105_a, 8, 1)"/>-->
+
+        <xsl:variable name="f110_a" select="field[@id='110']/subfield[@id='a']"/>
+        <xsl:variable name="f110_a_pos_0" select="substring($f110_a, 1, 1)"/>
+        <xsl:variable name="f115_a_pos_0" select="substring($f115_a, 1, 1)"/>
+        <xsl:variable name="f116_a_pos_0" select="substring($f116_a, 1, 1)"/>
+        <!--<xsl:variable name="f110_a_pos_3" select="substring($f110_a, 4, 1)"/>-->
+        <field name="document_type">
+            <xsl:choose>
+                <xsl:when test="contains($f105_a_4_7, 'e')">
+                    <!--Словарь-->
+                    <xsl:text>dict</xsl:text>
+                </xsl:when>
+                <xsl:when test="contains($f105_a_4_7, 'f')">
+                    <!--Энциклопедия-->
+                    <xsl:text>encyc</xsl:text>
+                </xsl:when>
+                <xsl:when test="contains($f105_a_4_7, 'g')">
+                    <!--Справочник-->
+                    <xsl:text>ref</xsl:text>
+                </xsl:when>
+                <xsl:when test="contains($f105_a_4_7, 'j')">
+                    <!--Учебник-->
+                    <xsl:text>textbook</xsl:text>
+                </xsl:when>
+                <xsl:when test="contains($f105_a_4_7, 'p')">
+                    <!--Технический отчет-->
+                    <xsl:text>tech_report</xsl:text>
+                </xsl:when>
+                <xsl:when test="contains($f105_a_4_7, 'd') and contains($f105_a_4_7, 'm')">
+                    <!--Автореферат диссертация-->
+                    <xsl:text>author_abstract</xsl:text>
+                </xsl:when>
+                <xsl:when test="contains($f105_a_4_7, 'm')">
+                    <!--Диссертация-->
+                    <xsl:text>disser</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'k' and $leader07 = 'm' and $f116_a_pos_0='b'">
+                    <!--Рисунок-->
+                    <xsl:text>picture</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'k' and $leader07 = 'm' and $f116_a_pos_0='с'">
+                    <!--Живопись-->
+                    <xsl:text>painting</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'k' and $leader07 = 'm' and $f116_a_pos_0='f'">
+                    <!--Фотоотпечаток-->
+                    <xsl:text>photographic_print</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'k' and $leader07 = 'm' and $f116_a_pos_0='h'">
+                    <!--Изображение-->
+                    <xsl:text>image</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'k' and $leader07 = 'm' and $f116_a_pos_0='i'">
+                    <!--Гравюра-->
+                    <xsl:text>engraving</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'e' and $leader07 = 'm'">
+                    <!--Карты-->
+                    <xsl:text>maps</xsl:text>
+                </xsl:when>
+                <xsl:when test="($leader06 = 'i' or $leader06 = 'j') and $leader07 = 'm'">
+                    <!--Звукозапись-->
+                    <xsl:text>sound_record</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'l' and $leader07 = 'm'">
+                    <!--Мультимедиа-->
+                    <xsl:text>multimedia</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'g' and $leader07 = 'm' and $f115_a_pos_0='a'">
+                    <!--Кинофильм-->
+                    <xsl:text>cinema</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'g' and $leader07 = 'm' and $f115_a_pos_0='b'">
+                    <!--Визуально-проекционный-->
+                    <xsl:text>visual_projection</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'g' and $leader07 = 'm' and $f115_a_pos_0='c'">
+                    <!--Видео запись-->
+                    <xsl:text>video_record</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'a' and $leader07 = 'm'">
+                    <!--Книга-->
+                    <xsl:text>book</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'a' and $leader07 = 's' and $leader08='1'">
+                    <!--Журнал, газета-->
+                    <xsl:text>journal_np</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'a' and $leader07 = 's' and $leader08='2'">
+                    <!--Выпуск-->
+                    <xsl:text>issue</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'a' and $leader07 = 'a' and $leader08='2'">
+                    <!--Статья-->
+                    <xsl:text>article</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <!-- Другое-->
+                    <xsl:text>other</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
+        </field>
+
     </xsl:template>
 
     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
