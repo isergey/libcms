@@ -62,7 +62,6 @@
             <xsl:call-template name="Linked-record-number"/>
             <xsl:call-template name="URL"/>
             <xsl:call-template name="Material-designation"/>
-            <xsl:call-template name="Document-type"/>
             <xsl:call-template name="Collection-title-tt"/>
             <xsl:call-template name="Collection-comments-tt"/>
             <xsl:call-template name="Collection-title-en"/>
@@ -451,141 +450,6 @@
 
     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
     <xsl:template name="Content-type">
-        <xsl:variable name="f105_a" select="field[@id='105']/subfield[@id='a']"/>
-        <xsl:variable name="f105_a_pos_4" select="substring($f105_a, 5, 1)"/>
-        <xsl:variable name="f105_a_pos_5" select="substring($f105_a, 6, 1)"/>
-        <xsl:variable name="f105_a_pos_6" select="substring($f105_a, 7, 1)"/>
-        <xsl:variable name="f105_a_pos_7" select="substring($f105_a, 8, 1)"/>
-        <xsl:if test="$f105_a_pos_4 and $f105_a_pos_4 !=' ' and $f105_a_pos_4 !='|'">
-            <field name="content-type">
-                <xsl:value-of select="$f105_a_pos_4"/>
-            </field>
-        </xsl:if>
-        <xsl:if test="$f105_a_pos_5 and $f105_a_pos_5 !=' ' and $f105_a_pos_5 !='|'">
-            <field name="content-type">
-                <xsl:value-of select="$f105_a_pos_5"/>
-            </field>
-        </xsl:if>
-        <xsl:if test="$f105_a_pos_6 and $f105_a_pos_6 !=' ' and $f105_a_pos_6 !='|'">
-            <field name="content-type">
-                <xsl:value-of select="$f105_a_pos_6"/>
-            </field>
-        </xsl:if>
-        <xsl:if test="$f105_a_pos_7 and $f105_a_pos_7 !=' ' and $f105_a_pos_7 !='|'">
-            <field name="content-type">
-                <xsl:value-of select="$f105_a_pos_7"/>
-            </field>
-        </xsl:if>
-
-        <xsl:variable name="f110_a" select="field[@id='110']/subfield[@id='a']"/>
-        <xsl:variable name="f110_a_pos_3" select="substring($f110_a, 4, 1)"/>
-        <xsl:variable name="f110_a_pos_4" select="substring($f110_a, 5, 1)"/>
-        <xsl:variable name="f110_a_pos_5" select="substring($f110_a, 6, 1)"/>
-        <xsl:variable name="f110_a_pos_6" select="substring($f110_a, 7, 1)"/>
-
-        <xsl:if test="f110_a_pos_3 and f110_a_pos_3 !=' ' and f110_a_pos_3 !='|'">
-            <field name="content-type">
-                <xsl:value-of select="f110_a_pos_3"/>
-            </field>
-        </xsl:if>
-        <xsl:if test="f110_a_pos_4 and f110_a_pos_4 !=' ' and f110_a_pos_4 !='|'">
-            <field name="content-type">
-                <xsl:value-of select="f110_a_pos_4"/>
-            </field>
-        </xsl:if>
-        <xsl:if test="f110_a_pos_5 and f110_a_pos_5 !=' ' and f110_a_pos_5 !='|'">
-            <field name="content-type">
-                <xsl:value-of select="f110_a_pos_5"/>
-            </field>
-        </xsl:if>
-        <xsl:if test="f110_a_pos_6 and f110_a_pos_6 !=' ' and f110_a_pos_6 !='|'">
-            <field name="content-type">
-                <xsl:value-of select="f110_a_pos_6"/>
-            </field>
-        </xsl:if>
-
-    </xsl:template>
-
-
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <xsl:template name="Bib-level">
-        <xsl:for-each select="leader/leader07">
-            <field name="bib-level">
-                <xsl:value-of select="."/>
-            </field>
-        </xsl:for-each>
-    </xsl:template>
-
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <xsl:template name="Holders">
-        <xsl:for-each select="field[@id='999']/subfield[@id='a']">
-            <field name="holders">
-                <xsl:value-of select="."/>
-            </field>
-        </xsl:for-each>
-    </xsl:template>
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <xsl:template name="Fond">
-        <xsl:for-each select="field[@id='852']/subfield[@id='b']">
-            <field name="fond">
-                <xsl:value-of select="."/>
-            </field>
-        </xsl:for-each>
-    </xsl:template>
-
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <xsl:template name="Comments">
-        <xsl:for-each select="field[@id='330']/subfield[@id='a']">
-            <field name="comments">
-                <xsl:value-of select="."/>
-            </field>
-        </xsl:for-each>
-    </xsl:template>
-
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <xsl:template name="CollectionCover">
-        <xsl:for-each select="field[@id='856']/subfield[@id='u']">
-            <field name="collection_cover">
-                <xsl:value-of select="."/>
-            </field>
-        </xsl:for-each>
-    </xsl:template>
-
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-    <xsl:template name="Cover">
-
-        <xsl:for-each select="field[@id='856']">
-            <xsl:if test="subfield[@id='x']='Обложка'">
-                <field name="cover">
-                    <xsl:value-of select="subfield[@id='u']"/>
-                </field>
-            </xsl:if>
-        </xsl:for-each>
-    </xsl:template>
-
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <xsl:template name="URL">
-        <xsl:for-each select="field[@id='856']">
-            <xsl:if test="subfield[@id='u'] and not(subfield[@id='x'] = 'Обложка')">
-                <field name="url">
-                    <xsl:value-of select="subfield[@id='u']"/>
-                </field>
-            </xsl:if>
-        </xsl:for-each>
-    </xsl:template>
-
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <xsl:template name="Material-designation">
-        <xsl:for-each select="field[@id='200']/subfield[@id='b']">
-            <field name="material_designation">
-                <xsl:value-of select="."/>
-            </field>
-        </xsl:for-each>
-    </xsl:template>
-
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <xsl:template name="Document-type">
         <xsl:variable name="leader06" select="leader/type"/>
         <xsl:variable name="leader07" select="leader/leader07"/>
         <xsl:variable name="leader08" select="leader/leader08"/>
@@ -604,7 +468,7 @@
         <xsl:variable name="f115_a_pos_0" select="substring($f115_a, 1, 1)"/>
         <xsl:variable name="f116_a_pos_0" select="substring($f116_a, 1, 1)"/>
         <!--<xsl:variable name="f110_a_pos_3" select="substring($f110_a, 4, 1)"/>-->
-        <field name="document_type">
+        <field name="content_type">
             <xsl:choose>
                 <xsl:when test="contains($f105_a_4_7, 'e')">
                     <!--Словарь-->
@@ -702,6 +566,86 @@
         </field>
 
     </xsl:template>
+
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="Bib-level">
+        <xsl:for-each select="leader/leader07">
+            <field name="bib-level">
+                <xsl:value-of select="."/>
+            </field>
+        </xsl:for-each>
+    </xsl:template>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="Holders">
+        <xsl:for-each select="field[@id='999']/subfield[@id='a']">
+            <field name="holders">
+                <xsl:value-of select="."/>
+            </field>
+        </xsl:for-each>
+    </xsl:template>
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="Fond">
+        <xsl:for-each select="field[@id='852']/subfield[@id='b']">
+            <field name="fond">
+                <xsl:value-of select="."/>
+            </field>
+        </xsl:for-each>
+    </xsl:template>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="Comments">
+        <xsl:for-each select="field[@id='330']/subfield[@id='a']">
+            <field name="comments">
+                <xsl:value-of select="."/>
+            </field>
+        </xsl:for-each>
+    </xsl:template>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="CollectionCover">
+        <xsl:for-each select="field[@id='856']/subfield[@id='u']">
+            <field name="collection_cover">
+                <xsl:value-of select="."/>
+            </field>
+        </xsl:for-each>
+    </xsl:template>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <xsl:template name="Cover">
+
+        <xsl:for-each select="field[@id='856']">
+            <xsl:if test="subfield[@id='x']='Обложка'">
+                <field name="cover">
+                    <xsl:value-of select="subfield[@id='u']"/>
+                </field>
+            </xsl:if>
+        </xsl:for-each>
+    </xsl:template>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="URL">
+        <xsl:for-each select="field[@id='856']">
+            <xsl:if test="subfield[@id='u'] and not(subfield[@id='x'] = 'Обложка')">
+                <field name="url">
+                    <xsl:value-of select="subfield[@id='u']"/>
+                </field>
+            </xsl:if>
+        </xsl:for-each>
+    </xsl:template>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="Material-designation">
+        <xsl:for-each select="field[@id='200']/subfield[@id='b']">
+            <field name="material_designation">
+                <xsl:value-of select="."/>
+            </field>
+        </xsl:for-each>
+    </xsl:template>
+
+
 
     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 

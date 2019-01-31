@@ -138,7 +138,7 @@ sort_attr_map = {
         'order': 'asc',
     },
     u'date-of-publication': {
-        'attr': u'date-of-publication_dts',
+        'attr': u'date-of-publication_l',
         'order': 'desc',
     },
     u'record-create-date': {
@@ -267,11 +267,10 @@ def search(request, catalog=None, library=None):
             holders.append(getattr(leaf_library, 'code'))
     facet_fields = [
         'fond_sf',
-        'document_type_s',
+        'content_type_s',
         'author_sf',
         'subject-heading_sf',
         'date-of-publication_s',
-        'content-type_t',
         'code-language_t',
     ]
 

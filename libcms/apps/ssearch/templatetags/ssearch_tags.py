@@ -91,11 +91,6 @@ facet_titles = {
         'en': u'Content type',
         'tt': u'Эчтәлек тибы'
     },
-    'document_type': {
-        'ru': u'Тип документа',
-        'en': u'Document type',
-        'tt': u'Кәгазь тибе'
-    },
     'date-of-publication': {
         'ru': u'Год публикации',
         'en': u'Publication year',
@@ -144,40 +139,6 @@ def facet_title(arg_code):
         title = code
     return title
 
-
-content_type_titles = {
-    'a': u'библиографическое издание',
-    'b': u'каталог',
-    'c': u'указатель',
-    'd': u'реферат',
-    'e': u'словарь',
-    'f': u'энциклопедия',
-    'g': u'справочное издание',
-    'h': u'описание проекта',
-    'i': u'статистические данные',
-    'j': u'учебник',
-    'k': u'патент',
-    'l': u'стандарт',
-    'm': u'диссертация',
-    'n': u'законы',
-    'o': u'словарь',
-    'p': u'технический отчет',
-    'q': u'экзаменационный лист',
-    'r': u'литературный обзор/рецензия',
-    's': u'договоры',
-    't': u'карикатуры или комиксы',
-    'u': u'неизвестно',
-    'w': u'религиозные тексты',
-    'z': u'другое',
-}
-
-
-@register.filter
-def content_type_title(code):
-    return content_type_titles.get(code.lower(), code)
-
-
-#
 
 language_titles = {
     'rus': u"Русский",
@@ -255,7 +216,7 @@ language_titles = {
 
 }
 
-document_type_titles = {
+content_type_titles = {
     u'article': {
         u'ru': u'статья',
     },
@@ -325,8 +286,8 @@ def language_title(code):
 
 
 @register.filter
-def document_type_title(code):
-    return document_type_titles.get(code, {}).get('ru', code)
+def content_type_title(code):
+    return content_type_titles.get(code, {}).get('ru', code)
 
 
 @register.inclusion_tag('ssearch/tags/count.html')

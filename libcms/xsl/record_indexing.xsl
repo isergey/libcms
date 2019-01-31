@@ -204,7 +204,6 @@ dtf - фасет даты
         <!-- att 1033            Host-item -->
         <!-- att 1034            Content-type -->
         <xsl:call-template name="Content-type"/>
-        <xsl:call-template name="Document-type"/>
         <!-- att 1035            Anywhere -->
         <!-- att 1036            Author-Title-Subject -->
 
@@ -403,29 +402,33 @@ dtf - фасет даты
     </xsl:template>
     <xsl:template name="Title">
         <field name="title_t">
-            <xsl:choose>
-                <xsl:when test="field[@id='463']/subfield[@id=1]/field[@id='200']/subfield[@id='a']">
-                    <xsl:call-template name="Title200"/>
-                    <xsl:text>//</xsl:text>
-                    <xsl:for-each select="field[@id='461']/subfield[@id=1]">
-                        <xsl:call-template name="Title200"/>
-                    </xsl:for-each>
-                    <xsl:text>. –</xsl:text>
-                    <xsl:for-each select="field[@id='463']/subfield[@id=1]">
-                        <xsl:call-template name="Title200"/>
-                    </xsl:for-each>
-                </xsl:when>
-                <xsl:when test="field[@id='461']/subfield[@id=1]/field[@id='200']/subfield[@id='a']">
-                    <xsl:for-each select="field[@id='461']/subfield[@id=1]">
-                        <xsl:call-template name="Title200"/>
-                    </xsl:for-each>
-                    <xsl:text>. –</xsl:text>
-                    <xsl:call-template name="Title200"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:call-template name="Title200"/>
-                </xsl:otherwise>
-            </xsl:choose>
+            <xsl:call-template name="Title200"/>
+            <xsl:for-each select="field[@id &gt; '399' and @id &lt; '500']/subfield[@id=1]">
+                <xsl:call-template name="Title200"/>
+            </xsl:for-each>
+{#            <xsl:choose>#}
+{#                <xsl:when test="field[@id='463']/subfield[@id=1]/field[@id='200']/subfield[@id='a']">#}
+{#                    <xsl:call-template name="Title200"/>#}
+{#                    <xsl:text>//</xsl:text>#}
+{#                    <xsl:for-each select="field[@id='461']/subfield[@id=1]">#}
+{#                        <xsl:call-template name="Title200"/>#}
+{#                    </xsl:for-each>#}
+{#                    <xsl:text>. –</xsl:text>#}
+{#                    <xsl:for-each select="field[@id='463']/subfield[@id=1]">#}
+{#                        <xsl:call-template name="Title200"/>#}
+{#                    </xsl:for-each>#}
+{#                </xsl:when>#}
+{#                <xsl:when test="field[@id='461']/subfield[@id=1]/field[@id='200']/subfield[@id='a']">#}
+{#                    <xsl:for-each select="field[@id='461']/subfield[@id=1]">#}
+{#                        <xsl:call-template name="Title200"/>#}
+{#                    </xsl:for-each>#}
+{#                    <xsl:text>. –</xsl:text>#}
+{#                    <xsl:call-template name="Title200"/>#}
+{#                </xsl:when>#}
+{#                <xsl:otherwise>#}
+{#                    <xsl:call-template name="Title200"/>#}
+{#                </xsl:otherwise>#}
+{#            </xsl:choose>#}
         </field>
     </xsl:template>
     <xsl:template name="Title200">
@@ -848,63 +851,6 @@ dtf - фасет даты
 
     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
     <xsl:template name="Content-type">
-        <xsl:variable name="f105_a" select="field[@id='105']/subfield[@id='a']"/>
-        <xsl:variable name="f105_a_pos_4" select="substring($f105_a, 5, 1)"/>
-        <xsl:variable name="f105_a_pos_5" select="substring($f105_a, 6, 1)"/>
-        <xsl:variable name="f105_a_pos_6" select="substring($f105_a, 7, 1)"/>
-        <xsl:variable name="f105_a_pos_7" select="substring($f105_a, 8, 1)"/>
-        <xsl:if test="$f105_a_pos_4 and $f105_a_pos_4 !=' ' and $f105_a_pos_4 !='|'">
-            <field name="content-type_t">
-                <xsl:value-of select="$f105_a_pos_4"/>
-            </field>
-        </xsl:if>
-        <xsl:if test="$f105_a_pos_5 and $f105_a_pos_5 !=' ' and $f105_a_pos_5 !='|'">
-            <field name="content-type_t">
-                <xsl:value-of select="$f105_a_pos_5"/>
-            </field>
-        </xsl:if>
-        <xsl:if test="$f105_a_pos_6 and $f105_a_pos_6 !=' ' and $f105_a_pos_6 !='|'">
-            <field name="content-type_t">
-                <xsl:value-of select="$f105_a_pos_6"/>
-            </field>
-        </xsl:if>
-        <xsl:if test="$f105_a_pos_7 and $f105_a_pos_7 !=' ' and $f105_a_pos_7 !='|'">
-            <field name="content-type_t">
-                <xsl:value-of select="$f105_a_pos_7"/>
-            </field>
-        </xsl:if>
-
-        <xsl:variable name="f110_a" select="field[@id='110']/subfield[@id='a']"/>
-        <xsl:variable name="f110_a_pos_3" select="substring($f110_a, 4, 1)"/>
-        <xsl:variable name="f110_a_pos_4" select="substring($f110_a, 5, 1)"/>
-        <xsl:variable name="f110_a_pos_5" select="substring($f110_a, 6, 1)"/>
-        <xsl:variable name="f110_a_pos_6" select="substring($f110_a, 7, 1)"/>
-
-        <xsl:if test="f110_a_pos_3 and f110_a_pos_3 !=' ' and f110_a_pos_3 !='|'">
-            <field name="content-type_t">
-                <xsl:value-of select="f110_a_pos_3"/>
-            </field>
-        </xsl:if>
-        <xsl:if test="f110_a_pos_4 and f110_a_pos_4 !=' ' and f110_a_pos_4 !='|'">
-            <field name="content-type_t">
-                <xsl:value-of select="f110_a_pos_4"/>
-            </field>
-        </xsl:if>
-        <xsl:if test="f110_a_pos_5 and f110_a_pos_5 !=' ' and f110_a_pos_5 !='|'">
-            <field name="content-type_t">
-                <xsl:value-of select="f110_a_pos_5"/>
-            </field>
-        </xsl:if>
-        <xsl:if test="f110_a_pos_6 and f110_a_pos_6 !=' ' and f110_a_pos_6 !='|'">
-            <field name="content-type_t">
-                <xsl:value-of select="f110_a_pos_6"/>
-            </field>
-        </xsl:if>
-
-    </xsl:template>
-
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <xsl:template name="Document-type">
         <xsl:variable name="leader06" select="leader/type"/>
         <xsl:variable name="leader07" select="leader/leader07"/>
         <xsl:variable name="leader08" select="leader/leader08"/>
@@ -923,7 +869,7 @@ dtf - фасет даты
         <xsl:variable name="f115_a_pos_0" select="substring($f115_a, 1, 1)"/>
         <xsl:variable name="f116_a_pos_0" select="substring($f116_a, 1, 1)"/>
         <!--<xsl:variable name="f110_a_pos_3" select="substring($f110_a, 4, 1)"/>-->
-        <field name="document_type_s">
+        <field name="content_type_s">
             <xsl:choose>
                 <xsl:when test="contains($f105_a_4_7, 'e')">
                     <!--Словарь-->
