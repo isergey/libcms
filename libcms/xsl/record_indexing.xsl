@@ -406,29 +406,6 @@ dtf - фасет даты
             <xsl:for-each select="field[@id &gt; '399' and @id &lt; '500']/subfield[@id=1]">
                 <xsl:call-template name="Title200"/>
             </xsl:for-each>
-{#            <xsl:choose>#}
-{#                <xsl:when test="field[@id='463']/subfield[@id=1]/field[@id='200']/subfield[@id='a']">#}
-{#                    <xsl:call-template name="Title200"/>#}
-{#                    <xsl:text>//</xsl:text>#}
-{#                    <xsl:for-each select="field[@id='461']/subfield[@id=1]">#}
-{#                        <xsl:call-template name="Title200"/>#}
-{#                    </xsl:for-each>#}
-{#                    <xsl:text>. –</xsl:text>#}
-{#                    <xsl:for-each select="field[@id='463']/subfield[@id=1]">#}
-{#                        <xsl:call-template name="Title200"/>#}
-{#                    </xsl:for-each>#}
-{#                </xsl:when>#}
-{#                <xsl:when test="field[@id='461']/subfield[@id=1]/field[@id='200']/subfield[@id='a']">#}
-{#                    <xsl:for-each select="field[@id='461']/subfield[@id=1]">#}
-{#                        <xsl:call-template name="Title200"/>#}
-{#                    </xsl:for-each>#}
-{#                    <xsl:text>. –</xsl:text>#}
-{#                    <xsl:call-template name="Title200"/>#}
-{#                </xsl:when>#}
-{#                <xsl:otherwise>#}
-{#                    <xsl:call-template name="Title200"/>#}
-{#                </xsl:otherwise>#}
-{#            </xsl:choose>#}
         </field>
     </xsl:template>
     <xsl:template name="Title200">
