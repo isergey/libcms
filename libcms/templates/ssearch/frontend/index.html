@@ -683,7 +683,6 @@
                                             {% for value in facet.values %}
                                                 <ul class="card-list">
                                                     {% if facet.title == 'content-type_t' %}
-
                                                         <li class="card-list__item">
                                                             <a class="card-list__link"
                                                                href="?{{ request.META.QUERY_STRING|safe }}&q={{ value.0|urlencode }}&attr={{ facet.title|urlencode }}"
@@ -696,6 +695,7 @@
 
                                                         <li class="card-list__item">
                                                             <a class="card-list__link"
+                                                               title="{{ value.0|document_type_title }}"
                                                                href="?{{ request.META.QUERY_STRING|safe }}&q={{ value.0|urlencode }}&attr={{ facet.title|urlencode }}">
                                                                 <span class="card-list__title">{{ value.0|document_type_title }}</span>
                                                                 <span class="card-list__count">{{ value.1 }}</span>
@@ -706,6 +706,7 @@
 
                                                         <li class="card-list__item">
                                                             <a class="card-list__link"
+                                                               title="{{ value.0 }}"
                                                                href="?{{ request.META.QUERY_STRING|safe }}&q={{ value.0|urlencode }}&attr={{ facet.title|urlencode }}">
                                                                 <span class="card-list__title">{{ value.0 }}</span>
                                                                 <span class="card-list__count">{{ value.1 }}</span>
@@ -716,6 +717,7 @@
 
                                                         <li class="card-list__item">
                                                             <a class="card-list__link"
+                                                               title="{{ value.0|language_title }}"
                                                                href="?{{ request.META.QUERY_STRING|safe }}&q={{ value.0|urlencode }}&attr={{ facet.title|urlencode }}">
                                                                 <span class="card-list__title">{{ value.0|language_title }}</span>
                                                                 <span class="card-list__count">{{ value.1 }}</span>
@@ -726,6 +728,7 @@
 
                                                         <li class="card-list__item">
                                                             <a class="card-list__link"
+                                                               title="{{ value.0|fond_title }}"
                                                                href="?{{ request.META.QUERY_STRING|safe }}&q={{ value.0|urlencode }}&attr={{ facet.title|urlencode }}">
                                                                 <span class="card-list__title">{{ value.0|fond_title }}</span>
                                                                 <span class="card-list__count">{{ value.1 }}</span>
@@ -736,6 +739,7 @@
 
                                                         <li class="card-list__item">
                                                             <a class="card-list__link"
+                                                               title="{{ value.0 }}"
                                                                href="?{{ request.META.QUERY_STRING|safe }}&q={{ value.0|urlencode }}&attr={{ facet.title|urlencode }}">
                                                                 <span class="card-list__title">{{ value.0 }}</span>
                                                                 <span class="card-list__count">{{ value.1 }}</span>
