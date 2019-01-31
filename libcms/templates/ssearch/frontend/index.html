@@ -74,13 +74,13 @@
                                 <input type="hidden" name="library" value="{{ request.GET.library }}">
                             {% endif %}
                             {% for search_breadcumb in search_breadcumbs %}
-{#                                    {% if forloop.last %}#}
-{#                                    <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">#}
-{#                                    <input type="hidden" name="q" value="{{ search_breadcumb.value }}">#}
-{#                                {% else %}#}
-                                    <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">
-                                    <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
-{#                                {% endif %}#}
+                                {#                                    {% if forloop.last %}#}
+                                {#                                    <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">#}
+                                {#                                    <input type="hidden" name="q" value="{{ search_breadcumb.value }}">#}
+                                {#                                {% else %}#}
+                                <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">
+                                <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
+                                {#                                {% endif %}#}
                             {% endfor %}
                             <div class="search-input search-input_border">
                                 <select name="attr" class="search-input__select">
@@ -136,7 +136,7 @@
                                     <div class="checkbox checkbox_mb-0">
                                         <label class="form-check-label">
                                             <input type="checkbox" name="in_founded"
-{#                                                   {% if request.GET.in_founded %}checked{% endif %}#}
+                                                    {#                                                   {% if request.GET.in_founded %}checked{% endif %}#}
                                             >
                                             <span class="label-text">
                                                 {% if LANGUAGE_CODE == 'ru' %}Искать в
@@ -201,15 +201,17 @@
                                         {% url 'ssearch:frontend:index' as search_index_url %}
                                     {% endif %}
 
-                                    <a class="search-nav__link" href="{{ search_index_url|safe }}{% if request.GET.library %}?library={{ request.GET.library }}{% endif %}">
+                                    <a class="search-nav__link" href="
+                                            {{ search_index_url|safe }}{% if request.GET.library %}?library={{ request.GET.library }}{% endif %}">
                                         {% if LANGUAGE_CODE == 'ru' %}
-                                            Очистить поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Clear search{% endif %}
+                                            Очистить поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Clear
+                                            search{% endif %}
                                     </a>
                                 </div>
                                 <div class="search-nav__item">
                                     <span class="search-nav__text">
                                          {% if LANGUAGE_CODE == 'ru' %}
-                                            Вы искали:
+                                             Вы искали:
                                          {% elif LANGUAGE_CODE == 'tt' %}
                                              Сез эзләделәр:
                                          {% else %}
@@ -221,7 +223,8 @@
                                     {% if not forloop.last %}
                                         <div class="search-nav__item">
                                             <a class="search-nav__link"
-                                               href="?{{ search_breadcumb.href }}{% if request.GET.library %}&library={{ request.GET.library|urlencode }}{% endif %}">→ {{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value }}</a>
+                                               href="?
+                                                       {{ search_breadcumb.href }}{% if request.GET.library %}&library={{ request.GET.library|urlencode }}{% endif %}">→ {{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value }}</a>
                                         </div>
                                     {% else %}
                                         {#                <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>#}
@@ -251,11 +254,11 @@
                                     <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">
                                     <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">
                                 {% endfor %}
-{##}
-{#                                {% if request.GET.q and request.GET.attr %}#}
-{#                                    <input type="hidden" name="fq" value="{{ request.GET.q }}">#}
-{#                                    <input type="hidden" name="fattr" value="{{ request.GET.attr }}">#}
-{#                                {% endif %}#}
+                                {##}
+                                {#                                {% if request.GET.q and request.GET.attr %}#}
+                                {#                                    <input type="hidden" name="fq" value="{{ request.GET.q }}">#}
+                                {#                                    <input type="hidden" name="fattr" value="{{ request.GET.attr }}">#}
+                                {#                                {% endif %}#}
 
 
                                 <div class="search-nav search-nav_p-0 sort_select">
@@ -424,15 +427,15 @@
                                         </div>
                                     {% endfor %}
                                 </div>
-{#                                {% for search_breadcumb in search_breadcumbs %}#}
-{#                                    {% if forloop.last %}#}
-{#                                        <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">#}
-{#                                        <input type="hidden" name="q" value="{{ search_breadcumb.value }}">#}
-{#                                    {% else %}#}
-{#                                        <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">#}
-{#                                        <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">#}
-{#                                    {% endif %}#}
-{#                                {% endfor %}#}
+                                {#                                {% for search_breadcumb in search_breadcumbs %}#}
+                                {#                                    {% if forloop.last %}#}
+                                {#                                        <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">#}
+                                {#                                        <input type="hidden" name="q" value="{{ search_breadcumb.value }}">#}
+                                {#                                    {% else %}#}
+                                {#                                        <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">#}
+                                {#                                        <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">#}
+                                {#                                    {% endif %}#}
+                                {#                                {% endfor %}#}
                             </form>
                         </div>
                     {% endif %}
@@ -582,9 +585,9 @@
                                     {% if doc.record.cover %}
                                         <div class="list__col-img">
                                             <div class="list__img-wrap">
-                                                    <img class="list__img"
-                                                         src="{{ doc.record.cover.0 }}"
-                                                         alt="{{ doc.record.title.0 }}">
+                                                <img class="list__img"
+                                                     src="{{ doc.record.cover.0 }}"
+                                                     alt="{{ doc.record.title.0 }}">
                                             </div>
                                         </div>
                                     {% endif %}
@@ -618,15 +621,15 @@
                                             <span>{{ library.name }}</span>
                                         </p>
                                     {% else %}
-{#                                        <p class="card__text">#}
-{#                                            {% if LANGUAGE_CODE == 'ru' %}#}
-{#                                                Выберите библиотеку#}
-{#                                            {% elif LANGUAGE_CODE == 'tt' %}#}
-{#                                                Сайлагыз Китапханә#}
-{#                                            {% else %}#}
-{#                                                Location in the library#}
-{#                                            {% endif %}#}
-{#                                        </p>#}
+                                        {#                                        <p class="card__text">#}
+                                        {#                                            {% if LANGUAGE_CODE == 'ru' %}#}
+                                        {#                                                Выберите библиотеку#}
+                                        {#                                            {% elif LANGUAGE_CODE == 'tt' %}#}
+                                        {#                                                Сайлагыз Китапханә#}
+                                        {#                                            {% else %}#}
+                                        {#                                                Location in the library#}
+                                        {#                                            {% endif %}#}
+                                        {#                                        </p>#}
                                     {% endif %}
                                 </div>
                                 <div class="card__footer">
@@ -680,10 +683,10 @@
                                             {% for value in facet.values %}
                                                 <ul class="card-list">
                                                     {% if facet.title == 'content-type_t' %}
-
                                                         <li class="card-list__item">
                                                             <a class="card-list__link"
-                                                               href="?{{ request.META.QUERY_STRING|safe }}&q={{ value.0|urlencode }}&attr={{ facet.title|urlencode }}">
+                                                               href="?{{ request.META.QUERY_STRING|safe }}&q={{ value.0|urlencode }}&attr={{ facet.title|urlencode }}"
+                                                               title="{{ value.0|content_type_title }}">
                                                                 <span class="card-list__title">{{ value.0|content_type_title }}</span>
                                                                 <span class="card-list__count">{{ value.1 }}</span>
                                                             </a>
@@ -692,6 +695,7 @@
 
                                                         <li class="card-list__item">
                                                             <a class="card-list__link"
+                                                               title="{{ value.0|document_type_title }}"
                                                                href="?{{ request.META.QUERY_STRING|safe }}&q={{ value.0|urlencode }}&attr={{ facet.title|urlencode }}">
                                                                 <span class="card-list__title">{{ value.0|document_type_title }}</span>
                                                                 <span class="card-list__count">{{ value.1 }}</span>
@@ -702,6 +706,7 @@
 
                                                         <li class="card-list__item">
                                                             <a class="card-list__link"
+                                                               title="{{ value.0 }}"
                                                                href="?{{ request.META.QUERY_STRING|safe }}&q={{ value.0|urlencode }}&attr={{ facet.title|urlencode }}">
                                                                 <span class="card-list__title">{{ value.0 }}</span>
                                                                 <span class="card-list__count">{{ value.1 }}</span>
@@ -712,6 +717,7 @@
 
                                                         <li class="card-list__item">
                                                             <a class="card-list__link"
+                                                               title="{{ value.0|language_title }}"
                                                                href="?{{ request.META.QUERY_STRING|safe }}&q={{ value.0|urlencode }}&attr={{ facet.title|urlencode }}">
                                                                 <span class="card-list__title">{{ value.0|language_title }}</span>
                                                                 <span class="card-list__count">{{ value.1 }}</span>
@@ -722,6 +728,7 @@
 
                                                         <li class="card-list__item">
                                                             <a class="card-list__link"
+                                                               title="{{ value.0|fond_title }}"
                                                                href="?{{ request.META.QUERY_STRING|safe }}&q={{ value.0|urlencode }}&attr={{ facet.title|urlencode }}">
                                                                 <span class="card-list__title">{{ value.0|fond_title }}</span>
                                                                 <span class="card-list__count">{{ value.1 }}</span>
@@ -732,6 +739,7 @@
 
                                                         <li class="card-list__item">
                                                             <a class="card-list__link"
+                                                               title="{{ value.0 }}"
                                                                href="?{{ request.META.QUERY_STRING|safe }}&q={{ value.0|urlencode }}&attr={{ facet.title|urlencode }}">
                                                                 <span class="card-list__title">{{ value.0 }}</span>
                                                                 <span class="card-list__count">{{ value.1 }}</span>
