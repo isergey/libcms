@@ -8,4 +8,12 @@ services:
       - .:/code
     ports:
       - "8000:8000"
-
+    depends_on:
+      - kitap_redis
+  kitap_redis:
+    container_name: kitap_redis
+    image: redis
+    ports:
+      - "6379:6379"
+    entrypoint: redis-server --appendonly yes
+    restart: always
