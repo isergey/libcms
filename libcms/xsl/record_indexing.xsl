@@ -945,6 +945,75 @@ dtf - фасет даты
 
     </xsl:template>
 
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xsl:template name="Media-type">
+        <xsl:variable name="leader06" select="leader/type"/>
+        <xsl:variable name="leader07" select="leader/leader07"/>
+        <xsl:variable name="leader08" select="leader/leader08"/>
+
+        <xsl:variable name="f105_a" select="field[@id='105']/subfield[@id='a']"/>
+        <xsl:variable name="f115_a" select="field[@id='115']/subfield[@id='a']"/>
+        <xsl:variable name="f116_a" select="field[@id='116']/subfield[@id='a']"/>
+        <xsl:variable name="f105_a_4_7" select="substring($f105_a, 5, 4)"/>
+        <!--<xsl:variable name="f105_a_pos_4" select="substring($f105_a, 5, 1)"/>-->
+        <!--<xsl:variable name="f105_a_pos_5" select="substring($f105_a, 6, 1)"/>-->
+        <!--<xsl:variable name="f105_a_pos_6" select="substring($f105_a, 7, 1)"/>-->
+        <!--<xsl:variable name="f105_a_pos_7" select="substring($f105_a, 8, 1)"/>-->
+
+        <xsl:variable name="f110_a" select="field[@id='110']/subfield[@id='a']"/>
+        <xsl:variable name="f110_a_pos_0" select="substring($f110_a, 1, 1)"/>
+        <xsl:variable name="f115_a_pos_0" select="substring($f115_a, 1, 1)"/>
+        <xsl:variable name="f116_a_pos_0" select="substring($f116_a, 1, 1)"/>
+        <!--<xsl:variable name="f110_a_pos_3" select="substring($f110_a, 4, 1)"/>-->
+        <field name="media_type_s">
+            <xsl:choose>
+                <xsl:when test="($leader06 = 'i' or $leader06 = 'j') and $leader07 = 'm'">
+                    <!--Звукозапись-->
+                    <xsl:text>sound_record</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'l' and $leader07 = 'm'">
+                    <!--Мультимедиа-->
+                    <xsl:text>multimedia</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'g' and $leader07 = 'm' and $f115_a_pos_0='a'">
+                    <!--Кинофильм-->
+                    <xsl:text>cinema</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'g' and $leader07 = 'm' and $f115_a_pos_0='b'">
+                    <!--Визуально-проекционный-->
+                    <xsl:text>visual_projection</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'g' and $leader07 = 'm' and $f115_a_pos_0='c'">
+                    <!--Видео запись-->
+                    <xsl:text>video_record</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'a' and $leader07 = 'm'">
+                    <!--Книга-->
+                    <xsl:text>book</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'a' and $leader07 = 's' and $leader08='1'">
+                    <!--Журнал, газета-->
+                    <xsl:text>journal_np</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'a' and $leader07 = 's' and $leader08='2'">
+                    <!--Выпуск-->
+                    <xsl:text>issue</xsl:text>
+                </xsl:when>
+                <xsl:when test="$leader06 = 'a' and $leader07 = 'a' and $leader08='2'">
+                    <!--Статья-->
+                    <xsl:text>article</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <!-- Другое-->
+                    <xsl:text>other</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
+        </field>
+
+    </xsl:template>
+
+
     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
     <xsl:template name="Fond">
         <xsl:for-each select="field[@id='313']/subfield[@id='a']">
