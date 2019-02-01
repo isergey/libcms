@@ -1,8 +1,5 @@
 # coding=utf-8
-import os
-
-from lxml import etree
-from  django.conf import settings
+from django.conf import settings
 from django.core.cache import caches
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, HttpResponse, redirect, resolve_url
