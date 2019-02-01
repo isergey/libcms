@@ -5,7 +5,7 @@ from lxml import etree
 from  django.conf import settings
 from django.core.cache import caches
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect, resolve_url
 
 import requests
 from participants.decorators import must_be_org_user
@@ -63,7 +63,7 @@ def index(request, managed_libraries=[]):
     if not request.user.has_perm('statistics.view_org_statistic') and \
             not request.user.has_perm('statistics.view_all_statistic') and not managed_libraries:
         return HttpResponse(u'Доступ запрещен', status=403)
-    category = request.GET.get('category', 'All')
+    category = request.GET.get('category', '')
 
     security = _get_security(managed_libraries, request.user)
 
@@ -81,6 +81,13 @@ def index(request, managed_libraries=[]):
             error = _check_for_error(response_dict)
         except ValueError:
             error = u'Неожиданный ответ от сервера статистики'
+
+    categories = response_dict.get('categories', [])
+    if categories and not category:
+        for category in categories:
+            if category.get('isSelected'):
+                return redirect(resolve_url('statistics:frontend:index') + '?category=' + category.get('code'))
+        return redirect(resolve_url('statistics:frontend:index') + '?category=' + categories[0].get('code'))
 
     return render(request, 'statistics/frontend/index.html', {
         'response_dict': response_dict,
