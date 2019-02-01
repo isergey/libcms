@@ -138,7 +138,6 @@ def report(request, managed_libraries=[]):
 
         response, error = _make_request('get', url=REPORT_SERVER + 'report', params=params)
         if not error:
-            print response.headers
             content_type = response.headers.get('content-type', 'text/html')
             if content_type != 'text/html':
                 dj_response = HttpResponse(response.content, content_type=content_type)
