@@ -86,7 +86,7 @@ facet_titles = {
         'en': u'Author',
         'tt': u'Автор'
     },
-    'content-type': {
+    'content_type': {
         'ru': u'Тип содержания',
         'en': u'Content type',
         'tt': u'Эчтәлек тибы'
