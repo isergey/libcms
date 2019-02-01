@@ -63,14 +63,14 @@ def index(request, managed_libraries=[]):
     if not request.user.has_perm('statistics.view_org_statistic') and \
             not request.user.has_perm('statistics.view_all_statistic') and not managed_libraries:
         return HttpResponse(u'Доступ запрещен', status=403)
-    category = request.GET.get('category', '')
+    category_param = request.GET.get('category', '')
 
     security = _get_security(managed_libraries, request.user)
 
     response, error = _make_request('get', url=REPORT_SERVER + 'reports', params={
         'token': TOKEN,
         'format': 'json',
-        'category': category,
+        'category': category_param,
         'security': security,
     })
     response_dict = {}
@@ -83,6 +83,16 @@ def index(request, managed_libraries=[]):
             error = u'Неожиданный ответ от сервера статистики'
 
     categories = response_dict.get('categories', [])
+    category_codes = set()
+    if categories:
+        for category in categories:
+            code = category.get('code')
+            if code:
+                category_codes.add(code)
+
+        if category_param not in category_codes:
+            return redirect(resolve_url('statistics:frontend:index') + '?category=' + categories[0].get('code'))
+
     if categories and not category:
         for category in categories:
             if category.get('isSelected'):
@@ -93,7 +103,7 @@ def index(request, managed_libraries=[]):
         'response_dict': response_dict,
         'error': error,
         'managed_libraries': managed_libraries,
-        'category': category,
+        'category': category_param,
     })
 
 
