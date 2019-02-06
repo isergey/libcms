@@ -206,11 +206,11 @@ msgstr ""
 
 #: libcms/apps/recommended_reading/models.py:15
 msgid "School literature"
-msgstr ""
+msgstr "Мәктәп әдәбияты"
 
 #: libcms/apps/recommended_reading/models.py:16
 msgid "Good books to read"
-msgstr ""
+msgstr "Тәкъдим ителгән әдәбият"
 
 #: libcms/local_settings.py:34
 msgid "English"
