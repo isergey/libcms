@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-26 19:57+0300\n"
+"POT-Creation-Date: 2019-02-06 16:42+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -140,8 +140,56 @@ msgstr ""
 msgid "Родительский элемент"
 msgstr ""
 
-#: libcms/apps/newinlib/administration/views.py:15 libcms/local_settings.py:32
+#: libcms/apps/newinlib/administration/views.py:15 libcms/local_settings.py:33
 msgid "Russian"
+msgstr ""
+
+#: libcms/apps/news/frontend/forms.py:36
+msgid "January"
+msgstr ""
+
+#: libcms/apps/news/frontend/forms.py:37
+msgid "February"
+msgstr ""
+
+#: libcms/apps/news/frontend/forms.py:38
+msgid "March"
+msgstr ""
+
+#: libcms/apps/news/frontend/forms.py:39
+msgid "April"
+msgstr ""
+
+#: libcms/apps/news/frontend/forms.py:40
+msgid "May"
+msgstr ""
+
+#: libcms/apps/news/frontend/forms.py:41
+msgid "June"
+msgstr ""
+
+#: libcms/apps/news/frontend/forms.py:42
+msgid "July"
+msgstr ""
+
+#: libcms/apps/news/frontend/forms.py:43
+msgid "August"
+msgstr ""
+
+#: libcms/apps/news/frontend/forms.py:44
+msgid "September"
+msgstr ""
+
+#: libcms/apps/news/frontend/forms.py:45
+msgid "October"
+msgstr ""
+
+#: libcms/apps/news/frontend/forms.py:46
+msgid "November"
+msgstr ""
+
+#: libcms/apps/news/frontend/forms.py:47
+msgid "December"
 msgstr ""
 
 #: libcms/apps/pages/administration/views.py:162
@@ -156,11 +204,19 @@ msgstr ""
 msgid " Language code: "
 msgstr ""
 
-#: libcms/local_settings.py:33
-msgid "English"
+#: libcms/apps/recommended_reading/models.py:15
+msgid "School literature"
+msgstr ""
+
+#: libcms/apps/recommended_reading/models.py:16
+msgid "Good books to read"
 msgstr ""
 
 #: libcms/local_settings.py:34
+msgid "English"
+msgstr ""
+
+#: libcms/local_settings.py:35
 msgid "Tatar"
 msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-29 14:51+0300\n"
+"POT-Creation-Date: 2019-02-06 16:34+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -141,7 +141,7 @@ msgstr "Максимум 10000 символов"
 msgid "Родительский элемент"
 msgstr ""
 
-#: libcms/apps/newinlib/administration/views.py:15 libcms/local_settings.py:32
+#: libcms/apps/newinlib/administration/views.py:15 libcms/local_settings.py:33
 msgid "Russian"
 msgstr "Русский"
 
@@ -205,11 +205,19 @@ msgstr "Язык не зарегистрирован в системе"
 msgid " Language code: "
 msgstr " Код языка"
 
-#: libcms/local_settings.py:33
+#: libcms/apps/recommended_reading/models.py:15
+msgid "School literature"
+msgstr "Школьная литература"
+
+#: libcms/apps/recommended_reading/models.py:16
+msgid "Good books to read"
+msgstr "Рекомендуемая литература"
+
+#: libcms/local_settings.py:34
 msgid "English"
 msgstr "Английский"
 
-#: libcms/local_settings.py:34
+#: libcms/local_settings.py:35
 msgid "Tatar"
 msgstr "Татарский"
 

@@ -6,13 +6,14 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 from core import image_utils
 
 MEDIA_ROOT = settings.MEDIA_ROOT
 
 ITEM_SECTIONS = (
-    ('school', u'Школьная литература'),
-    ('recommended', u'Рекомендуемая литература')
+    ('school', _('School literature')),
+    ('recommended', _('Good books to read')),
 )
 
 ITEM_SCHOOL_CLASSES = (
