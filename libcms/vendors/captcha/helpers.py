@@ -1,18 +1,24 @@
 # -*- coding: utf-8 -*-
 import random
 from captcha.conf import settings
-from django.core.urlresolvers import reverse
+import django
+if django.VERSION < (1, 10):  # NOQA
+    from django.core.urlresolvers import reverse  # NOQA
+else:  # NOQA
+    from django.urls import reverse  # NOQA
 from six import u, text_type
 
 
 def math_challenge():
-    operators = ('+', 'x', '-',)
+    operators = ('+', '*', '-',)
     operands = (random.randint(1, 10), random.randint(1, 10))
     operator = random.choice(operators)
     if operands[0] < operands[1] and '-' == operator:
         operands = (operands[1], operands[0])
     challenge = '%d%s%d' % (operands[0], operator, operands[1])
-    return '%s=' % (challenge), text_type(eval(challenge.replace('x', '*')))
+    return '{}='.format(
+        challenge.replace('*', settings.CAPTCHA_MATH_CHALLENGE_OPERATOR)
+    ), text_type(eval(challenge))
 
 
 def random_char_challenge():
@@ -76,13 +82,15 @@ def noise_null(draw, image):
 
 
 def post_smooth(image):
-    try:
-        import ImageFilter
-    except ImportError:
-        from PIL import ImageFilter
+    from PIL import ImageFilter
     return image.filter(ImageFilter.SMOOTH)
 
 
 def captcha_image_url(key):
-    """ Return url to image. Need for ajax refresh and, etc"""
+    """Return url to image. Need for ajax refresh and, etc"""
     return reverse('captcha-image', args=[key])
+
+
+def captcha_audio_url(key):
+    """Return url to image. Need for ajax refresh and, etc"""
+    return reverse('captcha-audio', args=[key])

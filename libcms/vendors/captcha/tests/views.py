@@ -5,15 +5,14 @@ from django.contrib.auth.models import User
 from six import u
 
 try:
-    from django.template import engines, RequestContext
+    from django.template import engines
     __is_18 = True
 except ImportError:
-    from django.template import RequestContext, loader
+    from django.template import loader
     __is_18 = False
 
 
 TEST_TEMPLATE = r'''
-{% load url from future %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -55,8 +54,8 @@ def _test(request, form_class):
         form = form_class()
 
     t = _get_template(TEST_TEMPLATE)
-    return HttpResponse(
-        t.render(RequestContext(request, dict(passed=passed, form=form))))
+
+    return HttpResponse(t.render(context=dict(passed=passed, form=form), request=request))
 
 
 def test(request):
@@ -72,6 +71,19 @@ def test_model_form(request):
         subject = forms.CharField(max_length=100)
         sender = forms.EmailField()
         captcha = CaptchaField(help_text='asdasd')
+
+        class Meta:
+            model = User
+            fields = ('subject', 'sender', 'captcha', )
+
+    return _test(request, CaptchaTestModelForm)
+
+
+def test_custom_generator(request):
+    class CaptchaTestModelForm(forms.ModelForm):
+        subject = forms.CharField(max_length=100)
+        sender = forms.EmailField()
+        captcha = CaptchaField(generator=lambda: ('111111', '111111'))
 
         class Meta:
             model = User

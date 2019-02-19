@@ -1,32 +1,37 @@
 # -*- coding: utf-8 -*-
+import unittest
+
 from captcha.conf import settings
 from captcha.fields import CaptchaField, CaptchaTextInput
-from captcha.models import CaptchaStore, get_safe_now
-from django.conf import settings as django_settings
+from captcha.models import CaptchaStore
+import django
+from django.core import management
 from django.core.exceptions import ImproperlyConfigured
-from django.core.urlresolvers import reverse
-from django.test import TestCase
+if django.VERSION < (1, 10):  # NOQA
+    from django.core.urlresolvers import reverse  # NOQA
+else:  # NOQA
+    from django.urls import reverse  # NOQA
+from django.test import TestCase, override_settings
 from django.utils.translation import ugettext_lazy
+from django.utils import timezone
 import datetime
 import json
 import re
 import six
+import warnings
+from testfixtures import LogCapture
 import os
 try:
     from cStringIO import StringIO
 except ImportError:
     from io import BytesIO as StringIO
 
-from six import u
-
-try:
-    from PIL import Image
-except ImportError:
-    import Image  # NOQA
+from six import u, text_type
+from PIL import Image
 
 
+@override_settings(ROOT_URLCONF='captcha.tests.urls')
 class CaptchaCase(TestCase):
-    urls = 'captcha.tests.urls'
 
     def setUp(self):
 
@@ -58,24 +63,24 @@ class CaptchaCase(TestCase):
         response = CaptchaStore.objects.get(hashkey=hash_).response
         return hash_, response
 
-    def testImages(self):
+    def test_image(self):
         for key in [store.hashkey for store in six.itervalues(self.stores)]:
             response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
             self.assertTrue(response.has_header('content-type'))
             self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'image/png'))
 
-    def testAudio(self):
+    def test_audio(self):
         if not settings.CAPTCHA_FLITE_PATH:
             return
         for key in (self.stores.get('math_store').hashkey, self.stores.get('math_store').hashkey, self.default_store.hashkey):
             response = self.client.get(reverse('captcha-audio', kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
-            self.assertTrue(len(response.content) > 1024)
+            self.assertTrue(response.ranged_file.size > 1024)
             self.assertTrue(response.has_header('content-type'))
-            self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'audio/x-wav'))
+            self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'audio/wav'))
 
-    def testFormSubmit(self):
+    def test_form_submit(self):
         r = self.client.get(reverse('captcha-test'))
         self.assertEqual(r.status_code, 200)
         hash_, response = self.__extract_hash_and_response(r)
@@ -88,7 +93,7 @@ class CaptchaCase(TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertFalse(str(r.content).find('Form validated') > 0)
 
-    def testFormModelForm(self):
+    def test_modelform(self):
         r = self.client.get(reverse('captcha-test-model-form'))
         self.assertEqual(r.status_code, 200)
         hash_, response = self.__extract_hash_and_response(r)
@@ -101,15 +106,15 @@ class CaptchaCase(TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertFalse(str(r.content).find('Form validated') > 0)
 
-    def testWrongSubmit(self):
+    def test_wrong_submit(self):
         for urlname in ('captcha-test', 'captcha-test-model-form'):
             r = self.client.get(reverse(urlname))
             self.assertEqual(r.status_code, 200)
             r = self.client.post(reverse(urlname), dict(captcha_0='abc', captcha_1='wrong response', subject='xxx', sender='asasd@asdasd.com'))
             self.assertFormError(r, 'form', 'captcha', ugettext_lazy('Invalid CAPTCHA'))
 
-    def testDeleteExpired(self):
-        self.default_store.expiration = get_safe_now() - datetime.timedelta(minutes=5)
+    def test_deleted_expired(self):
+        self.default_store.expiration = timezone.now() - datetime.timedelta(minutes=5)
         self.default_store.save()
         hash_ = self.default_store.hashkey
         r = self.client.post(reverse('captcha-test'), dict(captcha_0=hash_, captcha_1=self.default_store.response, subject='xxx', sender='asasd@asdasd.com'))
@@ -124,7 +129,7 @@ class CaptchaCase(TestCase):
         except:
             pass
 
-    def testCustomErrorMessage(self):
+    def test_custom_error_message(self):
         r = self.client.get(reverse('captcha-test-custom-error-message'))
         self.assertEqual(r.status_code, 200)
         # Wrong answer
@@ -134,14 +139,14 @@ class CaptchaCase(TestCase):
         r = self.client.post(reverse('captcha-test-custom-error-message'), dict(captcha_0='abc', captcha_1=''))
         self.assertFormError(r, 'form', 'captcha', ugettext_lazy('This field is required.'))
 
-    def testRepeatedChallenge(self):
+    def test_repeated_challenge(self):
         CaptchaStore.objects.create(challenge='xxx', response='xxx')
         try:
             CaptchaStore.objects.create(challenge='xxx', response='xxx')
         except Exception:
             self.fail()
 
-    def testRepeatedChallengeFormSubmit(self):
+    def test_repeated_challenge_form_submit(self):
         __current_challange_function = settings.CAPTCHA_CHALLENGE_FUNCT
         for urlname in ('captcha-test', 'captcha-test-model-form'):
             settings.CAPTCHA_CHALLENGE_FUNCT = 'captcha.tests.trivial_challenge'
@@ -183,55 +188,60 @@ class CaptchaCase(TestCase):
             self.assertTrue(str(r2.content).find('Form validated') > 0)
         settings.CAPTCHA_CHALLENGE_FUNCT = __current_challange_function
 
-    def testOutputFormat(self):
+    def test_output_format(self):
         for urlname in ('captcha-test', 'captcha-test-model-form'):
             settings.CAPTCHA_OUTPUT_FORMAT = u('%(image)s<p>Hello, captcha world</p>%(hidden_field)s%(text_field)s')
             r = self.client.get(reverse(urlname))
             self.assertEqual(r.status_code, 200)
             self.assertTrue('<p>Hello, captcha world</p>' in str(r.content))
 
-    def testInvalidOutputFormat(self):
-        __current_settings_debug = django_settings.DEBUG
+    def test_invalid_output_format(self):
         for urlname in ('captcha-test', 'captcha-test-model-form'):
-            # we turn on DEBUG because CAPTCHA_OUTPUT_FORMAT is only checked debug
-
-            django_settings.DEBUG = True
             settings.CAPTCHA_OUTPUT_FORMAT = u('%(image)s')
             try:
-                self.client.get(reverse(urlname))
-                self.fail()
+                with warnings.catch_warnings(record=True) as w:
+                    self.client.get(reverse(urlname))
+                    assert len(w) == 1
+                    self.assertTrue('CAPTCHA_OUTPUT_FORMAT' in str(w[-1].message))
+                    self.fail()
+
             except ImproperlyConfigured as e:
                 self.assertTrue('CAPTCHA_OUTPUT_FORMAT' in str(e))
-        django_settings.DEBUG = __current_settings_debug
 
-    def testPerFormFormat(self):
+    def test_per_form_format(self):
         settings.CAPTCHA_OUTPUT_FORMAT = u('%(image)s testCustomFormatString %(hidden_field)s %(text_field)s')
         r = self.client.get(reverse('captcha-test'))
         self.assertTrue('testCustomFormatString' in str(r.content))
         r = self.client.get(reverse('test_per_form_format'))
         self.assertTrue('testPerFieldCustomFormatString' in str(r.content))
 
-    def testIssue31ProperLabel(self):
+    def test_custom_generator(self):
+        r = self.client.get(reverse('test_custom_generator'))
+        hash_, response = self.__extract_hash_and_response(r)
+        self.assertEqual(response, u'111111')
+
+    def test_issue31_proper_abel(self):
         settings.CAPTCHA_OUTPUT_FORMAT = u('%(image)s %(hidden_field)s %(text_field)s')
         r = self.client.get(reverse('captcha-test'))
         self.assertTrue('<label for="id_captcha_1"' in str(r.content))
 
-    def testRefreshView(self):
+    def test_refresh_view(self):
         r = self.client.get(reverse('captcha-refresh'), HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         try:
             new_data = json.loads(six.text_type(r.content, encoding='ascii'))
             self.assertTrue('image_url' in new_data)
+            self.assertTrue('audio_url' in new_data)
         except:
             self.fail()
 
-    def testContentLength(self):
+    def test_content_length(self):
         for key in [store.hashkey for store in six.itervalues(self.stores)]:
             response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
             self.assertTrue(response.has_header('content-length'))
             self.assertTrue(response['content-length'].isdigit())
             self.assertTrue(int(response['content-length']))
 
-    def testIssue12ProperInstantiation(self):
+    def test_issue12_proper_instantiation(self):
         """
         This test covers a default django field and widget behavior
         It not assert anything. If something is wrong it will raise a error!
@@ -240,7 +250,7 @@ class CaptchaCase(TestCase):
         widget = CaptchaTextInput(attrs={'class': 'required'})
         CaptchaField(widget=widget)
 
-    def testTestMode_Issue15(self):
+    def test_test_mode_issue15(self):
         __current_test_mode_setting = settings.CAPTCHA_TEST_MODE
         settings.CAPTCHA_TEST_MODE = False
         r = self.client.get(reverse('captcha-test'))
@@ -284,14 +294,24 @@ class CaptchaCase(TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertTrue(str(r.content).find('Form validated') > 0)
 
+    @unittest.skipUnless(django.VERSION < (1, 11), "Test only for Django < 1.11")
+    def test_autocomplete_off_django_110(self):
+        r = self.client.get(reverse('captcha-test'))
+        captcha_input = ('<input type="text" name="captcha_1" autocomplete="off" spellcheck="false" autocorrect="off" '
+                         'autocapitalize="off" id="id_captcha_1" />')
+        self.assertContains(r, captcha_input, html=True)
+
+    @unittest.skipIf(django.VERSION < (1, 11), "Test only for Django >= 1.11")
     def test_autocomplete_off(self):
         r = self.client.get(reverse('captcha-test'))
-        self.assertTrue('<input autocomplete="off" ' in six.text_type(r.content))
+        captcha_input = ('<input type="text" name="captcha_1" autocomplete="off" spellcheck="false" autocorrect="off" '
+                         'autocapitalize="off" id="id_captcha_1" required />')
+        self.assertContains(r, captcha_input, html=True)
 
     def test_autocomplete_not_on_hidden_input(self):
         r = self.client.get(reverse('captcha-test'))
-        self.assertFalse('autocomplete="off" type="hidden" name="captcha_0"' in six.text_type(r.content))
-        self.assertFalse('autocomplete="off" id="id_captcha_0" name="captcha_0" type="hidden"' in six.text_type(r.content))
+        self.assertFalse('autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" type="hidden" name="captcha_0"' in six.text_type(r.content))
+        self.assertFalse('autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" id="id_captcha_0" name="captcha_0" type="hidden"' in six.text_type(r.content))
 
     def test_transparent_background(self):
         __current_test_mode_setting = settings.CAPTCHA_BACKGROUND_COLOR
@@ -330,6 +350,93 @@ class CaptchaCase(TestCase):
             self.assertEqual(Image.open(StringIO(response.content)).size, (201, 97))
 
         settings.CAPTCHA_IMAGE_SIZE = __current_test_mode_setting
+
+    def test_multiple_fonts(self):
+        vera = os.path.join(os.path.dirname(__file__), '..', 'fonts', 'Vera.ttf')
+        __current_test_mode_setting = settings.CAPTCHA_FONT_PATH
+        settings.CAPTCHA_FONT_PATH = vera
+
+        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+            response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'image/png'))
+
+        settings.CAPTCHA_FONT_PATH = [vera, vera, vera]
+        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+            response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'image/png'))
+
+        settings.CAPTCHA_FONT_PATH = False
+        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+            try:
+                response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
+                self.fail()
+            except ImproperlyConfigured:
+                pass
+
+        settings.CAPTCHA_FONT_PATH = __current_test_mode_setting
+
+    def test_template_overrides(self):
+        __current_test_mode_setting = settings.CAPTCHA_IMAGE_TEMPLATE
+        __current_field_template = settings.CAPTCHA_FIELD_TEMPLATE
+        settings.CAPTCHA_IMAGE_TEMPLATE = 'captcha_test/image.html'
+        settings.CAPTCHA_FIELD_TEMPLATE = 'captcha/field.html'
+
+        for urlname in ('captcha-test', 'captcha-test-model-form'):
+            settings.CAPTCHA_CHALLENGE_FUNCT = 'captcha.tests.trivial_challenge'
+            r = self.client.get(reverse(urlname))
+            self.assertTrue('captcha-template-test' in six.text_type(r.content))
+        settings.CAPTCHA_IMAGE_TEMPLATE = __current_test_mode_setting
+        settings.CAPTCHA_FIELD_TEMPLATE = __current_field_template
+
+    def test_math_challenge(self):
+        __current_test_mode_setting = settings.CAPTCHA_MATH_CHALLENGE_OPERATOR
+        settings.CAPTCHA_MATH_CHALLENGE_OPERATOR = '~'
+        helper = 'captcha.helpers.math_challenge'
+        challenge, response = settings._callable_from_string(helper)()
+
+        while settings.CAPTCHA_MATH_CHALLENGE_OPERATOR not in challenge:
+            challenge, response = settings._callable_from_string(helper)()
+
+        self.assertEqual(response, text_type(eval(challenge.replace(settings.CAPTCHA_MATH_CHALLENGE_OPERATOR, '*')[:-1])))
+        settings.CAPTCHA_MATH_CHALLENGE_OPERATOR = __current_test_mode_setting
+
+    def test_get_from_pool(self):
+        __current_test_get_from_pool_setting = settings.CAPTCHA_GET_FROM_POOL
+        __current_test_get_from_pool_timeout_setting = settings.CAPTCHA_GET_FROM_POOL_TIMEOUT
+        __current_test_timeout_setting = settings.CAPTCHA_TIMEOUT
+        settings.CAPTCHA_GET_FROM_POOL = True
+        settings.CAPTCHA_GET_FROM_POOL_TIMEOUT = 5
+        settings.CAPTCHA_TIMEOUT = 90
+        CaptchaStore.objects.all().delete()  # Delete objects created during SetUp
+        POOL_SIZE = 10
+        CaptchaStore.create_pool(count=POOL_SIZE)
+        self.assertEqual(CaptchaStore.objects.count(), POOL_SIZE)
+        pool = CaptchaStore.objects.values_list('hashkey', flat=True)
+        random_pick = CaptchaStore.pick()
+        self.assertIn(random_pick, pool)
+        # pick() should not create any extra captcha
+        self.assertEqual(CaptchaStore.objects.count(), POOL_SIZE)
+        settings.CAPTCHA_GET_FROM_POOL = __current_test_get_from_pool_setting
+        settings.CAPTCHA_GET_FROM_POOL_TIMEOUT = __current_test_get_from_pool_timeout_setting
+        settings.CAPTCHA_TIMEOUT = __current_test_timeout_setting
+
+    def test_captcha_create_pool(self):
+        CaptchaStore.objects.all().delete()  # Delete objects created during SetUp
+        POOL_SIZE = 10
+        management.call_command('captcha_create_pool', pool_size=POOL_SIZE, verbosity=0)
+        self.assertEqual(CaptchaStore.objects.count(), POOL_SIZE)
+
+    def test_empty_pool_fallback(self):
+        __current_test_get_from_pool_setting = settings.CAPTCHA_GET_FROM_POOL
+        settings.CAPTCHA_GET_FROM_POOL = True
+        CaptchaStore.objects.all().delete()  # Delete objects created during SetUp
+        with LogCapture() as l:
+            CaptchaStore.pick()
+        l.check(('captcha.models', 'ERROR', "Couldn't get a captcha from pool, generating"),)
+        self.assertEqual(CaptchaStore.objects.count(), 1)
+        settings.CAPTCHA_GET_FROM_POOL = __current_test_get_from_pool_setting
 
 
 def trivial_challenge():

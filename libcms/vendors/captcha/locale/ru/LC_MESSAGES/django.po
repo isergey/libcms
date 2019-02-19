@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-simple-captcha 0.3.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-06 16:37+0300\n"
+"POT-Creation-Date: 2012-07-25 11:17+0300\n"
 "PO-Revision-Date: 2012-07-25 11:17+0300\n"
 "Last-Translator: \n"
 "Language-Team: ru <LL@li.org>\n"
@@ -18,17 +18,14 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: libcms/vendors/captcha/fields.py:100
+#: fields.py:49
 msgid "Play CAPTCHA as audio file"
 msgstr "Воспроизвести CAPTCHA в виде аудио файла"
 
-#: libcms/vendors/captcha/fields.py:113 libcms/vendors/captcha/fields.py:145
-#: libcms/vendors/captcha/tests/tests.py:109
-#: libcms/vendors/captcha/tests/tests.py:249
-#: libcms/vendors/captcha/tests/tests.py:256
+#: fields.py:66 fields.py:89 tests/__init__.py:62
 msgid "Invalid CAPTCHA"
 msgstr "Неверный ответ"
 
-#: libcms/vendors/captcha/tests/tests.py:135
+#: tests/__init__.py:88
 msgid "This field is required."
 msgstr "Это поле обязательно для заполнения."
