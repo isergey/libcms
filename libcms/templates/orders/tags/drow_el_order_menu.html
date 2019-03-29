@@ -1,53 +1,149 @@
 {% load i18n %}
+{% load l10n %}
 {% get_current_language as LANGUAGE_CODE %}
 {% if owners %}
+    <style>
+        .card-booking__list_tab {
+            cursor: pointer;
+        }
+
+        .card-booking__map_tab {
+            cursor: pointer;
+        }
+
+        .card-booking__list_tab-active {
+            font-weight: bolder;
+        }
+
+        .card-booking__map_tab-active {
+            font-weight: bolder;
+        }
+
+    </style>
     <section class="card card_bs-2 card_booking">
         <div class="card__header">
             <h2 class="card__title card__title_sm">
                 {% if LANGUAGE_CODE == 'en' %}
                     Reserve document
-                {% elif LANGUAGE_CODE == 'tt'  %}
+                {% elif LANGUAGE_CODE == 'tt' %}
                     Броньлау
                 {% else %}
                     Бронирование
                 {% endif %}
                 ({{ owners|length }})
             </h2>
+            <span class="card-booking__list_tab card-booking__list_tab-active">Список</span>
+            <span class="card-booking__map_tab">Карта</span>
         </div>
         <div class="card__body" style="max-height: 300px; overflow-y: auto">
-            <ul class="card-booking" >
-                {% for owner in owners %}
-                    <li class="card-booking__item">
-                        <p class="card-booking__name">{{ owner.owner.name }}</p>
-                        <a class="card-booking__geo" href="{% url 'participants:frontend:detail' owner.owner.code %}"
-                           target="_blank">
-                            <i class="icon-locating" title="Контакты"></i>
-                        </a>
-                        {% if owner.has_catalog %}
-                            <a class="card-booking__btn"
-                               href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">
-                            {% if LANGUAGE_CODE == 'en' %}
-                                Reserve
-                            {% elif LANGUAGE_CODE == 'tt'  %}
-                                Броньларга
-                            {% else %}
-                                Забронировать
-                            {% endif %}
+            <div class="card-booking__list">
+                <ul class="card-booking">
+                    {% for owner in owners %}
+                        <li class="card-booking__item">
+                            <p class="card-booking__name">{{ owner.owner.name }}</p>
+                            <a class="card-booking__geo"
+                               href="{% url 'participants:frontend:detail' owner.owner.code %}"
+                               target="_blank">
+                                <i class="icon-locating" title="Контакты"></i>
                             </a>
-                        {% else %}
-                            <span class="card-booking__btn card-booking__btn_dsb">
-                                {% if LANGUAGE_CODE == 'en' %}
-                                    Order disabled
-                                {% elif LANGUAGE_CODE == 'tt'  %}
-                                    Заказ туктатылган
-                                {% else %}
-                                    Заказ отключен
-                                {% endif %}
-                            </span>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
+                            {% if owner.has_catalog %}
+                                <a class="card-booking__btn"
+                                   href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        Reserve
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Броньларга
+                                    {% else %}
+                                        Забронировать
+                                    {% endif %}
+                                </a>
+                            {% else %}
+                                <span class="card-booking__btn card-booking__btn_dsb">
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        Order disabled
+                                    {% elif LANGUAGE_CODE == 'tt' %}
+                                        Заказ туктатылган
+                                    {% else %}
+                                        Заказ отключен
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-booking__map" id="card-booking__map" style="height: 250px; display: none">
+            </div>
         </div>
     </section>
+    <script>
+        var holders = [
+            {% for owner in owners %}
+                {
+                    name: '{{ owner.owner.name }}',
+                    latitude: {{ owner.owner.latitude|unlocalize }},
+                    longitude: {{ owner.owner.longitude|unlocalize }}
+                },
+            {% endfor %}
+        ];
+        var myMap;
+        function mapModule() {
+            ymaps.ready(init);
+
+            function init() {
+                // Создание карты.
+                myMap = new ymaps.Map("card-booking__map", {
+                    // Координаты центра карты.
+                    // Порядок по умолчанию: «широта, долгота».
+                    // Чтобы не определять координаты центра карты вручную,
+                    // воспользуйтесь инструментом Определение координат.
+                    center: [59.797746, 49.115573],
+                    // Уровень масштабирования. Допустимые значения:
+                    // от 0 (весь мир) до 19.
+                    zoom: 10
+                });
+                var clusterer = new ymaps.Clusterer();
+                holders.forEach(function (holder) {
+                    clusterer.add(new ymaps.Placemark([holder.latitude, holder.longitude], {
+                        balloonContent: holder.name,
+                    }));
+                });
+                myMap.geoObjects.add(clusterer);
+                myMap.setBounds(clusterer.getBounds());
+                var zoom = myMap.getZoom();
+                myMap.setZoom(zoom < 5 ? 5 : zoom);
+            }
+        }
+
+        function uiModule() {
+            var $bookingList = $('.card-booking__list');
+            var $bookingMap = $('.card-booking__map');
+            var $listTab = $('.card-booking__list_tab');
+            var $mapTab = $('.card-booking__map_tab');
+
+            var listTabActiveClass = 'card-booking__list_tab-active';
+            var mapTabActiveClass = 'card-booking__map_tab-active';
+
+            $listTab.on('click', function () {
+                $bookingList.show();
+                $bookingMap.hide();
+                $listTab.addClass(listTabActiveClass);
+                $mapTab.removeClass(mapTabActiveClass)
+            });
+            $mapTab.on('click', function () {
+                $bookingList.hide();
+                $bookingMap.show();
+                $listTab.removeClass(listTabActiveClass);
+                $mapTab.addClass(mapTabActiveClass);
+                // myMap.setBounds(myMap.getBounds());
+                //myMap.setZoom(myMap.getZoom() - 1);
+            });
+
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            mapModule();
+            uiModule();
+        })
+    </script>
 {% endif %}

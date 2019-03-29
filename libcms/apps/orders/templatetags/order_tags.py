@@ -89,7 +89,7 @@ def drow_el_order_menu(owners_codes, record_id):
 
     owners_dict = collections.OrderedDict()
     empty_codes = []  # Сиглы, которые указаны в записе но не зарегистрированны в системе
-    owners = list(Library.objects.filter(code__in=owners_codes, hidden=False, org_type__in=PARTICIPANTS_SHOW_ORG_TYPES).values('id', 'name', 'code', 'weight'))
+    owners = list(Library.objects.filter(code__in=owners_codes, hidden=False, org_type__in=PARTICIPANTS_SHOW_ORG_TYPES).values('id', 'name', 'code', 'weight', 'latitude', 'longitude'))
     owners = sorted(owners, key=sorter)
     for owner in owners:
         owners_dict[owner['code']] = {

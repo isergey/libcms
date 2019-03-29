@@ -224,10 +224,12 @@
                         {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}
 {#                        {% drow_holders_menu gen_id %}#}
                     </div>
+                    <div class="record-booking" id="record_holdings"></div>
                 </div>
             </div>
         </div>
     </main>
+    <div id="root"></div>
 {% endblock %}
 
 {% block scripts %}
@@ -294,4 +296,12 @@
             return false;
         });
     </script>
+{#    <script crossorigin src="//unpkg.com/react@16/umd/react.production.min.js"></script>#}
+{#    <script crossorigin src="//unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>#}
+{#    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>#}
+{#    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>#}
+{#    <script crossorigin src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>#}
+{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.1/redux.js" crossorigin></script>#}
+{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/6.0.1/react-redux.js" crossorigin></script>#}
+{#    <script type="text/babel" src="{{ STATIC_URL }}ssearch/holdings.js">#}
 {% endblock %}
