@@ -17,7 +17,7 @@
     <meta name="keywords" content>
 
     <link rel="icon" type="image/ico" href="{{ STATIC_URL }}theme/favicon.ico"/>
-    <link rel="stylesheet" href="{{ STATIC_URL }}dist/styles/index.css?erw34rw34r111">
+    <link rel="stylesheet" href="{{ STATIC_URL }}dist/styles/index.css?erw34rw34r333">
     <script>
         window.CURRENT_LANGUAGE = '{{ LANGUAGE_CODE }}';
     </script>
@@ -26,29 +26,34 @@
 <div class="content-wrap">
 
     {#    {% if request.path_info != '/' %}{% endif %}#}
-    <div class="header-border {% if 'pages' in request.build_absolute_uri %}
-            header-border_2
-        {% elif 'participants' in request.build_absolute_uri %}
+    <div class="header-border
+        {% if request.path_info != '/' %}
             header-border_1
-        {% elif 'ssearch' in request.build_absolute_uri %}
-            header-border_2
-        {% elif 'guestbook' in request.build_absolute_uri %}
-            header-border_2
-        {% elif 'news' in request.build_absolute_uri %}
-            header-border_3
-        {% elif 'ask_librarian' in request.build_absolute_uri %}
-            header-border_2
-        {% elif 'school' in request.build_absolute_uri %}
-            header-border_4
-        {% elif 'events' in request.build_absolute_uri %}
-            header-border_1
-        {% elif 'site' in request.build_absolute_uri %}
-            header-border_3
-        {% elif 'accounts' in request.build_absolute_uri %}
-            header-border_4
-        {% elif 'personal' in request.build_absolute_uri %}
-            header-border_4
-        {% endif %}">
+        {% endif %}
+{#        {% if 'pages' in request.build_absolute_uri %}#}
+{#            header-border_2#}
+{#        {% elif 'participants' in request.build_absolute_uri %}#}
+{#            header-border_1#}
+{#        {% elif 'ssearch' in request.build_absolute_uri %}#}
+{#            header-border_2#}
+{#        {% elif 'guestbook' in request.build_absolute_uri %}#}
+{#            header-border_2#}
+{#        {% elif 'news' in request.build_absolute_uri %}#}
+{#            header-border_3#}
+{#        {% elif 'ask_librarian' in request.build_absolute_uri %}#}
+{#            header-border_2#}
+{#        {% elif 'school' in request.build_absolute_uri %}#}
+{#            header-border_4#}
+{#        {% elif 'events' in request.build_absolute_uri %}#}
+{#            header-border_1#}
+{#        {% elif 'site' in request.build_absolute_uri %}#}
+{#            header-border_3#}
+{#        {% elif 'accounts' in request.build_absolute_uri %}#}
+{#            header-border_4#}
+{#        {% elif 'personal' in request.build_absolute_uri %}#}
+{#            header-border_4#}
+{#        {% endif %}#}
+    ">
         <div class="container">
             <header class="header">
                 <button class="header__nav-btn">
