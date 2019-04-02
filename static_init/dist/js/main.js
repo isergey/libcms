@@ -161,6 +161,7 @@ MicroModal.init({
     var TabComponent = function tabComponentConstructor(selector) {
         var element = document.querySelector(selector);
         if (!element || !element.nodeType) {
+            return;
             throw new Error('The DOM element was not found when creating the tab component');
         }
         return TabComponent.init(element);
@@ -277,5 +278,6 @@ MicroModal.init({
 
     window.tabs = TabComponent;
 })(window);
+
 
 var tabComponent = tabs('[data-tab-component]');

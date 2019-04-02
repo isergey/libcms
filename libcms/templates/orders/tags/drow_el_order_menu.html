@@ -36,114 +36,236 @@
             <span class="card-booking__map_tab">Карта</span>
         </div>
         <div class="card__body" style="max-height: 300px; overflow-y: auto">
-            <div class="card-booking__list">
-                <ul class="card-booking">
-                    {% for owner in owners %}
-                        <li class="card-booking__item">
-                            <p class="card-booking__name">{{ owner.owner.name }}</p>
-                            <a class="card-booking__geo"
-                               href="{% url 'participants:frontend:detail' owner.owner.code %}"
-                               target="_blank">
-                                <i class="icon-locating" title="Контакты"></i>
-                            </a>
-                            {% if owner.has_catalog %}
-                                <a class="card-booking__btn"
-                                   href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">
-                                    {% if LANGUAGE_CODE == 'en' %}
-                                        Reserve
-                                    {% elif LANGUAGE_CODE == 'tt' %}
-                                        Броньларга
-                                    {% else %}
-                                        Забронировать
-                                    {% endif %}
-                                </a>
-                            {% else %}
-                                <span class="card-booking__btn card-booking__btn_dsb">
-                                    {% if LANGUAGE_CODE == 'en' %}
-                                        Order disabled
-                                    {% elif LANGUAGE_CODE == 'tt' %}
-                                        Заказ туктатылган
-                                    {% else %}
-                                        Заказ отключен
-                                    {% endif %}
-                                </span>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
+            <div class="card-booking__list" data-record-id="{{ record_id }}">
+                {#                <ul class="card-booking" id="card-booking_holders">#}
+                {#                    {% for owner in owners %}#}
+                {#                        <li class="card-booking__item">#}
+                {#                            <p class="card-booking__name">{{ owner.owner.name }}</p>#}
+                {#                            <a class="card-booking__geo"#}
+                {#                               href="{% url 'participants:frontend:detail' owner.owner.code %}"#}
+                {#                               target="_blank">#}
+                {#                                <i class="icon-locating" title="Контакты"></i>#}
+                {#                            </a>#}
+                {#                            {% if owner.has_catalog %}#}
+                {#                                <a class="card-booking__btn"#}
+                {#                                   href="{% url 'orders:frontend:zorder' owner.owner.id %}?id={{ record_id|urlencode }}">#}
+                {#                                    {% if LANGUAGE_CODE == 'en' %}#}
+                {#                                        Reserve#}
+                {#                                    {% elif LANGUAGE_CODE == 'tt' %}#}
+                {#                                        Броньларга#}
+                {#                                    {% else %}#}
+                {#                                        Забронировать#}
+                {#                                    {% endif %}#}
+                {#                                </a>#}
+                {#                            {% else %}#}
+                {#                                <span class="card-booking__btn card-booking__btn_dsb">#}
+                {#                                    {% if LANGUAGE_CODE == 'en' %}#}
+                {#                                        Order disabled#}
+                {#                                    {% elif LANGUAGE_CODE == 'tt' %}#}
+                {#                                        Заказ туктатылган#}
+                {#                                    {% else %}#}
+                {#                                        Заказ отключен#}
+                {#                                    {% endif %}#}
+                {#                                </span>#}
+                {#                            {% endif %}#}
+                {#                        </li>#}
+                {#                    {% endfor %}#}
+                {#                </ul>#}
             </div>
             <div class="card-booking__map" id="card-booking__map" style="height: 250px; display: none">
             </div>
         </div>
     </section>
     <script>
-        var holders = [
-            {% for owner in owners %}
-                {
-                    name: '{{ owner.owner.name }}',
-                    latitude: {{ owner.owner.latitude|unlocalize }},
-                    longitude: {{ owner.owner.longitude|unlocalize }}
-                },
-            {% endfor %}
-        ];
-        var myMap;
-        function mapModule() {
-            ymaps.ready(init);
+        (function () {
+            'use strict';
+            var holders = [
+                {% for owner in owners %}
+                    {
+                        id: '{{ owner.owner.id }}',
+                        code: '{{ owner.owner.code }}',
+                        name: '{{ owner.owner.name }}',
+                        latitude: {{ owner.owner.latitude|default:0|unlocalize }},
+                        longitude: {{ owner.owner.longitude|default:0|unlocalize }},
+                        distance: 0,
+                        has_catalog: {% if owner.has_catalog %}true{% else %}false{% endif %},
+                    },
+                {% endfor %}
+            ];
+            var myMap;
 
-            function init() {
-                // Создание карты.
-                myMap = new ymaps.Map("card-booking__map", {
-                    // Координаты центра карты.
-                    // Порядок по умолчанию: «широта, долгота».
-                    // Чтобы не определять координаты центра карты вручную,
-                    // воспользуйтесь инструментом Определение координат.
-                    center: [59.797746, 49.115573],
-                    // Уровень масштабирования. Допустимые значения:
-                    // от 0 (весь мир) до 19.
-                    zoom: 10
-                });
-                var clusterer = new ymaps.Clusterer();
-                holders.forEach(function (holder) {
-                    clusterer.add(new ymaps.Placemark([holder.latitude, holder.longitude], {
-                        balloonContent: holder.name,
-                    }));
-                });
-                myMap.geoObjects.add(clusterer);
-                myMap.setBounds(clusterer.getBounds());
-                var zoom = myMap.getZoom();
-                myMap.setZoom(zoom < 5 ? 5 : zoom);
+            function mapModule(recordId) {
+                ymaps.ready(init);
+
+                function init() {
+                    // Создание карты.
+                    myMap = new ymaps.Map("card-booking__map", {
+                        // Координаты центра карты.
+                        // Порядок по умолчанию: «широта, долгота».
+                        // Чтобы не определять координаты центра карты вручную,
+                        // воспользуйтесь инструментом Определение координат.
+                        center: [59.797746, 49.115573],
+                        // Уровень масштабирования. Допустимые значения:
+                        // от 0 (весь мир) до 19.
+                        zoom: 10
+                    });
+                    myMap.controls.remove('trafficControl');
+                    var clusterer = new ymaps.Clusterer();
+                    holders.forEach(function (holder) {
+                        var distance = '';
+                        if (holder.distance) {
+                            distance = '<span>' + holder.distance.toFixed(2) + ' км' + '</span>'
+                        }
+                        var orderLink = holder.has_catalog ? holderHasCatalog(holder, recordId) : holderDoesHaveCatalog();
+                        clusterer.add(new ymaps.Placemark([holder.latitude, holder.longitude], {
+                            balloonContent: '<span>' + holder.name + '</span> ' + distance + ' ' + orderLink,
+                        }));
+                    });
+                    myMap.geoObjects.add(clusterer);
+                    myMap.setBounds(clusterer.getBounds());
+                    var zoom = myMap.getZoom();
+                    myMap.setZoom(zoom < 5 ? 5 : zoom);
+                }
             }
-        }
 
-        function uiModule() {
-            var $bookingList = $('.card-booking__list');
-            var $bookingMap = $('.card-booking__map');
-            var $listTab = $('.card-booking__list_tab');
-            var $mapTab = $('.card-booking__map_tab');
+            function uiModule(recordId) {
+                var $bookingList = $('.card-booking__list');
+                var $bookingMap = $('.card-booking__map');
+                var $listTab = $('.card-booking__list_tab');
+                var $mapTab = $('.card-booking__map_tab');
 
-            var listTabActiveClass = 'card-booking__list_tab-active';
-            var mapTabActiveClass = 'card-booking__map_tab-active';
+                var listTabActiveClass = 'card-booking__list_tab-active';
+                var mapTabActiveClass = 'card-booking__map_tab-active';
 
-            $listTab.on('click', function () {
-                $bookingList.show();
-                $bookingMap.hide();
-                $listTab.addClass(listTabActiveClass);
-                $mapTab.removeClass(mapTabActiveClass)
+                $listTab.on('click', function () {
+                    $bookingList.show();
+                    $bookingMap.hide();
+                    $listTab.addClass(listTabActiveClass);
+                    $mapTab.removeClass(mapTabActiveClass)
+                });
+                $mapTab.on('click', function () {
+                    $bookingList.hide();
+                    $bookingMap.show();
+                    $listTab.removeClass(listTabActiveClass);
+                    $mapTab.addClass(mapTabActiveClass);
+                    // myMap.setBounds(myMap.getBounds());
+                    //myMap.setZoom(myMap.getZoom() - 1);
+                });
+
+                $bookingList.html(drawHolders(holders, recordId));
+            }
+
+
+            function holderHasCatalog(holder, recordId) {
+                var lang = '{{ LANGUAGE_CODE }}';
+                var translate = {
+                    'ru': 'Забронировать',
+                    'en': 'Reserve',
+                    'tt': 'Броньларга',
+                };
+
+                var linkText = translate[lang] || translate['ru'];
+                var tpl = [
+                    '<a class="card-booking__btn"',
+                    'href="/' + lang + '/orders/zorder/' + holder.id + '/?id=' + encodeURI(recordId) + '">',
+                    linkText,
+                    '</a>'
+                ];
+                return tpl.join('\n');
+            }
+
+            function holderDoesHaveCatalog() {
+                var lang = '{{ LANGUAGE_CODE }}';
+                var translate = {
+                    'ru': 'Забронировать',
+                    'en': 'Order disabled',
+                    'tt': 'Заказ туктатылган',
+                };
+
+                return '<span class="card-booking__btn card-booking__btn_dsb">' + translate[lang] + '</span>';
+            }
+
+            function drawHolderItem(holder, recordId) {
+                var distance = '';
+                if (holder.distance) {
+                    distance = '<span>' + holder.distance.toFixed(2) + ' км' + '</span>'
+                }
+                var tpl = [
+                    '<li class="card-booking__item">',
+                    '<p class="card-booking__name">' + holder.name + ' ' + distance +'</p>',
+                    '<a class="card-booking__geo"',
+                    'href="/participants/detail/' + holder.code + '"',
+                    'target="_blank">',
+                    '<i class="icon-locating" title="Контакты"></i>',
+                    '</a>',
+                    holder.has_catalog ? holderHasCatalog(holder, recordId) : holderDoesHaveCatalog(),
+                    '</li>'
+                ];
+                return tpl.join('\n');
+            }
+
+            function drawHolders(holders, recordId) {
+                var tpl = [
+                    '<ul class="card-booking" id="card-booking_holders">',
+                ];
+                holders.forEach(function (holder) {
+                    tpl.push(drawHolderItem(holder, recordId));
+                });
+                tpl.push('</ul>');
+                return tpl.join('\n');
+            }
+            function showPosition(position) {
+                if (position !== undefined) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+                    holders.forEach(function (holder) {
+                        holder.distance = distance(lat, lon, holder.latitude, holder.longitude, 'K');
+                    });
+                    holders = holders.sort(function (holder1, holder2) {
+                        return holder1.distance - holder2.distance;
+                    });
+                }
+                var $bookingList = $('.card-booking__list');
+                var recordId = $bookingList.attr('data-record-id')
+                mapModule(recordId);
+                uiModule(recordId);
+            }
+
+            function distance(lat1, lon1, lat2, lon2, unit) {
+                if ((lat1 === lat2) && (lon1 === lon2)) {
+                    return 0;
+                }
+                else {
+                    var radlat1 = Math.PI * lat1 / 180;
+                    var radlat2 = Math.PI * lat2 / 180;
+                    var theta = lon1 - lon2;
+                    var radtheta = Math.PI * theta / 180;
+                    var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+                    if (dist > 1) {
+                        dist = 1;
+                    }
+                    dist = Math.acos(dist);
+                    dist = dist * 180 / Math.PI;
+                    dist = dist * 60 * 1.1515;
+                    if (unit === 'K') {
+                        dist = dist * 1.609344
+                    }
+                    if (unit === 'N') {
+                        dist = dist * 0.8684
+                    }
+                    return dist;
+                }
+            }
+            document.addEventListener('DOMContentLoaded', function () {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        showPosition(position);
+                    }, function () {
+                        showPosition();
+                    });
+                }
+
             });
-            $mapTab.on('click', function () {
-                $bookingList.hide();
-                $bookingMap.show();
-                $listTab.removeClass(listTabActiveClass);
-                $mapTab.addClass(mapTabActiveClass);
-                // myMap.setBounds(myMap.getBounds());
-                //myMap.setZoom(myMap.getZoom() - 1);
-            });
-
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            mapModule();
-            uiModule();
-        })
+        })();
     </script>
 {% endif %}
