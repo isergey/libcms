@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 
 class List(models.Model):
+    user = models.ForeignKey(User)
     name = models.CharField(
         verbose_name='Название списка',
         max_length=255

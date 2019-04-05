@@ -6,7 +6,7 @@ from ..models import SavedDocument, List
 class ListForm(forms.ModelForm):
     class Meta:
         model = List
-        exclude = []
+        exclude = ['user']
 
 
 class SavedDocumentForm(forms.ModelForm):

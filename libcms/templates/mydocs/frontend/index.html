@@ -62,7 +62,7 @@
                 </h1>
             </div>
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-9">
                     {% if list %}
                         <div class="content">
                             <p>
@@ -73,7 +73,16 @@
                                 {% else %}
                                     List:
                                 {% endif %}
-                                 {{ list.name }} <a href="{% url 'm' %}"></a></p>
+                                 {{ list.name }} <a href="{% url 'mydocs:frontend:index' %}">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    убрать фильтр
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    филтр алу
+                                {% else %}
+                                    remove filter
+                                {% endif %}
+
+                            </a></p>
                         </div>
                     {% endif %}
                     {% for record in records %}
@@ -119,6 +128,44 @@
                             {% endif %}
                         </div>
                     {% endfor %}
+                </div>
+                <div class="col-lg-3">
+                    <h2>
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Списки
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Исемлек
+                        {% else %}
+                            Lists
+                        {% endif %}
+                    </h2>
+                    <a href="{% url 'mydocs:frontend:create_list' %}">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Добавить список
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Исемлекне өстәргә
+                        {% else %}
+                            Add list
+                        {% endif %}
+                    </a>
+                    <ul>
+                    {% for list in lists %}
+                        <li>
+                            <a href="{% url 'mydocs:frontend:index' %}?list={{ list.id }}">
+                                {{ list.name }}
+                            </a>
+                            <a class="delete" href="{% url 'mydocs:frontend:index' %}">
+                                {% if LANGUAGE_CODE == 'ru' %}
+                                    (удалить)
+                                {% elif LANGUAGE_CODE == 'tt' %}
+                                    (бетерү)
+                                {% else %}
+                                    (delete)
+                                {% endif %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>

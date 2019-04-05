@@ -264,6 +264,9 @@
 
         // Script from drow_save_doc.html
         $('#save_doc_form').submit(function () {
+            var $savebtn = $('#save_doc_submit');
+            var initText =  $savebtn.text();
+            $savebtn.text('Сохранение...');
             $.ajax({
                 url: '{% url 'mydocs:frontend:save' %}',
                 type: 'POST',
@@ -273,22 +276,27 @@
                 statusCode: {
                     401: function () {
                         alert("Вы должны войти на портал.");
+                        $savebtn.text(initText);
                     },
                     403: function () {
                         alert("Действие запрещено.");
+                        $savebtn.text(initText);
                     },
                     500: function () {
                         alert("На сервере возникла ошибка. Администраторы оповещены.");
+                        $savebtn.text(initText);
                     }
                 },
                 success: function (response) {
+                    console.log('response', response);
                     if (response.status == 'error') {
                         alert("При сохранении возникла ошибка");
+                        $savebtn.text(initText);
                     }
                     if (response.status == 'ok') {
-                        $('#save_doc_submit').addClass('btn-success');
-                        $('#save_doc_submit').attr('disabled', 'disabled');
-                        $('#save_doc_submit').attr('value', 'Сохранено');
+                        $savebtn.addClass('btn-success');
+                        $savebtn.attr('disabled', 'disabled');
+                        $savebtn.text('Сохранено');
                     }
                 }
             });

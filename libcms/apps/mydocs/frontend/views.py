@@ -19,11 +19,10 @@ def index(request):
         try:
             list = List.objects.get(id=list_id)
             q &= Q(list=list)
-
         except List.DoesNotExist:
             pass
     saved_docs = SavedDocument.objects.filter(q)
-    lists = List.objects.all()
+    lists = List.objects.filter(user=request.user)
 
     gen_ids = {}
     for saved_doc in saved_docs:
@@ -93,7 +92,9 @@ def create_list(request):
     if request.method == 'POST':
         form = ListForm(request.POST)
         if form.is_valid():
-            form.save()
+            list = form.save(commit=False)
+            list.user = request.user
+            list.save()
             return redirect('mydocs:frontend:index')
     else:
         form = ListForm()
@@ -105,7 +106,7 @@ def create_list(request):
 
 @login_required
 def change_list(request, id):
-    list = get_object_or_404(List, id=id)
+    list = get_object_or_404(List, id=id, user=request.user)
     if request.method == 'POST':
         form = ListForm(request.POST, instance=list)
         if form.is_valid():
@@ -121,6 +122,6 @@ def change_list(request, id):
 
 @login_required
 def delete_list(request, id):
-    list = get_object_or_404(List, id=id)
+    list = get_object_or_404(List, id=id, user=request.user)
     list.delete()
     return redirect('mydocs:frontend:index')

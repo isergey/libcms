@@ -212,6 +212,21 @@
     System.import('base.js');
 </script>
 {% block scripts %}{% endblock %}
+
+<script>
+    $(function () {
+        var CURRENT_LANGUAGE = '{{ LANGUAGE_CODE }}';
+        $('.delete').on('click', function () {
+            var translate = {
+                'ru': 'Уверены, что хотите удалить?',
+                'tt': 'Ышанабыз, нәрсә телисез икән, бетерә?',
+                'en': 'Are you sure you want to delete it?'
+            };
+            return confirm(translate[CURRENT_LANGUAGE]);
+        });
+    });
+</script>
+
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">(function (d, w, c) {
     (w[c] = w[c] || []).push(function () {
