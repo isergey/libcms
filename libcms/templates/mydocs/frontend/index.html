@@ -154,7 +154,7 @@
                             <a href="{% url 'mydocs:frontend:index' %}?list={{ list.id }}">
                                 {{ list.name }}
                             </a>
-                            <a class="delete" href="{% url 'mydocs:frontend:index' %}">
+                            <a class="delete_list" href="{% url 'mydocs:frontend:delete_list' list.id %}">
                                 {% if LANGUAGE_CODE == 'ru' %}
                                     (удалить)
                                 {% elif LANGUAGE_CODE == 'tt' %}
@@ -173,22 +173,22 @@
 {% endblock %}
 {% block scripts %}
     <script type="text/javascript">
-        $('.delete').click(function () {
-            var button = $(this);
-            $.ajax({
-                url: $(this).attr('href'),
-                type: 'GET',
-                dataType: "json",
-                async: true,
-                success: function (response) {
-                    if (response['status'] == 'ok') {
-                        button.parent().parent().hide();
-                    }
-                    else {
-                        alert('При удалении возникла ошибка');
-                    }
-                }
-            });
+        $('.delete_list').click(function () {
+            var lang = '{{ LANGUAGE_CODE }}';
+            var translate = {
+                'ru': 'Уверены, что хотите удалить?',
+                'tt': 'Ышанабыз, нәрсә телисез икән, бетерә?',
+                'en': 'Are you sure you want to delete it?'
+            };
+
+            if (!confirm(translate[lang])) {
+                return;
+            } else {
+                var button = $(this);
+                $.get($(this).attr('href')).done(function () {
+                    button.parent().hide();
+                });
+            }
             return false;
         });
     </script>
