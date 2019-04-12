@@ -775,7 +775,7 @@ def _get_client_secret(scope, timestamp, client_id, state):
     data_file = open(data_file_path, mode='w')
     data_file.write(signed_data)
     data_file.close()
-    command = '/opt/cprocsp/bin/amd64/cryptcp -pin ' + ESIA_SSO_CERT_PASSWORD + u' -sign -nochain -dn \'OGRN=1091690014712, INN=001655174024, E=nebrt@tatar.ru, C=RU, S=16 Республика Татарстан, L=Казань, O="ГУП ""Центр информационных технологий РТ""", CN=kitap.tatar.ru, STREET="Петербургская ул, 52"\' -q ' + data_file_path + ' ' + signed_file_path
+    command = '/opt/cprocsp/bin/amd64/cryptcp -pin ' + ESIA_SSO_CERT_PASSWORD + u' -sign -nochain -dn \'OGRN=1091690014712, INN=001655174024, E=to-cit@tatar.ru, C=RU, S=16 Республика Татарстан, L=Казань, O="ГУП ""Центр информационных технологий РТ""", CN=kitap.tatar.ru, STREET="Петербургская ул, 52"\' -q ' + data_file_path + ' ' + signed_file_path
     os.system(
         command.encode('utf-8')
     )
