@@ -1,45 +1,64 @@
 {% extends 'theme_frontend_base.html' %}
 {% load i18n %}
 {% block title %}
-    {% trans 'Login' %}
+    Вход на портал через Госуслуги
 {% endblock %}
 {% block content %}
     {% url 'sso_esia:redirect_from_ip' as redirect_url %}
-    <div class="span12">
-        <div class="row">
-            <div class="span12">
-                <ul class="breadcrumb">
-                    <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-                    <li class="active">Вход на портал через ЕСИА</li>
-                </ul>
+    <main>
+        <div class="container">
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li>
+                         <span class="crumb__current">
+                             Вход на портал через Госуслуги
+                        </span>
+                    </li>
+                </ol>
+            </nav>
+            <div class="content">
+                <h1 class="content__title">Вход на портал через Госуслуги</h1>
             </div>
-        </div>
-        <div class="row">
-            <div class="span12">
-                <h3>Успешная регистрация!</h3>
-
-                <p><b>Поздравляем! Вы только что стали читателем</b>.
-                    Теперь Вы можете воспользоваться услугами любой
-                    <a target="_blank" href="{% url 'participants:frontend:index' %}">
-                        библиотеки РеспубликиТатарстан
-                    </a>! Для поиска ближайшей библиотеки воспользуйтесь
-                    <a target="_blank" href="{% url 'participants:frontend:geosearch' %}">
-                        гео-поиском библиотек
-                    </a>
-                </p>
-
-                <h3 style="margin-top: 50px">Запомните и запишите Ваши идентификационные данные:</h3>
-                <div class="well well-small">
-                    <p>
-                        Идентификатор Единого Читательского Билета: <b>{{ reader_id }}</b>
-                    </p>
-                    {% if password %}
-                        <p>
-                            Пароль: <b>{{ password }}</b>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <section class="card card_bs-2 card_mt">
+                        <p class="card__body">
+                        <p class="card__text card__text-center">
+                            Уважаемый пользователь, Вы зашли на портал с помощью ЭО РТ в первый раз
                         </p>
-                    {% endif %}
+                        <p><b>Поздравляем! Вы только что стали читателем</b>.
+                            Теперь Вы можете воспользоваться услугами любой
+                            <a target="_blank" href="{% url 'participants:frontend:index' %}">
+                                библиотеки РеспубликиТатарстан
+                            </a>! Для поиска ближайшей библиотеки воспользуйтесь
+                            <a target="_blank" href="{% url 'participants:frontend:geosearch' %}">
+                                гео-поиском библиотек
+                            </a>
+                        </p>
+                        <h3 style="margin-top: 50px">Запомните и запишите Ваши идентификационные данные:</h3>
+                        <p class="card__text card__text-center">
+                        <p>
+                            Идентификатор Единого Читательского Билета: <b>{{ reader_id }}</b>
+                        </p>
+                        {% if password %}
+                            <p>
+                                Пароль: <b>{{ password }}</b>
+                            </p>
+                        {% endif %}
+                    </section>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 {% endblock %}

@@ -7,6 +7,7 @@ import os
 import uuid
 from datetime import datetime
 
+from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.db import transaction
@@ -480,6 +481,7 @@ def register_new_user(request, id):
 
 
 @transaction.atomic()
+@login_required
 def ask_for_exist_reader(request, id):
     try:
         esia_user = models.EsiaUser.objects.get(id=id)
