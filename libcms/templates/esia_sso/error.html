@@ -1,0 +1,38 @@
+{% extends 'theme_frontend_base.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans 'Login' %}
+{% endblock %}
+{% block content %}
+    {% url 'esia_sso:redirect' as redirect_url %}
+    <div class="span12">
+        <div class="row">
+            <div class="span12">
+                <ul class="breadcrumb">
+                    <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+                    <li class="active">Вход на портал через ЕСИА</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span6">
+
+                <div class="alert alert-danger">Ошибка авторизации в ЕСИА</div>
+                <div>Повторите попытку позже. Если ошибка будет повторяться, выполните выход и новый вход ЕСИА</div>
+                <div>Ошибка: <b>{{ error }}</b></div>
+                <div>Сотояние: <b>{{ state }}</b></div>
+                <div>Описание: <b>{{ error_description }}</b></div>
+
+{#                <form method="post">#}
+{#                    {% csrf_token %}#}
+{#                    <input name="cs" placeholder="client_secret" value="{{ client_secret }}"/><br/>#}
+{#                    <input name="state" placeholder="state" value="{{ client_id }}" /><br/>#}
+{#                    <input name="state" placeholder="state" value="{{ state }}" /><br/>#}
+{#                    <input name="timestamp" placeholder="timestamp" value="{{ timestamp }}" /><br/>#}
+{#                    <input name="scope" placeholder="scope" value="{{ scope }}" /><br/>#}
+{#                    <input type="submit" />#}
+{#                </form>#}
+            </div>
+        </div>
+    </div>
+{% endblock %}

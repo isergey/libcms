@@ -1,0 +1,138 @@
+{% extends 'theme_frontend_base.html' %}
+{% load i18n %}
+{% block title %}
+    Вход на портал через Госуслуги
+{% endblock %}
+{% block content %}
+    <main>
+        <div class="container">
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Главная
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Төп бит
+                            {% else %}
+                                Home
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li>
+                         <span class="crumb__current">
+                             Вход на портал через Госуслуги
+                        </span>
+                    </li>
+                </ol>
+            </nav>
+            <div class="content">
+                <h1 class="content__title">Вход на портал через Госуслуги</h1>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <section class="card card_bs-2 card_mt">
+                        <div class="card__body">
+                            <p class="card__text card__text-center">
+                                Вход на портал через Госуслуги. Если Ваша учетная запись подтверждена на Госуслугах, то Вы можете сразу забронировать издание.
+                            </p>
+                        </div>
+                        <div class="card__footer">
+                            <ul class="card-nav">
+                                <li class="card-nav__item">
+                                    <a class="btn" href="{{ access_token_url|safe }}?access_type={{ access_type|urlencode }}&state={{ state|urlencode }}&timestamp={{ timestamp|urlencode }}&response_type=code&redirect_uri=https://{{ request.META.HTTP_HOST }}{{ redirect_url }}&client_id={{ client_id|urlencode }}&scope={{ scope|urlencode }}&client_secret={{ client_secret|urlencode }}"><span>Войти через ЕСИА</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{#{% extends 'theme_frontend_base.html' %}#}
+{#{% load i18n %}#}
+{#{% block title %}#}
+{#    {% trans 'Login' %}#}
+{#{% endblock %}#}
+{#{% block content %}#}
+{#    {% url 'sso_esia:redirect_from_ip' as redirect_url %}#}
+{#    <nav class="bg bg_second">#}
+{#        <div class="container">#}
+{#            {% include 'main_menu.html' %}#}
+{#        </div>#}
+{#    </nav>#}
+{#    <main>#}
+{#        <div class="container">#}
+{#            <ul class="bread__crumbs">#}
+{#                <li>#}
+{#                    <a href="{% url 'index:frontend:index' %}" class="bread__crumbs_link">#}
+{#                        Главная#}
+{#                    </a>#}
+{#                </li>#}
+{#                <li>#}
+{#                    <img src="{{ STATIC_URL }}dist/images/br_crumbs.svg">#}
+{#                </li>#}
+{#                <li>#}
+{#                    <a class="bread__crumbs_link bread__crumbs_link_active">#}
+{#                        Вход на портал через ЕСИА#}
+{#                    </a>#}
+{#                </li>#}
+{#            </ul>#}
+{#        </div>#}
+{#        <hr class="footer-hr">#}
+{#        <div class="container">#}
+{#            <div class="row">#}
+{#                <div class="col-12">#}
+{#                    <h1 class="content-page__title">ЕСИА</h1>#}
+{##}
+{#                    <div class="row">#}
+{#                        <div class="col-12">#}
+{#                            <div class="esia-box">#}
+{#                                <a class="btn" href="{{ access_token_url|safe }}?access_type={{ access_type|urlencode }}&state={{ state|urlencode }}&timestamp={{ timestamp|urlencode }}&response_type=code&redirect_uri=https://{{ request.META.HTTP_HOST }}{{ redirect_url }}&client_id={{ client_id|urlencode }}&scope={{ scope|urlencode }}&client_secret={{ client_secret|urlencode }}"><span>Войти через ЕСИА</span> <img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </main>#}
+
+
+
+
+
+
+{#    {% url 'sso_esia:redirect_from_ip' as redirect_url %}#}
+{#    <div class="span12">#}
+{#        <div class="row">#}
+{#            <div class="span12">#}
+{#                <ul class="breadcrumb">#}
+{#                    <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
+{#                    <li class="active">Вход на портал через ЕСИА</li>#}
+{#                </ul>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="row">#}
+{#            <div class="span6">#}
+{##}
+{#                <div>#}
+{##}
+{#                    <a class="btn" href="{{ access_token_url|safe }}?access_type={{ access_type|urlencode }}&state={{ state|urlencode }}&timestamp={{ timestamp|urlencode }}&response_type=code&redirect_uri=https://{{ request.META.HTTP_HOST }}{{ redirect_url }}&client_id={{ client_id|urlencode }}&scope={{ scope|urlencode }}&client_secret={{ client_secret|urlencode }}"><span>Войти через ЕСИА</span> <img style="width: 100px" src="{{ STATIC_URL }}images/republic-gerb.png"></a>#}
+{#                </div>#}
+{##}
+{##}
+{#                <form method="post">#}
+{#                    {% csrf_token %}#}
+{#                    <input name="cs" placeholder="client_secret" value="{{ client_secret }}"/><br/>#}
+{#                    <input name="state" placeholder="state" value="{{ client_id }}" /><br/>#}
+{#                    <input name="state" placeholder="state" value="{{ state }}" /><br/>#}
+{#                    <input name="timestamp" placeholder="timestamp" value="{{ timestamp }}" /><br/>#}
+{#                    <input name="scope" placeholder="scope" value="{{ scope }}" /><br/>#}
+{#                    <input type="submit" />#}
+{#                </form>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#{% endblock %}#}

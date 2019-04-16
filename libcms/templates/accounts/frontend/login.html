@@ -36,18 +36,6 @@
             </nav>
             <div class="content">
                 <h1 class="content__title">Авторизация</h1>
-                {#                {% if library %}#}
-                {#                    <h3>Выполнить поиск по каталогу:</h3>#}
-                {#                    <div>#}
-                {#                        <a class="footer-logo__ask-lib"#}
-                {#                           href="{% url 'ssearch:frontend:ecatalog' %}?library={{ library.code }}">#}
-                {#                            {% for ancestor in library.get_ancestors %}#}
-                {#                                {{ ancestor.name }} →#}
-                {#                            {% endfor %}#}
-                {#                            <b>{{ library }}</b>#}
-                {#                        </a>#}
-                {#                    </div>#}
-                {#                {% endif %}#}
             </div>
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-12">
@@ -93,9 +81,21 @@
                         </div>
                     </section>
                     <br>
-                    <div class="alert alert-info">
-                        Вход с использованием учетной записи на портале Госуслуг Временно отключен.
-                    </div>
+                    <section class="card card_bs-2 card_mt">
+                        <div class="card__body">
+                            <p class="card__text card__text-center"> Вход с использованием учетной записи Госуслуг.
+                            </p>
+                        </div>
+                        <div class="card__footer">
+                            <ul class="card-nav">
+                                <li class="card-nav__item">
+                                    <a class="card-nav__link" href="{% url 'sso_esia:index' %}">
+                                        Войти через портал Госуслуг
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>
