@@ -481,7 +481,6 @@ def register_new_user(request, id):
 
 
 @transaction.atomic()
-@login_required
 def ask_for_exist_reader(request, id):
     try:
         esia_user = models.EsiaUser.objects.get(id=id)
