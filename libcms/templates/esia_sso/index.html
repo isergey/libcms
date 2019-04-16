@@ -4,6 +4,7 @@
     Вход на портал через Госуслуги
 {% endblock %}
 {% block content %}
+    {% url 'sso_esia:redirect_from_ip' as redirect_url %}
     <main>
         <div class="container">
             <nav class="crumb">
