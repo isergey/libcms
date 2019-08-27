@@ -401,7 +401,7 @@ def search(request, catalog=None, library=None):
 
     facets = cache.get(terms_facet_hash, None)
     if not facets:
-        solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=20, mincount=1)
+        solr_searcher = solr_searcher.facet_by(field=facet_fields, limit=15, mincount=1)
 
     solr_searcher = solr_searcher.field_limit("id")
     paginator = Paginator(solr_searcher, 20)  # Show 25 contacts per page
@@ -465,7 +465,6 @@ def search(request, catalog=None, library=None):
             'href': query_dict.urlencode()
         })
 
-
     if catalog == u'ebooks' and len(search_breadcumbs) > 1 and star:
         return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
 
@@ -492,6 +491,220 @@ def search(request, catalog=None, library=None):
         'search_attrs': search_attrs,
         'catalog': catalog,
         'library': library
+    })
+
+
+def facet_explore(request, catalog=None, library=None):
+    holders = []
+    library_code = request.GET.get('library')
+    try:
+        library = Library.objects.get(code=library_code)
+    except Library.DoesNotExist:
+        library = None
+
+    if library:
+        holders.append(library.code)
+        leaf_libraries = library.get_leafnodes()
+        for leaf_library in leaf_libraries:
+            holders.append(getattr(leaf_library, 'code'))
+    facet = request.GET.get('facet')
+    offset = int(request.GET.get('offset', '0'))
+    if offset < 0:
+        offset = 0
+    facet_fields = [facet]
+    facet_limit = 15
+    search_attrs = _make_search_attrs(catalog)
+    search_deep_limit = 5  # ограничение вложенных поисков
+    solr_connection = httplib2.Http(disable_ssl_certificate_validation=True)
+    solr = sunburnt.SolrInterface(settings.SOLR['host'], http_connection=solr_connection)
+
+    qs = request.GET.getlist('q', [])
+    attrs = request.GET.getlist('attr', [])
+    # sort = request.GET.getlist('sort', [])
+    #
+    # sort_attrs = []
+    #
+    # for sort_attr in sort:
+    #     mapped_sort_attr = sort_attr_map.get(sort_attr, None)
+    #     if not mapped_sort_attr:
+    #         continue
+    #
+    #     sort_attrs.append({
+    #         'attr': mapped_sort_attr['attr'],
+    #         'order': mapped_sort_attr.get('order', 'asc')
+    #     })
+
+    fqs = request.GET.getlist('fq', [])
+    fattrs = request.GET.getlist('fattr', [])
+    if fqs and fattrs and fqs[0] == u'*' and fattrs[0] == u'*':
+        fqs = fqs[1:]
+        fattrs = fattrs[1:]
+    in_founded = request.GET.get('in_founded', None)
+
+    terms = []
+    try:
+        if in_founded:
+            terms += terms_constructor(fattrs, fqs)
+        terms += terms_constructor(attrs, qs)
+    except WrongSearchAttribute:
+        return HttpResponse(u'Задан непрвильный атрибут поиска')
+    except IndexError:
+        return HttpResponse(u'Некорректный набор атрибутов')
+
+    query = None
+    if len(terms) == 1 and 'text_t' in terms[0] and terms[0]['text_t'].strip() == '*':
+        terms = [{u'*': u'*'}]
+
+    if len(terms) > 1 and u'*' in terms[0][terms[0].keys()[0]].strip() == u'*':
+        terms = terms[1:]
+    try:
+        for term in terms[:search_deep_limit]:
+            # если встретилось поле с текстом, то через OR ищем аналогичное с постфиксом _ru
+            morph_query = None
+            attr = term.keys()[0]
+            if len(attr) > 2 and attr[-2:] == '_t' and term.values()[0] != u'*':
+                morph_query = solr.Q(**{attr + '_ru': term.values()[0]})
+            if not query:
+                if morph_query:
+                    query = solr.Q(solr.Q(**term) | morph_query)
+                else:
+                    query = solr.Q(**term)
+            else:
+                if morph_query:
+                    query = query & solr.Q(solr.Q(**term) | morph_query)
+                else:
+                    term[attr] = "%s" % term[attr]
+
+                    query = query & solr.Q(**term)
+    except ValueError:
+        return HttpResponse(u'Неверные параметры')
+
+    if holders:
+        holders_query = solr.Q(**{'holder-sigla_s': holders[0]})
+        for holder in holders[1:]:
+            holders_query |= solr.Q(**{'holder-sigla_s': holder})
+        query = query & holders_query
+
+    filter_q = solr.Q()
+    if holders:
+        holders_q = solr.Q()
+
+        for holder in holders:
+            holders_q |= solr.Q(**{'system-holder_s': holder})
+
+        filter_q &= holders_q
+
+    if holders:
+        holders_query = solr.Q(**{'system-holder_s': holders[0]})
+        for holder in holders[1:]:
+            holders_query |= solr.Q(**{'system-holder_s': holder})
+        query = query & holders_query
+
+    solr_searcher = solr.query(query)
+    if PARTICIPANTS_SHOW_ORG_TYPES:
+        participant_types_q = solr.Q()
+        for PARTICIPANTS_SHOW_ORG_TYPE in PARTICIPANTS_SHOW_ORG_TYPES:
+            participant_types_q |= solr.Q(**{'org_type_s': PARTICIPANTS_SHOW_ORG_TYPE})
+
+        filter_q &= participant_types_q
+
+    solr_searcher = solr_searcher.filter(filter_q)
+
+    exclude_kwargs = {}
+
+    if catalog == u'sc2':
+        exclude_kwargs = {'system-catalog_s': u"2"}
+    elif catalog == u'ebooks':
+        exclude_kwargs = {'system-catalog_s': u"4"}
+    else:
+        pass
+
+    solr_searcher = solr_searcher.exclude(**exclude_kwargs)
+
+
+    # ключ хеша зависит от языка
+    terms_facet_hash = hashlib.md5(
+        unicode(terms) + u'_facets_' + get_language() + u'#'.join(exclude_kwargs.values())).hexdigest()
+
+    facet_by_args = dict(
+        field=facet_fields,
+        limit=facet_limit,
+        mincount=1
+    )
+
+    if offset > 0:
+        facet_by_args['offset'] = offset
+
+    solr_searcher = solr_searcher.facet_by(**facet_by_args)
+
+    solr_searcher = solr_searcher.field_limit("id")
+    paginator = Paginator(solr_searcher, 1)  # Show 25 contacts per page
+
+    page = request.GET.get('page')
+    try:
+        results_page = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        results_page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        results_page = paginator.page(paginator.num_pages)
+
+    facets = replace_doc_attrs(results_page.object_list.facet_counts.facet_fields)
+
+    search_breadcumbs = []
+    query_dict = None
+
+    star = False
+    for term in terms[:search_deep_limit]:
+        key = term.keys()[0]
+        value = term[key]
+        if isinstance(value, str):
+            value = value.decode('utf-8')
+        if value.strip() == '*':
+            star = True
+
+        if type(value) == datetime.datetime:
+            value = unicode(value.year)
+
+        new_key = key.split('_')[0]
+        if not query_dict:
+            query_dict = QueryDict((u'q=' + value + u'&attr=' + key).encode('utf-8')).copy()
+        else:
+            query_dict.getlist('q').append(value)
+            query_dict.getlist('attr').append(key)
+
+        search_breadcumbs.append({
+            'attr': key,
+            'value': value,
+            'href': query_dict.urlencode()
+        })
+
+    if catalog == u'ebooks' and len(search_breadcumbs) > 1 and star:
+        return HttpResponse(u'Нельзя использовать * при вложенных запросах в каталоге содержащий полный текст')
+
+    json_search_breadcumbs = json.dumps(search_breadcumbs, ensure_ascii=False)
+
+    ordered_facets = []
+
+    for facet_field in facet_fields:
+        if facet_field in facets:
+            ordered_facets.append(
+                {
+                    'title': facet_field,
+                    'values': facets[facet_field]
+                }
+            )
+
+    has_next = len(ordered_facets[0]['values']) >= facet_limit
+    has_prev = offset > 0
+
+    return render(request, 'ssearch/frontend/facets.html', {
+        'facets': ordered_facets,
+        'next': offset + facet_limit,
+        'prev': offset - facet_limit,
+        'has_next': has_next,
+        'has_prev': has_prev,
     })
 
 

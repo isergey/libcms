@@ -231,9 +231,7 @@
                                     {% if not forloop.last %}
                                         <div class="search-nav__item">
                                             <a class="search-nav__link"
-                                               href="?
-
-                                                       {{ search_breadcumb.href }}{% if request.GET.library %}&library={{ request.GET.library|urlencode }}{% endif %}">→ {{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value }}</a>
+                                               href="?{{ search_breadcumb.href }}{% if request.GET.library %}&library={{ request.GET.library|urlencode }}{% endif %}">→ {{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value }}</a>
                                         </div>
                                     {% else %}
                                         {#                <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>#}
@@ -756,11 +754,13 @@
                                                         </li>
 
                                                     {% endif %}
+
                                                 </ul>
 
                                             {% empty %}
                                                 <p class="card__text">сведений нет</p>
                                             {% endfor %}
+                                        <button class="load_more_facet " data-facet="{{ facet.title }}">Показать все</button>
                                         </div>
                                     </section>
                                 {% endif %}
@@ -835,7 +835,7 @@
                     {% elif LANGUAGE_CODE == 'tt' %}
                         <a href="{% url 'accounts:frontend:login' %}">Керегез</a>  системасына саклау өчен запрос
                     {% else %}
-                        For saving search <a href="{% url 'accounts:frontend:login' %}">login</a> in system</p>
+                        For saving search <a href="{% url 'accounts:frontend:login' %}">login</a> in system
                     {% endif %}
                 </p>
                 <footer class="modal__footer">
@@ -852,8 +852,73 @@
             </div>
         </div>
     </div>
+
+    <div class="modal micromodal-slide" id="modal-1" aria-hidden="true" role="dialog">
+        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="save_doc_modal-title">
+{#                <header class="modal__header">#}
+{#                    <h2 class="modal__title" id="save_doc_modal-title">#}
+{#                        {% if LANGUAGE_CODE == 'ru' %}#}
+{#                            Сохранение запроса#}
+{#                        {% elif LANGUAGE_CODE == 'tt' %}#}
+{#                            Саклау соратып алу#}
+{#                        {% else %}#}
+{#                            Saving search#}
+{#                        {% endif %}#}
+{#                    </h2>#}
+{#                    <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>#}
+{#                </header>#}
+                <p class="modal__content">
+                    {% if LANGUAGE_CODE == 'ru' %}#}
+                        Загрузка...
+                    {% elif LANGUAGE_CODE == 'tt' %}
+                        Йөкләнеше...
+                    {% else %}
+                        Loading...
+                    {% endif %}
+                </p>
+                <footer class="modal__footer">
+                    <button class="btn btn_ol" data-micromodal-close aria-label="x">
+                        {% if LANGUAGE_CODE == 'ru' %}
+                            Закрыть
+                        {% elif LANGUAGE_CODE == 'tt' %}
+                            Каплау
+                        {% else %}
+                            Close
+                        {% endif %}
+                    </button>
+                </footer>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block scripts %}
+    <script type="text/javascript">
+
+        $('.load_more_facet').on('click', function () {
+            MicroModal.show('modal-1');
+            var facetEl = $(this);
+            var facetAttr = facetEl.attr('data-facet');
+            var facetExploreModal = $('#modal-1');
+            $.get("{% url 'ssearch:frontend:facet_explore' %}?{{ request.META.QUERY_STRING|safe }}&facet=" + facetAttr).done(function (result) {
+                var modalBody = facetExploreModal.find('.modal__content');
+                modalBody.html(result);
+                $(modalBody).on('click', 'a.ajax_link', function (event) {
+                    $.get($(this).attr('href')).done(function (result) {
+                        modalBody.html(result);
+                    });
+                    return false;
+                });
+                $(modalBody).on('submit', '.facets-item__panel .ajax_form', function (event) {
+                    //$.post(event.baseURI)
+                    console.log('submit', $(this).attr('action'));
+                    return false;
+                });
+            });
+
+        });
+    </script>
+
     <script type="text/javascript">
         $('#save_request_button').click(function () {
             $.ajax({
@@ -952,4 +1017,6 @@
         });
         //alert(alteredURL);
     </script>
+
+
 {% endblock %}

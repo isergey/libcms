@@ -1,0 +1,25 @@
+{% load ssearch_tags %}
+{% load add_get_tag %}
+<h2>{{ facets.0.title|facet_title }}</h2>
+<ul class="card-list">
+    {% for value in facets.0.values %}
+        <li class="card-list__item">
+            <a class="card-list__link"
+               href="?{{ request.META.QUERY_STRING|safe }}&q={{ value.0|urlencode }}&attr={{ facets.0.title|urlencode }}"
+               title="{{ value.0|content_type_title }}">
+                <span class="card-list__title">{{ value.0|content_type_title }}</span>
+                <span class="card-list__count">{{ value.1 }}</span>
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+<div style="text-align: center; margin-top: 20px">
+    {% if has_prev %}
+        <a class="ajax_link btn btn_sm"
+           href="{% url 'ssearch:frontend:facet_explore' %}{% add_get offset=prev %}">← назад</a>
+    {% endif %}
+    {% if has_next %}
+        <a class="ajax_link btn btn_sm"
+           href="{% url 'ssearch:frontend:facet_explore' %}{% add_get offset=next %}">вперед →</a>
+    {% endif %}
+</div>

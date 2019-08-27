@@ -2,8 +2,10 @@
 from django.conf.urls import *
 import views
 import feeds
+
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
+    url(r'^facet_explore/$', views.facet_explore, name='facet_explore'),
     url(r'^income/$', views.participant_income, name='participant_income'),
     url(r'^rss/$', feeds.LatestEntriesFeed(), name='rss'),
     url(r'^ecatalog/$', views.index, name='ecatalog', kwargs={'catalog':'sc2'}),
