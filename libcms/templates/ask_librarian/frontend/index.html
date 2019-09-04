@@ -68,15 +68,15 @@
                                                 Are you looking for information? Do you need literature? Do you have
                                                 questions about the libraries’ work? You are welcome to “Ask a Librarian”
                                                 virtual reference service!
-                                                <a href="{% url 'pages:frontend:show' 'inf_for_ask' %}">More details</a>.
+                                                <b><a href="{% url 'pages:frontend:show' 'inf_for_ask' %}">More details</a></b>.
                                             {% elif LANGUAGE_CODE == 'tt' %}
                                                 Мәгълүмат эзлисез? Әдәбият сайлыйсыз? Китапханәнең эше турында
                                                 сорауларыгыз бар? Сезгә виртуаль белешмә хезмәте ярдәм итәчәк!
-                                                <a href="{% url 'pages:frontend:show' 'inf_for_ask' %}">Җентекле</a>.
+                                               <b> <a href="{% url 'pages:frontend:show' 'inf_for_ask' %}">Җентекле</a></b>.
                                             {% else %}
                                                 Ищете информацию? Подбираете литературу? Есть вопросы о работе
                                                 библиотеки? Виртуальная справочная служба поможет!
-                                                <a href="{% url 'pages:frontend:show' 'inf_for_ask' %}">Подробнее</a>.
+                                                <a class="card-nav__link" href="{% url 'pages:frontend:show' 'inf_for_ask' %}">Подробнее</a>.
                                             {% endif %}
                                         </p>
                                     </div>

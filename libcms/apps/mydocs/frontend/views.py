@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, HttpResponse, Http404, redirect, get_object_or_404
 from ssearch.models import Record, Ebook
 from ..models import SavedDocument, List
-from forms import SavedDocumentForm, ListForm
+from forms import get_saved_document_form, ListForm
 from libcms.libs.common.xslt_transformers import xslt_bib_draw_transformer
 
 
@@ -49,7 +49,7 @@ def save(request):
     if not request.user.is_authenticated():
         return HttpResponse(u'Вы должны быть войти на портал', status=401)
     if request.method == 'POST':
-        form = SavedDocumentForm(request.POST)
+        form = get_saved_document_form(request.user)(request.POST)
         if form.is_valid():
             if SavedDocument.objects.filter(user=request.user, gen_id=form.cleaned_data['gen_id']):
                 return HttpResponse(u'{"status":"ok"}')
@@ -74,7 +74,7 @@ def save(request):
                 return HttpResponse(json.dumps(response, ensure_ascii=False))
 
     else:
-        form = SavedDocumentForm()
+        form = get_saved_document_form(request.user)
 
     return HttpResponse(u'{"status":"ok"}')
 
