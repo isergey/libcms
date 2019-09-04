@@ -31,7 +31,7 @@
     </ul>
     <p>
         {% if LANGUAGE_CODE == 'ru' %}
-            <a href="/ru/ssearch/ecollection/?attr=text_t&q=*">Всего документов в коллекции: {{ stats.count_all }}</a>
+            <a href="/ru/ssearch/ecollection/?attr=text_t&q=*">Всего документов в коллекциях: {{ stats.count_all }}</a>
         {% elif LANGUAGE_CODE == 'tt' %}
             <a href="/tt/ssearch/ecollection/?attr=text_t&q=*">Коллекциядә барлык документлар саны: {{ stats.count_all }}</a>
         {% else %}

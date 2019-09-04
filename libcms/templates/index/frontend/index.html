@@ -207,7 +207,7 @@
                             New e-resources
                         {% endif %}
                     </h2>
-                    <a href="{% url 'newinlib:frontend:index' %}" class="card-transparent__link">
+                    <a href="/{{ LANGUAGE_CODE }}/ssearch/ecollection/?attr=text_t&q=*&sort=record-create-date" class="card-transparent__link">
                         {% if LANGUAGE_CODE == 'ru' %}Все оцифрованные издания
                         {% elif LANGUAGE_CODE == 'tt' %}Соңгы кертелгән китаплар
                         {% else %}More new arrivals
