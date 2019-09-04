@@ -220,11 +220,13 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-12">
-                    <div class="record-booking">
-                        {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}
+{#                    <div class="record-booking">#}
+{#                        {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}#}
 {#                        {% drow_holders_menu gen_id %}#}
+{#                    </div>#}
+                    <div class="record-booking" id="record_holdings">
+                        {% drow_el_order_menu doc.holders doc|hash:"local-number"|hash:0 %}
                     </div>
-                    <div class="record-booking" id="record_holdings"></div>
                 </div>
             </div>
         </div>
