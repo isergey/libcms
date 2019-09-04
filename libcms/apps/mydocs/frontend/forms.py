@@ -14,6 +14,7 @@ def get_saved_document_form(user):
         gen_id = forms.CharField(widget=forms.HiddenInput, max_length=32)
         list = forms.ModelChoiceField(
             label=u'Список',
+            help_text=u'Список можно редактировать в разделе "Мои документы" личного кабинета',
             queryset=List.objects.filter(user=user)
         )
         comments = forms.CharField(widget=forms.Textarea, label=u'Комментарии', required=False)
