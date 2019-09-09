@@ -984,7 +984,7 @@ def print_to_pdf(request):
         document.add_paragraph(unicode(i + 1) + u'. ' + libcard)
 
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-    response['Content-Disposition'] = 'attachment; filename=download.docx'
+    response['Content-Disposition'] = 'attachment; filename=print.docx'
     document.save(response)
     return response
 
