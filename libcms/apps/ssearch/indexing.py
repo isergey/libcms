@@ -238,7 +238,8 @@ def doc_tree_to_dict(doc_tree):
         if not old_value:
             doc_dict[attrib] = [value]
         else:
-            doc_dict[attrib].append(value)
+            if value not in doc_dict[attrib]:
+                doc_dict[attrib].append(value)
 
     return doc_dict
 

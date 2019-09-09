@@ -14,6 +14,10 @@ var translates = {
         'en': 'Loading...',
         'tt': 'Зинһар көтегез...',
     },
+    'Закрыть': {
+        'en': 'Close',
+        'tt': 'Каплау',
+    },
     'Ошибка': {
         'en': 'Error',
         'tt': 'Хата',
@@ -275,7 +279,7 @@ const ContextMenu = React.createClass({
         return (
             <div className={classes.join(' ')} style={style}>
                 <button className="map-nav-dropdown-btn" onClick={this.close}>
-                    Закрыть
+                    {translate('Закрыть')}
                 </button>
                 {this.props.children}
             </div>
@@ -671,7 +675,9 @@ const LibFinder = React.createClass({
         });
         this.itemsMap.geoObjects.add(clusterer);
         this.itemsMap.setBounds(this.itemsMap.geoObjects.getBounds());
-        this.itemsMap.setZoom(this.itemsMap.getZoom() - 1);
+        console.log('this.itemsMap.getZoom()', this.itemsMap.getZoom());
+        var zoom = this.itemsMap.getZoom();
+        this.itemsMap.setZoom(zoom > 16 ? 16: zoom);
     },
     drowUserPosition(position = {}) {
         let content = translate('Ваше местоположение');

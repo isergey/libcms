@@ -287,6 +287,7 @@ def language_title(code):
 
 @register.filter
 def content_type_title(code):
+    print code
     return content_type_titles.get(code, {}).get('ru', code)
 
 

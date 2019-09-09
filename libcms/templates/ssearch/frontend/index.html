@@ -175,8 +175,13 @@
                             <button id="facetBtn" class="search-facet-btn">Уточнить поиск</button>
 
                             <div class="search-nav">
-
                                 <div class="search-nav__item">
+                                    <span class="search-nav__link print-results"
+                                          style="cursor: pointer"
+                                          title="Результат будет сохранен в DOC файл">Печать</span>
+                                </div>
+                                <div class="search-nav__item ">
+
                                     {% if request.user.is_authenticated %}
                                         <a id="save_request_button" class="search-nav__link"
                                            href="{% url 'ssearch:frontend:save_search_request' %}?srequest={{ search_request|urlencode }}&catalog={{ catalog|urlencode }}">
@@ -434,15 +439,6 @@
                                         </div>
                                     {% endfor %}
                                 </div>
-                                {#                                {% for search_breadcumb in search_breadcumbs %}#}
-                                {#                                    {% if forloop.last %}#}
-                                {#                                        <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">#}
-                                {#                                        <input type="hidden" name="q" value="{{ search_breadcumb.value }}">#}
-                                {#                                    {% else %}#}
-                                {#                                        <input type="hidden" name="fattr" value="{{ search_breadcumb.attr }}">#}
-                                {#                                        <input type="hidden" name="fq" value="{{ search_breadcumb.value }}">#}
-                                {#                                    {% endif %}#}
-                                {#                                {% endfor %}#}
                             </form>
                         </div>
                     {% endif %}
@@ -451,10 +447,12 @@
                     {% endif %}
                     {% if docs %}
                         <div class="list list_mt">
+                            <form class="selection-form" method="post">{% csrf_token %}
                             {% for doc in docs %}
                                 <div class="list__item">
                                     <div class="list__col-text">
                                         <h3 class="list__title">
+                                            <input type="checkbox" class="print_checkbox" data-doc-id="{{ doc.id }}" name="selected" value="{{ doc.id }}">
                                             {#                                            {{ forloop.counter0|add:results_page.start_index }}#}
                                             <a class="list__title-link"
                                                href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a>
@@ -600,6 +598,7 @@
                                     {% endif %}
                                 </div>
                             {% endfor %}
+                            </form>
                         </div>
                         {% admin_pagination results_page %}
                     {% endif %}
@@ -893,6 +892,18 @@
     </div>
 {% endblock %}
 {% block scripts %}
+    <script>
+    $('.print-results').on('click', function () {
+        if ($('.print_checkbox:checked').size() === 0) {
+            alert('Выберите записи для печати');
+        } else {
+            var selectionForm = $('.selection-form');
+            selectionForm.attr('action', '{% url 'ssearch:frontend:print_to_pdf' %}');
+            selectionForm.submit();
+        }
+    });
+    </script>
+
     <script type="text/javascript">
 
         $('.load_more_facet').on('click', function () {

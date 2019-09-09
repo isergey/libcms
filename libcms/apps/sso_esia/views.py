@@ -13,7 +13,6 @@ from django.contrib.auth import authenticate, login
 from django.db import transaction
 from django.shortcuts import render, redirect
 
-
 from ruslan import connection_pool, humanize
 from ruslan import grs
 from . import forms

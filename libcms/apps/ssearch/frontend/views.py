@@ -19,7 +19,7 @@ from libcms.libs.common.xslt_transformers import xslt_transformer, xslt_marc_dum
 from .. import rusmarc_template
 from ..common import resolve_date
 from ..models import Record, SavedRequest, DetailAccessLog, get_records
-
+from ..administration.views import record_to_indexing_doc
 
 # # на эти трансформаторы ссылаются из других модулей
 # xslt_root = etree.parse('libcms/xsl/record_in_search.xsl')
@@ -866,10 +866,11 @@ def detail(request, gen_id):
             #            doc['record'] = records_dict.get(doc['id'])
 
     access_count = DetailAccessLog.objects.filter(catalog=catalog, gen_id=record.gen_id).count()
-
+    indexing_doc = record_to_indexing_doc(doc_tree)
     return render(request, 'ssearch/frontend/detail.html', {
         'doc_dump': rusmarc_template.beautify(bib_dump.replace('<b/>', '')),
         'marc_dump': marc_dump,
+        'indexing_doc': indexing_doc,
         'doc': doc,
         'gen_id': gen_id,
         'linked_docs': linked_docs,
@@ -952,6 +953,40 @@ def to_print(request, gen_id):
         # 'linked_docs': linked_docs,
         # 'access_count': access_count
     })
+
+
+from docx import Document
+from docx.shared import Inches
+from django.utils.html import strip_tags, strip_spaces_between_tags
+import re
+def print_to_pdf(request):
+    # print 1,2
+    doc_ids = request.POST.getlist('selected')
+
+    document = Document()
+
+    # document.add_heading('Document Title', 0)
+
+    records = get_records(doc_ids)
+    for i, record in enumerate(records):
+        doc_tree = etree.XML(record.content)
+        bib_tree = xslt_bib_draw_transformer(doc_tree)
+        bib_dump = etree.tostring(bib_tree, encoding='utf-8')
+
+        libcard = strip_tags(rusmarc_template.beautify(bib_dump.replace('<b/>', '')).decode('utf-8'))
+        while True:
+            res = re.search('\.\w', libcard, flags=re.IGNORECASE|re.MULTILINE|re.UNICODE)
+            if res is None:
+                break
+            span = res.span()
+            libcard = libcard[0: span[0] + 1] + ' ' + libcard[span[1] - 1: ]
+        # libcard = u'. '.join(re.split('\.\w', libcard, flags=re.IGNORECASE | re.UNICODE))
+        document.add_paragraph(unicode(i + 1) + u'. ' + libcard)
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    response['Content-Disposition'] = 'attachment; filename=download.docx'
+    document.save(response)
+    return response
 
 
 @login_required

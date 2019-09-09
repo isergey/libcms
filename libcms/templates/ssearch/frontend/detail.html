@@ -216,6 +216,19 @@
                     <div class="card card_bs-2 marc-card">
                         <div class="card__body">
                             {{ marc_dump|safe }}
+
+                            {% for attr, values in indexing_doc.items %}
+                                <div>
+                                    {{ attr }}:
+                                    {% if values.append != None %}
+                                    {% for value in values %}
+                                        {{ value }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                    {% else %}
+                                        {{ values }}
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>

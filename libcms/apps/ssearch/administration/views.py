@@ -286,6 +286,37 @@ def gs(obj):
     return size
 
 
+def record_to_indexing_doc(doc_tree):
+    doc_tree = xslt_indexing_transformer(doc_tree)
+    doc = doc_tree_to_dict(doc_tree)
+    doc = add_sort_fields(doc)
+
+    # для сортировки по тому, извлекаем строку содержащую номер тома или промежуток и посещаем резултат вычисления
+    # в поле tom_f, которое в последствии сортируется
+    # если трока типа т.1 то в том добавляется float 1
+    # если строка содержит т.1-2 то добавляется float (1+2) / 2 - средне арифметическое, чтобы усреднить для сортировки
+
+    tom = doc.get('tom_s', None)
+    if tom and isinstance(tom, unicode):
+        tom = tom.strip().replace(u' ', u'')
+        r = re_t1_t2.search(tom)
+        if r:
+            groups = r.groups()
+            doc['tom_f'] = (int(groups[0]) + int(groups[1])) / 2.0
+        else:
+            r = re_t1.search(tom)
+            if r:
+                doc['tom_f'] = float(r.groups()[0])
+    try:
+        record_create_date = doc.get('record-create-date_dt', None)
+        # print 'record_create_date1', record_create_date
+        if record_create_date:
+            doc['record-create-date_dts'] = record_create_date
+    except Exception as e:
+        print 'Error record-create-date_dt', e.message
+    return doc
+
+
 @transaction.atomic
 def local_records_indexing(request):
     slug = 'local_records'
@@ -349,34 +380,7 @@ def local_records_indexing(request):
     while res:
         content = zlib.decompress(res[0]['content'], -15).decode('utf-8')
         doc_tree = etree.XML(content)
-        doc_tree = xslt_indexing_transformer(doc_tree)
         doc = doc_tree_to_dict(doc_tree)
-        doc = add_sort_fields(doc)
-
-        # для сортировки по тому, извлекаем строку содержащую номер тома или промежуток и посещаем резултат вычисления
-        # в поле tom_f, которое в последствии сортируется
-        # если трока типа т.1 то в том добавляется float 1
-        # если строка содержит т.1-2 то добавляется float (1+2) / 2 - средне арифметическое, чтобы усреднить для сортировки
-
-        tom = doc.get('tom_s', None)
-        if tom and isinstance(tom, unicode):
-            tom = tom.strip().replace(u' ', u'')
-            r = re_t1_t2.search(tom)
-            if r:
-                groups = r.groups()
-                doc['tom_f'] = (int(groups[0]) + int(groups[1])) / 2.0
-            else:
-                r = re_t1.search(tom)
-                if r:
-                    doc['tom_f'] = float(r.groups()[0])
-        try:
-            record_create_date = doc.get('record-create-date_dt', None)
-            # print 'record_create_date1', record_create_date
-            if record_create_date:
-                doc['record-create-date_dts'] = record_create_date
-        except Exception as e:
-            print 'Error record-create-date_dt', e.message
-
         doc['system-add-date_dt'] = res[0]['add_date']
         doc['system-add-date_dts'] = res[0]['add_date']
         doc['system-update-date_dt'] = res[0]['update_date']
@@ -398,7 +402,6 @@ def local_records_indexing(request):
                 text = full_text_extract(full_text_file)
                 if text:
                     doc['full-text'] = text
-
         docs.append(doc)
         i += 1
         if len(docs) > 25:
