@@ -67,7 +67,9 @@
                                 {% endif %}
                             </button>
                         </li>
+                    {% if request.user.is_authenticated %}
                         {% drow_save_doc request.user gen_id %}
+                    {% endif %}
                         <li class="record-nav__item">
                             <a class="record-nav__link" href="{% url 'ssearch:frontend:to_print' gen_id %}"
                                target="_blank"><i class="icon-printer"></i>&nbsp;&nbsp;
