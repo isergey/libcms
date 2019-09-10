@@ -249,7 +249,10 @@ def add_sort_fields(doc):
         splited_key = key.split('_')
         if len(splited_key) > 1:
             if (splited_key[-1] == 't' or splited_key[-1] == 's'):
-                doc[key + 's'] = re.sub(replace_pattern, u'', u''.join(doc[key]))
+                if type(doc[key]) == list:
+                    doc[key + 's'] = re.sub(replace_pattern, u'', doc[key][0])
+                else:
+                    doc[key + 's'] = re.sub(replace_pattern, u'', u''.join(doc[key]))
             elif splited_key[-1] == 'dt':
                 if type(doc[key]) == list:
                     doc[key + 's'] = doc[key][0]
