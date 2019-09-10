@@ -641,7 +641,7 @@ def facet_explore(request, catalog=None, library=None):
 
     page = request.GET.get('page')
     try:
-        results_page = paginator.page(page)
+        results_page = paginator.page(1)
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
         results_page = paginator.page(1)
