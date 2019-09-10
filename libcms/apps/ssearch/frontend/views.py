@@ -542,8 +542,8 @@ def facet_explore(request, catalog=None, library=None):
 
     terms = []
     try:
-        if in_founded:
-            terms += terms_constructor(fattrs, fqs)
+        # if in_founded:
+        terms += terms_constructor(fattrs, fqs)
         terms += terms_constructor(attrs, qs)
     except WrongSearchAttribute:
         return HttpResponse(u'Задан непрвильный атрибут поиска')
