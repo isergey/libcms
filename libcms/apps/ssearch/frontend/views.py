@@ -138,7 +138,7 @@ sort_attr_map = {
         'order': 'asc',
     },
     u'date-of-publication': {
-        'attr': u'date-of-publication_l',
+        'attr': u'date-of-publication_ss',
         'order': 'desc',
     },
     u'record-create-date': {
@@ -394,7 +394,6 @@ def search(request, catalog=None, library=None):
             solr_searcher = solr_searcher.sort_by(u'-' + sort_attr['attr'])
         else:
             solr_searcher = solr_searcher.sort_by(sort_attr['attr'])
-
     # ключ хеша зависит от языка
     terms_facet_hash = hashlib.md5(
         unicode(terms) + u'_facets_' + get_language() + u'#'.join(exclude_kwargs.values())).hexdigest()
