@@ -606,6 +606,7 @@ def _get_oid(access_token):
     access_token_scope = access_token_params.get('scope', '')
     print 'access_token_scope', access_token_scope
     access_token_scope_parts = access_token_scope.split(' ')
+    print 'access_token_scope_parts', access_token_scope_parts
     oid_prefix = 'oid='
     oid_index = access_token_scope_parts[0].find(oid_prefix)
 
