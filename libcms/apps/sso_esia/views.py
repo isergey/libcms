@@ -637,7 +637,7 @@ def _get_person_info(oid, access_token):
     person_response = requests.get(ESIA_SSO_PERSON_URL + '/' + oid, headers={
         'Authorization': 'Bearer ' + access_token
     }, verify=VERIFY_REQUESTS)
-    print person_response.text
+    print 'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'
     person_response.raise_for_status()
     return person_response.json()
 
