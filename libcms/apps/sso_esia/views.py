@@ -635,6 +635,7 @@ def _get_person_info(oid, access_token):
     }
     """
     print '###########################################'
+    print 'oid', oid
     print ESIA_SSO_PERSON_URL + '/' + oid
     print 'Bearer ' + access_token
     person_response = requests.get(ESIA_SSO_PERSON_URL + '/' + oid, headers={
