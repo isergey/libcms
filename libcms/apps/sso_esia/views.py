@@ -346,6 +346,7 @@ def redirect_from_idp(request):
         person_addresses = _get_person_addresses(oid, access_token)
         person_docs = _get_person_docs(oid, access_token)
     except Exception as e:
+        print e
         return _error_response(
             request=request,
             error='user_info_error',
