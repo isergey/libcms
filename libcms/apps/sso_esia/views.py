@@ -604,6 +604,7 @@ def _get_oid(access_token):
 
     access_token_params = json.loads(access_token_json)
     access_token_scope = access_token_params.get('scope', '')
+    print 'access_token_scope', access_token_scope
     oid_prefix = 'oid='
     oid_index = access_token_scope.find(oid_prefix)
 
