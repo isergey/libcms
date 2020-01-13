@@ -340,17 +340,11 @@ def redirect_from_idp(request):
         )
 
     try:
-        print 123
         person_info = _get_person_info(oid, access_token)
-        print 'person_info', person_info
         person_contacts = _get_person_contacts(oid, access_token)
-        print 'person_contacts', person_contacts
         person_addresses = _get_person_addresses(oid, access_token)
-        print 'person_addresses', person_addresses
         person_docs = _get_person_docs(oid, access_token)
-        print 'person_docs', person_docs
     except Exception as e:
-        print 'error', e
         return _error_response(
             request=request,
             error='user_info_error',
@@ -604,17 +598,13 @@ def _get_oid(access_token):
 
     access_token_params = json.loads(access_token_json)
     access_token_scope = access_token_params.get('scope', '')
-    print 'access_token_scope', access_token_scope
     access_token_scope_parts = access_token_scope.split(' ')
-    print 'access_token_scope_parts', access_token_scope_parts
     oid_prefix = 'oid='
     oid_index = access_token_scope_parts[0].find(oid_prefix)
-    print 'oid_index', oid_index
     if oid_index < 0:
         return ''
 
     oid = access_token_scope_parts[0][oid_index + len(oid_prefix):]
-    print 'oid', oid
     return oid
 
 
@@ -638,10 +628,6 @@ def _get_person_info(oid, access_token):
         "trusted": False
     }
     """
-    print '###########################################'
-    print 'oid', oid
-    print ESIA_SSO_PERSON_URL + '/' + oid
-    print 'Bearer ' + access_token
     person_response = requests.get(ESIA_SSO_PERSON_URL + '/' + oid, headers={
         'Authorization': 'Bearer ' + access_token
     }, verify=VERIFY_REQUESTS)
