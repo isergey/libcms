@@ -350,7 +350,7 @@ def redirect_from_idp(request):
         person_docs = _get_person_docs(oid, access_token)
         print 'person_docs', person_docs
     except Exception as e:
-        print e
+        print 'error', e
         return _error_response(
             request=request,
             error='user_info_error',
@@ -637,6 +637,7 @@ def _get_person_info(oid, access_token):
     person_response = requests.get(ESIA_SSO_PERSON_URL + '/' + oid, headers={
         'Authorization': 'Bearer ' + access_token
     }, verify=VERIFY_REQUESTS)
+    print person_response.text
     person_response.raise_for_status()
     return person_response.json()
 
