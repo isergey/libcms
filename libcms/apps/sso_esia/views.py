@@ -609,11 +609,12 @@ def _get_oid(access_token):
     print 'access_token_scope_parts', access_token_scope_parts
     oid_prefix = 'oid='
     oid_index = access_token_scope_parts[0].find(oid_prefix)
-
+    print 'oid_index', oid_index
     if oid_index < 0:
         return ''
 
-    oid = access_token_scope_parts[oid_index + len(oid_prefix):]
+    oid = access_token_scope_parts[0][oid_index + len(oid_prefix):]
+    print 'oid', oid
     return oid
 
 
