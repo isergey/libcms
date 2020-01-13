@@ -291,7 +291,6 @@ def redirect_from_idp(request):
     state = request.GET.get('state')
     code = request.GET.get('code')
     error_description = request.GET.get('error_description')
-
     if error:
         return _error_response(
             request=request,
@@ -341,10 +340,15 @@ def redirect_from_idp(request):
         )
 
     try:
+        print 123
         person_info = _get_person_info(oid, access_token)
+        print 'person_info', person_info
         person_contacts = _get_person_contacts(oid, access_token)
+        print 'person_contacts', person_contacts
         person_addresses = _get_person_addresses(oid, access_token)
+        print 'person_addresses', person_addresses
         person_docs = _get_person_docs(oid, access_token)
+        print 'person_docs', person_docs
     except Exception as e:
         print e
         return _error_response(
