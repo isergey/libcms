@@ -605,13 +605,14 @@ def _get_oid(access_token):
     access_token_params = json.loads(access_token_json)
     access_token_scope = access_token_params.get('scope', '')
     print 'access_token_scope', access_token_scope
+    access_token_scope_parts = access_token_scope.split(' ')
     oid_prefix = 'oid='
-    oid_index = access_token_scope.find(oid_prefix)
+    oid_index = access_token_scope_parts.find(oid_prefix)
 
     if oid_index < 0:
         return ''
 
-    oid = access_token_scope[oid_index + len(oid_prefix):]
+    oid = access_token_scope_parts[oid_index + len(oid_prefix):]
     return oid
 
 
