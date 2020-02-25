@@ -133,7 +133,15 @@
             </div>
         </div>
 {#        <div id="social-links">social network links</div>#}
-        <div id="copyright">© Министерство культуры Республики Татарстан</div>
+        <div id="copyright">©
+            {% if LANGUAGE_CODE == 'ru' %}
+                Министерство цифрового развития государственного управления, информационных технологий и связи Республики Татарстан
+            {% elif LANGUAGE_CODE == 'tt' %}
+                Татарстан Республикасы дәүләт идарәсен цифрлы нигездә үстерү, мәгълүмат технологияләре һәм элемтә министрлыгы
+            {% else %}
+                Ministry of Digitalization of Public Administration, Information Technologies and Communications of the Republic of Tatarstan
+            {% endif %}
+        </div>
     </div>
 </div>
 <script type="text/javascript">
