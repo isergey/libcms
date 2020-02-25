@@ -376,7 +376,7 @@ const MapBoxItems = React.createClass({
         );
     },
     renderNotFound() {
-        return <div>translate(Ничего не найдено)</div>;
+        return <div>{ translate('Ничего не найдено') }</div>;
     },
     renderNotInited() {
         // return <div className="help-text">Укажите букву района или нажмите на стрелку для поиска ближайших
