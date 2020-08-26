@@ -74,7 +74,6 @@ function translate(message) {
 }
 
 
-
 let searchId = 0;
 
 const POSITION_TYPES = {
@@ -376,7 +375,7 @@ const MapBoxItems = React.createClass({
         );
     },
     renderNotFound() {
-        return <div>{ translate('Ничего не найдено') }</div>;
+        return <div>{translate('Ничего не найдено')}</div>;
     },
     renderNotInited() {
         // return <div className="help-text">Укажите букву района или нажмите на стрелку для поиска ближайших
@@ -677,7 +676,7 @@ const LibFinder = React.createClass({
         this.itemsMap.setBounds(this.itemsMap.geoObjects.getBounds());
         console.log('this.itemsMap.getZoom()', this.itemsMap.getZoom());
         var zoom = this.itemsMap.getZoom();
-        this.itemsMap.setZoom(zoom > 16 ? 16: zoom);
+        this.itemsMap.setZoom(zoom > 16 ? 16 : zoom);
     },
     drowUserPosition(position = {}) {
         let content = translate('Ваше местоположение');
