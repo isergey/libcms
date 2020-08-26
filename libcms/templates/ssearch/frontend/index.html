@@ -215,6 +215,7 @@
 
                                     <a class="search-nav__link" href="
 
+
                                             {{ search_index_url|safe }}{% if request.GET.library %}?library={{ request.GET.library }}{% endif %}">
                                         {% if LANGUAGE_CODE == 'ru' %}
                                             Очистить поиск{% elif LANGUAGE_CODE == 'tt' %}Эзләү{% else %}Clear
@@ -236,7 +237,8 @@
                                     {% if not forloop.last %}
                                         <div class="search-nav__item">
                                             <a class="search-nav__link"
-                                               href="?{{ search_breadcumb.href }}{% if request.GET.library %}&library={{ request.GET.library|urlencode }}{% endif %}">→ {{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value }}</a>
+                                               href="?
+                                                       {{ search_breadcumb.href }}{% if request.GET.library %}&library={{ request.GET.library|urlencode }}{% endif %}">→ {{ search_breadcumb.attr|facet_title }}: {{ search_breadcumb.value }}</a>
                                         </div>
                                     {% else %}
                                         {#                <li><a href="{% add_get_append q=value.0 attr='content-type' %}">{{ value.0|content_type_title }}</a> (<b>{{ value.1 }}</b>)</li>#}
@@ -448,156 +450,157 @@
                     {% if docs %}
                         <div class="list list_mt">
                             <form class="selection-form" method="post">{% csrf_token %}
-                            {% for doc in docs %}
-                                <div class="list__item">
-                                    <div class="list__col-text">
-                                        <h3 class="list__title">
-                                            <input type="checkbox" class="print_checkbox" data-doc-id="{{ doc.id }}" name="selected" value="{{ doc.id }}">
-                                            {#                                            {{ forloop.counter0|add:results_page.start_index }}#}
-                                            <a class="list__title-link"
-                                               href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a>
-                                        </h3>
-                                        <ul class="tag list__tag">
-                                            {% for subject in doc.record|hash:'subject-heading' %}
-                                                <li class="tag__item">
-                                                    <a class="tag__link"
-                                                       href="?q={{ subject|urlencode }}&attr=subject-heading_t">{{ subject }}</a>
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                        <p class="list__description">
-                                            {% for author in doc.record.author %}
-                                                {{ author }}{% if not forloop.last %}; {% endif %}
-                                            {% endfor %}
-                                        </p>
-                                        <dl class="list__dl">
-                                            {% if doc.record|hash:'material_designation' %}
-                                                <dt>
-                                                    {% if LANGUAGE_CODE == 'ru' %}
-                                                        Обозначение материала:
-                                                    {% elif LANGUAGE_CODE == 'tt' %}
-                                                        Материалны билгеләү:
-                                                    {% else %}
-                                                        Material designation:
-                                                    {% endif %}
-                                                </dt>
-                                                <dd>
-                                                    {% for material_designation in doc.record|hash:'material_designation' %}
-                                                        {% if not forloop.last %}
-                                                            {{ material_designation }},
+                                {% for doc in docs %}
+                                    <div class="list__item">
+                                        <div class="list__col-text">
+                                            <h3 class="list__title">
+                                                <input type="checkbox" class="print_checkbox" data-doc-id="{{ doc.id }}"
+                                                       name="selected" value="{{ doc.id }}">
+                                                {#                                            {{ forloop.counter0|add:results_page.start_index }}#}
+                                                <a class="list__title-link"
+                                                   href="{% url 'ssearch:frontend:detail' doc.id %}?back={{ request.get_full_path|urlencode }}">{{ doc.record.title.0 }}</a>
+                                            </h3>
+                                            <ul class="tag list__tag">
+                                                {% for subject in doc.record|hash:'subject-heading' %}
+                                                    <li class="tag__item">
+                                                        <a class="tag__link"
+                                                           href="?q={{ subject|urlencode }}&attr=subject-heading_t">{{ subject }}</a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                            <p class="list__description">
+                                                {% for author in doc.record.author %}
+                                                    {{ author }}{% if not forloop.last %}; {% endif %}
+                                                {% endfor %}
+                                            </p>
+                                            <dl class="list__dl">
+                                                {% if doc.record|hash:'material_designation' %}
+                                                    <dt>
+                                                        {% if LANGUAGE_CODE == 'ru' %}
+                                                            Обозначение материала:
+                                                        {% elif LANGUAGE_CODE == 'tt' %}
+                                                            Материалны билгеләү:
                                                         {% else %}
-                                                            {{ material_designation }}
+                                                            Material designation:
                                                         {% endif %}
-                                                    {% endfor %}
-                                                </dd>
+                                                    </dt>
+                                                    <dd>
+                                                        {% for material_designation in doc.record|hash:'material_designation' %}
+                                                            {% if not forloop.last %}
+                                                                {{ material_designation }},
+                                                            {% else %}
+                                                                {{ material_designation }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </dd>
+                                                {% endif %}
+                                                {% if doc.record|hash:'code-language' %}
+                                                    <dt>
+                                                        {% if LANGUAGE_CODE == 'ru' %}
+                                                            Язык{% elif LANGUAGE_CODE == 'tt' %}
+                                                            Тел{% else %}Language{% endif %}:
+                                                    </dt>
+                                                    <dd>
+                                                        {% for lang in doc.record|hash:'code-language' %}
+                                                            {% if not forloop.last %}
+                                                                {{ lang|language_title }},
+                                                            {% else %}
+                                                                {{ lang|language_title }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </dd>
+                                                {% endif %}
+                                                {% if doc.record|hash:'date-of-publication' %}
+                                                    <dt>
+                                                        {% if LANGUAGE_CODE == 'ru' %}Год
+                                                            публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып
+                                                            чыгару
+                                                            елы{% else %}
+                                                            Publication
+                                                            year{% endif %}:
+                                                    </dt>
+                                                    <dd>
+                                                        {% for dop in doc.record|hash:'date-of-publication' %}
+                                                            {% if not forloop.last %}
+                                                                {{ dop }},
+                                                            {% else %}
+                                                                {{ dop }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </dd>
+                                                {% endif %}
+                                                {% if doc.record|hash:'publisher' %}
+                                                    <dt>
+                                                        Издательство:
+                                                    </dt>
+                                                    <dd>
+                                                        {% for publisher in doc.record|hash:'publisher' %}
+                                                            {% if not forloop.last %}
+                                                                {{ publisher }},
+                                                            {% else %}
+                                                                {{ publisher }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </dd>
+                                                {% endif %}
+                                                {% if doc.record|hash:'fond' %}
+                                                    <dt>
+                                                        Коллекция:
+                                                    </dt>
+                                                    <dd>
+                                                        {% for fond in doc.record|hash:'fond' %}
+                                                            {% if not forloop.last %}
+                                                                {{ fond|fond_title }},
+                                                            {% else %}
+                                                                {{ fond|fond_title }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </dd>
+                                                {% endif %}
+                                                {% if doc.record|hash:'content-type' %}
+                                                    <dt>
+                                                        {% if LANGUAGE_CODE == 'ru' %}Тип
+                                                            содержания{% elif LANGUAGE_CODE == 'tt' %}Эчтәлек
+                                                            тибы{% else %}
+                                                            Content
+                                                            tipe{% endif %}:
+                                                    </dt>
+                                                    <dd>
+                                                        {% for content_type in doc.record|hash:'content-type' %}
+                                                            {% if not forloop.last %}
+                                                                {{ content_type|content_type_title }},
+                                                            {% else %}
+                                                                {{ content_type|content_type_title }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </dd>
+                                                {% endif %}
+                                            </dl>
+                                            {% if doc.solr_highlights %}
+                                                <p class="list__description">{{ doc.solr_highlights|hash:"full-text"|hash:0|safe }}</p>
                                             {% endif %}
-                                            {% if doc.record|hash:'code-language' %}
-                                                <dt>
-                                                    {% if LANGUAGE_CODE == 'ru' %}
-                                                        Язык{% elif LANGUAGE_CODE == 'tt' %}
-                                                        Тел{% else %}Language{% endif %}:
-                                                </dt>
-                                                <dd>
-                                                    {% for lang in doc.record|hash:'code-language' %}
-                                                        {% if not forloop.last %}
-                                                            {{ lang|language_title }},
-                                                        {% else %}
-                                                            {{ lang|language_title }}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </dd>
-                                            {% endif %}
-                                            {% if doc.record|hash:'date-of-publication' %}
-                                                <dt>
-                                                    {% if LANGUAGE_CODE == 'ru' %}Год
-                                                        публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып
-                                                        чыгару
-                                                        елы{% else %}
-                                                        Publication
-                                                        year{% endif %}:
-                                                </dt>
-                                                <dd>
-                                                    {% for dop in doc.record|hash:'date-of-publication' %}
-                                                        {% if not forloop.last %}
-                                                            {{ dop }},
-                                                        {% else %}
-                                                            {{ dop }}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </dd>
-                                            {% endif %}
-                                            {% if doc.record|hash:'publisher' %}
-                                                <dt>
-                                                    Издательство:
-                                                </dt>
-                                                <dd>
-                                                    {% for publisher in doc.record|hash:'publisher' %}
-                                                        {% if not forloop.last %}
-                                                            {{ publisher }},
-                                                        {% else %}
-                                                            {{ publisher }}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </dd>
-                                            {% endif %}
-                                            {% if doc.record|hash:'fond' %}
-                                                <dt>
-                                                    Коллекция:
-                                                </dt>
-                                                <dd>
-                                                    {% for fond in doc.record|hash:'fond' %}
-                                                        {% if not forloop.last %}
-                                                            {{ fond|fond_title }},
-                                                        {% else %}
-                                                            {{ fond|fond_title }}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </dd>
-                                            {% endif %}
-                                            {% if doc.record|hash:'content-type' %}
-                                                <dt>
-                                                    {% if LANGUAGE_CODE == 'ru' %}Тип
-                                                        содержания{% elif LANGUAGE_CODE == 'tt' %}Эчтәлек
-                                                        тибы{% else %}
-                                                        Content
-                                                        tipe{% endif %}:
-                                                </dt>
-                                                <dd>
-                                                    {% for content_type in doc.record|hash:'content-type' %}
-                                                        {% if not forloop.last %}
-                                                            {{ content_type|content_type_title }},
-                                                        {% else %}
-                                                            {{ content_type|content_type_title }}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </dd>
-                                            {% endif %}
-                                        </dl>
-                                        {% if doc.solr_highlights %}
-                                            <p class="list__description">{{ doc.solr_highlights|hash:"full-text"|hash:0|safe }}</p>
-                                        {% endif %}
-                                        <a class="list__link"
-                                           href="{% url 'ssearch:frontend:to_print' doc.id %}" target="_blank">
-                                            {% if LANGUAGE_CODE == 'ru' %}
-                                                Версия для печати
-                                            {% elif LANGUAGE_CODE == 'tt' %}
-                                                Матбугат өчен Версия
-                                            {% else %}
-                                                Print version
-                                            {% endif %}
-                                        </a>
-                                    </div>
-                                    {% if doc.record.cover %}
-                                        <div class="list__col-img">
-                                            <div class="list__img-wrap">
-                                                <img class="list__img"
-                                                     src="{{ doc.record.cover.0 }}"
-                                                     alt="{{ doc.record.title.0 }}">
-                                            </div>
+                                            <a class="list__link"
+                                               href="{% url 'ssearch:frontend:to_print' doc.id %}" target="_blank">
+                                                {% if LANGUAGE_CODE == 'ru' %}
+                                                    Версия для печати
+                                                {% elif LANGUAGE_CODE == 'tt' %}
+                                                    Матбугат өчен Версия
+                                                {% else %}
+                                                    Print version
+                                                {% endif %}
+                                            </a>
                                         </div>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
+                                        {% if doc.record.cover %}
+                                            <div class="list__col-img">
+                                                <div class="list__img-wrap">
+                                                    <img class="list__img"
+                                                         src="{{ doc.record.cover.0 }}"
+                                                         alt="{{ doc.record.title.0 }}">
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
                             </form>
                         </div>
                         {% admin_pagination results_page %}
@@ -759,7 +762,9 @@
                                             {% empty %}
                                                 <p class="card__text">сведений нет</p>
                                             {% endfor %}
-                                        <button class="load_more_facet " data-facet="{{ facet.title }}">Показать все</button>
+                                            <button class="load_more_facet " data-facet="{{ facet.title }}">Показать
+                                                все
+                                            </button>
                                         </div>
                                     </section>
                                 {% endif %}
@@ -855,18 +860,18 @@
     <div class="modal micromodal-slide" id="modal-1" aria-hidden="true" role="dialog">
         <div class="modal__overlay" tabindex="-1" data-micromodal-close>
             <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="save_doc_modal-title">
-{#                <header class="modal__header">#}
-{#                    <h2 class="modal__title" id="save_doc_modal-title">#}
-{#                        {% if LANGUAGE_CODE == 'ru' %}#}
-{#                            Сохранение запроса#}
-{#                        {% elif LANGUAGE_CODE == 'tt' %}#}
-{#                            Саклау соратып алу#}
-{#                        {% else %}#}
-{#                            Saving search#}
-{#                        {% endif %}#}
-{#                    </h2>#}
-{#                    <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>#}
-{#                </header>#}
+                {#                <header class="modal__header">#}
+                {#                    <h2 class="modal__title" id="save_doc_modal-title">#}
+                {#                        {% if LANGUAGE_CODE == 'ru' %}#}
+                {#                            Сохранение запроса#}
+                {#                        {% elif LANGUAGE_CODE == 'tt' %}#}
+                {#                            Саклау соратып алу#}
+                {#                        {% else %}#}
+                {#                            Saving search#}
+                {#                        {% endif %}#}
+                {#                    </h2>#}
+                {#                    <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>#}
+                {#                </header>#}
                 <p class="modal__content">
                     {% if LANGUAGE_CODE == 'ru' %}#}
                         Загрузка...
@@ -893,15 +898,15 @@
 {% endblock %}
 {% block scripts %}
     <script>
-    $('.print-results').on('click', function () {
-        if ($('.print_checkbox:checked').size() === 0) {
-            alert('Выберите записи для печати');
-        } else {
-            var selectionForm = $('.selection-form');
-            selectionForm.attr('action', '{% url 'ssearch:frontend:print_to_pdf' %}');
-            selectionForm.submit();
-        }
-    });
+        $('.print-results').on('click', function () {
+            if ($('.print_checkbox:checked').size() === 0) {
+                alert('Выберите записи для печати');
+            } else {
+                var selectionForm = $('.selection-form');
+                selectionForm.attr('action', '{% url 'ssearch:frontend:print_to_pdf' %}');
+                selectionForm.submit();
+            }
+        });
     </script>
 
     <script type="text/javascript">
@@ -944,8 +949,7 @@
                         button.addClass('disabled');
                         button.attr('href', '#1');
 
-                    }
-                    else {
+                    } else {
                         alert('При сохранении возникла ошибка');
                     }
                 }
@@ -990,8 +994,7 @@
                 suffix = suffix.substring(suffix.indexOf("=") + 1);
                 suffix = (suffix.indexOf("&") >= 0) ? suffix.substring(suffix.indexOf("&")) : "";
                 url = prefix + paramName + "=" + paramValue + suffix;
-            }
-            else {
+            } else {
                 if (url.indexOf("?") < 0)
                     url += "?" + paramName + "=" + paramValue;
                 else

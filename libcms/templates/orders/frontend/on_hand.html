@@ -79,8 +79,8 @@
                                     {% else %}
                                         {% for book in library.books %}
                                             <p class="list__description">{{ book.record|safe }}</p>
-                                            <dl class="list__dl">
-                                                <dt>
+                                            <ol class="list__dl">
+                                                <li>
                                                         {% if LANGUAGE_CODE == 'en' %}
                                                             Note:
                                                         {% elif LANGUAGE_CODE == 'tt' %}
@@ -88,9 +88,9 @@
                                                         {% else %}
                                                             Примечание:
                                                         {% endif %}
-                                                </dt>
-                                                <dd>{{ book.description }}</dd>
-                                            </dl>
+                                                </li>
+{#                                                <dd>{{ book.description }}</dd>#}
+                                            </ol>
                                         {% empty %}
                                             <br>
                                             <div class="alert alert-info">
