@@ -18,31 +18,37 @@
 </head>
 <body>
 <style>
-    .menu .active{
+    .menu .active {
         font-weight: bold;
     }
-    .menu>ul, .news>ul{
-            padding: 0;
-            margin: 0;
+
+    .menu > ul, .news > ul {
+        padding: 0;
+        margin: 0;
     }
+
     .menu ul, .news ul {
         list-style: none;
     }
-    .menu .title{
+
+    .menu .title {
         font-size: 18px;
         font-weight: bold;
     }
 
-    .events #id_month{
+    .events #id_month {
         width: 80px;
     }
-    .events #id_year{
+
+    .events #id_year {
         width: 70px;
     }
-    .events form{
+
+    .events form {
         margin: 0;
     }
-    .events table{
+
+    .events table {
         width: 100%;
     }
 </style>
@@ -50,59 +56,60 @@
 <div class="container">
 
     <div class="row">
-{#        <h1>Портал</h1>#}
+        {#        <h1>Портал</h1>#}
         {% if request.user.is_authenticated %}
-{#            Вы вошли как: {{ request.user.username }} <a href="{% url accounts:frontend:logout %}">Выйти</a>#}
+            {#            Вы вошли как: {{ request.user.username }} <a href="{% url accounts:frontend:logout %}">Выйти</a>#}
         {% else %}
             <a href="{% url 'accounts:frontend:login' %}">Войти</a> <a href="#1">Зарегистрироваться</a>
         {% endif %}
         <div style="float: right;">
             <a href="/ru{{ request.path|rmlocale }}">Русский</a>
             <a href="/en{{ request.path|rmlocale }}">English</a>
-        <hr/>
-    </div>
-    <div class="row">
-        <div class="span2">
-            {% cache 60 main_menu LANGUAGE_CODE %}
-            <div class="row menu">
-            {% drow_menu 'main' %}
-                <hr/>
-            </div>
-            {% endcache %}
-            {% cache 60 news LANGUAGE_CODE %}
-            <div class="row news">
-                <h3>
-                    {% if LANGUAGE_CODE == 'ru' %}
-                        Новости
-                    {% elif LANGUAGE_CODE == 'tt' %}
-                        Яңалыклар
-                    {% else %}
-                        News
-                    {% endif %}
-                </h3>
-                {% news_feed %}
-                <br/>
-                <a href="{% url 'news:frontend:index' %}">Остальные новости</a>
-                <hr/>
-            </div>
-            {% endcache %}
-{#            {% cache 60 events LANGUAGE_CODE %}#}
-            <div class="row events">
-                <h3>События</h3>
-                {% events_calendar %}
-            </div>
-{#            {% endcache %}#}
+            <hr/>
         </div>
-        <div class="span10">
-            <div class="row">
-            {% block content %}wefwefwef{% endblock %}
+        <div class="row">
+            <div class="span2">
+                {% cache 60 main_menu LANGUAGE_CODE %}
+                    <div class="row menu">
+                        {% drow_menu 'main' %}
+                        <hr/>
+                    </div>
+                {% endcache %}
+                {% cache 60 news LANGUAGE_CODE %}
+                    <div class="row news">
+                        <h3>
+                            {% if LANGUAGE_CODE == 'ru' %}
+                                Новости
+                            {% elif LANGUAGE_CODE == 'tt' %}
+                                Яңалыклар
+                            {% else %}
+                                News
+                            {% endif %}
+                        </h3>
+                        {% news_feed %}
+                        <br/>
+                        <a href="{% url 'news:frontend:index' %}">Остальные новости</a>
+                        <hr/>
+                    </div>
+                {% endcache %}
+                {#            {% cache 60 events LANGUAGE_CODE %}#}
+                <div class="row events">
+                    <h3>События</h3>
+                    {% events_calendar %}
+                </div>
+                {#            {% endcache %}#}
+            </div>
+            <div class="span10">
+                <div class="row">
+                    {% block content %}wefwefwef{% endblock %}
+                </div>
             </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
 
-    jQuery(document).ajaxSend(function(event, xhr, settings) {
+    jQuery(document).ajaxSend(function (event, xhr, settings) {
         function getCookie(name) {
             var cookieValue = null;
             if (document.cookie && document.cookie != '') {
@@ -118,6 +125,7 @@
             }
             return cookieValue;
         }
+
         function sameOrigin(url) {
             // url could be relative or scheme relative or absolute
             var host = document.location.host; // host + port
@@ -126,10 +134,11 @@
             var origin = protocol + sr_origin;
             // Allow absolute or scheme relative URLs to same origin
             return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-                    (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
                 // or any other URL that isn't scheme relative or absolute i.e relative.
-                    !(/^(\/\/|http:|https:).*/.test(url));
+                !(/^(\/\/|http:|https:).*/.test(url));
         }
+
         function safeMethod(method) {
             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
         }
@@ -139,39 +148,41 @@
         }
     });
 
-    (function(){
+    (function () {
         var cache = {};
 
-        this.tmpl = function tmpl(str, data){
+        this.tmpl = function tmpl(str, data) {
             // Figure out if we're getting a template, or if we need to
             // load the template - and be sure to cache the result.
             var fn = !/\W/.test(str) ?
-                    cache[str] = cache[str] ||
-                            tmpl(document.getElementById(str).innerHTML) :
+                cache[str] = cache[str] ||
+                    tmpl(document.getElementById(str).innerHTML) :
 
                 // Generate a reusable function that will serve as a template
                 // generator (and which will be cached).
-                    new Function("obj",
-                            "var p=[],print=function(){p.push.apply(p,arguments);};" +
+                new Function("obj",
+                    "var p=[],print=function(){p.push.apply(p,arguments);};" +
 
-                                // Introduce the data as local variables using with(){}
-                                    "with(obj){p.push('" +
+                    // Introduce the data as local variables using with(){}
+                    "with(obj){p.push('" +
 
-                                // Convert the template into pure JavaScript
-                                    str
-                                            .replace(/[\r\t\n]/g, " ")
-                                            .split("<%").join("\t")
-                                            .replace(/((^|%>)[^\t]*)'/g, "$1\r")
-                                            .replace(/\t=(.*?)%>/g, "',$1,'")
-                                            .split("\t").join("');")
-                                            .split("%>").join("p.push('")
-                                            .split("\r").join("\\'")
-                                    + "');}return p.join('');");
+                    // Convert the template into pure JavaScript
+                    str
+                        .replace(/[\r\t\n]/g, " ")
+                        .split("<%").join("\t")
+                        .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+                        .replace(/\t=(.*?)%>/g, "',$1,'")
+                        .split("\t").join("');")
+                        .split("%>").join("p.push('")
+                        .split("\r").join("\\'")
+                    + "');}return p.join('');");
 
             // Provide some basic currying to the user
-            return data ? fn( data ) : fn;
+            return data ? fn(data) : fn;
         };
     })();
 </script>
+<script src="https://culturaltracking.ru/static/js/spxl.js?pixelId=5735" data-pixel-id="5735"></script>
+
 </body>
 </html>
