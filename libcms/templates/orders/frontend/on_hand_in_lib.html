@@ -4,6 +4,7 @@
     <ol style="list-style: none; margin: 0; padding: 0;">
         {% for book in books %}
             <li>{{ book.record|safe }}
+            {% if book.description %}
                 <div class="alert alert-success">
                     {% if LANGUAGE_CODE == 'en' %}
                         <b>Notes</b>:
@@ -15,6 +16,7 @@
 
 {#                    {{ book.description }}#}
                 </div>
+            {% endif %}
             </li>
             {% if not forloop.last %}
                 <hr/>{% endif %}
