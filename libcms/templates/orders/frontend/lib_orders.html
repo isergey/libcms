@@ -18,13 +18,14 @@
                     {% for order in orders %}
                         <li>{{ order.record|safe }}
                             <div class="alert alert-success">
-                                <b>Номер</b>: {{ order.target_reference }}<br/>
-                                <b>Статус</b>: {{ order.task_status }}<br/>
-                                <b>Дата создания</b>: {{ order.creation_date_time }}<br/>
+                                <b>Номер</b>: {{ order.target_reference }}<br />
+                                <b>Статус</b>: {{ order.task_status }}<br />
+                                <b>Дата создания</b>: {{ order.creation_date_time }}<br />
                                 <b>Отчет</b>: {{ order.status_or_error_report }}
                             </div>
                         </li>
-                        {% if not forloop.last %}<hr/>{% endif %}
+                        {% if not forloop.last %}
+                            <hr />{% endif %}
                     {% endfor %}
                 </ul>
             </div>
@@ -38,7 +39,8 @@
                                 </div>
                             {% endif %}
                         </li>
-                        {% if not forloop.last %}<hr/>{% endif %}
+                        {% if not forloop.last %}
+                            <hr />{% endif %}
                     {% endfor %}
                 </ul>
             </div>
@@ -46,7 +48,6 @@
                 Нет забронированных книг
             </div>
         </div>
-
-        </div>
+    </div>
 
 {% endblock %}
