@@ -313,11 +313,16 @@ def search(request, catalog=None, library=None):
         return HttpResponse(u'Некорректный набор атрибутов')
 
     query = None
+
     if len(terms) == 1 and 'text_t' in terms[0] and terms[0]['text_t'].strip() == '*':
         terms = [{u'*': u'*'}]
 
     if len(terms) > 1 and u'*' in terms[0][terms[0].keys()[0]].strip() == u'*':
         terms = terms[1:]
+
+    if not terms:
+        terms = [{u'*': u'*'}]
+
     try:
         for term in terms[:search_deep_limit]:
             # если встретилось поле с текстом, то через OR ищем аналогичное с постфиксом _ru
@@ -394,6 +399,7 @@ def search(request, catalog=None, library=None):
             solr_searcher = solr_searcher.sort_by(u'-' + sort_attr['attr'])
         else:
             solr_searcher = solr_searcher.sort_by(sort_attr['attr'])
+
     # ключ хеша зависит от языка
     terms_facet_hash = hashlib.md5(
         unicode(terms) + u'_facets_' + get_language() + u'#'.join(exclude_kwargs.values())).hexdigest()
@@ -436,6 +442,7 @@ def search(request, catalog=None, library=None):
             'id': record.gen_id,
             'record': xml_doc_to_dict(record.content)
         })
+
     search_breadcumbs = []
     query_dict = None
 
@@ -479,6 +486,7 @@ def search(request, catalog=None, library=None):
                     'values': facets[facet_field]
                 }
             )
+
     return render(request, 'ssearch/frontend/index.html', {
         'docs': docs,
         'results_page': results_page,
@@ -541,6 +549,7 @@ def facet_explore(request, catalog=None, library=None):
     in_founded = request.GET.get('in_founded', None)
 
     terms = []
+
     try:
         # if in_founded:
         terms += terms_constructor(fattrs, fqs)
@@ -611,12 +620,10 @@ def facet_explore(request, catalog=None, library=None):
 
     exclude_kwargs = {}
 
-    if catalog == u'sc2':
-        exclude_kwargs = {'system-catalog_s': u"2"}
-    elif catalog == u'ebooks':
+    if '/ecollection/' in request.META.get('HTTP_REFERER', ''):
         exclude_kwargs = {'system-catalog_s': u"4"}
     else:
-        pass
+        exclude_kwargs = {'system-catalog_s': u"2"}
 
     solr_searcher = solr_searcher.exclude(**exclude_kwargs)
 
