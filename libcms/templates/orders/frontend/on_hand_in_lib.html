@@ -6,13 +6,13 @@
             <li>{{ book.record|safe }}
             {% if book.description %}
                 <div class="alert alert-success">
-                    {% if LANGUAGE_CODE == 'en' %}
-                        <b>Notes</b>:
-                    {% elif LANGUAGE_CODE == 'tt' %}
-                        <b>Искәрмә</b>:
-                    {% else %}
-                        <b>Примечание</b>:
-                    {% endif %}
+{#                    {% if LANGUAGE_CODE == 'en' %}#}
+{#                        <b>Notes</b>:#}
+{#                    {% elif LANGUAGE_CODE == 'tt' %}#}
+{#                        <b>Искәрмә</b>:#}
+{#                    {% else %}#}
+{#                        <b>Примечание</b>:#}
+{#                    {% endif %}#}
 
 {#                    {{ book.description }}#}
                 </div>

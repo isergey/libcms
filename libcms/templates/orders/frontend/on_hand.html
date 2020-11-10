@@ -81,15 +81,15 @@
                                             <p class="list__description">{{ book.record|safe }}</p>
                                             {% if book.description %}
                                                 <div class="list__dl">
-                                                    <div>
-                                                            {% if LANGUAGE_CODE == 'en' %}
-                                                                Note:
-                                                            {% elif LANGUAGE_CODE == 'tt' %}
-                                                                Искәрмә:
-                                                            {% else %}
-                                                                Примечание:
-                                                            {% endif %}
-                                                    </div>
+{#                                                    <div>#}
+{#                                                            {% if LANGUAGE_CODE == 'en' %}#}
+{#                                                                Note:#}
+{#                                                            {% elif LANGUAGE_CODE == 'tt' %}#}
+{#                                                                Искәрмә:#}
+{#                                                            {% else %}#}
+{#                                                                Примечание:#}
+{#                                                            {% endif %}#}
+{#                                                    </div>#}
     {#                                                <dd>{{ book.description }}</dd>#}
                                                 </div>
                                             {% endif %}
